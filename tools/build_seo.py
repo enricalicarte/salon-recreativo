@@ -56,7 +56,7 @@ for g in play:
         p2=("Forma parte del Salón Recreativo, una colección de minijuegos online. "+(cd.get('d','') if cd else ''))
         h2a='Cómo se juega';ptxt="Pulsa «Jugar» y empieza: el juego se carga aquí mismo. Para una mejor experiencia ábrelo a pantalla completa o en una pestaña nueva."
         reltitle='Más minijuegos'
-    jgame={"@context":"https://schema.org","@type":"VideoGame","name":g['name'],"description":g['blurb'],"url":url,"image":img,"genre":cat,"gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","inLanguage":lang,"isAccessibleForFree":True,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Person","name":"Enric Alicarte"},"keywords":", ".join(g['tags'])}
+    jgame={"@context":"https://schema.org","@type":"VideoGame","name":g['name'],"description":g['blurb'],"url":url,"image":img,"genre":cat,"gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","inLanguage":lang,"isAccessibleForFree":True,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Organization","name":"Alica Games Studio","url":BASE},"keywords":", ".join(g['tags'])}
     bc={"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Salón Recreativo","item":BASE},{"@type":"ListItem","position":2,"name":cat,"item":BASE+'#sec-'+g['cat']},{"@type":"ListItem","position":3,"name":g['name'],"item":url}]}
     relhtml=''.join(f'<li><a href="../{x["slug"]}/"><img src="../../img/{x["slug"]}.jpg" alt="Portada de {e(x["name"])}" loading="lazy" width="344" height="216"><b>{e(x["name"])}</b></a></li>' for x in rel)
     page=f"""<!doctype html>
@@ -65,7 +65,7 @@ for g in play:
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{url}">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<meta name="theme-color" content="#0d1230">
+<meta name="theme-color" content="#0d1230"><meta name="author" content="Alica Games Studio">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Salón Recreativo"><meta property="og:locale" content="{'ca_ES' if ca else 'es_ES'}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{img}"><meta property="og:image:alt" content="Portada de {e(g['name'])}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{img}">
@@ -87,7 +87,7 @@ for g in play:
 <h2>{reltitle}</h2>
 <ul class="rel">{relhtml}</ul>
 </main>
-<footer><div class="w"><a href="../../">Salón Recreativo</a> · {'Minijocs en línia gratuïts' if ca else 'Minijuegos online gratis'} · Enric Alicarte</div></footer>
+<footer><div class="w"><a href="../../">Salón Recreativo</a> · {'Minijocs en línia gratuïts' if ca else 'Minijuegos online gratis'} · © 2026 <b>Alica Games Studio</b></div></footer>
 <script>document.getElementById('go').addEventListener('click',function(){{var f=document.createElement('iframe');f.src='../../{g['play']}';f.title={json.dumps(g['name'],ensure_ascii=False)};f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope';f.allowFullscreen=true;var s=document.getElementById('stage');s.innerHTML='';s.appendChild(f);}});</script>
 </body></html>"""
     d=os.path.join(root,'jugar',g['slug']);os.makedirs(d,exist_ok=True)
@@ -102,13 +102,13 @@ HT='Minijuegos online gratis en el navegador | Salón Recreativo'
 HD=f'{len(G)} minijuegos online gratis para jugar en el navegador, en móvil y PC: fútbol, ritmo, karts, relax y palabras en catalán. Sin descargas ni registro.'
 HD=short(HD,158)
 items=[{"@type":"ListItem","position":k+1,"url":BASE+'jugar/'+g['slug']+'/',"name":g['name']} for k,g in enumerate(play)]
-site={"@context":"https://schema.org","@type":"WebSite","name":"Salón Recreativo","url":BASE,"inLanguage":"es","description":HD,"publisher":{"@type":"Person","name":"Enric Alicarte"}}
+site={"@context":"https://schema.org","@type":"WebSite","name":"Salón Recreativo","url":BASE,"inLanguage":"es","description":HD,"publisher":{"@type":"Organization","name":"Alica Games Studio","url":BASE}}
 lst={"@context":"https://schema.org","@type":"ItemList","name":"Minijuegos online gratis","itemListElement":items}
 meta=f"""<title>{e(HT)}</title>
 <meta name="description" content="{e(HD)}">
 <link rel="canonical" href="{BASE}">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<meta name="theme-color" content="#0d1230">
+<meta name="theme-color" content="#0d1230"><meta name="author" content="Alica Games Studio">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Salón Recreativo"><meta property="og:locale" content="es_ES"><meta property="og:title" content="{e(HT)}"><meta property="og:description" content="{e(HD)}"><meta property="og:url" content="{BASE}"><meta property="og:image" content="{BASE}img/og-home.jpg"><meta property="og:image:width" content="2400"><meta property="og:image:height" content="1260"><meta property="og:image:alt" content="Salón Recreativo: colección de minijuegos online">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(HT)}"><meta name="twitter:description" content="{e(HD)}"><meta name="twitter:image" content="{BASE}img/og-home.jpg">
 {jd(site)}
@@ -123,9 +123,6 @@ for k in ['cosmico']+ORDER:
     cols+=f'<div><h2>{e(CATS[k]["n"])}</h2><ul>'+''.join(f'<li><a href="jugar/{g["slug"]}/">{e(g["name"])}</a></li>' for g in bycat[k])+'</ul></div>'
 about=f'<p>Salón Recreativo es una colección de {len(G)} minijuegos online y gratis hechos con HTML y Three.js: fútbol, juegos de ritmo musical, karts, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p>'
 nav=f'<nav class="dir" aria-label="Todos los juegos">{cols}</nav>'
-fa='Juegos para el navegador <a href="#admin"'
-assert fa in body
-body=body.replace(fa,'Juegos para el navegador <a href="#admin"',1)
 fb='</p></div>\n</footer>'
 assert body.count(fb)==1
 body=body.replace(fb,'</p>'+about+nav+'</div>\n</footer>')
