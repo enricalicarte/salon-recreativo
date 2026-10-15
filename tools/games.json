@@ -260,6 +260,20 @@
    "play": "juegos/neon-coast/index.html"
   },
   {
+   "slug": "moto-fury",
+   "id": "motofury",
+   "kw": "juego de motos",
+   "cat": "motor",
+   "name": "Moto Fury",
+   "blurb": "Juego de motos de trial y motocross: acelera, salta rampas, encadena loopings y haz trucos en el aire como el Superman o el Sin manos. Aterriza recto para ganar puntos y bate tu récord en cada circuito.",
+   "tags": [
+    "Motos",
+    "Trucos",
+    "Loopings"
+   ],
+   "play": "juegos/moto-fury/index.html"
+  },
+  {
    "slug": "mnac-rush",
    "id": "mnac",
    "kw": "juego del MNAC",

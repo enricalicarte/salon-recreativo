@@ -336,6 +336,9 @@ const GAMES=[
   {id:'neoncoast',kw:"juego de conducir coches",cat:'motor',name:'Neon Coast',
    blurb:"Juego de conducir por una costa de neón: cinco paisajes en una sola carretera. Esquiva el tráfico, gana tiempo en cada punto de control y llega lo más lejos posible.",
    tags:["Conducción", "Neón", "Contrarreloj"],play:'juegos/neon-coast/index.html'},
+  {id:'motofury',kw:"juego de motos",cat:'motor',name:'Moto Fury',
+   blurb:"Juego de motos de trial y motocross: acelera, salta rampas, encadena loopings y haz trucos en el aire como el Superman o el Sin manos. Aterriza recto para ganar puntos y bate tu récord en cada circuito.",
+   tags:["Motos","Trucos","Loopings"],play:'juegos/moto-fury/index.html'},
   {id:'mnac',kw:"juego del MNAC",cat:'marca',name:'MNAC Rush',
    blurb:"Juego de gestión ambientado en el Museu Nacional d'Art de Catalunya: atiende a los visitantes y amplía el museo, con obras y salas reales de la colección del MNAC.",
    tags:["Museo", "Arte", "Gestión"],play:'juegos/mnac/index.html'},
@@ -1007,6 +1010,27 @@ S.futbolretro=(c,w,h,t)=>{
   [[-120,-60,'#ff4d6d'],[80,-80,'#ff4d6d'],[-60,70,'#3fb8ff'],[140,50,'#3fb8ff']].forEach((p,i)=>{const x=300+p[0]+Math.sin(t+i)*30,y=187+p[1]+Math.cos(t*1.3+i)*20;disc(c,x,y,13,p[2]);c.strokeStyle='#0d1230';c.lineWidth=3;c.beginPath();c.arc(x,y,13,0,TAU);c.stroke();});
   disc(c,bx,by,10,'#fff');c.strokeStyle='#0d1230';c.lineWidth=2.5;c.beginPath();c.arc(bx,by,10,0,TAU);c.stroke();
   disc(c,548,56,22,'rgba(13,18,48,.7)');c.strokeStyle='#ffc933';c.lineWidth=2;c.beginPath();c.arc(548,56,22,0,TAU);c.stroke();disc(c,548+(bx-300)/18,56+(by-187)/18,3,'#fff');
+};
+S.motofury=(c,w,h,t)=>{
+  fillRect(c,lin(c,0,0,0,h,[[0,'#2f93ff'],[.6,'#8fd3ff'],[1,'#d9f2ff']]),0,0,w,h);
+  disc(c,500,70,34,'rgba(255,240,170,.95)');disc(c,500,70,52,'rgba(255,240,170,.25)');
+  [[90,60,1],[300,40,.8],[430,110,.7]].forEach(([x,y,k])=>{const dx=((t*12*k)%700)-50;rr(c,(x+dx)%650-50,y,90*k,22*k,11*k,'rgba(255,255,255,.85)');rr(c,(x+dx)%650-30,y-12*k,50*k,24*k,12*k,'rgba(255,255,255,.85)');});
+  poly(c,[[0,250],[90,215],[200,240],[320,200],[460,235],[600,205],[600,375],[0,375]],'#5fbf6a');
+  poly(c,[[0,300],[140,285],[260,300],[360,282],[600,296],[600,375],[0,375]],'#3d9a4c');
+  fillRect(c,'#8a5a34',0,318,600,57);fillRect(c,'#6f4526',0,318,600,6);
+  poly(c,[[150,318],[260,318],[260,262]],'#d9a24a');poly(c,[[150,318],[260,262],[262,318]],'rgba(0,0,0,.12)');
+  for(let i=0;i<5;i++){const x=330+i*44,y=150+Math.sin(t*3+i)*6;disc(c,x,y,10,'#ffd23f');disc(c,x-2,y-2,4,'#fff3b0');}
+  const u=(t*.5)%1,ph=u*Math.PI,x=262+u*240,y=262-Math.sin(ph)*140;
+  c.save();c.translate(x,y);c.rotate(-.5+u*1.0);
+  c.strokeStyle='#1a1a2e';c.lineWidth=7;
+  disc(c,-30,14,17,'#1a1a2e');disc(c,-30,14,8,'#9aa3b8');disc(c,32,14,17,'#1a1a2e');disc(c,32,14,8,'#9aa3b8');
+  poly(c,[[-34,8],[-6,-10],[30,-10],[38,10],[10,10]],'#ff4f6d');poly(c,[[24,-14],[44,-6],[38,4]],'#ffd23f');
+  const arm=Math.sin(t*6)*.3;
+  c.lineWidth=6;c.strokeStyle='#2a3a8f';c.beginPath();c.moveTo(-4,-12);c.lineTo(-14,-34);c.stroke();
+  c.strokeStyle='#ffffff';c.beginPath();c.moveTo(-12,-30);c.lineTo(12+Math.cos(arm)*14,-40-Math.sin(arm)*10);c.stroke();
+  disc(c,-16,-44,11,'#ffd23f');fillRect(c,'#1a1a2e',-14,-48,12,5);
+  c.restore();
+  if(u>.05&&u<.95){c.fillStyle='rgba(255,255,255,.9)';c.font='bold 22px system-ui,sans-serif';c.textAlign='center';c.fillText('SUPERMAN!',x,y-70);}
 };
 S.__gen=(pal)=>(c,w,h,t)=>{
   fillRect(c,lin(c,0,0,0,h,[[0,pal[0]],[1,pal[1]]]),0,0,w,h);
