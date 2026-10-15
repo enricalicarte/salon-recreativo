@@ -116,7 +116,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.01em;marg
   linear-gradient(180deg,var(--bg),#130c2e 50%,var(--bg))}
 .cosmic::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(255,255,255,.55) .8px,transparent 1.2px),radial-gradient(rgba(255,255,255,.35) .7px,transparent 1.1px);background-size:90px 90px,140px 140px;background-position:0 0,40px 60px;opacity:.5}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:22px}
-.grid.big{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:26px}
+.grid.big{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:22px}
 .extra-lab{margin:40px 0 16px;display:flex;align-items:center;gap:12px;font-size:.92rem;color:var(--mute)}
 .extra-lab b{font-family:var(--f-display);font-weight:700;font-size:.72rem;letter-spacing:.06em;color:var(--bg);background:var(--sun);padding:5px 10px;border-radius:999px}
 .extra-lab::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
@@ -205,13 +205,11 @@ footer p:not(.sig){margin:18px 0 0;color:var(--mute);font-size:.95rem;max-width:
     <div class="band-head">
       <div>
         <h2 style="--c:#9a8cff">La trilogía cósmica</h2>
-        <p style="margin-top:12px">Tres juegos con mecánicas distintas que cuentan una misma historia. Puntería, construcción y reflejos bajo el mismo cielo.</p>
+        <p style="margin-top:12px">Tres juegos con mecánicas distintas que cuentan una misma historia, y un bis: el concierto final. Puntería, construcción, reflejos y ritmo bajo el mismo cielo.</p>
       </div>
       <span class="n" style="--c:#9a8cff">3 juegos + 1 extra</span>
     </div>
     <div class="grid big" id="tri"></div>
-    <p class="extra-lab"><b>EXTRA</b> El bis del concierto</p>
-    <div class="grid big extra" id="triX"></div>
   </div>
 </section>
 
@@ -1071,8 +1069,7 @@ const secGrids={},secEls={};
 });
 GAMES.forEach((g,i)=>{
   const el=makeCard(g,i);
-  if(g.tri===2)$('#triX').appendChild(el);
-  else if(g.tri)$('#tri').appendChild(el);
+  if(g.tri)$('#tri').appendChild(el);
   else{secGrids[g.cat].appendChild(el);gridCards.push(el);}
 });
 
