@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- Google Analytics (gtag.js) con modo de consentimiento: sin cookies hasta que el usuario acepte -->
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
+try{ if(localStorage.getItem('ab_cookies')==='ok') gtag('consent','update',{analytics_storage:'granted'}); }catch(e){}
+gtag('js',new Date()); gtag('config','G-1VNZDC2G4E');
+function track(n,p){ try{ gtag('event',n,p||{}); }catch(e){} }
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1VNZDC2G4E"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AURA BATTLE — Batallas de farmear aura. Juega gratis en el móvil</title>
+<meta name="description" content="Aura Battle es el juego de las batallas de farmear aura: pulsa el botón que se ilumina, encadena el six-seven, el griddy y el skibidi, y gana la pista. Gratis, sin descargas.">
+<meta name="theme-color" content="#5FC6FF">
+<link rel="canonical" href="https://aurabattle.co/">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AURA BATTLE — Batallas de farmear aura">
+<meta property="og:description" content="Pulsa el botón que se ilumina, sube tu aura y gana la pista. Gratis, sin descargas, en el móvil.">
+<meta property="og:url" content="https://aurabattle.co/">
+<meta property="og:image" content="https://aurabattle.co/icons/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://aurabattle.co/icons/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoGame","name":"Aura Battle","alternateName":"Aura Battle — Farmeo Total",
+ "description":"Batallas de farmear aura: juego de reacción y baile para móvil. Gratis y sin descargas.",
+ "genre":["Casual","Rhythm","Party"],"gamePlatform":["Web browser","Android","iOS"],"applicationCategory":"Game",
+ "inLanguage":"es","isAccessibleForFree":true,"operatingSystem":"Any","url":"https://aurabattle.co/","playMode":"SinglePlayer",
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}
+</script>
+<style>
+  :root{
+    --sky:#5FC6FF; --lila:#7C5CFF; --ink:#231052; --gold:#FFD230; --pink:#FF4E9B; --cyan:#37E1FF; --lime:#8BFF5C;
+    --paper:#F3EEFF; --text:#2A1A55; --muted:#5B4A8A;
+    --display:"Luckiest Guy","Arial Rounded MT Bold",Impact,sans-serif;
+    --body:"Fredoka","Arial Rounded MT Bold",Verdana,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--body);color:var(--text);background:var(--paper);-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5}
+  img,svg,canvas{display:block;max-width:100%}
+  a{color:inherit}
+  .wrap{width:min(1120px,92vw);margin:0 auto}
+  .disp{font-family:var(--display);font-weight:400;letter-spacing:.5px;line-height:.95}
+  .outline{color:#fff;text-shadow:
+     -3px -3px 0 var(--ink),0 -3px 0 var(--ink),3px -3px 0 var(--ink),-3px 0 0 var(--ink),3px 0 0 var(--ink),
+     -3px 3px 0 var(--ink),0 3px 0 var(--ink),3px 3px 0 var(--ink),0 7px 0 rgba(35,16,82,.55)}
+  h2.disp{font-size:clamp(38px,5.4vw,66px);color:var(--ink)}
+  .kicker{font-size:clamp(17px,1.8vw,21px);color:var(--muted);max-width:56ch;margin-top:10px}
+  :focus-visible{outline:4px solid var(--cyan);outline-offset:3px}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 30px;border-radius:99px;border:4px solid var(--ink);
+       background:linear-gradient(180deg,#FFE97A,#FFC414);color:var(--ink);font-family:var(--display);font-size:clamp(19px,2.2vw,26px);letter-spacing:.5px;
+       text-decoration:none;box-shadow:0 7px 0 var(--ink),0 16px 28px rgba(35,16,82,.28);transition:transform .08s,box-shadow .08s;white-space:nowrap;cursor:pointer}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 9px 0 var(--ink),0 20px 32px rgba(35,16,82,.32)}
+  .btn:active{transform:translateY(6px);box-shadow:0 1px 0 var(--ink)}
+  .btn.ghost{background:linear-gradient(180deg,#B9A6FF,#7C5CFF);color:#fff;text-shadow:0 2px 0 rgba(35,16,82,.8)}
+
+  /* ================= HERO 3D ================= */
+  .hero{position:relative;height:100svh;min-height:560px;overflow:hidden;color:#fff;
+        background:linear-gradient(#5FC6FF 0%,#8FB4FF 42%,#C69BFF 72%,#FFC2E8 100%)}
+  #stage{position:absolute;inset:0;width:100%;height:100%}
+  .hero .in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+            padding:0 5vw calc(6vh + env(safe-area-inset-bottom));text-align:center;pointer-events:none}
+  .hero .in > *{pointer-events:auto}
+  .hero h1{font-size:clamp(64px,12vw,168px);line-height:.85;margin-bottom:6px;animation:titleIn .9s cubic-bezier(.2,1.5,.4,1) both}
+  .hero h1 small{display:block;font-size:.26em;letter-spacing:.32em;color:var(--gold);margin-top:10px;text-shadow:
+     -2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink),2px 2px 0 var(--ink),0 4px 0 rgba(35,16,82,.6)}
+  @keyframes titleIn{0%{transform:scale(2.4) rotate(-6deg);opacity:0}60%{transform:scale(.96) rotate(1deg);opacity:1}100%{transform:none}}
+  .hero .tag{font-size:clamp(17px,2vw,23px);max-width:44ch;margin:8px auto 22px;font-weight:500;
+             background:rgba(24,9,66,.58);border:2px solid rgba(255,255,255,.22);padding:10px 18px;border-radius:16px;animation:fadeUp .8s .5s both}
+  .hero .ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s .7s both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .hero .facts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:18px;animation:fadeUp .8s .9s both}
+  .hero .facts span{background:rgba(24,9,66,.6);border:2px solid rgba(255,255,255,.25);border-radius:99px;padding:5px 12px;font-size:14px;font-weight:600}
+  .scrollcue{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:22px;opacity:.8;animation:cue 1.4s ease-in-out infinite;pointer-events:none}
+  @keyframes cue{50%{transform:translate(-50%,8px)}}
+  .hero .topbar{position:absolute;top:calc(14px + env(safe-area-inset-top));left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 5vw;z-index:3}
+  .hero .topbar .logo{font-family:var(--display);font-size:22px;color:#fff;text-decoration:none}
+  .hero .topbar nav{display:flex;gap:18px;font-weight:600}
+  .hero .topbar nav a{text-decoration:none;color:#fff;text-shadow:0 2px 0 rgba(35,16,82,.7)}
+
+  /* ================= ticker ================= */
+  .ticker{background:var(--ink);color:#fff;overflow:hidden;white-space:nowrap;padding:12px 0;font-family:var(--display);font-size:20px;letter-spacing:1px}
+  .ticker div{display:inline-block;animation:tick 40s linear infinite}
+  .ticker span{margin:0 26px}
+  .ticker .g{color:var(--gold)}.ticker .p{color:var(--pink)}.ticker .c{color:var(--cyan)}.ticker .l{color:var(--lime)}
+  @keyframes tick{to{transform:translateX(-50%)}}
+
+  /* ================= secciones ================= */
+  section{padding:clamp(60px,9vw,110px) 0}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+
+  .demoPads{background:linear-gradient(#8FB4FF,#C69BFF);border:5px solid var(--ink);border-radius:32px;padding:22px;box-shadow:0 12px 0 var(--ink),0 28px 50px rgba(35,16,82,.25);position:relative}
+  .demoPads .score{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;color:#fff}
+  .demoPads .score b{font-family:var(--display);font-size:34px}
+  .padgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .pad{aspect-ratio:1;border-radius:26%;border:4px solid var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+       box-shadow:0 7px 0 var(--ink);cursor:pointer;user-select:none;-webkit-user-select:none;transition:opacity .15s,transform .06s,box-shadow .06s;color:#fff;
+       font-family:var(--display);font-size:clamp(10px,1.2vw,15px);letter-spacing:.5px;text-shadow:0 2px 0 rgba(35,16,82,.8);position:relative;overflow:hidden;touch-action:manipulation}
+  .pad span{font-size:clamp(28px,3.4vw,44px);line-height:1;filter:drop-shadow(0 3px 0 rgba(35,16,82,.4))}
+  .pad .ico{width:clamp(30px,4vw,52px);height:clamp(30px,4vw,52px)} .pad .ico svg{width:100%;height:100%;display:block}
+  .pad::before{content:'';position:absolute;left:10%;right:10%;top:6%;height:24%;border-radius:99px;background:rgba(255,255,255,.38);pointer-events:none}
+  .pad .fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:rgba(255,255,255,.55);pointer-events:none}
+  .padgrid.focus .pad:not(.lit){opacity:.38}
+  .pad.lit{animation:glow .4s infinite alternate}
+  @keyframes glow{to{box-shadow:0 7px 0 var(--ink),0 0 28px 8px #fff}}
+  .pad:active,.pad.hit{transform:translateY(7px);box-shadow:0 0 0 var(--ink)}
+  .judge{position:absolute;left:50%;top:-14px;transform:translate(-50%,-100%) scale(.6);opacity:0;font-family:var(--display);font-size:clamp(26px,3.4vw,44px);white-space:nowrap;pointer-events:none}
+  .judge.show{animation:judge .7s cubic-bezier(.2,1.6,.4,1) forwards}
+  @keyframes judge{0%{opacity:0;transform:translate(-50%,-100%) scale(.5) rotate(-6deg)}25%{opacity:1;transform:translate(-50%,-115%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-150%)}}
+  .hand{position:absolute;font-size:44px;pointer-events:none;transform:translate(-50%,-10%);animation:hand .5s ease-in-out infinite alternate;display:none;filter:drop-shadow(0 4px 0 rgba(35,16,82,.5))}
+  .hand.on{display:block}
+  @keyframes hand{to{transform:translate(-50%,-30%)}}
+  .howlist{list-style:none;display:grid;gap:14px;margin-top:22px;font-size:clamp(16px,1.6vw,19px)}
+  .howlist li{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:start}
+  .howlist i{font-style:normal;width:52px;height:52px;border-radius:50%;background:#fff;border:4px solid var(--ink);box-shadow:0 4px 0 var(--ink);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .howlist b{display:block;font-family:var(--display);font-size:1.2em;color:var(--ink);letter-spacing:.5px}
+
+  .dark{background:radial-gradient(120% 80% at 50% 0%,#4B2FBB,#2A1170 70%);color:#fff}
+  .dark h2.disp{color:#fff}.dark .kicker{color:#D9CCFF}
+  .ladder{margin-top:44px;position:relative;padding-bottom:70px}
+  .ladder .bar{height:26px;border-radius:99px;background:rgba(0,0,0,.35);border:4px solid var(--ink);overflow:hidden;position:relative}
+  .ladder .fill{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,#FFE97A,#FFA919 45%,#FF4E9B 75%,#B22CFF);transition:width 2.2s cubic-bezier(.2,.9,.2,1)}
+  .ladder .marks{position:absolute;left:0;right:0;top:-16px;height:110px}
+  .mark{position:absolute;transform:translateX(-50%);text-align:center;width:150px;transition:opacity .4s,transform .4s;opacity:.35}
+  .mark .dot{width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--ink);margin:0 auto 46px;box-shadow:0 0 0 0 var(--gold);transition:box-shadow .4s}
+  .mark b{display:block;font-family:var(--display);font-size:clamp(15px,1.6vw,22px);color:var(--gold)}
+  .mark small{font-size:13px;color:#D9CCFF;font-weight:600}
+  .mark.on{opacity:1;transform:translateX(-50%) translateY(-6px)}
+  .mark.on .dot{box-shadow:0 0 0 8px rgba(255,210,48,.35),0 0 24px 6px var(--gold)}
+  .profileNote{margin-top:26px;font-size:clamp(16px,1.6vw,19px);color:#EDE6FF;max-width:62ch}
+
+  .rivals{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+  .rival{display:grid;grid-template-columns:76px 1fr;gap:12px;align-items:center}
+  .rival .face{width:76px;height:76px;border-radius:50%;border:4px solid var(--ink);box-shadow:0 5px 0 var(--ink);display:flex;align-items:center;justify-content:center;font-size:34px;background:var(--c)}
+  .rival .bub{position:relative;background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:16px;padding:8px 12px;font-weight:600;box-shadow:0 4px 0 var(--ink)}
+  .rival .bub::before{content:"";position:absolute;left:-12px;top:22px;border:8px solid transparent;border-right-color:var(--ink);border-left:0}
+  .rival .bub b{display:block;font-family:var(--display);font-size:15px;letter-spacing:.5px;color:var(--lila)}
+  .phone{width:min(100%,540px);aspect-ratio:16/9;border:8px solid var(--ink);border-radius:26px;background:#000;overflow:hidden;position:relative;box-shadow:0 22px 46px rgba(0,0,0,.4);margin:34px auto 0}
+  .phone iframe{width:100%;height:100%;border:0}
+  .phone .load{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+        background:linear-gradient(#5FC6FF,#C69BFF);font-weight:700;color:var(--ink)}
+  .phone .load span{font-size:58px}
+
+  .fever{background:linear-gradient(100deg,#FF7A1F,#FF4E9B 50%,#B22CFF);color:#fff;text-align:center;position:relative;overflow:hidden}
+  .fever::before{content:"";position:absolute;inset:-30%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.14) 0 6deg,transparent 6deg 18deg);animation:spin 60s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .fever .wrap{position:relative}
+  .fever .big{font-size:clamp(46px,8vw,110px)}
+  .fever p{font-size:clamp(17px,1.9vw,22px);max-width:58ch;margin:14px auto 0;font-weight:500}
+  .fever .stats{display:flex;justify-content:center;gap:clamp(18px,4vw,60px);flex-wrap:wrap;margin-top:30px}
+  .fever .stats div b{display:block;font-family:var(--display);font-size:clamp(34px,5vw,64px);line-height:1}
+  .fever .stats div{font-weight:600}
+
+  .share{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+  .share a{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:99px;border:3px solid var(--ink);font-weight:700;text-decoration:none;color:#fff;box-shadow:0 4px 0 var(--ink)}
+  .wa{background:#25D366}.x{background:#111}.tg{background:#229ED9}.cp{background:var(--lila)}
+  .faq{max-width:760px;margin:30px auto 0;display:grid;gap:10px}
+  details{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:14px 18px;box-shadow:0 4px 0 var(--ink);color:var(--text)}
+  summary{font-weight:700;cursor:pointer;font-size:18px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--display);font-size:26px;color:var(--lila)}
+  details[open] summary::after{content:"–"}
+  details p{margin-top:10px;color:var(--muted)}
+  footer{background:var(--ink);color:#D9CCFF;padding:44px 0;text-align:center;font-size:14px}
+  footer a{color:#fff}
+  .sticky{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:10;display:none;padding:12px 22px;font-size:20px}
+
+  @media (max-width:860px){
+    .hero .topbar nav{display:none}
+    .hero h1{font-size:clamp(58px,17vw,110px)}
+    .split{grid-template-columns:1fr}
+    .rivals{grid-template-columns:1fr}
+    .mark{width:22vw}.mark small{display:none}.mark b{font-size:13px}
+    section{padding:56px 0}
+    .sticky{display:block}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  }
+</style>
+<style>
+#cookies{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9999;width:min(94vw,640px);
+  background:#231052;color:#F3ECFF;border:3px solid #fff;border-radius:18px;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  font:500 14px/1.4 "Fredoka","Arial Rounded MT Bold",Verdana,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#cookies[hidden]{display:none}
+#cookies p{margin:0;flex:1 1 260px}
+#cookies a{color:#FFD230}
+#cookies button{font:700 14px "Fredoka","Arial Rounded MT Bold",Verdana,sans-serif;border:3px solid #fff;border-radius:99px;padding:8px 16px;cursor:pointer}
+#ckOk{background:#FFD230;color:#231052}#ckNo{background:transparent;color:#fff}
+</style>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="topbar">
+    <a class="logo outline" href="#top">AURA BATTLE</a>
+    <nav><a href="#juega">Cómo se juega</a><a href="#rangos">Rangos</a><a href="#batallas">Batallas</a><a href="juego.html">Jugar</a></nav>
+  </div>
+  <div class="in">
+    <h1 class="disp outline">AURA<br>BATTLE<small>farmeo total</small></h1>
+    <p class="tag">Las batallas de farmear aura, en tu móvil. Se ilumina un botón, lo pulsas, tu bailarín clava el paso. Una Gira Mundial de quince ciudades para ganar pasos, trucos y la corona.</p>
+    <div class="ctas">
+      <a class="btn" href="juego.html" id="playBtn">🌍 Jugar la Gira</a>
+      <a class="btn ghost" href="juego.html?batallas=1">📺 Ver una batalla</a>
+    </div>
+    <div class="facts"><span>Gratis</span><span>Sin descargas</span><span>Sin registro</span><span>Móvil y ordenador</span><span>Música propia en cada ciudad</span></div>
+  </div>
+  <div class="scrollcue">⌄</div>
+</header>
+
+<div class="ticker" aria-hidden="true"><div>
+  <span class="g">+500 PERFECTO</span><span>SIX SEVEN 67</span><span class="p">🔥 MODO FIEBRE x2</span><span>GRIDDY</span><span class="c">¡ABUCHEO!</span><span>AURA FARM</span><span class="l">+2.000 REMATE</span><span>SKIBIDI</span><span class="g">LEYENDA DE LA PISTA</span><span>SIUUU</span><span class="p">TANDA 3/5</span><span>MEWING</span><span class="c">VAS CON MAXI RIZZ</span><span>FLOSS</span><span class="l">NUEVO RÉCORD</span><span>SHUFFLE</span><span class="g">🌍 GIRA MUNDIAL</span><span class="c">📍 CHAPULTEPEC</span><span class="p">🔓 NUEVO PASO: SIUUU</span><span class="l">🎵 UNA CANCIÓN POR CIUDAD</span><span class="c">📣 ¡BUUU!</span>
+  <span class="g">+500 PERFECTO</span><span>SIX SEVEN 67</span><span class="p">🔥 MODO FIEBRE x2</span><span>GRIDDY</span><span class="c">¡ABUCHEO!</span><span>AURA FARM</span><span class="l">+2.000 REMATE</span><span>SKIBIDI</span><span class="g">LEYENDA DE LA PISTA</span><span>SIUUU</span><span class="p">TANDA 3/5</span><span>MEWING</span><span class="c">VAS CON MAXI RIZZ</span><span>FLOSS</span><span class="l">NUEVO RÉCORD</span><span>SHUFFLE</span>
+</div></div>
+
+<section id="juega">
+  <div class="wrap split">
+    <div>
+      <h2 class="disp">Pruébalo aquí mismo</h2>
+      <p class="kicker">Se ilumina un botón y lo pulsas. Eso es todo. Cuanto antes reacciones, más aura. Estos son los ocho pasos del juego, y funcionan de verdad.</p>
+      <ul class="howlist">
+        <li><i>💡</i><div><b>Uno se enciende, los demás se apagan</b>No hay que buscar nada. Lo ves y lo pulsas.</div></li>
+        <li><i>⚡</i><div><b>Rápido vale más</b>Perfecto 500, bien 350, a tiempo 200. Si es el botón correcto, siempre suma.</div></li>
+        <li><i>🔁</i><div><b>Farmeas tú, luego el rival</b>Diez segundos cada uno, tres tandas. Mientras él baila, tú machacas botones para llenar el medidor de abucheo: lo llenas, y el rival tropieza y pierde aura.</div></li>
+      </ul>
+    </div>
+    <div class="demoPads" id="demo">
+      <div class="judge outline disp" id="dJudge"></div>
+      <div class="score"><span style="font-weight:700">Tu aura</span><b id="dScore" class="disp outline">0</b></div>
+      <div class="padgrid" id="padgrid"></div>
+      <div class="hand" id="dHand">👇</div>
+    </div>
+  </div>
+</section>
+
+<section class="dark" id="rangos">
+  <div class="wrap">
+    <h2 class="disp">¿Cuánta aura tienes?</h2>
+    <p class="kicker">Cada partida te da un rango, y toda el aura que ganas se queda en tu perfil. En la Gira Mundial, además, cada ciudad vale hasta tres estrellas y esconde un premio: pasos nuevos, bailarines y trucos de aura como el abucheo doble o la fiebre blindada.</p>
+    <div class="ladder" id="ladder">
+      <div class="bar"><div class="fill" id="lfill"></div></div>
+      <div class="marks">
+        <div class="mark" style="left:8%"><div class="dot"></div><b>1.000</b><small>Aura de barrio</small></div>
+        <div class="mark" style="left:24%"><div class="dot"></div><b>2.000</b><small>Con chispa</small></div>
+        <div class="mark" style="left:42%"><div class="dot"></div><b>5.000</b><small>Aura sólida</small></div>
+        <div class="mark" style="left:60%"><div class="dot"></div><b>10.000</b><small>Aura máxima</small></div>
+        <div class="mark" style="left:78%"><div class="dot"></div><b>25.000</b><small>Leyenda de la pista</small></div>
+        <div class="mark" style="left:95%"><div class="dot"></div><b>50.000</b><small>Aura infinita</small></div>
+      </div>
+    </div>
+    <p class="profileNote">Tu perfil sube de nivel con lo acumulado: de Novato a Dios del farmeo, un millón de aura. Con récord, victorias y racha de apuestas.</p>
+  </div>
+</section>
+
+<section id="batallas">
+  <div class="wrap">
+    <h2 class="disp">Zona de Batallas</h2>
+    <p class="kicker">Cada batalla en una ciudad distinta: Chapultepec, Copacabana, el Obelisco, la Paulista, Gran Vía, la Torre Eiffel… quince spots reales, diez de Latinoamérica y cinco de Europa, cada uno con su farmeador local: El Chilango, Carioca Flow, Cholita Power, Lord Griddy… El local recibe a un visitante y se enfrentan solos. Tú eliges favorito: acertar suma 500 a tu perfil, y cada acierto seguido dobla el premio hasta 8.000. De paso, ves qué botón pulsa cada uno.</p>
+    <div class="rivals">
+      <div class="rival" style="--c:#006847"><div class="face">🌮</div><div class="bub"><b>EL CHILANGO · CDMX</b>Neta, esto es Chapultepec. Nivel dios.</div></div>
+      <div class="rival" style="--c:#009C3B"><div class="face">🏖️</div><div class="bub"><b>CARIOCA FLOW · RÍO</b>Bora, esse é o flow de Copacabana.</div></div>
+      <div class="rival" style="--c:#74ACDF"><div class="face">🧉</div><div class="bub"><b>EL PORTEÑO · BUENOS AIRES</b>Che, mirá cómo se baila en la 9 de Julio.</div></div>
+      <div class="rival" style="--c:#F9E300"><div class="face">🎀</div><div class="bub"><b>CHOLITA POWER · LA PAZ</b>Mi aura llega hasta el Illimani.</div></div>
+      <div class="rival" style="--c:#37E1FF"><div class="face">🌊</div><div class="bub"><b>MARINA BCN · BARCELONA</b>Nen, a la Barceloneta se farmea con brisa.</div></div>
+      <div class="rival" style="--c:#012169"><div class="face">☕</div><div class="bub"><b>LORD GRIDDY · LONDRES</b>Con permiso: aura de Su Majestad.</div></div>
+    </div>
+    <div class="phone" id="phone">
+      <div class="load" id="demoLoad"><span>▶️</span>Cargar una batalla en vivo<small style="font-weight:500">Se abre aquí mismo, sin salir de la página</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="fever">
+  <div class="wrap">
+    <div class="big disp outline">Modo fiebre</div>
+    <p>Tres aciertos seguidos y todo vale ×1,5. Seis, y ×2: la pista se pone en llamas y la música acelera. Llena el medidor y suelta el remate. Al final, el ganador se corona con una columna de luz. Y cada ciudad suena distinto: tiene su propia canción, de principio a fin de la partida.</p>
+    <div class="stats">
+      <div><b class="disp outline">×2</b>con seis seguidos</div>
+      <div><b class="disp outline">+2.000</b>por remate</div>
+      <div><b class="disp outline">15</b>ciudades en la Gira</div>
+      <div><b class="disp outline">3</b>dificultades</div>
+    </div>
+  </div>
+</section>
+
+<section id="reta">
+  <div class="wrap" style="text-align:center">
+    <h2 class="disp">Reta a tu gente</h2>
+    <p class="kicker" style="margin-left:auto;margin-right:auto">Al acabar cada partida sale tu puntuación en una imagen lista para historias. Y esta página se manda por aquí:</p>
+    <div class="share">
+      <a class="wa" id="shWa" href="#">WhatsApp</a><a class="x" id="shX" href="#">X</a><a class="tg" id="shTg" href="#">Telegram</a><a class="cp" id="shCp" href="#">Copiar enlace</a>
+    </div>
+    <p style="margin-top:34px"><a class="btn" href="juego.html">🎮 Jugar gratis</a></p>
+  </div>
+</section>
+
+<section class="dark" id="faq">
+  <div class="wrap">
+    <h2 class="disp">Preguntas</h2>
+    <div class="faq">
+      <details><summary>¿Es gratis? ¿Hay que instalar algo?</summary><p>Gratis del todo. Se juega en el navegador del móvil o del ordenador, sin descargas ni registro. Si quieres tenerlo como una app, añádelo a la pantalla de inicio.</p></details>
+      <details><summary>¿Funciona en iPhone?</summary><p>Sí. Para jugar a pantalla completa en iPhone: toca Compartir (el cuadrado con la flecha) y luego "Añadir a pantalla de inicio".</p></details>
+      <details><summary>¿Cómo se abuchea?</summary><p>En el turno del rival, machaca cualquier botón: cada toque llena un poco el medidor de abucheo que aparece sobre los botones. Al llenarlo, el rival tropieza y pierde 600 de aura. Hasta tres veces por turno.</p></details>
+      <details><summary>¿Vertical u horizontal?</summary><p>Mejor en horizontal, pero funciona en las dos. En Android el juego pide él solo girar la pantalla al entrar en pantalla completa.</p></details>
+      <details><summary>¿Guarda mis datos?</summary><p>No recogemos nada. Tu récord y tu aura total se guardan en tu propio móvil, y solo ahí. Sin cuentas, sin cookies de seguimiento, sin anuncios. Más en la <a href="privacidad.html">página de privacidad</a>.</p></details>
+      <details><summary>¿Para qué edad es?</summary><p>Para todos. No hay violencia, ni chat, ni compras. Solo baile, aura y vaciles de los rivales.</p></details>
+      <details><summary>¿Qué es farmear aura?</summary><p>Acumular presencia haciendo algo con estilo. En las batallas de aura dos personas se enfrentan con pasos y gestos, y el público decide quién tiene más. Este juego es eso, en el móvil.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <b style="color:#fff;font-family:var(--display);font-size:20px;letter-spacing:1px">AURA BATTLE</b><br>
+    <a href="juego.html">Jugar</a> · <a href="juego.html?batallas=1">Ver batallas</a> · <a href="privacidad.html">Privacidad</a> · <a href="mailto:aurabattle.co@gmail.com">Contacto</a><br>
+    <span style="opacity:.7">Un juego para pasarlo bien. Los nombres de los pasos son los que usa la gente; no hay relación con ninguna marca.</span>
+  </div>
+</footer>
+
+<a class="btn sticky" href="juego.html">🎮 Jugar gratis</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ==================== HERO 3D: dos bailarines en vivo ==================== */
+(function(){
+  const cv=document.getElementById('stage'); if(!window.THREE) return;
+  let R; try{ R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,powerPreference:'high-performance'}); }catch(e){ cv.remove(); return; }
+  const mobile = Math.min(innerWidth,innerHeight) < 700;
+  R.setPixelRatio(Math.min(devicePixelRatio||1, mobile?1.5:2)); R.setClearColor(0,0);
+  const S=new THREE.Scene(); S.fog=new THREE.Fog(0xA8B8FF,16,40);
+  const C=new THREE.PerspectiveCamera(44,2,.1,100); C.position.set(0,3.1,9.4);
+  S.add(new THREE.HemisphereLight(0xFFF3D0,0x6B4BC4,1)); const d=new THREE.DirectionalLight(0xffffff,.85); d.position.set(4,9,6); S.add(d);
+  const M=c=>new THREE.MeshLambertMaterial({color:c});
+  const pick=a=>a[(Math.random()*a.length)|0], rnd=(a,b)=>a+Math.random()*(b-a);
+
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(7.6,8.2,1.5,44),M(0x7C5CFF)); base.position.y=-.75; S.add(base);
+  const tc=document.createElement('canvas'); tc.width=tc.height=256; const g=tc.getContext('2d');
+  for(let y=0;y<2;y++)for(let x=0;x<2;x++){ g.fillStyle=((x+y)%2)?'#FF6FC1':'#FF9AD8'; g.fillRect(x*128,y*128,128,128); }
+  const tex=new THREE.CanvasTexture(tc); tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(9,9);
+  const top=new THREE.Mesh(new THREE.CircleGeometry(7.6,44),new THREE.MeshLambertMaterial({map:tex})); top.rotation.x=-Math.PI/2; top.position.y=.005; S.add(top);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(7.6,.28,10,52),M(0xFFD230)); ring.rotation.x=Math.PI/2; ring.position.y=.05; S.add(ring);
+  for(let r=0;r<3;r++){ const bl=new THREE.Mesh(new THREE.BoxGeometry(26,1.2+r*.9,2.4),M([0x5E3CD6,0x4B2FBB,0x3D25A0][r])); bl.position.set(0,(1.2+r*.9)/2-.4,-7.5-r*2.4); S.add(bl); }
+  const crowd=[];
+  for(let i=0;i<(mobile?14:26);i++){ const col=pick([0xFFD230,0xFF4E9B,0x37E1FF,0x8BFF5C,0xFF7A1F,0xffffff]), gr=new THREE.Group(), r=i%3;
+    const b=new THREE.Mesh(new THREE.SphereGeometry(.42,10,8),M(col)); b.scale.y=1.1; b.position.y=.42; gr.add(b);
+    const h=new THREE.Mesh(new THREE.SphereGeometry(.4,10,8),M(col)); h.position.y=1.12; gr.add(h);
+    [-0.14,0.14].forEach(x=>{ const e=new THREE.Mesh(new THREE.SphereGeometry(.07,6,5),M(0x1B0B44)); e.position.set(x,1.16,.36); gr.add(e); });
+    gr.position.set(rnd(-11,11),.5+r*.9,-7.6-r*2.4); gr.userData.ph=Math.random()*7; gr.userData.y=gr.position.y; S.add(gr); crowd.push(gr); }
+  const flags=[]; for(let i=0;i<18;i++){ const f=new THREE.Mesh(new THREE.ConeGeometry(.32,.7,4),M(pick([0xFFD230,0xFF4E9B,0x37E1FF,0x8BFF5C]))); const a=i/18*Math.PI*2;
+    f.position.set(Math.cos(a)*8.2,3.6+Math.sin(i*1.7)*.35,Math.sin(a)*8.2-1); f.rotation.z=Math.PI; f.userData.ph=i; S.add(f); flags.push(f); }
+  const N=mobile?80:160, pos=new Float32Array(N*3), pd=[];
+  for(let i=0;i<N;i++){ pd.push({a:Math.random()*6.28,r:rnd(1,7),y:rnd(0,6),v:rnd(.3,.9)}); }
+  const pg=new THREE.BufferGeometry(); pg.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const sc=document.createElement('canvas'); sc.width=sc.height=64; const sg=sc.getContext('2d'); const gr=sg.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(1,'rgba(255,255,255,0)'); sg.fillStyle=gr; sg.fillRect(0,0,64,64);
+  const pts=new THREE.Points(pg,new THREE.PointsMaterial({size:.28,map:new THREE.CanvasTexture(sc),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,color:0xFFE9A0,opacity:.9})); S.add(pts);
+
+  function limb(col,glove,len,rad){ const q=new THREE.Group(); const m=new THREE.Mesh(new THREE.CylinderGeometry(rad,rad*.9,len,9),M(col)); m.position.y=-len/2; q.add(m);
+    q.add(new THREE.Mesh(new THREE.SphereGeometry(rad,9,7),M(col))); const hd=new THREE.Mesh(new THREE.SphereGeometry(rad*1.25,9,7),M(glove)); hd.position.y=-len; q.add(hd); return q; }
+  function bean(cfg){
+    const pv=new THREE.Group(), root=new THREE.Group(); pv.add(root);
+    const body=new THREE.Mesh(new THREE.SphereGeometry(.62,18,14),M(cfg.body)); body.scale.set(1,1.06,.9); body.position.y=1.02; root.add(body);
+    const belly=new THREE.Mesh(new THREE.SphereGeometry(.44,14,11),M(0xffffff)); belly.scale.set(1,1.05,.5); belly.position.set(0,-.06,.44); body.add(belly);
+    const headG=new THREE.Group(); headG.position.y=1.98; root.add(headG);
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.66,20,16),M(cfg.body)); head.scale.set(1,.96,.96); headG.add(head);
+    [-0.235,0.235].forEach(x=>{ const w=new THREE.Mesh(new THREE.SphereGeometry(.16,12,10),M(0xffffff)); w.position.set(x,.06,.55); w.scale.set(1,1.15,.5); headG.add(w);
+      const p=new THREE.Mesh(new THREE.SphereGeometry(.085,10,8),M(0x1B0B44)); p.position.set(x*1.02,.05,.66); p.scale.z=.6; headG.add(p);
+      const sh=new THREE.Mesh(new THREE.SphereGeometry(.032,7,6),M(0xffffff)); sh.position.set(x*1.02+.035,.09,.7); headG.add(sh); });
+    const mouth=new THREE.Mesh(new THREE.SphereGeometry(.13,12,9),M(0x3A1450)); mouth.position.set(0,-.2,.58); mouth.scale.set(1.25,.75,.35); headG.add(mouth);
+    if(cfg.hat==='band'){ const b=new THREE.Mesh(new THREE.TorusGeometry(.62,.09,8,20),M(cfg.hatCol)); b.rotation.x=Math.PI/2; b.position.y=.3; b.scale.z=.9; headG.add(b); }
+    if(cfg.hat==='cap'){ const c=new THREE.Mesh(new THREE.SphereGeometry(.63,14,10,0,Math.PI*2,0,Math.PI/2),M(cfg.hatCol)); c.position.y=.16; headG.add(c);
+      const v=new THREE.Mesh(new THREE.BoxGeometry(.7,.07,.42),M(cfg.hatCol)); v.position.set(0,.18,.55); headG.add(v); }
+    const armL=limb(cfg.body,cfg.glove,.62,.17); armL.position.set(.58,1.32,0); root.add(armL);
+    const armR=limb(cfg.body,cfg.glove,.62,.17); armR.position.set(-.58,1.32,0); root.add(armR);
+    const legL=limb(cfg.body,cfg.shoe,.42,.19); legL.position.set(.25,.62,0); root.add(legL);
+    const legR=limb(cfg.body,cfg.shoe,.42,.19); legR.position.set(-.25,.62,0); root.add(legR);
+    const sh=new THREE.Mesh(new THREE.CircleGeometry(.8,20),new THREE.MeshBasicMaterial({color:0x2B1070,transparent:true,opacity:.3})); sh.rotation.x=-Math.PI/2; sh.position.y=.02; pv.add(sh);
+    S.add(pv); return {pv,root,body,headG,armL,armR,legL,legR,anim:{n:'idle',t:0,d:1},next:rnd(1,2.5)};
+  }
+  const P1=bean({body:0xFFC93C,glove:0xffffff,shoe:0x2B1A6B,hat:'band',hatCol:0xFF3B6B});
+  const P2=bean({body:0xFF63B8,glove:0xffffff,shoe:0x5E1D6B,hat:'cap',hatCol:0xFF7A1F});
+  function reset(c){ c.root.position.set(0,0,0); c.root.rotation.set(0,0,0); c.body.position.y=1.02; c.body.scale.set(1,1.06,.9); c.body.rotation.set(0,0,0);
+    c.headG.rotation.set(0,0,0); c.armL.rotation.set(0,0,.24); c.armR.rotation.set(0,0,-.24); c.legL.rotation.set(0,0,0); c.legR.rotation.set(0,0,0); }
+  function pose(c,n,p,t){
+    const env=Math.sin(Math.PI*Math.min(1,p)), hop=env*.35;
+    if(n==='idle'){ const b=Math.sin(t*4.2)*.05; c.body.position.y=1.02+b; c.body.scale.set(1-b*.25,1.06+b*.35,.9-b*.2); c.headG.rotation.z=Math.sin(t*4.2+.6)*.06;
+      c.armL.rotation.z=.24+Math.sin(t*4.2)*.14; c.armR.rotation.z=-.24-Math.sin(t*4.2)*.14; return; }
+    if(n==='aura'){ const w=Math.sin(p*Math.PI*3); c.root.rotation.x=-.3*env; c.root.position.y=hop*.45; c.armL.rotation.z=1.35+w*.35; c.armR.rotation.z=-1.35-w*.35;
+      c.armL.rotation.x=-.5+w*.5; c.armR.rotation.x=-.5-w*.5; c.headG.rotation.x=-.3*env; c.headG.rotation.z=w*.18; }
+    if(n==='griddy'){ const k=Math.sin(p*Math.PI*7); c.legL.rotation.z=.75*k; c.legR.rotation.z=.75*k; c.armL.rotation.x=-2.25; c.armR.rotation.x=-2.25; c.armL.rotation.z=.75; c.armR.rotation.z=-.75;
+      c.root.position.y=Math.abs(k)*.14; c.headG.rotation.z=k*.12; }
+    if(n==='sic'){ const k=Math.sin(p*Math.PI*6); c.armL.rotation.x=-1.55+k*.85; c.armR.rotation.x=-1.55-k*.85; c.armL.rotation.z=.45; c.armR.rotation.z=-.45; c.headG.rotation.z=-k*.2; c.root.rotation.y=k*.18; c.root.position.y=Math.abs(k)*.1; }
+    if(n==='skib'){ c.root.rotation.y=p*Math.PI*2; c.root.position.y=hop*1.5; c.armL.rotation.z=2.5; c.armR.rotation.z=-2.5; c.legL.rotation.x=-.7*env; c.legR.rotation.x=.7*env; }
+    if(n==='floss'){ const k=Math.sin(p*Math.PI*8); c.armL.rotation.z=.2+k*.95; c.armR.rotation.z=-.2+k*.95; c.armL.rotation.x=k*.55; c.armR.rotation.x=-k*.55; c.root.rotation.y=-k*.22; c.body.rotation.z=-k*.13; c.headG.rotation.z=k*.11; }
+    if(n==='siuuu'){ const a=Math.min(1,p*1.8), j=Math.sin(Math.min(1,p)*Math.PI); c.root.position.y=j*1.1; c.root.rotation.y=a*Math.PI; c.armL.rotation.z=2.7*a; c.armR.rotation.z=-2.7*a; c.headG.rotation.x=-.35*j; }
+  }
+  function upd(c,dt,t){ reset(c); const a=c.anim; a.t+=dt; if(a.n==='idle'){ pose(c,'idle',0,t); c.next-=dt; if(c.next<=0){ a.n=pick(['aura','griddy','sic','skib','floss','siuuu']); a.t=0; a.d=.75; } }
+    else { const p=a.t/a.d; if(p>=1){ a.n='idle'; c.next=rnd(1.2,2.8); pose(c,'idle',0,t); } else pose(c,a.n,p,t); } }
+
+  let portrait=false;
+  function layout(){ const w=innerWidth, h=cv.clientHeight||innerHeight; R.setSize(w,h,false); C.aspect=w/h; portrait=h>w*1.02; C.fov=portrait?62:44; C.updateProjectionMatrix();
+    const x=portrait?1.75:2.7, ry=portrait?.7:.85; P1.pv.position.set(-x,0,.6); P1.pv.rotation.y=ry; P2.pv.position.set(x,0,.6); P2.pv.rotation.y=-ry; }
+  addEventListener('resize',layout); layout();
+
+  let px=0,py=0,tx=0,ty=0;
+  addEventListener('mousemove',e=>{ tx=(e.clientX/innerWidth-.5)*2; ty=(e.clientY/innerHeight-.5)*2; },{passive:true});
+  addEventListener('deviceorientation',e=>{ if(e.gamma!=null){ tx=Math.max(-1,Math.min(1,e.gamma/25)); ty=Math.max(-1,Math.min(1,(e.beta-45)/30)); } },{passive:true});
+
+  let visible=true; if('IntersectionObserver' in window) new IntersectionObserver(([en])=>{ visible=en.isIntersecting; }).observe(cv);
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let last=0, T=0;
+  function loop(now){ requestAnimationFrame(loop); if(!visible) return; const dt=Math.min(.05,(now-last)/1000||0); last=now; T+=dt;
+    upd(P1,dt,T); upd(P2,dt,T+1.3);
+    crowd.forEach(q=>{ q.position.y=q.userData.y+Math.abs(Math.sin(T*4+q.userData.ph))*.22; q.rotation.z=Math.sin(T*4+q.userData.ph)*.12; });
+    flags.forEach(f=>f.rotation.x=Math.sin(T*2.4+f.userData.ph)*.35);
+    for(let i=0;i<N;i++){ const p=pd[i]; p.y+=p.v*dt; p.a+=dt*.3; if(p.y>6.5)p.y=0; pos[i*3]=Math.cos(p.a)*p.r; pos[i*3+1]=p.y; pos[i*3+2]=Math.sin(p.a)*p.r*.6+1; }
+    pg.attributes.position.needsUpdate=true; ring.rotation.z+=dt*.15;
+    if(!reduce){ px+=(tx-px)*.05; py+=(ty-py)*.05; }
+    const bz=portrait?10.2:Math.max(7.6,Math.min(11.5,10.6-(innerWidth/innerHeight)*.7));
+    C.position.set(px*1.2+Math.sin(T*.25)*.35, (portrait?3.4:3.1)-py*.5, bz); C.lookAt(0,portrait?1.9:1.75,0);
+    R.render(S,C); }
+  requestAnimationFrame(loop);
+})();
+
+/* ==================== MINI-JUEGO DE PADS ==================== */
+(function(){
+  const ICON = (function(){
+    const K='#231052', W='#fff';
+    const w=(d,extra)=>`<svg viewBox="0 0 48 48" fill="none" stroke="${K}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${d}${extra||''}</svg>`;
+    return {
+      aura:  w(`<path d="M6 30c4-7 8-7 12 0s8 7 12 0 8-7 12 0" fill="${W}"/><path d="M6 20c4-7 8-7 12 0s8 7 12 0 8-7 12 0" stroke="#37E1FF"/><circle cx="36" cy="11" r="4" fill="#FFD230"/>`),
+      griddy:w(`<path d="M4 18h40" /><rect x="7" y="18" width="14" height="11" rx="5" fill="${K}"/><rect x="27" y="18" width="14" height="11" rx="5" fill="${K}"/><path d="M21 22h6" /><path d="M14 36l-4 7M34 36l4 7" stroke="#FFD230" stroke-width="4"/>`),
+      sic:   w(`<path d="M5 14l3-5 3 5M5 34l3 5 3-5" stroke="#FFD230" stroke-width="3"/><path d="M37 14l3-5 3 5M37 34l3 5 3-5" stroke="#FFD230" stroke-width="3"/><text x="24" y="35" text-anchor="middle" font-family="'Luckiest Guy','Arial Black',Impact,sans-serif" font-size="27" font-weight="900" fill="${W}" stroke="${K}" stroke-width="3.2" paint-order="stroke" letter-spacing="-1">67</text>`),
+      skib:  w(`<path d="M24 6a18 18 0 1 1-12.7 30.7" fill="${W}"/><path d="M24 14a10 10 0 1 1-7 17" stroke="#8BFF5C"/><path d="M24 22a2 2 0 1 1-1.4 3.4" />`),
+      siuuu: w(`<circle cx="24" cy="24" r="17" fill="${W}"/><path d="M24 12l7 5-3 8h-8l-3-8z" fill="${K}"/><path d="M31 17l9 2M17 17l-9 2M28 25l4 8M20 25l-4 8M24 41v-8"/><path d="M8 12l4 6M40 12l-4 6" stroke="#FF7A1F" stroke-width="4"/>`),
+      mewing:w(`<circle cx="24" cy="26" r="15" fill="${W}"/><path d="M13 32c3 3 7 4 11 4" /><path d="M17 22h4M27 22h4" /><path d="M35 8v22" stroke="#B9A6FF" stroke-width="6"/><path d="M35 8v22" />`),
+      floss: w(`<circle cx="24" cy="10" r="5" fill="${W}"/><path d="M24 15v16M24 31l-6 12M24 31l6 12"/><path d="M8 24l16-4 16 12" stroke="#E62E9E" stroke-width="5"/><path d="M8 24l16-4 16 12"/>`),
+      shuf:  w(`<path d="M6 32c0-4 4-6 10-7l6-8h6l2 6c8 2 14 4 14 9v4H6z" fill="${W}"/><path d="M6 36h38" stroke="#0FB79A" stroke-width="5"/><path d="M22 17l5 5M27 22l3-4M16 25l6 3"/>`),
+      fire:  w(`<path d="M24 5c2 8 10 10 10 20a10 10 0 0 1-20 0c0-4 2-7 4-9 0 4 2 6 4 6 0-6-2-10 2-17z" fill="#FFD230"/><path d="M24 22c1 4 5 5 5 9a5 5 0 0 1-10 0c0-3 3-4 5-9z" fill="#FF4E9B" stroke="none"/>`)
+    };
+  })();
+  const MOVES=[['🌊','AURA FARM','#FFE97A,#FFA919'],['🕶️','GRIDDY','#9BF0FF,#12A9E8'],['✌️','SIX SEVEN','#FFA5D4,#F0158A'],['🌀','SKIBIDI','#C4FFA3,#41CC2E'],
+               ['⚽','SIUUU','#FFC48A,#F06A00'],['🤫','MEWING','#D7CCFF,#7C5CFF'],['🕺','FLOSS','#FFBDE4,#E62E9E'],['👟','SHUFFLE','#B8FFEF,#0FB79A']];
+  const grid=document.getElementById('padgrid'), judge=document.getElementById('dJudge'), scoreEl=document.getElementById('dScore'), hand=document.getElementById('dHand');
+  let score=0, lit=-1, litAt=0, timer=null, last=-1, played=false, started=false;
+  const pads=MOVES.map((m,i)=>{ const p=document.createElement('button'); p.className='pad'; p.type='button'; p.style.background=`linear-gradient(180deg,${m[2]})`; p.setAttribute('aria-label',m[1]);
+    const ids=['aura','griddy','sic','skib','siuuu','mewing','floss','shuf']; p.innerHTML=`<span class="ico">${ICON[ids[i]]||m[0]}</span>${m[1]}<div class="fill"></div>`; p.addEventListener('pointerdown',ev=>{ ev.preventDefault(); press(i); }); grid.appendChild(p); return p; });
+  function say(t,c){ judge.textContent=t; judge.style.color=c; judge.classList.remove('show'); void judge.offsetWidth; judge.classList.add('show'); }
+  function light(){ let i; do i=(Math.random()*8)|0; while(i===last); last=i; lit=i; litAt=performance.now(); grid.classList.add('focus'); pads[i].classList.add('lit');
+    if(!played){ const r=pads[i].getBoundingClientRect(), g=grid.getBoundingClientRect(); hand.style.left=(r.left-g.left+r.width/2)+'px'; hand.style.top=(r.top-g.top+r.height*.55)+'px'; hand.classList.add('on'); }
+    clearTimeout(timer); timer=setTimeout(()=>{ if(lit===i){ off(); say('SIN AURA','#C7BEEA'); timer=setTimeout(light,600); } },1800); }
+  function off(){ if(lit>=0) pads[lit].classList.remove('lit'); pads.forEach(p=>p.querySelector('.fill').style.height='0%'); grid.classList.remove('focus'); lit=-1; hand.classList.remove('on'); }
+  function press(i){ pads[i].classList.add('hit'); setTimeout(()=>pads[i].classList.remove('hit'),90); if(lit<0) return; played=true;
+    if(i!==lit){ off(); say('¡CRINGE!','#FF4E9B'); clearTimeout(timer); timer=setTimeout(light,500); return; }
+    const t=(performance.now()-litAt)/1000; const g=t<=.6?500:t<=1?350:200; score+=g; if(score===g) track('demo_pads_primer_acierto'); scoreEl.textContent=score.toLocaleString('es-ES');
+    say(t<=.6?'¡PERFECTO! +500':t<=1?'¡BIEN! +350':'A TIEMPO +200', t<=.6?'#FFE97A':t<=1?'#8BFF5C':'#FFC7F0'); off(); clearTimeout(timer); timer=setTimeout(light,380); }
+  (function tick(){ requestAnimationFrame(tick); if(lit<0) return; const p=Math.min(1,(performance.now()-litAt)/1800); pads[lit].querySelector('.fill').style.height=((1-p)*100)+'%'; })();
+  function start(){ if(started) return; started=true; light(); }
+  if('IntersectionObserver' in window) new IntersectionObserver(([en])=>{ if(en.isIntersecting) start(); },{threshold:.5}).observe(grid); else start();
+  document.addEventListener('keydown',e=>{ const k=parseInt(e.key); if(k>=1&&k<=8) press(k-1); });
+})();
+
+/* ==================== escalera de aura ==================== */
+(function(){
+  const fill=document.getElementById('lfill'), marks=[...document.querySelectorAll('.mark')];
+  function go(){ fill.style.width='100%'; marks.forEach((m,i)=>setTimeout(()=>m.classList.add('on'),300+i*330)); }
+  if('IntersectionObserver' in window){ const o=new IntersectionObserver(([en])=>{ if(en.isIntersecting){ go(); o.disconnect(); } },{threshold:.4}); o.observe(document.getElementById('ladder')); } else go();
+})();
+
+/* ==================== compartir, demo y botón fijo ==================== */
+(function(){
+  const URLWEB=location.href.replace(/[#?].*$/,''), TXT='Batallas de farmear aura en el móvil, gratis y sin descargas. ¿Cuánta aura tienes? ', enc=encodeURIComponent;
+  document.getElementById('shWa').href='https://wa.me/?text='+enc(TXT+URLWEB);
+  document.getElementById('shX').href='https://twitter.com/intent/tweet?text='+enc(TXT)+'&url='+enc(URLWEB);
+  document.getElementById('shTg').href='https://t.me/share/url?url='+enc(URLWEB)+'&text='+enc(TXT);
+  document.getElementById('shCp').addEventListener('click',e=>{ e.preventDefault(); if(navigator.clipboard) navigator.clipboard.writeText(URLWEB).then(()=>{ e.target.textContent='¡Copiado!'; setTimeout(()=>e.target.textContent='Copiar enlace',1500); }); });
+  document.getElementById('demoLoad').addEventListener('click',()=>{ const f=document.createElement('iframe'); f.src='juego.html?batallas=1'; f.allow='autoplay; fullscreen'; f.title='Demo de Aura Battle';
+    const d=document.getElementById('phone'); d.innerHTML=''; d.appendChild(f); track('demo_batalla_cargada'); });
+  document.querySelectorAll('a[href^="juego.html"]').forEach(a=>a.addEventListener('click',()=>track('clic_jugar',{destino:a.getAttribute('href'),texto:a.textContent.trim().slice(0,30)})));
+  document.querySelectorAll('.share a').forEach(a=>a.addEventListener('click',()=>track('compartir_web',{canal:a.className})));
+  const main=document.getElementById('playBtn'), sticky=document.querySelector('.sticky');
+  if('IntersectionObserver' in window) new IntersectionObserver(([en])=>{ sticky.style.display=en.isIntersecting?'none':''; }).observe(main);
+})();
+</script>
+<div id="cookies" hidden>
+  <p>Usamos Google Analytics para contar visitas y ver qué se juega. Nada de anuncios ni de datos personales. <a href="privacidad.html">Más info</a></p>
+  <button id="ckOk" type="button">Aceptar</button><button id="ckNo" type="button">Solo lo necesario</button>
+</div>
+<script>(function(){var b=document.getElementById('cookies');try{if(localStorage.getItem('ab_cookies'))return;}catch(e){}b.hidden=false;
+function set(v){try{localStorage.setItem('ab_cookies',v);}catch(e){}if(v==='ok'&&window.gtag)gtag('consent','update',{analytics_storage:'granted'});b.hidden=true;}
+document.getElementById('ckOk').addEventListener('click',function(){set('ok');});document.getElementById('ckNo').addEventListener('click',function(){set('no');});})();</script>
+</body>
+</html>
