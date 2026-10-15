@@ -1,0 +1,905 @@
+{
+ "GAMES": [
+  {
+   "slug": "tiradora-cosmica",
+   "id": "tiradora",
+   "tri": 1,
+   "cat": "cosmico",
+   "name": "Tiradora Cósmica",
+   "note": "Nace de Tiro Limpio",
+   "blurb": "Francotiradora cartoon en 13 planetas musicales. Arrastra para apuntar, toca para disparar y pon a bailar a los bandidos. Al lograr tres estrellas en todos, vuelves a empezar con más dificultad y con tu arsenal.",
+   "tags": [
+    "Shooter",
+    "13 planetas",
+    "Arsenal"
+   ],
+   "play": "juegos/tiradora/index.html"
+  },
+  {
+   "slug": "constructor-cosmico",
+   "id": "constructora",
+   "tri": 1,
+   "cat": "cosmico",
+   "name": "Constructor Cósmico",
+   "note": "Cosmic Constructor · Bridge the Beat",
+   "blurb": "Construye un puente por el que cruza una caravana musical de vehículos: puede pasar el pequeño y caer el mediano. Cada planeta, con su canción, es una pantalla más difícil.",
+   "tags": [
+    "Construcción",
+    "Caravana musical",
+    "Planetas"
+   ],
+   "play": "juegos/constructora/index.html"
+  },
+  {
+   "slug": "paradon-cosmico",
+   "id": "paradon",
+   "tri": 1,
+   "cat": "cosmico",
+   "name": "Paradón Cósmico",
+   "blurb": "Un portero astronauta, cinco calles y una lluvia de balones al ritmo de la música. Muévete para pararlos en un estadio cósmico; cuantas más paradas, más dura el partido.",
+   "tags": [
+    "3D",
+    "Cinco calles",
+    "Música de Suno"
+   ],
+   "play": "juegos/paradon/index.html"
+  },
+  {
+   "slug": "kings-league-mini-game",
+   "id": "kings",
+   "cat": "deporte",
+   "name": "Kings League Mini Game",
+   "blurb": "Fútbol 7 con las reglas de la Kings League: cartas secretas, penalti del presidente, gol doble, dado y shootouts. Doce equipos de la Kings League España, todos con estilo Minecraft.",
+   "tags": [
+    "Kings League",
+    "Estilo Minecraft",
+    "12 equipos"
+   ],
+   "url": "https://enricalicarte.github.io/kings-league/"
+  },
+  {
+   "slug": "martin-leyenda-del-rock",
+   "id": "martin",
+   "cat": "ritmo",
+   "name": "Martín, leyenda del rock",
+   "blurb": "Juego rítmico tipo Guitar Hero con un álbum de 10 canciones creadas con Suno, ordenadas por dificultad.",
+   "tags": [
+    "Ritmo",
+    "10 canciones",
+    "Suno"
+   ],
+   "play": "juegos/martin/index.html"
+  },
+  {
+   "slug": "l-ultim-estiu",
+   "id": "verano",
+   "cat": "historias",
+   "name": "L’últim estiu",
+   "note": "El último verano",
+   "blurb": "Un niño y su abuelo pasan un verano junto al mar en Caldes d’Estrac. Gráfica de acuarela, minijuegos como remar, canciones al estilo Guitar Hero y un día a día que crece semana a semana.",
+   "tags": [
+    "Narrativo",
+    "Acuarela",
+    "En catalán"
+   ],
+   "play": "juegos/verano/index.html"
+  },
+  {
+   "slug": "monster-smash",
+   "id": "monster",
+   "cat": "motor",
+   "name": "Monster Smash",
+   "blurb": "Monster truck de scroll horizontal con saltos, subidas y loopings. Circuitos en mundos distintos, del cosmos al fondo del mar, y estrellas por tiempo.",
+   "tags": [
+    "Scroll lateral",
+    "Circuitos",
+    "Estrellas por tiempo"
+   ],
+   "play": "juegos/monster/index.html"
+  },
+  {
+   "slug": "aura-battle",
+   "id": "aura",
+   "cat": "accion",
+   "name": "Aura Battle",
+   "blurb": "Batallas por turnos sin pelear: gana quien farmee más aura con bailes de moda. Gira Mundial por ciudades reales de Latinoamérica y Europa, con música de Suno en cada una.",
+   "tags": [
+    "Baile",
+    "Ciudades reales",
+    "Estilo Stumble Guys"
+   ],
+   "play": "juegos/aura/juego.html"
+  },
+  {
+   "slug": "suo-shop-rush",
+   "id": "suo",
+   "cat": "marca",
+   "name": "SÛO Shop Rush",
+   "blurb": "Tienda de zapatos al estilo Monkey Mart con la jefa, la dependienta y la responsable de redes sociales. Hay versión con la marca de SÛO Barefoot y otra sin marca.",
+   "tags": [
+    "Gestión",
+    "Versión de marca",
+    "Versión sin marca"
+   ],
+   "play": "juegos/suo/index.html"
+  },
+  {
+   "slug": "anguera-superstars",
+   "id": "anguera",
+   "cat": "deporte",
+   "name": "Anguera Superstars",
+   "blurb": "Arcade de fútbol 7 para el PB Anguera, categoría Prebenjamí. Liga y temporadas, menús sobrios y un cartel de entrada que anuncia el inicio de la liga 26/27.",
+   "tags": [
+    "Fútbol 7",
+    "Liga",
+    "Un solo HTML"
+   ],
+   "play": "juegos/anguera/index.html"
+  },
+  {
+   "slug": "supernova-guitar",
+   "id": "supernova",
+   "cat": "ritmo",
+   "name": "Supernova Guitar",
+   "note": "Antes: Leyenda del rock",
+   "blurb": "Desde el año 3000 se recuerdan los clásicos de la música del siglo XX. Notas que parecen pads de sintetizador, nu-disco, house y canciones con voz de vocoder.",
+   "tags": [
+    "Año 3000",
+    "Nu-disco",
+    "Vocoder"
+   ],
+   "play": "juegos/supernova/index.html"
+  },
+  {
+   "slug": "cosmic-guitar",
+   "id": "cosmicguitar",
+   "tri": 2,
+   "cat": "cosmico",
+   "name": "Cosmic Guitar",
+   "note": "Extra de la trilogía",
+   "blurb": "El concierto final de Encore: toca las canciones de los trece planetas de la Ruta del Ritmo, con la misma mecánica que Supernova Guitar.",
+   "tags": [
+    "Ritmo",
+    "13 planetas",
+    "Concierto final"
+   ],
+   "play": "juegos/cosmic-guitar/index.html"
+  },
+  {
+   "slug": "hotel-miramar",
+   "id": "miramar",
+   "cat": "historias",
+   "name": "Hotel Miramar",
+   "blurb": "Juego narrativo para adultos en un hotel de la Costa Brava, junio de 1962. Un calendario que avanza, un personaje que recorre el escenario y el misterio de la habitación 7.",
+   "tags": [
+    "Misterio",
+    "Años 60",
+    "Investigación"
+   ]
+  },
+  {
+   "slug": "porrazo-party",
+   "id": "porrazo",
+   "cat": "accion",
+   "name": "Porrazo Party",
+   "blurb": "Lucha 1 contra 1 en 3D cartoon para móvil. Los rivales derrotados se unen a tu plantilla. El modo de pantalla grande con el móvil de mando solo funciona fuera de esta página.",
+   "tags": [
+    "Lucha 3D",
+    "Plantilla de luchadores"
+   ],
+   "play": "juegos/porrazo/index.html"
+  },
+  {
+   "slug": "tiro-limpio",
+   "id": "tirolimpio",
+   "cat": "accion",
+   "name": "Tiro Limpio",
+   "blurb": "Francotirador de azotea con estética cartoon. Misiones en ciudades de todos los continentes, viaje en avión entre niveles y un cofre de mejoras al acabar cada una.",
+   "tags": [
+    "Francotirador",
+    "Misiones por el mundo",
+    "Cofre de mejoras"
+   ],
+   "play": "juegos/tiro-limpio/index.html"
+  },
+  {
+   "slug": "aventura-porc",
+   "id": "aventura",
+   "cat": "motor",
+   "name": "Aventura Porc",
+   "note": "Antes: Looping Loco",
+   "blurb": "Las atracciones de un parque temático en un mundo de cerditos. Cambia de vía, salta y agáchate en montañas rusas y atracciones de agua, con niveles cada vez más difíciles.",
+   "tags": [
+    "Tres vías",
+    "Atracciones",
+    "Cerditos"
+   ],
+   "play": "juegos/aventura-porc/index.html"
+  },
+  {
+   "slug": "turbo-kart-rally",
+   "id": "turbokart",
+   "cat": "motor",
+   "name": "Turbo Kart Rally",
+   "blurb": "El kart acelera solo: tú trazas la curva, derrapas para cargar turbo y lanzas caparazones.",
+   "tags": [
+    "Táctil o flechas",
+    "Derrapes",
+    "Turbo"
+   ],
+   "play": "juegos/turbo-kart/index.html"
+  },
+  {
+   "slug": "neon-coast",
+   "id": "neoncoast",
+   "cat": "motor",
+   "name": "Neon Coast",
+   "blurb": "Cinco paisajes, una sola carretera. Desliza para girar, esquiva coches y gana tiempo en cada punto de control, que también cambia el paisaje.",
+   "tags": [
+    "Conducción",
+    "5 paisajes",
+    "Puntos de control"
+   ],
+   "play": "juegos/neon-coast/index.html"
+  },
+  {
+   "slug": "mnac-rush",
+   "id": "mnac",
+   "cat": "marca",
+   "name": "MNAC Rush",
+   "blurb": "El mismo formato de Shop Rush dentro del MNAC. Versión con marca y muy rigurosa con los contenidos del museo.",
+   "tags": [
+    "Museo",
+    "Marca MNAC"
+   ],
+   "play": "juegos/mnac/index.html"
+  },
+  {
+   "slug": "olimpiadas-de-la-granja",
+   "id": "olimpiadas",
+   "cat": "deporte",
+   "name": "Olimpiadas de la Granja",
+   "blurb": "Diez pruebas de verano e invierno con cuatro campeones de granja. Pensado para los más pequeños: solo hay que tocar la pantalla.",
+   "tags": [
+    "10 pruebas",
+    "Para peques",
+    "Un toque"
+   ],
+   "play": "juegos/olimpiadas/index.html"
+  },
+  {
+   "slug": "cabina",
+   "id": "cabina",
+   "cat": "ritmo",
+   "name": "Cabina",
+   "blurb": "App de DJ para niños y principiantes: profesional por dentro, fácil y divertida por fuera, casi un juego. Pensada para móvil en horizontal y a pantalla completa.",
+   "tags": [
+    "Web Audio",
+    "Three.js",
+    "Para niños"
+   ]
+  },
+  {
+   "slug": "cube-runner",
+   "id": "cuberunner",
+   "cat": "accion",
+   "name": "Cube Runner",
+   "blurb": "Corre por un pasillo que no para de acelerar y esquiva todo lo que se te venga encima.",
+   "tags": [
+    "Runner",
+    "Flechas o deslizar",
+    "Vértice"
+   ]
+  },
+  {
+   "slug": "tower-stack",
+   "id": "towerstack",
+   "cat": "accion",
+   "name": "Tower Stack",
+   "blurb": "Apila piezas en movimiento: lo que sobresale se corta y cae al vacío.",
+   "tags": [
+    "Arcade",
+    "Un toque",
+    "Vértice"
+   ]
+  },
+  {
+   "slug": "futbol-retro-7v7",
+   "id": "futbolretro",
+   "cat": "deporte",
+   "name": "Fútbol Retro 7v7",
+   "blurb": "Partido arcade en 3D con radar, joystick táctil y disparo con medidor de potencia.",
+   "tags": [
+    "Fútbol 7",
+    "Joystick",
+    "Vértice"
+   ]
+  },
+  {
+   "slug": "relax-estanque",
+   "id": "rx_estanque",
+   "cat": "relax",
+   "name": "Estanque",
+   "blurb": "Da de comer a los koi y mira cómo se abre el agua.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#0f3f44",
+    "#2c8f88",
+    "#3fb0a6",
+    "🐟"
+   ],
+   "play": "juegos/relax/index.html#estanque"
+  },
+  {
+   "slug": "relax-linternas",
+   "id": "rx_linternas",
+   "cat": "relax",
+   "name": "Linternas",
+   "blurb": "Suelta farolillos sobre un lago al anochecer y pide deseos.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#0c1236",
+    "#5a3f7a",
+    "#f5a34e",
+    "🏮"
+   ],
+   "play": "juegos/relax/index.html#linternas"
+  },
+  {
+   "slug": "relax-burbujas",
+   "id": "rx_burbujas",
+   "cat": "relax",
+   "name": "Burbujas",
+   "blurb": "Explota pompas que suenan como campanas y encadénalas.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#c7b1ec",
+    "#b8e8e0",
+    "#c7a4f6",
+    "🫧"
+   ],
+   "play": "juegos/relax/index.html#burbujas"
+  },
+  {
+   "slug": "relax-jardin",
+   "id": "rx_jardin",
+   "cat": "relax",
+   "name": "Jardín",
+   "blurb": "Planta flores y árboles en una isla flotante.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#8fc1e6",
+    "#fde2c4",
+    "#86c06a",
+    "🌸"
+   ],
+   "play": "juegos/relax/index.html#jardin"
+  },
+  {
+   "slug": "relax-arena",
+   "id": "rx_arena",
+   "cat": "relax",
+   "name": "Arena",
+   "blurb": "Rastrilla un jardín zen con el dedo.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#e6d5b3",
+    "#d5c199",
+    "#dcc49a",
+    "🪨"
+   ],
+   "play": "juegos/relax/index.html#arena"
+  },
+  {
+   "slug": "relax-lluvia",
+   "id": "rx_lluvia",
+   "cat": "relax",
+   "name": "Lluvia",
+   "blurb": "Dibuja en un cristal empañado mientras llueve sobre la ciudad.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#0b1020",
+    "#1a2445",
+    "#8fa6d6",
+    "🌧️"
+   ],
+   "play": "juegos/relax/index.html#lluvia"
+  },
+  {
+   "slug": "relax-fuego",
+   "id": "rx_fuego",
+   "cat": "relax",
+   "name": "Fuego",
+   "blurb": "Siéntate junto a una hoguera, echa troncos y tuesta malvaviscos.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#050a1a",
+    "#1c2a4a",
+    "#ff9a3c",
+    "🔥"
+   ],
+   "play": "juegos/relax/index.html#fuego"
+  },
+  {
+   "slug": "relax-nieve",
+   "id": "rx_nieve",
+   "cat": "relax",
+   "name": "Nieve",
+   "blurb": "Agita una bola de nieve y encuentra los tesoros escondidos.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#2a1c18",
+    "#5a3a26",
+    "#dfe8ff",
+    "❄️"
+   ],
+   "play": "juegos/relax/index.html#nieve"
+  },
+  {
+   "slug": "relax-pesca",
+   "id": "rx_pesca",
+   "cat": "relax",
+   "name": "Pesca",
+   "blurb": "Lanza el anzuelo al atardecer y llena la cesta sin prisa.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#28386e",
+    "#ff9a6a",
+    "#f28c6a",
+    "🎣"
+   ],
+   "play": "juegos/relax/index.html#pesca"
+  },
+  {
+   "slug": "relax-buceo",
+   "id": "rx_buceo",
+   "cat": "relax",
+   "name": "Buceo",
+   "blurb": "Nada entre corales y medusas. Abre almejas para encontrar perlas.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#0a2f45",
+    "#2a8fb5",
+    "#4fc3e0",
+    "🤿"
+   ],
+   "play": "juegos/relax/index.html#buceo"
+  },
+  {
+   "slug": "relax-velero",
+   "id": "rx_velero",
+   "cat": "relax",
+   "name": "Velero",
+   "blurb": "Navega entre islas y faros. Enciende boyas de luz.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#5b9bd3",
+    "#a4cbe7",
+    "#7aa7ff",
+    "⛵"
+   ],
+   "play": "juegos/relax/index.html#velero"
+  },
+  {
+   "slug": "relax-marea",
+   "id": "rx_marea",
+   "cat": "relax",
+   "name": "Marea",
+   "blurb": "Recoge las conchas que dejan las olas y deja huellas en la arena.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#4d6fb0",
+    "#ffc9a0",
+    "#5fb8b4",
+    "🐚"
+   ],
+   "play": "juegos/relax/index.html#marea"
+  },
+  {
+   "slug": "relax-vuelo",
+   "id": "rx_vuelo",
+   "cat": "relax",
+   "name": "Vuelo",
+   "blurb": "Vuela como un pájaro sobre valles y montañas al amanecer.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#6f9fd8",
+    "#ffd9b8",
+    "#ffb86b",
+    "🕊️"
+   ],
+   "play": "juegos/relax/index.html#vuelo"
+  },
+  {
+   "slug": "relax-aurora",
+   "id": "rx_aurora",
+   "cat": "relax",
+   "name": "Aurora",
+   "blurb": "Despierta auroras sobre un lago helado y caza estrellas fugaces.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#01040f",
+    "#123055",
+    "#6ef0b0",
+    "🌌"
+   ],
+   "play": "juegos/relax/index.html#aurora"
+  },
+  {
+   "slug": "relax-orbitas",
+   "id": "rx_orbitas",
+   "cat": "relax",
+   "name": "Órbitas",
+   "blurb": "Crea planetas alrededor de un sol. Cada vuelta suena una nota.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#05040d",
+    "#1a1440",
+    "#b58cff",
+    "🪐"
+   ],
+   "play": "juegos/relax/index.html#orbitas"
+  },
+  {
+   "slug": "relax-estrellas",
+   "id": "rx_estrellas",
+   "cat": "relax",
+   "name": "Estrellas",
+   "blurb": "Une estrellas y crea tus propias constelaciones.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#020411",
+    "#1a2b4a",
+    "#bfd6ff",
+    "✨"
+   ],
+   "play": "juegos/relax/index.html#estrellas"
+  },
+  {
+   "slug": "relax-cometa",
+   "id": "rx_cometa",
+   "cat": "relax",
+   "name": "Cometa",
+   "blurb": "Guía una cometa con el viento y atrapa semillas de diente de león.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#3f86d6",
+    "#e2f1ff",
+    "#ff6b5a",
+    "🪁"
+   ],
+   "play": "juegos/relax/index.html#cometa"
+  },
+  {
+   "slug": "relax-rana",
+   "id": "rx_rana",
+   "cat": "relax",
+   "name": "Rana",
+   "blurb": "Salta de nenúfar en nenúfar y atrapa luciérnagas con la lengua.",
+   "tags": [
+    "Relax",
+    "Música generativa"
+   ],
+   "pal": [
+    "#06181c",
+    "#0f3a3e",
+    "#5fb35a",
+    "🐸"
+   ],
+   "play": "juegos/relax/index.html#rana"
+  },
+  {
+   "slug": "catquiz-com-es-diu-en-catala",
+   "id": "cq_catala",
+   "cat": "catquiz",
+   "name": "Com es diu en català?",
+   "blurb": "Descobreix la paraula catalana correcta per a cada imatge.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ffb23e",
+    "🗣️"
+   ],
+   "play": "juegos/catquiz/jocs/catala.html"
+  },
+  {
+   "slug": "catquiz-l-intrus",
+   "id": "cq_intrus",
+   "cat": "catquiz",
+   "name": "L'intrús",
+   "blurb": "Troba la paraula que no encaixa en el grup.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#3cc3ff",
+    "🕵️"
+   ],
+   "play": "juegos/catquiz/jocs/intrus.html"
+  },
+  {
+   "slug": "catquiz-motle",
+   "id": "cq_motle",
+   "cat": "catquiz",
+   "name": "Motle",
+   "blurb": "Endevina la paraula amagada en pocs intents.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#3ddc84",
+    "🔤"
+   ],
+   "play": "juegos/catquiz/jocs/motle.html"
+  },
+  {
+   "slug": "catquiz-esquiva",
+   "id": "cq_esquiva",
+   "cat": "catquiz",
+   "name": "Esquiva!",
+   "blurb": "Esquiva els errors i atrapa les paraules bones.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ff7a45",
+    "🏃"
+   ],
+   "play": "juegos/catquiz/jocs/esquiva.html"
+  },
+  {
+   "slug": "catquiz-accents",
+   "id": "cq_accents",
+   "cat": "catquiz",
+   "name": "Accents!",
+   "blurb": "Posa l’accent on toca abans que s’acabi el temps.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ff5fa8",
+    "´"
+   ],
+   "play": "juegos/catquiz/jocs/accents.html"
+  },
+  {
+   "slug": "catquiz-penjat-3d",
+   "id": "cq_penjat",
+   "cat": "catquiz",
+   "name": "Penjat 3D",
+   "blurb": "El clàssic penjat en 3D, en català.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#9a8cff",
+    "🪢"
+   ],
+   "play": "juegos/catquiz/jocs/penjat.html"
+  },
+  {
+   "slug": "catquiz-anagrama",
+   "id": "cq_anagrama",
+   "cat": "catquiz",
+   "name": "Anagrama",
+   "blurb": "Ordena les lletres i troba la paraula.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#e8e04a",
+    "🔀"
+   ],
+   "play": "juegos/catquiz/jocs/anagrama.html"
+  },
+  {
+   "slug": "catquiz-caca-estrelles",
+   "id": "cq_estrelles",
+   "cat": "catquiz",
+   "name": "Caça estrelles",
+   "blurb": "Caça les estrelles que porten la lletra correcta.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#7df9ff",
+    "⭐"
+   ],
+   "play": "juegos/catquiz/jocs/estrelles.html"
+  },
+  {
+   "slug": "catquiz-sopa-de-lletres",
+   "id": "cq_sopa",
+   "cat": "catquiz",
+   "name": "Sopa de lletres",
+   "blurb": "Troba les paraules amagades a la graella.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ff9a3c",
+    "🔍"
+   ],
+   "play": "juegos/catquiz/jocs/sopa.html"
+  },
+  {
+   "slug": "catquiz-lletres-perdudes",
+   "id": "cq_perdudes",
+   "cat": "catquiz",
+   "name": "Lletres perdudes",
+   "blurb": "Recupera les lletres que falten a cada paraula.",
+   "tags": [
+    "Català",
+    "Paraules",
+    "CatQuiz"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#6ef0b0",
+    "🧩"
+   ],
+   "play": "juegos/catquiz/jocs/perdudes.html"
+  }
+ ],
+ "CATS": {
+  "cosmico": {
+   "n": "Cósmico",
+   "c": "#9a8cff"
+  },
+  "deporte": {
+   "n": "Deporte",
+   "c": "#3ddc84"
+  },
+  "ritmo": {
+   "n": "Ritmo",
+   "c": "#ff5fa8"
+  },
+  "historias": {
+   "n": "Historias",
+   "c": "#ffb23e"
+  },
+  "motor": {
+   "n": "Motor",
+   "c": "#ff7a45"
+  },
+  "accion": {
+   "n": "Acción",
+   "c": "#3cc3ff"
+  },
+  "marca": {
+   "n": "Con marca",
+   "c": "#e8e04a"
+  },
+  "relax": {
+   "n": "Relax",
+   "c": "#6ef0b0"
+  },
+  "catquiz": {
+   "n": "CatQuiz",
+   "c": "#ffb23e"
+  }
+ },
+ "CATD": {
+  "accion": {
+   "t": "Acción",
+   "d": "Puntería, peleas, carreras y reflejos. Partidas rápidas para jugar con una mano."
+  },
+  "deporte": {
+   "t": "Deporte",
+   "d": "Fútbol 7, Kings League y unas olimpiadas de granja para los más peques."
+  },
+  "ritmo": {
+   "t": "Ritmo",
+   "d": "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."
+  },
+  "motor": {
+   "t": "Motor",
+   "d": "Karts, monster trucks, carreras de neón y montañas rusas de cerditos."
+  },
+  "historias": {
+   "t": "Historias",
+   "d": "Juegos narrativos con calendario, recuerdos y misterio."
+  },
+  "marca": {
+   "t": "Con marca",
+   "d": "Juegos hechos a medida para marcas y clientes."
+  },
+  "relax": {
+   "t": "Relax Games",
+   "d": "Dieciocho juegos para respirar, con música generativa. Sin puntos ni prisa."
+  },
+  "catquiz": {
+   "t": "CatQuiz Minijocs",
+   "d": "Minijuegos de palabras en catalán, para jugar y aprender."
+  }
+ }
+}
