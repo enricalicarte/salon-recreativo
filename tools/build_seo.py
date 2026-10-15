@@ -96,7 +96,7 @@ for g in play:
 <ul class="rel">{relhtml}</ul>
 </main>
 <footer><div class="w"><a href="../../">Salón Recreativo</a> · {'Minijocs en línia gratuïts' if ca else 'Minijuegos online gratis'} · © 2026 <b>Alica Games Studio</b></div></footer>
-<script>document.getElementById('go').addEventListener('click',function(){{var f=document.createElement('iframe');f.src='../../{g['play']}';f.title={json.dumps(g['name'],ensure_ascii=False)};f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope';f.allowFullscreen=true;var s=document.getElementById('stage');s.innerHTML='';s.appendChild(f);}});</script>
+<script>document.getElementById('go').addEventListener('click',function(){{var f=document.createElement('iframe');f.src='../../{g['play']}';f.title={json.dumps(g['name'],ensure_ascii=False)};f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope';f.allowFullscreen=true;var s=document.getElementById('stage');s.innerHTML='';s.appendChild(f);if(matchMedia('(pointer:coarse)').matches){{try{{var fs=s.requestFullscreen||s.webkitRequestFullscreen;if(fs){{var pr=fs.call(s);if(pr&&pr.catch)pr.catch(function(){{}});}}}}catch(e){{}}}}}});</script>
 </body></html>"""
     d=os.path.join(root,'jugar',g['slug']);os.makedirs(d,exist_ok=True)
     open(os.path.join(d,'index.html'),'w',encoding='utf-8').write(page)

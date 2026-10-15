@@ -32,10 +32,9 @@ STEPS = {
  # ---------- motor ----------
  'monster-smash': {'setup': [w(2500)], 'play': [('hold', ['ArrowRight'], 200), ('skip', 3500), ('hold', ['ArrowRight'], 3200), ('hold', ['ArrowRight', 'Space'], 900), ('hold', ['ArrowRight'], 1200)]},
  'moto-fury': {'setup': [w(2500), ('text', 'correr'), w(1500), ('text', 'entendido'), w(800), ('text', 'correr'), w(1000)], 'play': [('hold', ['ArrowRight'], 200), ('skip', 3500), ('hold', ['ArrowRight'], 2500), ('hold', ['ArrowRight', 'Space'], 700), ('hold', ['ArrowRight', 'KeyZ'], 1200), ('hold', ['ArrowRight'], 900)]},
- 'turbo-kart-rally': {'setup': [w(2500), ('click', '#startBtn'), w(1500)], 'play': [('down', 'ArrowUp'), ('skip', 3000), ('hold', ['ArrowUp'], 900), ('hold', ['ArrowUp', 'ArrowLeft'], 900), ('hold', ['ArrowUp', 'ArrowRight'], 1200), ('hold', ['ArrowUp'], 900)], 'clip': 'end', 'poster': 0.8},
+ 'turbo-kart-rally': {'setup': [w(2500), ('click', '#startBtn'), w(1500)], 'play': [('down', 'ArrowUp'), w(3500), w(3300), ('up', 'ArrowUp')], 'clip': 'end', 'poster': 0.85},
  'neon-coast': {'setup': [w(2500), ('text', 'empezar a conducir'), w(1500)], 'play': [('skip', 2500)]+wiggle(n=10, ms=400)},
- 'aventura-porc': {'setup': [w(2500), ('text', 'Jugar! Nivel 1'), w(3500)], 'play': [('press', 'ArrowLeft'), w(900), ('press', 'ArrowUp'), w(900), ('press', 'ArrowRight'), w(900), ('press', 'ArrowRight'), w(900), ('press', 'ArrowDown'), w(900)]},
- # ---------- acción ----------
+ 'aventura-porc': {'setup': [w(2500), ('text', 'Jugar! Nivel 1'), w(3500)], 'play': [('skip', 2500), ('press', 'ArrowLeft'), w(700), ('press', 'ArrowUp'), w(700), ('press', 'ArrowRight'), w(600), ('press', 'ArrowRight'), w(700), ('press', 'ArrowDown'), w(700), ('press', 'ArrowLeft'), w(700), ('press', 'ArrowUp'), w(900)], 'clip': 'end', 'poster': 0.5},
  'aura-battle': {'setup': [w(2500), ('text', 'Solo lo necesario'), w(500), ('text', 'Partida rápida'), w(2500), ('click', '#btnFight'), w(3500)], 'play': [('press', 'Digit1'), w(500), ('press', 'Digit3'), w(500), ('press', 'Digit2'), w(500), ('press', 'Digit5'), w(500), ('press', 'Space'), w(1500)]},
  'porrazo-party': {'setup': [w(2000), ('click', 'input'), ('type', 'Sasha'), ('click', '#userAdd'), w(1200), ('click', '#closeUser'), w(1200), ('click', '#goPlay'), w(1500), ('click', '#goFight'), w(1500), ('click', '#goRound'), w(3000)],
                    'play': [('hold', ['ArrowRight'], 700), ('press', 'KeyJ'), w(250), ('press', 'KeyK'), w(250), ('press', 'KeyJ'), w(400), ('hold', ['ArrowLeft'], 500), ('press', 'KeyK'), w(1200)]},
@@ -46,8 +45,8 @@ STEPS = {
  'anguera-superstars': {'setup': [w(3000), ('tap', 480, 300), w(1500), ('click', '#btnStart'), w(1500), ('click', '#btnLuPlay'), w(4000)], 'play': [('hold', ['ArrowRight'], 1200), ('hold', ['ArrowRight', 'ArrowUp'], 900), ('press', 'Space'), w(1500)]},
  'olimpiadas-de-la-granja': {'setup': [w(2500), ('text', 'Jugar'), w(1200), ('text', 'Rosa'), w(1500), ('text', 'Verano'), w(1500), ('text', 'Correr'), w(4500)], 'play': [('taps', 480, 400, 16, 180)]},
  # ---------- marca ----------
- 'suo-shop-rush': {'setup': [w(2500), ('click', '#play'), w(3000)], 'play': [('mousehold', 600, 400, 1500), ('mousehold', 350, 300, 1500), w(800)]},
- 'mnac-rush': {'setup': [w(2500), ('text', 'Comença'), w(3000)], 'play': [('mousehold', 600, 380, 1500), ('mousehold', 360, 300, 1500), w(800)]},
+ 'suo-shop-rush': {'setup': [w(2500), ('click', '#play'), w(3000)], 'play': [('tap', 640, 420), w(1500), ('tap', 330, 380), w(1500), ('tap', 600, 230), w(1500), ('tap', 420, 460), w(1500), ('tap', 700, 300), w(1400)], 'clip': 'end', 'poster': 0.7},
+ 'mnac-rush': {'setup': [w(2500), ('text', 'Comença'), w(3000)], 'play': [('tap', 640, 420), w(1500), ('tap', 330, 380), w(1500), ('tap', 600, 230), w(1500), ('tap', 420, 460), w(1500), ('tap', 700, 300), w(1400)], 'clip': 'end', 'poster': 0.7},
 }
 # ---------- relax: sin interfaz, solo la escena ----------
 RELAX = {'relax-estanque-de-koi': [('taps', 480, 300, 3, 700)], 'relax-farolillos-del-lago': [('taps', 400, 400, 4, 500)],

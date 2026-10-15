@@ -211,6 +211,41 @@ body.hasglow .glow{opacity:1}
 .mark span{color:transparent}
 @keyframes shimmer{to{background-position:200% 0}}
 @media (prefers-reduced-motion:reduce){.card.rv{opacity:1;transform:none}.tick-track,.mark{animation:none}.glow{display:none}}
+
+/* ---------- Destacados (carrusel) ---------- */
+.feat{padding-block:clamp(36px,6vw,72px) 8px}
+.feat-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px}
+.feat-head h2{font-size:clamp(1.5rem,3.4vw,2.4rem);padding-left:16px;border-left:6px solid var(--sun)}
+.feat-nav{display:flex;gap:8px}
+.feat-nav button{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:1.1rem;cursor:pointer}
+.feat-nav button:hover{border-color:var(--sun);background:rgba(255,210,63,.12)}
+.feat-wrap{position:relative}
+.feat-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:26px;overscroll-behavior-x:contain}
+.feat-track::-webkit-scrollbar{display:none}
+.slide{position:relative;flex:0 0 100%;scroll-snap-align:start;aspect-ratio:21/9;max-height:620px;min-height:340px;overflow:hidden;background:var(--panel);isolation:isolate}
+.slide img,.slide video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slide video{opacity:0;transition:opacity .6s}.slide.on video{opacity:1}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(7,6,15,.92) 0%,rgba(7,6,15,.65) 34%,rgba(7,6,15,0) 62%),linear-gradient(0deg,rgba(7,6,15,.6),transparent 40%)}
+.slide-c{position:absolute;z-index:2;left:clamp(20px,4vw,56px);bottom:clamp(22px,4vw,52px);max-width:min(520px,80%)}
+.slide-c .chip{position:static;display:inline-block;margin-bottom:14px}
+.slide-c h3{font-size:clamp(1.7rem,4.4vw,3.4rem);line-height:1;letter-spacing:-.02em;margin:0 0 12px}
+.slide-c p{margin:0 0 20px;color:#e5e1f7;font-size:clamp(.95rem,1.4vw,1.08rem);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.slide-c .acts{display:flex;flex-wrap:wrap;gap:10px}
+.slide-c .play{font-size:1rem;padding:13px 22px}
+.slide-c .more{display:inline-flex;align-items:center;font-weight:600;font-size:.95rem;color:#fff;text-decoration:none;padding:12px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06)}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.dots button{width:34px;height:5px;border:0;border-radius:3px;background:rgba(255,255,255,.18);cursor:pointer;padding:0;position:relative;overflow:hidden}
+.dots button i{position:absolute;inset:0;transform-origin:0 50%;transform:scaleX(0);background:var(--sun)}
+.dots button.on i{animation:fill var(--dur,7s) linear forwards}
+.dots.paused button.on i{animation-play-state:paused}
+@keyframes fill{to{transform:scaleX(1)}}
+@media (max-width:760px){
+  .slide{aspect-ratio:4/5;max-height:none}
+  .slide::after{background:linear-gradient(0deg,rgba(7,6,15,.95) 0%,rgba(7,6,15,.7) 38%,rgba(7,6,15,0) 70%)}
+  .slide-c{left:18px;right:18px;bottom:20px;max-width:none}
+  .feat-nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){.dots button.on i{animation:none;transform:scaleX(1)}}
 </style></head><body>
 <div class="prog" id="prog" aria-hidden="true"></div>
 <div class="glow" id="glow" aria-hidden="true"></div>
@@ -234,13 +269,21 @@ body.hasglow .glow{opacity:1}
     <p class="lede"><b id="n">52</b> minijuegos online gratis para jugar en el navegador, sin descargas. Fútbol con las reglas de la Kings League, rock cósmico, karts, montañas rusas, juegos relajantes y palabras en catalán. Para móvil y PC.</p>
     <div class="ctas">
       <button class="btn p" type="button" data-random>Jugar a uno al azar ▶</button>
-      <a class="btn g" href="#trilogia" id="go">Ver todos los juegos</a>
+      <a class="btn g" href="#destacados" id="go">Ver los juegos</a>
     </div>
   </div>
   <div class="scroll-hint" aria-hidden="true"></div>
 </section>
 
 <div class="tick" aria-hidden="true"><div class="tick-track" id="tick"></div></div>
+
+<section class="feat" id="destacados" aria-roledescription="carrusel" aria-label="Juegos destacados">
+  <div class="in">
+    <div class="feat-head"><h2>Destacados</h2><div class="feat-nav"><button type="button" id="fPrev" aria-label="Anterior">‹</button><button type="button" id="fNext" aria-label="Siguiente">›</button></div></div>
+    <div class="feat-wrap"><div class="feat-track" id="fTrack" data-lenis-prevent></div></div>
+    <div class="dots" id="fDots"></div>
+  </div>
+</section>
 
 <section class="band cosmic" id="trilogia">
   <div class="in">
@@ -1184,6 +1227,38 @@ if(!reduce&&'IntersectionObserver' in window){
   cards.forEach(c=>io.observe(c));
 }
 
+
+/* ---------- Destacados ---------- */
+(function(){
+  const FEAT=['rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas'];
+  const list=FEAT.map(id=>GAMES.find(g=>g.id===id)).filter(g=>g&&g.play&&MEDIA.has(slugOf(g)));
+  const track=$('#fTrack'),dots=$('#fDots');if(!track||!list.length){const f=$('#destacados');if(f)f.hidden=true;return;}
+  track.innerHTML=list.map((g,i)=>{const sl=slugOf(g),cat=CATS[g.cat];return '<article class="slide" style="--c:'+cat.c+'" aria-roledescription="diapositiva" aria-label="'+(i+1)+' de '+list.length+'">'+
+    '<img src="media/'+sl+'.jpg" alt="" '+(i?'loading="lazy" ':'')+'decoding="async"><video muted loop playsinline preload="none" data-src="media/'+sl+'"></video>'+
+    '<div class="slide-c"><span class="chip">'+esc(cat.n)+'</span><h3>'+esc(g.name)+'</h3><p>'+esc(g.blurb)+'</p><div class="acts">'+
+    '<button class="play" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">Jugar ahora <span aria-hidden="true">▶</span></button>'+
+    (window.claude?'':'<a class="more" href="jugar/'+sl+'/">Ver ficha</a>')+'</div></div></article>';}).join('');
+  dots.innerHTML=list.map((g,i)=>'<button type="button" aria-label="Ir a '+esc(g.name)+'"><i></i></button>').join('');
+  const slides=[...track.children],db=[...dots.children];let cur=0,timer=0,hover=false;
+  const DUR=7000;dots.style.setProperty('--dur',DUR/1000+'s');
+  const go=i=>{i=(i+list.length)%list.length;track.scrollTo({left:slides[i].offsetLeft,behavior:reduce?'auto':'smooth'});};
+  const setCur=i=>{cur=i;slides.forEach((s,k)=>{const v=s.querySelector('video');if(k===i){s.classList.add('on');if(!reduce)playVid(v);}else{s.classList.remove('on');stopVid(v);}});
+    db.forEach((b,k)=>{b.classList.toggle('on',k===i);const ii=b.firstChild;ii.style.animation='none';void ii.offsetWidth;ii.style.animation='';});arm();};
+  const arm=()=>{clearTimeout(timer);if(reduce||hover)return;timer=setTimeout(()=>go(cur+1),DUR);};
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>.6)setCur(slides.indexOf(e.target));}),{root:track,threshold:[.6]});
+  slides.forEach(s=>io.observe(s));
+  $('#fPrev').addEventListener('click',()=>go(cur-1));$('#fNext').addEventListener('click',()=>go(cur+1));
+  db.forEach((b,k)=>b.addEventListener('click',()=>go(k)));
+  const wrap=track.parentNode;
+  wrap.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){hover=true;dots.classList.add('paused');clearTimeout(timer);}});
+  wrap.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){hover=false;dots.classList.remove('paused');arm();}});
+  track.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){go(cur+1);e.preventDefault();}if(e.key==='ArrowLeft'){go(cur-1);e.preventDefault();}});
+  track.tabIndex=0;
+  // pausa cuando el carrusel no está a la vista
+  new IntersectionObserver(es=>es.forEach(e=>{const v=slides[cur].querySelector('video');if(e.isIntersecting){if(!reduce)playVid(v);arm();}else{stopVid(v);clearTimeout(timer);}}),{threshold:.2}).observe(track);
+  setCur(0);
+})();
+
 /* ---------- Navegación de secciones ---------- */
 const chips=$('#chips');
 const present=['accion','deporte','ritmo','motor','historias','marca','relax','catquiz'].filter(k=>secEls[k]);
@@ -1262,6 +1337,7 @@ const st=$('#stage'),fr=$('#stFrame');
 let lastFocus=null;
 function openGame(src,title,from){
   lastFocus=document.activeElement;
+  if(!fine){try{const fs=st.requestFullscreen||st.webkitRequestFullscreen;if(fs){const pr=fs.call(st,{navigationUI:'hide'});if(pr&&pr.catch)pr.catch(()=>{});}}catch(e){}}
   $('#stTitle').textContent=title||'';
   $('#stOpen').href=src;
   st.hidden=false;document.documentElement.style.overflow='hidden';if(lenis)lenis.stop();
