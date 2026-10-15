@@ -37,7 +37,14 @@ for g in play:
     url=BASE+'jugar/'+g['slug']+'/'
     img=BASE+'img/'+g['slug']+'.jpg'
     cat=CATS[g['cat']]['n'];cd=CATD.get(g['cat'],{})
-    title=(g['name']+(' — joc en línia gratuït' if ca else ' — juego online gratis'))+' | Salón Recreativo'
+    kw=g.get('kw')
+    if kw:
+        K=kw[0].upper()+kw[1:]
+        suf=' gratis' if (ca or 'online' in kw) else ' online gratis'
+        title=f"{K}{suf}" if g['name'].lower() in kw.lower() else f"{K}{suf}: {g['name']}"
+        if len(title)<=44:title+=' | Salón Recreativo'
+    else:
+        title=(g['name']+(' — joc en línia gratuït' if ca else ' — juego online gratis'))+' | Salón Recreativo'
     suf=' Juga gratis al navegador, sense descàrregues.' if ca else ' Juega gratis en el navegador, sin descargas, en móvil y PC.'
     desc=short(g['blurb'].rstrip('.')+'.'+suf,158)
     rel=[x for x in play if x['cat']==g['cat'] and x['slug']!=g['slug']]
@@ -47,16 +54,16 @@ for g in play:
     gtype=GENRE.get(g['cat'],'juego')
     note=(' ('+g['note']+')') if g.get('note') else ''
     if ca:
-        p1=f"{g['name']} és un {gtype} que pots jugar en línia i gratis, directament al navegador, des del mòbil o l'ordinador. No cal instal·lar res ni crear cap compte."
+        p1=f"{g['name']} és un {kw or gtype} que pots jugar en línia i gratis, directament al navegador, des del mòbil o l'ordinador. No cal instal·lar res ni crear cap compte."
         p2="Forma part del Salón Recreativo, una col·lecció de minijocs en línia."
         h2a='Com es juga';ptxt="Prem «Jugar» i comença: el joc carrega aquí mateix. Per a una millor experiència, obre'l a pantalla completa."
         reltitle='Més minijocs'
     else:
-        p1=f"{g['name']}{note} es un {gtype} para jugar online y gratis, directamente en el navegador, desde el móvil o el ordenador. No hay que instalar nada ni crear una cuenta."
+        p1=f"{g['name']}{note} es un {kw or gtype} para jugar online y gratis, directamente en el navegador, desde el móvil o el ordenador. No hay que instalar nada ni crear una cuenta."
         p2=("Forma parte del Salón Recreativo, una colección de minijuegos online. "+(cd.get('d','') if cd else ''))
         h2a='Cómo se juega';ptxt="Pulsa «Jugar» y empieza: el juego se carga aquí mismo. Para una mejor experiencia ábrelo a pantalla completa o en una pestaña nueva."
         reltitle='Más minijuegos'
-    jgame={"@context":"https://schema.org","@type":"VideoGame","name":g['name'],"description":g['blurb'],"url":url,"image":img,"genre":cat,"gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","inLanguage":lang,"isAccessibleForFree":True,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Organization","name":"Alica Games Studio","url":BASE},"keywords":", ".join(g['tags'])}
+    jgame={"@context":"https://schema.org","@type":"VideoGame","name":g['name'],"description":g['blurb'],"url":url,"image":img,"genre":cat,"gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","inLanguage":lang,"isAccessibleForFree":True,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Organization","name":"Alica Games Studio","url":BASE},"keywords":", ".join(([kw] if kw else [])+g['tags'])}
     bc={"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Salón Recreativo","item":BASE},{"@type":"ListItem","position":2,"name":cat,"item":BASE+'#sec-'+g['cat']},{"@type":"ListItem","position":3,"name":g['name'],"item":url}]}
     relhtml=''.join(f'<li><a href="../{x["slug"]}/"><img src="../../img/{x["slug"]}.jpg" alt="Portada de {e(x["name"])}" loading="lazy" width="344" height="216"><b>{e(x["name"])}</b></a></li>' for x in rel)
     page=f"""<!doctype html>
@@ -92,14 +99,60 @@ for g in play:
 </body></html>"""
     d=os.path.join(root,'jugar',g['slug']);os.makedirs(d,exist_ok=True)
     open(os.path.join(d,'index.html'),'w',encoding='utf-8').write(page)
+# ---------- páginas temáticas (hubs) ----------
+CA_BLURB={'verano':"Joc narratiu en català amb gràfics d'aquarel·la: un nen passa l'estiu amb el seu avi vora el mar, a Caldes d'Estrac. Trenta dies, minijocs i cançons."}
+HUBS=[
+ dict(slug='jocs-en-catala',lang='ca',title='Jocs en català online i gratis | Salón Recreativo',h1='Jocs en català online i gratis',
+  desc='Jocs de paraules en català per jugar al navegador: Wordle en català, penjat, sopa de lletres, anagrames, accents i castellanismes. Gratis i sense anuncis.',
+  intro=['Una col·lecció de jocs en català per jugar online, al mòbil o a l\'ordinador, sense instal·lar res ni registrar-se. Hi ha jocs de paraules per a tota la família: el Wordle en català (Motle), el penjat, la sopa de lletres, anagrames, un joc d\'accents i un de castellanismes.',
+         'Són partides curtes, d\'un o dos minuts, pensades per practicar l\'ortografia i el vocabulari mentre jugues. També hi trobaràs L\'últim estiu, un joc narratiu en català.'],
+  pick=lambda g:g['cat']=='catquiz' or g['id']=='verano'),
+ dict(slug='juegos-relajantes',lang='es',title='Juegos relajantes online gratis y sin anuncios | Salón Recreativo',h1='Juegos relajantes online',
+  desc='18 juegos relajantes online y gratis con música tranquila: jardín zen, estanque de koi, hoguera, lluvia, aurora boreal y más. Sin puntos, sin prisa y sin anuncios.',
+  intro=['Dieciocho juegos relajantes para jugar en el navegador cuando necesitas desconectar unos minutos. No hay puntos, ni tiempo límite, ni forma de perder: solo tocar, mirar y escuchar.',
+         'Cada juego tiene su propia música generativa, que nunca suena igual: rastrilla un jardín zen, da de comer a los koi, suelta farolillos sobre un lago o despierta una aurora boreal. Funcionan en móvil y ordenador, sin descargas.'],
+  pick=lambda g:g['cat']=='relax'),
+ dict(slug='juegos-de-ritmo',lang='es',title='Juegos de ritmo y música online gratis | Salón Recreativo',h1='Juegos de ritmo online',
+  desc='Juegos de ritmo y música online gratis: juegos tipo Guitar Hero, de guitarra, un portero al ritmo de la música y más. Para móvil y PC, sin descargas.',
+  intro=['Juegos de ritmo musical para jugar en el navegador: pulsa las notas a tiempo en juegos tipo Guitar Hero, toca la guitarra en el año 3000 o para balones al compás de la canción.',
+         'Todas las canciones son originales. Se juegan en móvil y ordenador, gratis y sin anuncios.'],
+  pick=lambda g:g['id'] in ('martin','supernova','cosmicguitar','paradon','tiradora','constructora')),
+]
+for H in HUBS:
+    ca=H['lang']=='ca'
+    url=BASE+H['slug']+'/'
+    sel=[g for g in play if H['pick'](g)]
+    items=[{"@type":"ListItem","position":k+1,"url":BASE+'jugar/'+g['slug']+'/',"name":g['name']} for k,g in enumerate(sel)]
+    cards=''.join(f'<li><a href="../jugar/{g["slug"]}/"><img src="../img/{g["slug"]}.jpg" alt="{e(g["name"])}" loading="lazy" width="344" height="216"><b>{e(g["name"])}</b><span>{e(short(CA_BLURB.get(g["id"],g["blurb"]) if ca else g["blurb"],120))}</span></a></li>' for g in sel)
+    others=''.join(f'<a href="../{h["slug"]}/">{e(h["h1"])}</a>' for h in HUBS if h is not H)
+    page=f"""<!doctype html>
+<html lang="{H['lang']}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>{e(H['title'])}</title><meta name="description" content="{e(H['desc'])}"><link rel="canonical" href="{url}">
+<meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#0d1230"><meta name="author" content="Alica Games Studio">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Salón Recreativo"><meta property="og:title" content="{e(H['title'])}"><meta property="og:description" content="{e(H['desc'])}"><meta property="og:url" content="{url}"><meta property="og:image" content="{BASE}img/{sel[0]['slug']}.jpg">
+<meta name="twitter:card" content="summary_large_image">
+{jd({"@context":"https://schema.org","@type":"CollectionPage","name":H['h1'],"url":url,"inLanguage":H['lang'],"description":H['desc'],"mainEntity":{"@type":"ItemList","itemListElement":items}})}
+<style>{CSS}
+.hub{{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;list-style:none;padding:0;margin:26px 0}}
+.hub a{{display:flex;flex-direction:column;height:100%;text-decoration:none;color:#fff;background:#151b44;border:1px solid rgba(255,255,255,.13);border-radius:16px;overflow:hidden}}
+.hub img{{width:100%;aspect-ratio:1.6;object-fit:cover}}.hub b{{padding:12px 14px 4px}}.hub span{{padding:0 14px 14px;color:#b3bbea;font-size:.92rem}}
+.more a{{display:inline-block;margin:0 10px 10px 0}}</style></head>
+<body><header class="t"><div class="w"><a href="../">SALÓN RECREATIVO</a></div></header>
+<main class="w"><nav class="bc" aria-label="Migas de pan"><a href="../">Inicio</a> › {e(H['h1'])}</nav>
+<h1>{e(H['h1'])}</h1>{''.join('<p class="lead">'+e(t)+'</p>' if i==0 else '<p>'+e(t)+'</p>' for i,t in enumerate(H['intro']))}
+<ul class="hub">{cards}</ul>
+<h2>{'Més col·leccions' if ca else 'Más colecciones'}</h2><p class="more">{others} <a href="../">{'Tots els jocs' if ca else 'Todos los juegos'}</a></p>
+</main><footer><div class="w"><a href="../">Salón Recreativo</a> · © 2026 <b>Alica Games Studio</b></div></footer></body></html>"""
+    os.makedirs(os.path.join(root,H['slug']),exist_ok=True)
+    open(os.path.join(root,H['slug'],'index.html'),'w',encoding='utf-8').write(page)
 # ---------- home ----------
 src=open(os.path.join(root,'tools/source.html'),encoding='utf-8').read()
 i=src.index('</style>')+8
 head_part=src[:i];body=src[i:]
 head_part=re.sub(r'<title>.*?</title>\s*','',head_part,flags=re.S)
 head_part=re.sub(r'<meta name="claude:viewport-fit-sides"[^>]*>\s*','',head_part)
-HT='Minijuegos online gratis en el navegador | Salón Recreativo'
-HD=f'{len(G)} minijuegos online gratis para jugar en el navegador, en móvil y PC: fútbol, ritmo, karts, relax y palabras en catalán. Sin descargas ni registro.'
+HT='Minijuegos online gratis y sin anuncios | Salón Recreativo'
+HD=f'{len(G)} minijuegos online gratis y sin anuncios: juegos relajantes, de ritmo, karts, fútbol y juegos de palabras en catalán. En el navegador, móvil y PC, sin descargas.'
 HD=short(HD,158)
 items=[{"@type":"ListItem","position":k+1,"url":BASE+'jugar/'+g['slug']+'/',"name":g['name']} for k,g in enumerate(play)]
 site={"@context":"https://schema.org","@type":"WebSite","name":"Salón Recreativo","url":BASE,"inLanguage":"es","description":HD,"publisher":{"@type":"Organization","name":"Alica Games Studio","url":BASE}}
@@ -121,7 +174,8 @@ cols=''
 for k in ['cosmico']+ORDER:
     if k not in bycat:continue
     cols+=f'<div><h2>{e(CATS[k]["n"])}</h2><ul>'+''.join(f'<li><a href="jugar/{g["slug"]}/">{e(g["name"])}</a></li>' for g in bycat[k])+'</ul></div>'
-about=f'<p>Salón Recreativo es una colección de {len(G)} minijuegos online y gratis hechos con HTML y Three.js: fútbol, juegos de ritmo musical, karts, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p>'
+hubl=' · '.join(f'<a href="{H["slug"]}/">{e(H["h1"])}</a>' for H in HUBS)
+about=f'<p>Salón Recreativo es una colección de {len(G)} minijuegos online y gratis hechos con HTML y Three.js: fútbol, juegos de ritmo musical, karts, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p><p>'+hubl+'</p>'
 nav=f'<nav class="dir" aria-label="Todos los juegos">{cols}</nav>'
 fb='</p></div>\n</footer>'
 assert body.count(fb)==1
@@ -129,7 +183,7 @@ body=body.replace(fb,'</p>'+about+nav+'</div>\n</footer>')
 out='<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>*,*::before,*::after{box-sizing:border-box}body{margin:0}</style>\n'+meta+head_part+'</head><body>'+body+'</body></html>'
 open(os.path.join(root,'index.html'),'w',encoding='utf-8').write(out)
 # ---------- sitemap / robots / 404 ----------
-urls=[BASE]+[BASE+'jugar/'+g['slug']+'/' for g in play]
+urls=[BASE]+[BASE+H['slug']+'/' for H in HUBS]+[BASE+'jugar/'+g['slug']+'/' for g in play]
 sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{u}</loc><lastmod>{TODAY}</lastmod><changefreq>{"weekly" if u==BASE else "monthly"}</changefreq><priority>{"1.0" if u==BASE else "0.7"}</priority></url>\n' for u in urls)+'</urlset>\n'
 open(os.path.join(root,'sitemap.xml'),'w',encoding='utf-8').write(sm)
 open(os.path.join(root,'robots.txt'),'w').write(f'User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n')
