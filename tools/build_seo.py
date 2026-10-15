@@ -116,7 +116,7 @@ HUBS=[
   desc='Juegos de ritmo y música online gratis: juegos tipo Guitar Hero, de guitarra, un portero al ritmo de la música y más. Para móvil y PC, sin descargas.',
   intro=['Juegos de ritmo musical para jugar en el navegador: pulsa las notas a tiempo en juegos tipo Guitar Hero, toca la guitarra en el año 3000 o para balones al compás de la canción.',
          'Todas las canciones son originales. Se juegan en móvil y ordenador, gratis y sin anuncios.'],
-  pick=lambda g:g['id'] in ('martin','supernova','cosmicguitar','paradon','tiradora','constructora')),
+  pick=lambda g:g['id'] in ('martin','supernova','cosmicguitar','paradon','tiradora','constructora','rutacosmica')),
 ]
 for H in HUBS:
     ca=H['lang']=='ca'

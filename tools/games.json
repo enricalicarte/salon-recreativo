@@ -1,6 +1,22 @@
 {
  "GAMES": [
   {
+   "slug": "ruta-cosmica",
+   "id": "rutacosmica",
+   "kw": "juego de naves espaciales",
+   "tri": 1,
+   "cat": "cosmico",
+   "name": "Ruta Cósmica",
+   "note": "Antes de apuntar hay que llegar",
+   "blurb": "Juego de naves espaciales en 3D: pilota la Centella de Lyra entre planeta y planeta, recoge las notas perdidas, cruza aros musicales y lanza el hiperimpulso. Haz toneles para esquivar y derrota a los jefes al ritmo de la música.",
+   "tags": [
+    "Naves",
+    "Vuelo 3D",
+    "Música"
+   ],
+   "play": "juegos/ruta-cosmica/index.html"
+  },
+  {
    "slug": "tiradora-cosmica",
    "id": "tiradora",
    "kw": "juego de francotirador espacial",
@@ -167,8 +183,8 @@
    "tri": 2,
    "cat": "cosmico",
    "name": "Cosmic Guitar",
-   "note": "Extra de la trilogía",
-   "blurb": "El concierto final de la trilogía cósmica: un juego de ritmo musical en el que tocas las canciones de los trece planetas de la Ruta del Ritmo, nota a nota, como en Guitar Hero.",
+   "note": "Extra de la saga",
+   "blurb": "El concierto final de la saga cósmica: un juego de ritmo musical en el que tocas las canciones de los trece planetas de la Ruta del Ritmo, nota a nota, como en Guitar Hero.",
    "tags": [
     "Ritmo",
     "Guitarra",

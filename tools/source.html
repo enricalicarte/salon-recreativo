@@ -116,7 +116,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.01em;marg
   linear-gradient(180deg,var(--bg),#130c2e 50%,var(--bg))}
 .cosmic::before{content:"";position:absolute;inset:0;z-index:-1;background-image:radial-gradient(rgba(255,255,255,.55) .8px,transparent 1.2px),radial-gradient(rgba(255,255,255,.35) .7px,transparent 1.1px);background-size:90px 90px,140px 140px;background-position:0 0,40px 60px;opacity:.5}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:22px}
-.grid.big{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:22px}
+.grid.big{grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:18px}
 .extra-lab{margin:40px 0 16px;display:flex;align-items:center;gap:12px;font-size:.92rem;color:var(--mute)}
 .extra-lab b{font-family:var(--f-display);font-weight:700;font-size:.72rem;letter-spacing:.06em;color:var(--bg);background:var(--sun);padding:5px 10px;border-radius:999px}
 .extra-lab::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
@@ -204,7 +204,7 @@ body.hasglow .glow{opacity:1}
   <div class="in">
     <a class="brand" href="#"><i></i>ALICA GAMES STUDIO</a>
     <nav aria-label="Secciones">
-      <a href="#trilogia">Trilogía</a><a href="#sec-accion">Acción</a><a href="#sec-ritmo">Ritmo</a><a href="#sec-motor">Motor</a><a href="#sec-relax">Relax</a><a href="#sec-catquiz">CatQuiz</a>
+      <a href="#trilogia">Saga cósmica</a><a href="#sec-accion">Acción</a><a href="#sec-ritmo">Ritmo</a><a href="#sec-motor">Motor</a><a href="#sec-relax">Relax</a><a href="#sec-catquiz">CatQuiz</a>
     </nav>
     <button class="rnd" type="button" data-random><span class="l">Jugar a uno al azar</span><span class="s">Al azar ▶</span></button>
   </div>
@@ -231,10 +231,10 @@ body.hasglow .glow{opacity:1}
   <div class="in">
     <div class="band-head">
       <div>
-        <h2 style="--c:#9a8cff">La trilogía cósmica</h2>
-        <p style="margin-top:12px">Tres juegos con mecánicas distintas que cuentan una misma historia, y un bis: el concierto final. Puntería, construcción, reflejos y ritmo bajo el mismo cielo.</p>
+        <h2 style="--c:#9a8cff">La saga cósmica</h2>
+        <p style="margin-top:12px">Lyra y la Patrulla Nova recorren los planetas de la Ruta del Ritmo: cuatro juegos con mecánicas distintas que cuentan una misma historia, y un bis, el concierto final. Vuelo, puntería, construcción, reflejos y ritmo bajo el mismo cielo.</p>
       </div>
-      <span class="n" style="--c:#9a8cff">3 juegos + 1 extra</span>
+      <span class="n" style="--c:#9a8cff">4 juegos + 1 extra</span>
     </div>
     <div class="grid big" id="tri"></div>
   </div>
@@ -281,6 +281,9 @@ const CATS={
 const CATD={"accion": {t: "Acción", d: "Puntería, peleas, carreras y reflejos. Partidas rápidas para jugar con una mano."}, "deporte": {t: "Deporte", d: "Fútbol 7, Kings League y unas olimpiadas de granja para los más peques."}, "ritmo": {t: "Ritmo", d: "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."}, "motor": {t: "Motor", d: "Karts, monster trucks, carreras de neón y montañas rusas de cerditos."}, "historias": {t: "Historias", d: "Juegos narrativos con calendario, recuerdos y misterio."}, "marca": {t: "Con marca", d: "Juegos hechos a medida para marcas y clientes."}, "relax": {t: "Relax Games", d: "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."}, "catquiz": {t: "CatQuiz Minijocs", d: "Minijuegos de palabras en catalán, para jugar y aprender."}};
 /* play: ruta del juego dentro de esta web. url: enlace externo (solo si no hay archivos). */
 const GAMES=[
+  {id:'rutacosmica',kw:"juego de naves espaciales",tri:1,cat:'cosmico',name:'Ruta Cósmica',note:'Antes de apuntar hay que llegar',
+   blurb:"Juego de naves espaciales en 3D: pilota la Centella de Lyra entre planeta y planeta, recoge las notas perdidas, cruza aros musicales y lanza el hiperimpulso. Haz toneles para esquivar y derrota a los jefes al ritmo de la música.",
+   tags:["Naves","Vuelo 3D","Música"],play:'juegos/ruta-cosmica/index.html'},
   {id:'tiradora',kw:"juego de francotirador espacial",tri:1,cat:'cosmico',name:'Tiradora Cósmica',note:'Nace de Tiro Limpio',
    blurb:"Shooter de francotiradora en 13 planetas musicales: apunta arrastrando, dispara con un toque y haz bailar a los bandidos al ritmo de su canción. Consigue tres estrellas en cada planeta y vuelve a empezar con más dificultad.",
    tags:["Francotirador", "Espacio", "Música"],play:'juegos/tiradora/index.html'},
@@ -315,8 +318,8 @@ const GAMES=[
   {id:'supernova',kw:"juego de guitarra online",cat:'ritmo',name:'Supernova Guitar',note:'Antes: Leyenda del rock',
    blurb:"Juego de guitarra online ambientado en el año 3000: los clásicos del siglo XX suenan a sintetizador, nu-disco, house y vocoder. Toca las notas a tiempo y sube de nivel.",
    tags:["Guitarra", "Electrónica", "Año 3000"],play:'juegos/supernova/index.html'},
-  {id:'cosmicguitar',kw:"juego de ritmo musical",tri:2,cat:'cosmico',name:'Cosmic Guitar',note:'Extra de la trilogía',
-   blurb:"El concierto final de la trilogía cósmica: un juego de ritmo musical en el que tocas las canciones de los trece planetas de la Ruta del Ritmo, nota a nota, como en Guitar Hero.",
+  {id:'cosmicguitar',kw:"juego de ritmo musical",tri:2,cat:'cosmico',name:'Cosmic Guitar',note:'Extra de la saga',
+   blurb:"El concierto final de la saga cósmica: un juego de ritmo musical en el que tocas las canciones de los trece planetas de la Ruta del Ritmo, nota a nota, como en Guitar Hero.",
    tags:["Ritmo", "Guitarra", "13 canciones"],play:'juegos/cosmic-guitar/index.html'},
   {id:'miramar',cat:'historias',name:'Hotel Miramar',
    blurb:"Juego narrativo de misterio para adultos en un hotel de la Costa Brava, junio de 1962. Un calendario que avanza, un personaje que recorre el hotel y el secreto de la habitación 7.",
@@ -1032,6 +1035,24 @@ S.motofury=(c,w,h,t)=>{
   c.restore();
   if(u>.05&&u<.95){c.fillStyle='rgba(255,255,255,.9)';c.font='bold 22px system-ui,sans-serif';c.textAlign='center';c.fillText('SUPERMAN!',x,y-70);}
 };
+S.rutacosmica=(c,w,h,t)=>{
+  fillRect(c,rad(c,300,170,10,420,[[0,'#3a1d7a'],[.5,'#170b3d'],[1,'#05030f']]),0,0,w,h);
+  stars(c,w,h,t,60,11);
+  const cx=300,cy=165;
+  for(let i=0;i<14;i++){const a=i/14*TAU+t*.25,u=(t*.9+i*.37)%1,d=u*u*420;c.strokeStyle='rgba(180,160,255,'+(u*.7)+')';c.lineWidth=1+u*2;c.beginPath();c.moveTo(cx+Math.cos(a)*d*.2,cy+Math.sin(a)*d*.2);c.lineTo(cx+Math.cos(a)*d,cy+Math.sin(a)*d);c.stroke();}
+  disc(c,cx,cy,22,'rgba(255,210,63,.25)');disc(c,cx,cy,9,'#ffe9a8');
+  const cols=['#ff4fa3','#38e5ff','#ffd23f'];
+  for(let k=0;k<3;k++){const u=(t*.35+k/3)%1,sc=.15+u*u*2.2;c.strokeStyle=cols[k];c.globalAlpha=Math.min(1,u*2)*(1-Math.max(0,u-.85)*6);c.lineWidth=3+sc*4;c.beginPath();c.ellipse(cx+Math.sin(k*2+t*.3)*40*sc,cy+20*sc,60*sc,44*sc,0,0,TAU);c.stroke();c.globalAlpha=1;}
+  for(let k=0;k<4;k++){const u=(t*.5+k/4)%1,sc=.2+u*1.6,x=cx+(k%2?-1:1)*(60+k*20)*u,y=cy+(k-1.5)*30*u;c.fillStyle='rgba(255,255,255,'+Math.min(1,u*2)+')';c.font='bold '+(14+20*sc)+'px system-ui,sans-serif';c.textAlign='center';c.fillText('♪',x,y);}
+  const sx=300+Math.sin(t*1.3)*70,sy=285+Math.sin(t*2.1)*10,roll=Math.sin(t*1.3+1.5)*.35;
+  c.save();c.translate(sx,sy);c.rotate(roll);
+  disc(c,0,22,26,'rgba(56,229,255,.25)');
+  poly(c,[[0,-34],[16,6],[58,22],[16,20],[0,30],[-16,20],[-58,22],[-16,6]],'#e9e6ff');
+  poly(c,[[0,-34],[16,6],[0,14],[-16,6]],'#ff4fa3');
+  disc(c,0,-6,7,'#38e5ff');
+  disc(c,-10,30,6+Math.sin(t*20)*2,'#ffd23f');disc(c,10,30,6+Math.cos(t*20)*2,'#ffd23f');
+  c.restore();
+};
 S.__gen=(pal)=>(c,w,h,t)=>{
   fillRect(c,lin(c,0,0,0,h,[[0,pal[0]],[1,pal[1]]]),0,0,w,h);
   const r=rng(pal[3].codePointAt(0)+7);
@@ -1138,7 +1159,7 @@ if(!reduce&&'IntersectionObserver' in window){
 /* ---------- Navegación de secciones ---------- */
 const chips=$('#chips');
 const present=['accion','deporte','ritmo','motor','historias','marca','relax','catquiz'].filter(k=>secEls[k]);
-chips.innerHTML='<a href="#trilogia" style="--c:#9a8cff" data-k="trilogia">Trilogía <small>4</small></a>'+present.map(k=>{
+chips.innerHTML='<a href="#trilogia" style="--c:#9a8cff" data-k="trilogia">Saga cósmica <small>5</small></a>'+present.map(k=>{
   const n=gridCards.filter(e=>e.dataset.cat===k).length;
   return '<a href="#sec-'+k+'" data-k="'+k+'" style="--c:'+CATS[k].c+'">'+esc(CATS[k].n)+' <small>'+n+'</small></a>';
 }).join('');
