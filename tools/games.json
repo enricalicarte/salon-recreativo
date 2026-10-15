@@ -318,14 +318,15 @@
    ]
   },
   {
-   "slug": "relax-estanque",
+   "slug": "relax-estanque-de-koi",
    "id": "rx_estanque",
    "cat": "relax",
-   "name": "Estanque",
-   "blurb": "Da de comer a los koi y mira cómo se abre el agua.",
+   "name": "Estanque de Koi",
+   "blurb": "Los koi se acercan cuando tocas el agua y abren ondas a su paso. Dales de comer y deja que el estanque se calme solo.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Agua",
+    "Peces",
+    "Relax"
    ],
    "pal": [
     "#0f3f44",
@@ -336,14 +337,15 @@
    "play": "juegos/relax/index.html#estanque"
   },
   {
-   "slug": "relax-linternas",
+   "slug": "relax-farolillos-del-lago",
    "id": "rx_linternas",
    "cat": "relax",
-   "name": "Linternas",
-   "blurb": "Suelta farolillos sobre un lago al anochecer y pide deseos.",
+   "name": "Farolillos del Lago",
+   "blurb": "Al anochecer, suelta farolillos de papel sobre el lago. Mantén pulsado para soltar varios y toca uno en el aire para pedir un deseo.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Noche",
+    "Deseos",
+    "Relax"
    ],
    "pal": [
     "#0c1236",
@@ -354,14 +356,15 @@
    "play": "juegos/relax/index.html#linternas"
   },
   {
-   "slug": "relax-burbujas",
+   "slug": "relax-pompas-musicales",
    "id": "rx_burbujas",
    "cat": "relax",
-   "name": "Burbujas",
-   "blurb": "Explota pompas que suenan como campanas y encadénalas.",
+   "name": "Pompas Musicales",
+   "blurb": "Cada pompa suena como una campanita al explotar. Rómpelas rápido y encadena una melodía que nunca suena igual.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Música",
+    "Toques",
+    "Relax"
    ],
    "pal": [
     "#c7b1ec",
@@ -372,14 +375,15 @@
    "play": "juegos/relax/index.html#burbujas"
   },
   {
-   "slug": "relax-jardin",
+   "slug": "relax-isla-jardin",
    "id": "rx_jardin",
    "cat": "relax",
-   "name": "Jardín",
-   "blurb": "Planta flores y árboles en una isla flotante.",
+   "name": "Isla Jardín",
+   "blurb": "Una isla que flota en el cielo y crece contigo. Toca para plantar flores y árboles, y arrástrala para verla girar.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Plantar",
+    "Isla flotante",
+    "Relax"
    ],
    "pal": [
     "#8fc1e6",
@@ -390,14 +394,15 @@
    "play": "juegos/relax/index.html#jardin"
   },
   {
-   "slug": "relax-arena",
+   "slug": "relax-jardin-zen",
    "id": "rx_arena",
    "cat": "relax",
-   "name": "Arena",
-   "blurb": "Rastrilla un jardín zen con el dedo.",
+   "name": "Jardín Zen",
+   "blurb": "Rastrilla con el dedo un jardín de arena japonés. Dibuja surcos alrededor de las piedras, sin prisa y sin errores.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Zen",
+    "Dibujar",
+    "Relax"
    ],
    "pal": [
     "#e6d5b3",
@@ -408,14 +413,15 @@
    "play": "juegos/relax/index.html#arena"
   },
   {
-   "slug": "relax-lluvia",
+   "slug": "relax-cristal-de-lluvia",
    "id": "rx_lluvia",
    "cat": "relax",
-   "name": "Lluvia",
-   "blurb": "Dibuja en un cristal empañado mientras llueve sobre la ciudad.",
+   "name": "Cristal de Lluvia",
+   "blurb": "Llueve sobre la ciudad de noche. Dibuja en el cristal empañado de la ventana y mira cómo el vaho lo borra poco a poco.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Lluvia",
+    "Ciudad",
+    "Relax"
    ],
    "pal": [
     "#0b1020",
@@ -426,14 +432,15 @@
    "play": "juegos/relax/index.html#lluvia"
   },
   {
-   "slug": "relax-fuego",
+   "slug": "relax-hoguera-nocturna",
    "id": "rx_fuego",
    "cat": "relax",
-   "name": "Fuego",
-   "blurb": "Siéntate junto a una hoguera, echa troncos y tuesta malvaviscos.",
+   "name": "Hoguera Nocturna",
+   "blurb": "Siéntate junto al fuego bajo las estrellas. Echa troncos, escucha cómo crepita y tuesta malvaviscos hasta dejarlos dorados.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Hoguera",
+    "Estrellas",
+    "Relax"
    ],
    "pal": [
     "#050a1a",
@@ -444,14 +451,15 @@
    "play": "juegos/relax/index.html#fuego"
   },
   {
-   "slug": "relax-nieve",
+   "slug": "relax-bola-de-nieve",
    "id": "rx_nieve",
    "cat": "relax",
-   "name": "Nieve",
-   "blurb": "Agita una bola de nieve y encuentra los tesoros escondidos.",
+   "name": "Bola de Nieve",
+   "blurb": "Agita una bola de cristal y mira cómo cae la nieve. Cuando se posa, asoman pequeños tesoros escondidos.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Invierno",
+    "Tesoros",
+    "Relax"
    ],
    "pal": [
     "#2a1c18",
@@ -462,14 +470,15 @@
    "play": "juegos/relax/index.html#nieve"
   },
   {
-   "slug": "relax-pesca",
+   "slug": "relax-pesca-al-atardecer",
    "id": "rx_pesca",
    "cat": "relax",
-   "name": "Pesca",
-   "blurb": "Lanza el anzuelo al atardecer y llena la cesta sin prisa.",
+   "name": "Pesca al Atardecer",
+   "blurb": "Lanza el anzuelo desde el muelle con el sol bajando. Cuando el flotador se hunda, tira y llena la cesta sin prisa.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Pesca",
+    "Atardecer",
+    "Relax"
    ],
    "pal": [
     "#28386e",
@@ -480,14 +489,15 @@
    "play": "juegos/relax/index.html#pesca"
   },
   {
-   "slug": "relax-buceo",
+   "slug": "relax-arrecife-de-coral",
    "id": "rx_buceo",
    "cat": "relax",
-   "name": "Buceo",
-   "blurb": "Nada entre corales y medusas. Abre almejas para encontrar perlas.",
+   "name": "Arrecife de Coral",
+   "blurb": "Bucea entre corales, medusas y bancos de peces. Mira a tu alrededor y abre almejas para encontrar perlas.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Mar",
+    "Perlas",
+    "Relax"
    ],
    "pal": [
     "#0a2f45",
@@ -498,14 +508,15 @@
    "play": "juegos/relax/index.html#buceo"
   },
   {
-   "slug": "relax-velero",
+   "slug": "relax-velero-entre-islas",
    "id": "rx_velero",
    "cat": "relax",
-   "name": "Velero",
-   "blurb": "Navega entre islas y faros. Enciende boyas de luz.",
+   "name": "Velero entre Islas",
+   "blurb": "Navega con el viento entre islas y faros. Vira con un dedo y enciende las boyas de luz a tu paso.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Navegar",
+    "Faros",
+    "Relax"
    ],
    "pal": [
     "#5b9bd3",
@@ -516,14 +527,15 @@
    "play": "juegos/relax/index.html#velero"
   },
   {
-   "slug": "relax-marea",
+   "slug": "relax-orilla-y-marea",
    "id": "rx_marea",
    "cat": "relax",
-   "name": "Marea",
-   "blurb": "Recoge las conchas que dejan las olas y deja huellas en la arena.",
+   "name": "Orilla y Marea",
+   "blurb": "Las olas van y vienen sobre la arena. Recoge las conchas que deja la marea y deja tus huellas en la orilla seca.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Playa",
+    "Conchas",
+    "Relax"
    ],
    "pal": [
     "#4d6fb0",
@@ -534,14 +546,15 @@
    "play": "juegos/relax/index.html#marea"
   },
   {
-   "slug": "relax-vuelo",
+   "slug": "relax-vuelo-del-amanecer",
    "id": "rx_vuelo",
    "cat": "relax",
-   "name": "Vuelo",
-   "blurb": "Vuela como un pájaro sobre valles y montañas al amanecer.",
+   "name": "Vuelo del Amanecer",
+   "blurb": "Vuela como un pájaro sobre valles y montañas al salir el sol. Guía con el dedo y cruza los anillos de luz.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Volar",
+    "Montañas",
+    "Relax"
    ],
    "pal": [
     "#6f9fd8",
@@ -552,14 +565,15 @@
    "play": "juegos/relax/index.html#vuelo"
   },
   {
-   "slug": "relax-aurora",
+   "slug": "relax-aurora-boreal",
    "id": "rx_aurora",
    "cat": "relax",
-   "name": "Aurora",
-   "blurb": "Despierta auroras sobre un lago helado y caza estrellas fugaces.",
+   "name": "Aurora Boreal",
+   "blurb": "Despierta auroras sobre un lago helado con solo tocar el cielo. Caza al vuelo las estrellas fugaces.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Cielo",
+    "Estrellas fugaces",
+    "Relax"
    ],
    "pal": [
     "#01040f",
@@ -570,14 +584,15 @@
    "play": "juegos/relax/index.html#aurora"
   },
   {
-   "slug": "relax-orbitas",
+   "slug": "relax-orbitas-musicales",
    "id": "rx_orbitas",
    "cat": "relax",
-   "name": "Órbitas",
-   "blurb": "Crea planetas alrededor de un sol. Cada vuelta suena una nota.",
+   "name": "Órbitas Musicales",
+   "blurb": "Crea planetas alrededor de un sol. Cada vuelta que dan suena una nota, y juntas forman tu propia música del espacio.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Espacio",
+    "Música",
+    "Relax"
    ],
    "pal": [
     "#05040d",
@@ -588,14 +603,15 @@
    "play": "juegos/relax/index.html#orbitas"
   },
   {
-   "slug": "relax-estrellas",
+   "slug": "relax-constelaciones",
    "id": "rx_estrellas",
    "cat": "relax",
-   "name": "Estrellas",
-   "blurb": "Une estrellas y crea tus propias constelaciones.",
+   "name": "Constelaciones",
+   "blurb": "Une estrellas con el dedo y dibuja tus propias constelaciones en un cielo nocturno que puedes recorrer.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Cielo nocturno",
+    "Dibujar",
+    "Relax"
    ],
    "pal": [
     "#020411",
@@ -606,14 +622,15 @@
    "play": "juegos/relax/index.html#estrellas"
   },
   {
-   "slug": "relax-cometa",
+   "slug": "relax-cometa-al-viento",
    "id": "rx_cometa",
    "cat": "relax",
-   "name": "Cometa",
-   "blurb": "Guía una cometa con el viento y atrapa semillas de diente de león.",
+   "name": "Cometa al Viento",
+   "blurb": "Guía una cometa entre las corrientes de aire y atrapa las semillas de diente de león que flotan en el cielo.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Viento",
+    "Cielo",
+    "Relax"
    ],
    "pal": [
     "#3f86d6",
@@ -624,14 +641,15 @@
    "play": "juegos/relax/index.html#cometa"
   },
   {
-   "slug": "relax-rana",
+   "slug": "relax-rana-y-luciernagas",
    "id": "rx_rana",
    "cat": "relax",
-   "name": "Rana",
-   "blurb": "Salta de nenúfar en nenúfar y atrapa luciérnagas con la lengua.",
+   "name": "Rana y Luciérnagas",
+   "blurb": "Salta de nenúfar en nenúfar en un estanque nocturno. Si la rana cae cerca de una luciérnaga, la atrapa con la lengua.",
    "tags": [
-    "Relax",
-    "Música generativa"
+    "Estanque",
+    "Noche",
+    "Relax"
    ],
    "pal": [
     "#06181c",
@@ -897,7 +915,7 @@
   },
   "relax": {
    "t": "Relax Games",
-   "d": "Dieciocho juegos para respirar, con música generativa. Sin puntos ni prisa."
+   "d": "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."
   },
   "catquiz": {
    "t": "CatQuiz Minijocs",
