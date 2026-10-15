@@ -131,6 +131,13 @@ h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.01em;marg
 .card:hover::after,.card:focus-within::after{opacity:1}
 .cover{position:relative;aspect-ratio:1.6;background:var(--panel2);overflow:hidden}
 .cover canvas{position:absolute;inset:0;width:100%;height:100%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.cover img.shot,.cover video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cover img.shot{animation:kb 18s ease-in-out infinite alternate;transform-origin:60% 40%}
+@keyframes kb{from{transform:scale(1.03)}to{transform:scale(1.13) translate(-2%,-1.5%)}}
+.cover video{opacity:0;transition:opacity .4s}.cover.vid video{opacity:1}
+.cover::after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgba(7,6,15,.45));pointer-events:none}
+.row img{width:100%;height:100%;object-fit:cover;display:block}
+@media (prefers-reduced-motion:reduce){.cover img.shot{animation:none}}
 .card:hover .cover canvas{transform:scale(1.04)}
 .chip{position:absolute;left:12px;top:12px;font:700 .64rem/1 var(--f-display);letter-spacing:.06em;color:var(--bg);background:var(--c);padding:7px 10px;border-radius:999px}
 .body{padding:16px 18px 0;flex:1}
@@ -1077,11 +1084,15 @@ function track(cv,scene,t0,lite){
   items.push(it);byCanvas.set(cv,it);return it;
 }
 $('#n').textContent=GAMES.length;
+const slugify=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const slugOf=g=>(g.cat==='relax'?'relax-':g.cat==='catquiz'?'catquiz-':'')+slugify(g.name);
+const MEDIA=new Set(/*MEDIA*/["anguera-superstars", "aura-battle", "aventura-porc", "catquiz-accents", "catquiz-anagrama", "catquiz-caca-estrelles", "catquiz-com-es-diu-en-catala", "catquiz-esquiva", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-sopa-de-lletres", "constructor-cosmico", "cosmic-guitar", "cube-runner", "l-ultim-estiu", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "neon-coast", "olimpiadas-de-la-granja", "paradon-cosmico", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "suo-shop-rush", "supernova-guitar", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally"]/*/MEDIA*/);
 
 /* ---------- Muro de portadas del hero ---------- */
 (function(){
   const wall=$('#wall');if(!wall)return;
-  const pool=GAMES.filter(g=>g.play&&S[g.id]);           // solo portadas dibujadas a mano
+  const shots=GAMES.filter(g=>g.play&&MEDIA.has(slugOf(g))&&g.cat!=='catquiz');
+  const pool=shots.length>8?shots:GAMES.filter(g=>g.play&&S[g.id]);   // capturas reales; si no hay, portadas dibujadas
   const small=matchMedia('(max-width:760px)').matches;
   const rows=small?2:3,per=small?6:7;
   let k=0;
@@ -1089,10 +1100,11 @@ $('#n').textContent=GAMES.length;
     const row=document.createElement('div');row.className='row'+(r%2?' rev':'');
     row.style.setProperty('--dur',(small?48:64+r*14)+'s');
     const pick=[];for(let i=0;i<per;i++){pick.push(pool[(k++)%pool.length]);}
-    const html=pick.map(()=>'<div><canvas aria-hidden="true"></canvas></div>').join('');
+    const useImg=pool===shots;
+    const html=pick.map(g=>useImg?'<div><img src="media/'+slugOf(g)+'.jpg" alt="" decoding="async"></div>':'<div><canvas aria-hidden="true"></canvas></div>').join('');
     row.innerHTML=html+html;                               // duplicado para el bucle continuo
     wall.appendChild(row);
-    row.querySelectorAll('canvas').forEach((cv,i)=>track(cv,S[pick[i%per].id],(i*1.3)%5,true));
+    if(!useImg)row.querySelectorAll('canvas').forEach((cv,i)=>track(cv,S[pick[i%per].id],(i*1.3)%5,true));
   }
   if(fine&&!reduce){
     let tx=0,ty=0;
@@ -1108,8 +1120,10 @@ $('#n').textContent=GAMES.length;
 (function(){const t=$('#tick');if(!t)return;const h=GAMES.map(g=>'<span style="--c:'+CATS[g.cat].c+'"><i></i>'+esc(g.name)+'</span>').join('');t.innerHTML=h+h;})();
 
 /* ---------- Cartas ---------- */
-const slugify=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const slugOf=g=>(g.cat==='relax'?'relax-':g.cat==='catquiz'?'catquiz-':'')+slugify(g.name);
+const vids=[];
+const WEBM=(()=>{try{return !!document.createElement('video').canPlayType('video/webm; codecs="vp9"')}catch(e){return false}})();
+function playVid(v){if(!v.src)v.src=v.dataset.src+(WEBM?'.webm':'.mp4');const p=v.play();if(p&&p.catch)p.catch(()=>{});v.parentNode.classList.add('vid');}
+function stopVid(v){v.pause();v.parentNode.classList.remove('vid');}
 function makeCard(g,idx){
   const cat=CATS[g.cat];
   const el=document.createElement('article');
@@ -1118,12 +1132,14 @@ function makeCard(g,idx){
     :g.url?'<a class="play" href="'+esc(g.url)+'" target="_blank" rel="noopener">'+esc(g.cta||'Jugar')+' <span aria-hidden="true">↗</span></a>'
     :'<span class="pending">Próximamente</span>';
   el.innerHTML=
-    '<div class="cover"><canvas aria-hidden="true"></canvas><span class="chip">'+esc(cat.n)+'</span>'+(g.play?'<button class="pl" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'" aria-label="Jugar a '+esc(g.name)+'"><b>▶</b></button>':'')+'</div>'+
+    '<div class="cover">'+(MEDIA.has(slugOf(g))?'<img class="shot" src="media/'+slugOf(g)+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline preload="none" data-src="media/'+slugOf(g)+'"></video>':'<canvas aria-hidden="true"></canvas>')+'<span class="chip">'+esc(cat.n)+'</span>'+(g.play?'<button class="pl" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'" aria-label="Jugar a '+esc(g.name)+'"><b>▶</b></button>':'')+'</div>'+
     '<div class="body"><h3>'+(g.play&&!window.claude?'<a href="jugar/'+slugOf(g)+'/">'+esc(g.name)+'</a>':esc(g.name))+'</h3>'+(g.note?'<p class="former">'+esc(g.note)+'</p>':'')+
     '<p class="blurb">'+esc(g.blurb)+'</p></div>'+
     '<div class="foot"><ul class="tags">'+g.tags.slice(0,2).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+cta+'</div>';
-  const it=track(el.querySelector('canvas'),sceneOf(g),1.5+(idx*.83)%4,false);
-  const on=()=>{it.fast=true;},off=()=>{it.fast=false;el.style.transform='';};
+  const cvs=el.querySelector('canvas'),vid=el.querySelector('video');
+  const it=cvs?track(cvs,sceneOf(g),1.5+(idx*.83)%4,false):{};
+  if(vid)vids.push(vid);
+  const on=()=>{it.fast=true;if(vid&&fine&&!reduce)playVid(vid);},off=()=>{it.fast=false;el.style.transform='';if(vid&&fine)stopVid(vid);};
   el.addEventListener('pointerenter',on);el.addEventListener('pointerleave',off);
   el.addEventListener('focusin',on);el.addEventListener('focusout',off);
   if(fine&&!reduce){
@@ -1150,6 +1166,10 @@ GAMES.forEach((g,i)=>{
   grid.appendChild(el);
   if(!g.tri)gridCards.push(el);
 });
+if(!fine&&!reduce&&'IntersectionObserver' in window){      // móvil: el clip de la carta que está a la vista
+  const vio=new IntersectionObserver(es=>es.forEach(e=>{e.intersectionRatio>.7?playVid(e.target):stopVid(e.target);}),{threshold:[0,.7,1]});
+  vids.forEach(v=>vio.observe(v));
+}
 if(!reduce&&'IntersectionObserver' in window){
   const cards=document.querySelectorAll('.card');cards.forEach(c=>c.classList.add('rv'));
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px',threshold:.1});

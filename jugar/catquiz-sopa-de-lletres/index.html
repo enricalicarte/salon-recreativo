@@ -18,6 +18,7 @@ h1{font-size:clamp(2rem,6vw,3.2rem);line-height:1.1;margin:.2em 0 .3em}
 .cover{width:100%;aspect-ratio:1.6;border-radius:18px;object-fit:cover;border:1px solid rgba(255,255,255,.15);display:block;background:#151b44}
 .stage{position:relative;width:100%;aspect-ratio:16/10;max-height:78vh;border-radius:18px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.15)}
 .stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.stage .bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .stage .go{position:absolute;inset:0;display:grid;place-items:center;border:0;cursor:pointer;color:#0d1230;background:center/cover}
 .go span{background:#ffc933;font:800 1.2rem system-ui;padding:16px 34px;border-radius:99px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .lead{font-size:1.15rem;color:#d6dcff}.tags{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}.tags li{border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:3px 12px;font-size:.85rem;color:#b3bbea}
@@ -29,7 +30,7 @@ footer{margin:60px 0 0;padding:26px 0 40px;border-top:1px solid rgba(255,255,255
 <nav class="bc" aria-label="Migas de pan"><a href="../../">Inicio</a> › <a href="../../#sec-catquiz">CatQuiz</a> › Sopa de lletres</nav>
 <h1>Sopa de lletres</h1>
 <p class="lead">Sopa de lletres en català online: sis paraules d&#x27;una categoria amagades en una graella de 8×8, en horitzontal, vertical o diagonal. Tens 150 segons per trobar-les.</p>
-<div class="stage" id="stage"><button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(13,18,48,.25),rgba(13,18,48,.25)),url(../../img/catquiz-sopa-de-lletres.jpg)" aria-label="Jugar a Sopa de lletres"><span>▶ Jugar</span></button></div>
+<div class="stage" id="stage"><video class="bgv" autoplay muted loop playsinline preload="metadata" poster="../../media/catquiz-sopa-de-lletres.jpg"><source src="../../media/catquiz-sopa-de-lletres.webm" type="video/webm"><source src="../../media/catquiz-sopa-de-lletres.mp4" type="video/mp4"></video><button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(13,18,48,.25),rgba(13,18,48,.25))" aria-label="Jugar a Sopa de lletres"><span>▶ Jugar</span></button></div>
 <noscript><p><a href="../../juegos/catquiz/jocs/sopa.html">Abrir Sopa de lletres</a></p></noscript>
 <p><a href="../../juegos/catquiz/jocs/sopa.html" target="_blank" rel="noopener">Obrir en una pestanya nova ↗</a></p>
 <ul class="tags"><li>Sopa de lletres</li><li>Categories</li><li>Català</li></ul>

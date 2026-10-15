@@ -18,6 +18,7 @@ h1{font-size:clamp(2rem,6vw,3.2rem);line-height:1.1;margin:.2em 0 .3em}
 .cover{width:100%;aspect-ratio:1.6;border-radius:18px;object-fit:cover;border:1px solid rgba(255,255,255,.15);display:block;background:#151b44}
 .stage{position:relative;width:100%;aspect-ratio:16/10;max-height:78vh;border-radius:18px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.15)}
 .stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.stage .bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .stage .go{position:absolute;inset:0;display:grid;place-items:center;border:0;cursor:pointer;color:#0d1230;background:center/cover}
 .go span{background:#ffc933;font:800 1.2rem system-ui;padding:16px 34px;border-radius:99px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .lead{font-size:1.15rem;color:#d6dcff}.tags{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}.tags li{border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:3px 12px;font-size:.85rem;color:#b3bbea}
@@ -29,7 +30,7 @@ footer{margin:60px 0 0;padding:26px 0 40px;border-top:1px solid rgba(255,255,255
 <nav class="bc" aria-label="Migas de pan"><a href="../../">Inicio</a> › <a href="../../#sec-ritmo">Ritmo</a> › Supernova Guitar</nav>
 <h1>Supernova Guitar</h1>
 <p class="lead">Juego de guitarra online ambientado en el año 3000: los clásicos del siglo XX suenan a sintetizador, nu-disco, house y vocoder. Toca las notas a tiempo y sube de nivel.</p>
-<div class="stage" id="stage"><button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(13,18,48,.25),rgba(13,18,48,.25)),url(../../img/supernova-guitar.jpg)" aria-label="Jugar a Supernova Guitar"><span>▶ Jugar</span></button></div>
+<div class="stage" id="stage"><video class="bgv" autoplay muted loop playsinline preload="metadata" poster="../../media/supernova-guitar.jpg"><source src="../../media/supernova-guitar.webm" type="video/webm"><source src="../../media/supernova-guitar.mp4" type="video/mp4"></video><button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(13,18,48,.25),rgba(13,18,48,.25))" aria-label="Jugar a Supernova Guitar"><span>▶ Jugar</span></button></div>
 <noscript><p><a href="../../juegos/supernova/index.html">Abrir Supernova Guitar</a></p></noscript>
 <p><a href="../../juegos/supernova/index.html" target="_blank" rel="noopener">Abrir en una pestaña nueva ↗</a></p>
 <ul class="tags"><li>Guitarra</li><li>Electrónica</li><li>Año 3000</li></ul>
