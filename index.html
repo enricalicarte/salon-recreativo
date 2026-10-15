@@ -233,9 +233,9 @@ footer p{margin:0;font:400 .76rem/1.5 var(--f-mono);letter-spacing:.08em;text-tr
 <div id="secs"></div>
 
 <footer>
-  <div class="in"><p>Salón Recreativo · Octubre 2026 · Juegos para el navegador</p></div>
+  <div class="in"><p>Salón Recreativo · Octubre 2026 · Juegos para el navegador <a href="#admin" id="admLink" hidden style="color:inherit;opacity:.35;margin-left:10px;font-size:.8em">admin</a></p></div>
 </footer>
-<div class="adm-bar" id="admBar"><span id="admTxt">Admin</span><button type="button" id="admBtn">Gestionar juegos</button></div>
+<div class="adm-bar" id="admBar"><span id="admTxt">Admin</span><button type="button" id="admBtn">Gestionar juegos</button><button type="button" id="admSave" hidden>Guardar en GitHub</button></div>
 
 <div class="stage" id="stage" role="dialog" aria-modal="true" aria-label="Juego" hidden>
   <div class="stage-bar">
@@ -1135,7 +1135,9 @@ function applyCfg(){
     b.textContent=CATS[k].n+' '+n;
   });
 }
+let ghMode=false,ghDirty=false;
 function toggleGame(id){
+  if(ghMode){const nx=new Set(offSet);nx.has(id)?nx.delete(id):nx.add(id);offSet=nx;ghDirty=true;applyCfg();$('#admTxt').textContent='Cambios sin guardar';$('#admSave').hidden=false;return;}
   if(!dbRef)return;
   const nx=new Set(offSet);nx.has(id)?nx.delete(id):nx.add(id);
   dbRef.set({off:Array.from(nx)}).catch(()=>{alert('No se pudo guardar el cambio.');});
@@ -1145,9 +1147,49 @@ Object.keys(cardById).forEach(id=>{
   b.addEventListener('click',ev=>{ev.stopPropagation();toggleGame(id);});
   cardById[id].appendChild(b);
 });
+
+/* Admin en GitHub Pages: games-config.json en el repo, editado con la API de GitHub y un token personal */
+const GH_FALLBACK={owner:'enricalicarte',repo:'salon-recreativo',branch:'main'};
+function ghRepo(){
+  const h=location.hostname,m=h.match(/^([^.]+)\.github\.io$/),seg=location.pathname.split('/').filter(Boolean)[0];
+  return m&&seg&&!/\.html?$/.test(seg)?{owner:m[1],repo:seg,branch:'main'}:GH_FALLBACK;
+}
+async function ghInit(){
+  ghMode=true;
+  try{const r=await fetch('games-config.json?'+Date.now(),{cache:'no-store'});if(r.ok){const d=await r.json();offSet=new Set(Array.isArray(d.off)?d.off:[]);}}catch(e){}
+  applyCfg();
+  const link=$('#admLink'),bar=$('#admBar'),btn=$('#admBtn'),save=$('#admSave');
+  if(!link)return;link.hidden=false;
+  const KEY='salon-gh-token';
+  const tok=()=>{try{return localStorage.getItem(KEY)||'';}catch(e){return '';}};
+  const api=(path,opt)=>{const g=ghRepo();return fetch('https://api.github.com/repos/'+g.owner+'/'+g.repo+path,Object.assign({headers:{Authorization:'Bearer '+tok(),Accept:'application/vnd.github+json'}},opt||{}));};
+  const enter=async()=>{
+    if(!tok()){
+      const t=prompt('Pega tu token de GitHub (permiso Contents: lectura y escritura solo sobre este repositorio). Se guarda solo en este navegador.');
+      if(!t)return;try{localStorage.setItem(KEY,t.trim());}catch(e){}
+    }
+    const r=await api('').catch(()=>null);
+    if(!r||!r.ok){try{localStorage.removeItem(KEY);}catch(e){}alert('El token no es válido o no tiene acceso a este repositorio.');return;}
+    bar.style.display='flex';isAdmin=true;document.body.classList.add('admin');btn.textContent='Salir del modo admin';$('#admTxt').textContent='Admin · ves también los ocultos';applyCfg();
+  };
+  link.addEventListener('click',e=>{e.preventDefault();enter();});
+  btn.addEventListener('click',()=>{isAdmin=false;document.body.classList.remove('admin');bar.style.display='none';applyCfg();});
+  save.addEventListener('click',async()=>{
+    save.disabled=true;save.textContent='Guardando…';
+    try{
+      const g=ghRepo(),path='/contents/games-config.json';
+      const cur=await api(path+'?ref='+g.branch);let sha;if(cur.ok)sha=(await cur.json()).sha;
+      const body={message:'Admin: actualizar juegos activos',content:btoa(JSON.stringify({off:Array.from(offSet).sort()},null,1)),branch:g.branch};if(sha)body.sha=sha;
+      const r=await api(path,{method:'PUT',body:JSON.stringify(body)});
+      if(!r.ok)throw new Error(r.status);
+      ghDirty=false;save.hidden=true;$('#admTxt').textContent='Guardado · se verá en 1–2 min';
+    }catch(e){alert('No se pudo guardar ('+e.message+'). Comprueba el token.');}
+    save.disabled=false;save.textContent='Guardar en GitHub';
+  });
+}
 (async()=>{
   try{
-    if(!window.claude||!claude.use)return;
+    if(!window.claude||!claude.use){ghInit();return;}
     const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
     if(db){
       dbRef=db.doc('config/games');
