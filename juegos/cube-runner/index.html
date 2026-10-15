@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Cube Runner — VÉRTICE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2B1A55; --cream:#FFF6E5; --lemon:#FFD53D; --gum:#FF4D9D;
+    --lime:#3DE07A; --tang:#FF8A3D;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
+  body{
+    background:linear-gradient(180deg,#7B5CFF 0%,#3FB8FF 52%,#9FE6FF 100%);
+    color:var(--ink);font-family:Fredoka,"Trebuchet MS",sans-serif;font-weight:500;
+    -webkit-font-smoothing:antialiased;touch-action:none;user-select:none;
+  }
+  canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+
+  .hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:flex-end;
+    align-items:flex-start;padding:16px 18px;pointer-events:none;gap:14px}
+  .chunk{background:var(--cream);border:5px solid var(--ink);border-radius:999px;
+    box-shadow:0 6px 0 var(--ink);padding:9px 20px;font-weight:700;font-size:17px}
+  .back{pointer-events:auto;text-decoration:none;color:var(--ink);transition:transform .1s,box-shadow .1s}
+  .back:hover{transform:translateY(3px);box-shadow:0 3px 0 var(--ink)}
+  .score{background:var(--lemon);font-size:clamp(1.5rem,5.5vw,2.2rem);padding:6px 24px 8px;
+    border-radius:26px;line-height:1.1;text-align:center}
+  .best{display:block;font-size:.72rem;font-weight:600;opacity:.72;margin-top:-2px}
+
+  .panel{position:fixed;inset:0;display:grid;place-items:center;padding:22px;
+    background:rgba(43,26,85,.45);backdrop-filter:blur(4px)}
+  .panel[hidden]{display:none}
+  .card{
+    background:var(--cream);border:7px solid var(--ink);border-radius:34px;
+    box-shadow:0 14px 0 var(--ink),0 30px 50px rgba(43,26,85,.45);
+    padding:34px 30px 30px;max-width:420px;width:100%;text-align:center;
+    animation:pop .45s cubic-bezier(.2,1.6,.4,1) both;
+  }
+  @keyframes pop{from{opacity:0;transform:scale(.75) translateY(24px)}to{opacity:1;transform:none}}
+  .card h1{isolation:isolate;margin:0 0 10px;font-size:clamp(2rem,8vw,2.9rem);font-weight:700;line-height:.95;
+    position:relative;color:var(--gum)}
+  .card h1::before{content:attr(data-text);position:absolute;inset:0;z-index:-1;
+    -webkit-text-stroke:10px var(--ink);color:transparent}
+  .result{font-size:1.15rem;font-weight:600;margin:0 0 12px}
+  .result b{font-size:1.45rem;color:var(--gum)}
+  .card p{margin:0 0 8px;font-size:1rem;font-weight:400;color:#5A4A80;line-height:1.45}
+  button{
+    margin-top:20px;width:100%;padding:16px 20px 18px;font:inherit;font-weight:700;
+    font-size:1.35rem;color:var(--ink);background:var(--lime);
+    border:6px solid var(--ink);border-radius:999px;cursor:pointer;
+    box-shadow:0 9px 0 #1E9E52;transition:transform .1s,box-shadow .1s;
+  }
+  button:hover{transform:translateY(4px);box-shadow:0 5px 0 #1E9E52}
+  button:active{transform:translateY(9px);box-shadow:0 0 0 #1E9E52}
+  button:focus-visible{outline:5px solid var(--lemon);outline-offset:4px}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="hud">
+  <div class="chunk score"><span id="dist">0</span> m<span class="best" id="best"></span></div>
+</div>
+
+<div class="panel" id="panel">
+  <div class="card">
+    <h1 id="ptitle" data-text="Cube Runner">Cube Runner</h1>
+    <p class="result" id="presult" hidden></p>
+    <p>Esquiva los bloques. El pasillo acelera y no deja de hacerlo.</p>
+    <p>Flechas o A/D. En móvil, arrastra el dedo por la pantalla.</p>
+    <button id="play">¡Empezar!</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* ── escena ─────────────────────────────────────────── */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x6FD0FF, 34, 88);
+
+const camera = new THREE.PerspectiveCamera(58, 1, .1, 220);
+camera.position.set(0, 3.4, 8);
+
+scene.add(new THREE.HemisphereLight(0xFFFFFF, 0x7C5BD0, 2.5));
+const sun = new THREE.DirectionalLight(0xFFFFFF, 2.0);
+sun.position.set(5, 11, 7);
+scene.add(sun);
+
+const steps = new Uint8Array([90, 90, 180, 180, 255, 255, 255, 255]);
+const ramp = new THREE.DataTexture(steps, steps.length, 1, THREE.RedFormat);
+ramp.minFilter = ramp.magFilter = THREE.NearestFilter;   // escalones duros, no degradado
+ramp.needsUpdate = true;
+const toon = c => new THREE.MeshToonMaterial({ color:c, gradientMap:ramp });
+const INK = new THREE.MeshBasicMaterial({ color:0x2B1A55, side:THREE.BackSide });
+const rbox = (w,h,d,r=.2) => new RoundedBoxGeometry(w,h,d,4,r);
+
+function outlined(geo, color, thickness = 1.09, parent = scene) {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(geo, toon(color)));
+  const line = new THREE.Mesh(geo, INK);
+  line.scale.setScalar(thickness);
+  g.add(line);
+  parent.add(g);
+  return g;
+}
+
+const LANES = [-3, -1.5, 0, 1.5, 3];
+const HALF = 3.6;
+
+/* pista */
+const track = outlined(rbox(9.4, 1.2, 240, .5), 0x3DE07A, 1.02);
+track.position.set(0, -1.15, -100);
+
+const STRIPE_GAP = 6, STRIPES = 26;
+const stripes = [];
+const stripeGeo = rbox(8.2, .1, 2.2, .05);
+for (let i = 0; i < STRIPES; i++) {
+  const s = new THREE.Mesh(stripeGeo, toon(0x2ECB6A));
+  s.position.set(0, -.53, -i * STRIPE_GAP);
+  scene.add(s);
+  stripes.push(s);
+}
+for (const side of [-1, 1]) {
+  const rail = outlined(rbox(.7, .9, 240, .3), 0xFF4D9D, 1.03);
+  rail.position.set(side * 4.7, -.4, -100);
+}
+
+/* corredor */
+const player = new THREE.Group();
+scene.add(player);
+const body = new THREE.Mesh(new THREE.CapsuleGeometry(.5, .6, 6, 18), toon(0xFFD53D));
+const bodyLine = new THREE.Mesh(body.geometry, INK); bodyLine.scale.setScalar(1.11);
+player.add(body, bodyLine);
+const eyeW = new THREE.MeshBasicMaterial({ color:0xFFFFFF });
+const eyeB = new THREE.MeshBasicMaterial({ color:0x2B1A55 });
+for (const sx of [-.2, .2]) {
+  const w = new THREE.Mesh(new THREE.SphereGeometry(.17, 14, 14), eyeW);
+  w.position.set(sx, .26, .42); w.scale.z = .45; player.add(w);
+  const b = new THREE.Mesh(new THREE.SphereGeometry(.085, 12, 12), eyeB);
+  b.position.set(sx, .26, .52); b.scale.z = .45; player.add(b);
+}
+const feet = [];
+for (const sx of [-.28, .28]) {
+  const f = new THREE.Mesh(rbox(.28,.2,.42,.08), toon(0x2B1A55));
+  f.position.set(sx, -.66, .1);
+  player.add(f); feet.push(f);
+}
+
+/* obstáculos por filas */
+const ROWS = 7, SPACING = 11, START_Z = -18;
+const OB_COLORS = [0xFF4D9D, 0x9B5CFF, 0xFF8A3D];
+const obGeo = rbox(1.25, 1.25, 1.25, .28);
+const rows = [];
+for (let i = 0; i < ROWS; i++) {
+  const blocks = LANES.map(() => {
+    const g = outlined(obGeo, OB_COLORS[Math.floor(Math.random()*3)]);
+    g.visible = false;
+    return g;
+  });
+  rows.push({ z: START_Z - i * SPACING, lanes: [], blocks });
+}
+function fillRow(row, difficulty) {
+  const n = difficulty < .35 ? 1 : difficulty < .7 ? 2 : (Math.random() < .35 ? 3 : 2);
+  const pool = [0,1,2,3,4];
+  row.lanes = [];
+  for (let i = 0; i < n; i++) row.lanes.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
+  row.blocks.forEach((b, i) => {
+    b.visible = row.lanes.includes(i);
+    b.position.set(LANES[i], .1, row.z);
+    b.children[0].material.color.setHex(OB_COLORS[Math.floor(Math.random()*3)]);
+  });
+}
+
+/* confeti (solo cuando hay récord) */
+const confetti = [];
+const confGeo = new THREE.PlaneGeometry(.22, .32);
+const CANDY = [0xFF4D9D, 0xFFD53D, 0x3DE07A, 0xFF8A3D, 0x9B5CFF, 0x3FB8FF];
+function burst() {
+  for (let i = 0; i < 70; i++) {
+    const m = new THREE.Mesh(confGeo, new THREE.MeshBasicMaterial({
+      color: CANDY[i % CANDY.length], side: THREE.DoubleSide
+    }));
+    m.position.set((Math.random()-.5)*10, 7 + Math.random()*6, -2 - Math.random()*8);
+    m.userData = { vy:-.04-Math.random()*.06, rx:(Math.random()-.5)*.2, rz:(Math.random()-.5)*.2 };
+    scene.add(m); confetti.push(m);
+  }
+}
+function clearConfetti() {
+  for (const m of confetti) { scene.remove(m); m.material.dispose(); }
+  confetti.length = 0;
+}
+
+/* ── estado ─────────────────────────────────────────── */
+const panel = document.getElementById('panel');
+const result = document.getElementById('presult');
+const ptitle = document.getElementById('ptitle');
+const distEl = document.getElementById('dist');
+const bestEl = document.getElementById('best');
+
+let state = 'ready', speed = 0, dist = 0, targetX = 0, shake = 0, run = 0;
+
+const loadBest = () => { try { return Number(localStorage.getItem('vertice.cuberunner')) || 0; } catch { return 0; } };
+const saveBest = v => { try { localStorage.setItem('vertice.cuberunner', String(v)); } catch {} };
+let best = loadBest();
+const paintBest = () => { bestEl.textContent = best ? `récord ${best} m` : ''; };
+paintBest();
+
+function setTitle(text, color) {
+  ptitle.textContent = text;
+  ptitle.dataset.text = text;
+  ptitle.style.color = color;
+}
+
+function start() {
+  clearConfetti();
+  speed = .34; dist = 0; targetX = 0; shake = 0;
+  player.position.set(0, 0, 0); player.rotation.z = 0;
+  rows.forEach((r, i) => { r.z = START_Z - i * SPACING; fillRow(r, 0); });
+  distEl.textContent = '0';
+  panel.hidden = true;
+  state = 'play';
+}
+
+function gameOver() {
+  state = 'over';
+  const m = Math.floor(dist);
+  const record = m > best;
+  if (record) { best = m; saveBest(best); paintBest(); burst(); }
+  setTitle(record ? '¡Récord!' : '¡Cataplum!', record ? '#3DE07A' : '#FF4D9D');
+  result.hidden = false;
+  result.innerHTML = record
+    ? `<b>${m} m</b><br>Lo mejor que has hecho.`
+    : `<b>${m} m</b><br>Tu récord sigue en ${best} m.`;
+  document.getElementById('play').textContent = '¡Otra vez!';
+  // el panel vuelve a entrar con rebote
+  const card = panel.firstElementChild;
+  card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
+  panel.hidden = false;
+}
+
+document.getElementById('play').addEventListener('click', start);
+
+/* ── controles ──────────────────────────────────────── */
+const keys = new Set();
+addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (k === ' ' || k === 'enter') { if (state !== 'play') { e.preventDefault(); start(); } }
+  keys.add(k);
+  if (['arrowleft','arrowright',' '].includes(k)) e.preventDefault();
+});
+addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
+
+let dragging = false;
+const pointerX = e => {
+  const nx = (e.clientX / innerWidth) * 2 - 1;
+  targetX = Math.max(-HALF, Math.min(HALF, nx * HALF * 1.15));
+};
+canvas.addEventListener('pointerdown', e => { dragging = true; pointerX(e); });
+addEventListener('pointermove', e => { if (dragging) pointerX(e); });
+addEventListener('pointerup', () => { dragging = false; });
+addEventListener('pointercancel', () => { dragging = false; });
+
+/* ── bucle ──────────────────────────────────────────── */
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+resize();
+
+function frame() {
+  requestAnimationFrame(frame);
+
+  if (state === 'play') {
+    speed = Math.min(speed + .00022, 1.05);
+    dist += speed * 1.9;
+    run += speed;
+    distEl.textContent = Math.floor(dist);
+
+    if (keys.has('arrowleft')  || keys.has('a')) targetX -= .17;
+    if (keys.has('arrowright') || keys.has('d')) targetX += .17;
+    targetX = Math.max(-HALF, Math.min(HALF, targetX));
+    player.position.x += (targetX - player.position.x) * .18;
+    player.rotation.z = (player.position.x - targetX) * .3;
+    player.position.y = Math.abs(Math.sin(run * .9)) * .22;
+    feet[0].position.z =  Math.sin(run * 1.8) * .22 + .1;
+    feet[1].position.z = -Math.sin(run * 1.8) * .22 + .1;
+
+    for (const s of stripes) {
+      s.position.z += speed;
+      if (s.position.z > 10) s.position.z -= STRIPES * STRIPE_GAP;
+    }
+
+    const difficulty = Math.min(dist / 900, 1);
+    for (const row of rows) {
+      row.z += speed;
+      if (row.z > 9) {
+        row.z = Math.min(...rows.map(r => r.z)) - SPACING;
+        fillRow(row, difficulty);
+      }
+      for (const b of row.blocks) if (b.visible) {
+        b.position.z = row.z;
+        b.rotation.y += .012;
+        b.position.y = .1 + Math.sin(row.z * .3) * .07;
+      }
+      if (Math.abs(row.z) < .95) {
+        for (const lane of row.lanes) {
+          if (Math.abs(player.position.x - LANES[lane]) < 1.0) { shake = 1; gameOver(); }
+        }
+      }
+    }
+  }
+
+  for (let i = confetti.length - 1; i >= 0; i--) {
+    const m = confetti[i];
+    m.position.y += m.userData.vy;
+    m.rotation.x += m.userData.rx;
+    m.rotation.z += m.userData.rz;
+    if (m.position.y < -6) { scene.remove(m); m.material.dispose(); confetti.splice(i,1); }
+  }
+
+  if (shake > 0) shake = Math.max(0, shake - .045);
+  camera.position.x = player.position.x * .36 + (Math.random()-.5) * shake * .6;
+  camera.position.y = 3.4 + (Math.random()-.5) * shake * .5;
+  camera.lookAt(player.position.x * .5, .5, -12);
+
+  renderer.render(scene, camera);
+}
+frame();
+</script>
+
+<!-- ══ VÉRTICE: pantalla completa al empezar ══ -->
+<script>
+(function(){
+  var b=document.getElementById('play');if(!b)return;
+  b.addEventListener('click',function(){
+    var el=document.documentElement,rf=el.requestFullscreen||el.webkitRequestFullscreen;
+    if(rf){try{var r=rf.call(el);if(r&&r.catch)r.catch(function(){})}catch(_){}}
+    
+  });
+})();
+</script>
+
+</body>
+</html>

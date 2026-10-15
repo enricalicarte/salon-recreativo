@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Tower Stack — VÉRTICE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#2B1A55;--cream:#FFF6E5;--lemon:#FFD53D;--gum:#FF4D9D;--lime:#3DE07A}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
+  body{
+    background:linear-gradient(180deg,#6A4BFF 0%,#4FC3FF 55%,#B6ECFF 100%);
+    color:var(--ink);font-family:Fredoka,"Trebuchet MS",sans-serif;font-weight:500;
+    -webkit-font-smoothing:antialiased;touch-action:none;user-select:none;
+  }
+  canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+
+  .hud{position:fixed;top:0;left:0;right:0;display:flex;justify-content:flex-end;
+    align-items:flex-start;padding:16px 18px;pointer-events:none;gap:14px}
+  .chunk{background:var(--cream);border:5px solid var(--ink);border-radius:999px;
+    box-shadow:0 6px 0 var(--ink);padding:9px 20px;font-weight:700;font-size:17px}
+  .back{pointer-events:auto;text-decoration:none;color:var(--ink);transition:transform .1s,box-shadow .1s}
+  .back:hover{transform:translateY(3px);box-shadow:0 3px 0 var(--ink)}
+  .score{background:var(--lemon);font-size:clamp(1.5rem,5.5vw,2.2rem);padding:6px 26px 8px;
+    border-radius:26px;line-height:1.1;text-align:center}
+  .best{display:block;font-size:.72rem;font-weight:600;opacity:.72;margin-top:-2px}
+
+  .streak{position:fixed;left:50%;top:20%;transform:translateX(-50%) scale(.6);
+    font-size:clamp(1.6rem,6vw,2.4rem);font-weight:700;color:var(--lemon);
+    opacity:0;pointer-events:none;isolation:isolate}
+  .streak::before{content:attr(data-text);position:absolute;inset:0;z-index:-1;
+    -webkit-text-stroke:9px var(--ink);color:transparent}
+
+  .panel{position:fixed;inset:0;display:grid;place-items:center;padding:22px;
+    background:rgba(43,26,85,.45);backdrop-filter:blur(4px)}
+  .panel[hidden]{display:none}
+  .card{
+    background:var(--cream);border:7px solid var(--ink);border-radius:34px;
+    box-shadow:0 14px 0 var(--ink),0 30px 50px rgba(43,26,85,.45);
+    padding:34px 30px 30px;max-width:420px;width:100%;text-align:center;
+    animation:pop .45s cubic-bezier(.2,1.6,.4,1) both;
+  }
+  @keyframes pop{from{opacity:0;transform:scale(.75) translateY(24px)}to{opacity:1;transform:none}}
+  .card h1{isolation:isolate;margin:0 0 10px;font-size:clamp(2rem,8vw,2.9rem);font-weight:700;line-height:.95;
+    position:relative;color:var(--gum)}
+  .card h1::before{content:attr(data-text);position:absolute;inset:0;z-index:-1;
+    -webkit-text-stroke:10px var(--ink);color:transparent}
+  .result{font-size:1.15rem;font-weight:600;margin:0 0 12px}
+  .result b{font-size:1.45rem;color:var(--gum)}
+  .card p{margin:0 0 8px;font-size:1rem;font-weight:400;color:#5A4A80;line-height:1.45}
+  button{
+    margin-top:20px;width:100%;padding:16px 20px 18px;font:inherit;font-weight:700;
+    font-size:1.35rem;color:var(--ink);background:var(--lime);
+    border:6px solid var(--ink);border-radius:999px;cursor:pointer;
+    box-shadow:0 9px 0 #1E9E52;transition:transform .1s,box-shadow .1s;
+  }
+  button:hover{transform:translateY(4px);box-shadow:0 5px 0 #1E9E52}
+  button:active{transform:translateY(9px);box-shadow:0 0 0 #1E9E52}
+  button:focus-visible{outline:5px solid var(--lemon);outline-offset:4px}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="hud">
+  <div class="chunk score"><span id="score">0</span><span class="best" id="best"></span></div>
+</div>
+<div class="streak" id="streak" data-text="¡CLAVADO!">¡CLAVADO!</div>
+
+<div class="panel" id="panel">
+  <div class="card">
+    <h1 id="ptitle" data-text="Tower Stack">Tower Stack</h1>
+    <p class="result" id="presult" hidden></p>
+    <p>Suelta cada pieza sobre la anterior. Lo que sobresale se corta y se cae.</p>
+    <p>Clic, espacio o toca la pantalla. Si la clavas en el centro, recuperas anchura.</p>
+    <button id="play">¡Empezar!</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.164.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.164.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* ── escena ─────────────────────────────────────────── */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x7FD4FF, 30, 78);
+
+const camera = new THREE.PerspectiveCamera(38, 1, .1, 220);
+scene.add(new THREE.HemisphereLight(0xFFFFFF, 0x6F4FD0, 2.4));
+const sun = new THREE.DirectionalLight(0xFFFFFF, 2.1);
+sun.position.set(9, 15, 11);
+scene.add(sun);
+
+const steps = new Uint8Array([90, 90, 180, 180, 255, 255, 255, 255]);
+const ramp = new THREE.DataTexture(steps, steps.length, 1, THREE.RedFormat);
+ramp.minFilter = ramp.magFilter = THREE.NearestFilter;   // escalones duros, no degradado
+ramp.needsUpdate = true;
+const INK = new THREE.MeshBasicMaterial({ color:0x2B1A55, side:THREE.BackSide });
+
+const BASE = 3.2, H = .74, SWING = 4.6, EDGE = .085;
+const CANDY = [0xFF4D9D, 0xFFD53D, 0x3DE07A, 0xFF8A3D, 0x9B5CFF, 0x3FB8FF];
+
+function geoFor(sx, sz) {
+  const r = Math.min(.17, sx / 2.6, sz / 2.6, H / 2.6);
+  return new RoundedBoxGeometry(sx, H, sz, 3, Math.max(r, .02));
+}
+
+/* bloque = cuerpo + copia inflada por dentro (el contorno de dibujo animado).
+   La inflación se calcula por eje para que la línea tenga grosor constante. */
+function makeBlock(sx, sz, y, color) {
+  const geo = geoFor(sx, sz);
+  const g = new THREE.Group();
+  const skin = new THREE.Mesh(geo, new THREE.MeshToonMaterial({ color, gradientMap:ramp }));
+  const line = new THREE.Mesh(geo, INK);
+  g.add(skin, line);
+  g.userData = { geo, skin, line, sx, sz };
+  fitOutline(g);
+  g.position.y = y;
+  scene.add(g);
+  return g;
+}
+function fitOutline(g) {
+  const { sx, sz } = g.userData;
+  g.userData.line.scale.set(1 + EDGE*2/sx, 1 + EDGE*2/H, 1 + EDGE*2/sz);
+}
+function reshape(g, sx, sz) {
+  g.userData.geo.dispose();
+  const geo = geoFor(sx, sz);
+  g.userData.geo = geo;
+  g.userData.skin.geometry = geo;
+  g.userData.line.geometry = geo;
+  g.userData.sx = sx; g.userData.sz = sz;
+  fitOutline(g);
+}
+function destroy(g) {
+  scene.remove(g);
+  g.userData.geo.dispose();
+  g.userData.skin.material.dispose();
+}
+
+/* ── estado ─────────────────────────────────────────── */
+const panel   = document.getElementById('panel');
+const result  = document.getElementById('presult');
+const ptitle  = document.getElementById('ptitle');
+const scoreEl = document.getElementById('score');
+const bestEl  = document.getElementById('best');
+const streakEl= document.getElementById('streak');
+
+let state='ready', tower=[], debris=[], confetti=[], moving=null, top=null;
+let level=0, camY=6, streakT=0;
+
+const loadBest = () => { try { return Number(localStorage.getItem('vertice.towerstack')) || 0; } catch { return 0; } };
+const saveBest = v => { try { localStorage.setItem('vertice.towerstack', String(v)); } catch {} };
+let best = loadBest();
+const paintBest = () => { bestEl.textContent = best ? `récord ${best}` : ''; };
+paintBest();
+
+function clearScene() {
+  for (const g of [...tower, ...debris]) destroy(g);
+  if (moving) destroy(moving.mesh);
+  for (const m of confetti) { scene.remove(m); m.material.dispose(); }
+  tower = []; debris = []; confetti = []; moving = null;
+}
+
+function spawnMoving() {
+  const axis = level % 2 === 0 ? 'x' : 'z';
+  const g = makeBlock(top.sx, top.sz, top.y + H, CANDY[(level + 1) % CANDY.length]);
+  g.position.x = top.x; g.position.z = top.z;
+  g.position[axis] = -SWING;
+  moving = { mesh:g, axis, dir:1, speed: Math.min(.075 + level * .0038, .21) };
+}
+
+function start() {
+  clearScene();
+  level = 0;
+  top = { x:0, z:0, sx:BASE, sz:BASE, y:0 };
+  tower.push(makeBlock(BASE, BASE, 0, CANDY[0]));
+  for (let i = 1; i <= 4; i++) tower.push(makeBlock(BASE, BASE, -i * H, CANDY[i % CANDY.length]));
+  camY = 6;
+  scoreEl.textContent = '0';
+  panel.hidden = true;
+  state = 'play';
+  spawnMoving();
+}
+
+function setTitle(text, color) {
+  ptitle.textContent = text; ptitle.dataset.text = text; ptitle.style.color = color;
+}
+
+function gameOver() {
+  state = 'over';
+  const record = level > best;
+  if (record) { best = level; saveBest(best); paintBest(); burst(camY); }
+  setTitle(record ? '¡Récord!' : '¡Se cayó!', record ? '#3DE07A' : '#FF4D9D');
+  result.hidden = false;
+  result.innerHTML = record
+    ? `<b>${level} pisos</b><br>Nadie ha llegado más alto aquí.`
+    : `<b>${level} pisos</b><br>Tu récord sigue en ${best}.`;
+  document.getElementById('play').textContent = '¡Otra vez!';
+  const card = panel.firstElementChild;
+  card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
+  panel.hidden = false;
+}
+document.getElementById('play').addEventListener('click', start);
+
+/* confeti */
+const confGeo = new THREE.PlaneGeometry(.24, .34);
+function burst(y, n = 60) {
+  for (let i = 0; i < n; i++) {
+    const m = new THREE.Mesh(confGeo, new THREE.MeshBasicMaterial({
+      color: CANDY[i % CANDY.length], side: THREE.DoubleSide
+    }));
+    m.position.set((Math.random()-.5)*7, y + 3 + Math.random()*4, (Math.random()-.5)*7);
+    m.userData = { vy:-.03-Math.random()*.05, rx:(Math.random()-.5)*.2, rz:(Math.random()-.5)*.2 };
+    scene.add(m); confetti.push(m);
+  }
+}
+
+/* ── soltar pieza ───────────────────────────────────── */
+function drop() {
+  if (state !== 'play' || !moving) return;
+  const { mesh, axis } = moving;
+  const sizeKey = axis === 'x' ? 'sx' : 'sz';
+  const prevSize = top[sizeKey];
+  const delta = mesh.position[axis] - top[axis];
+  const overlap = prevSize - Math.abs(delta);
+
+  if (overlap <= 0) {
+    mesh.userData.vy = 0;
+    mesh.userData.vr = (Math.random()-.5)*.14;
+    mesh.userData.axis = axis;
+    debris.push(mesh);
+    moving = null;
+    gameOver();
+    return;
+  }
+
+  const perfect = Math.abs(delta) < .16;
+  const newSize = perfect ? Math.min(prevSize + .12, BASE) : overlap;
+  const newPos  = perfect ? top[axis] : top[axis] + delta / 2;
+
+  if (perfect) {
+    streakT = 1;
+    burst(mesh.position.y, 18);
+  } else {
+    const chunkSize = Math.abs(delta);
+    const side = Math.sign(delta);
+    const chunk = makeBlock(
+      axis === 'x' ? chunkSize : top.sz,
+      axis === 'x' ? top.sz    : chunkSize,
+      mesh.position.y,
+      mesh.userData.skin.material.color.getHex()
+    );
+    chunk.position.x = mesh.position.x;
+    chunk.position.z = mesh.position.z;
+    chunk.position[axis] = newPos + side * (newSize / 2 + chunkSize / 2);
+    chunk.userData.vy = 0;
+    chunk.userData.vr = side * .09;
+    chunk.userData.axis = axis;
+    debris.push(chunk);
+  }
+
+  reshape(mesh, axis === 'x' ? newSize : top.sx, axis === 'z' ? newSize : top.sz);
+  mesh.position[axis] = newPos;
+  mesh.userData.squash = 1;
+
+  top = {
+    x: axis === 'x' ? newPos : top.x,
+    z: axis === 'z' ? newPos : top.z,
+    sx: axis === 'x' ? newSize : top.sx,
+    sz: axis === 'z' ? newSize : top.sz,
+    y: mesh.position.y
+  };
+  tower.push(mesh);
+  level++;
+  scoreEl.textContent = level;
+  spawnMoving();
+}
+
+canvas.addEventListener('pointerdown', drop);
+addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    state === 'play' ? drop() : start();
+  }
+});
+
+/* ── bucle ──────────────────────────────────────────── */
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+resize();
+
+function frame() {
+  requestAnimationFrame(frame);
+
+  if (state === 'play' && moving) {
+    const p = moving.mesh.position;
+    p[moving.axis] += moving.speed * moving.dir;
+    if (p[moving.axis] >  SWING) { p[moving.axis] =  SWING; moving.dir = -1; }
+    if (p[moving.axis] < -SWING) { p[moving.axis] = -SWING; moving.dir =  1; }
+  }
+
+  /* la pieza recién colocada da un botecito al aterrizar */
+  for (const g of tower) {
+    if (g.userData.squash > 0) {
+      g.userData.squash -= .09;
+      const s = 1 + Math.sin(g.userData.squash * Math.PI) * .16;
+      g.scale.set(s, 2 - s, s);
+      if (g.userData.squash <= 0) g.scale.set(1,1,1);
+    }
+  }
+
+  for (let i = debris.length - 1; i >= 0; i--) {
+    const d = debris[i];
+    d.userData.vy -= .028;
+    d.position.y += d.userData.vy;
+    d.rotation[d.userData.axis === 'x' ? 'z' : 'x'] += d.userData.vr;
+    if (d.position.y < camY - 32) { destroy(d); debris.splice(i,1); }
+  }
+
+  for (let i = confetti.length - 1; i >= 0; i--) {
+    const m = confetti[i];
+    m.userData.vy -= .0016;
+    m.position.y += m.userData.vy;
+    m.rotation.x += m.userData.rx;
+    m.rotation.z += m.userData.rz;
+    if (m.position.y < camY - 22) { scene.remove(m); m.material.dispose(); confetti.splice(i,1); }
+  }
+
+  if (streakT > 0) {
+    streakT -= .012;
+    streakEl.style.opacity = Math.max(0, Math.min(1, streakT * 1.6));
+    streakEl.style.transform =
+      `translateX(-50%) translateY(${(1-streakT)*-26}px) scale(${.75 + (1-streakT)*.35})`;
+  }
+
+  const targetY = (top ? top.y : 0) + 6.6;
+  camY += (targetY - camY) * .07;
+  camera.position.set(9.5, camY, 9.5);
+  camera.lookAt(0, camY - 5.6, 0);
+
+  renderer.render(scene, camera);
+}
+frame();
+</script>
+
+<!-- ══ VÉRTICE: pantalla completa al empezar ══ -->
+<script>
+(function(){
+  var b=document.getElementById('play');if(!b)return;
+  b.addEventListener('click',function(){
+    var el=document.documentElement,rf=el.requestFullscreen||el.webkitRequestFullscreen;
+    if(rf){try{var r=rf.call(el);if(r&&r.catch)r.catch(function(){})}catch(_){}}
+    
+  });
+})();
+</script>
+
+</body>
+</html>

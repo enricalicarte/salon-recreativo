@@ -289,7 +289,8 @@
     "Runner",
     "Flechas o deslizar",
     "Vértice"
-   ]
+   ],
+   "play": "juegos/cube-runner/index.html"
   },
   {
    "slug": "tower-stack",
@@ -301,7 +302,8 @@
     "Arcade",
     "Un toque",
     "Vértice"
-   ]
+   ],
+   "play": "juegos/tower-stack/index.html"
   },
   {
    "slug": "futbol-retro-7v7",
