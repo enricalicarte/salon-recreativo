@@ -60,7 +60,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.01em;marg
 .row{display:flex;gap:22px;width:max-content;animation:slide var(--dur,70s) linear infinite}
 .row.rev{animation-direction:reverse}
 .row>div{width:var(--cw,300px);aspect-ratio:1.6;border-radius:16px;overflow:hidden;background:var(--panel);box-shadow:0 20px 50px rgba(0,0,0,.55);flex:none}
-.row canvas{width:100%;height:100%}
+.row canvas{width:100%;height:100%}.row>div{position:relative}
 @keyframes slide{to{transform:translateX(-50%)}}
 .veil{position:absolute;inset:0;z-index:-1;background:
   radial-gradient(ellipse 72% 58% at 50% 48%,rgba(7,6,15,.6),rgba(7,6,15,.82) 70%,var(--bg) 100%),
@@ -138,7 +138,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.01em;marg
 .card:hover,.card:focus-within{border-color:color-mix(in srgb,var(--c) 55%,transparent);box-shadow:0 24px 60px -20px color-mix(in srgb,var(--c) 55%,transparent),0 10px 30px rgba(0,0,0,.5)}
 .card:hover::after,.card:focus-within::after{opacity:1}
 .cover{position:relative;aspect-ratio:1.6;background:var(--panel2);overflow:hidden}
-.cover canvas{width:100%;height:100%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.cover canvas{position:absolute;inset:0;width:100%;height:100%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .card:hover .cover canvas{transform:scale(1.04)}
 .chip{position:absolute;left:12px;top:12px;font:700 .64rem/1 var(--f-display);letter-spacing:.06em;color:var(--bg);background:var(--c);padding:7px 10px;border-radius:999px}
 .body{padding:16px 18px 0;flex:1}
@@ -181,7 +181,32 @@ footer p:not(.sig){margin:18px 0 0;color:var(--mute);font-size:.95rem;max-width:
 .stage iframe{position:relative;z-index:1;width:100%;height:100%;border:0;background:#000}
 @media (max-height:480px){.stage-bar{padding:4px 8px}.sb{padding:6px 10px}}
 @media (max-width:560px){.stage-bar{gap:6px;padding:6px max(8px,env(safe-area-inset-right)) 6px max(8px,env(safe-area-inset-left))}.stage-title,#stFull{display:none}.sb{padding:10px 12px;font-size:.78rem}#stOpen{flex:1;text-align:center}}
+ 
+/* ---------- Navegación fluida y detalles ---------- */
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}.lenis.lenis-stopped{overflow:hidden}
+.prog{position:fixed;left:0;top:0;z-index:60;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--cur,var(--sun)),var(--pink),var(--cyan));transition:background .4s}
+.glow{position:fixed;left:0;top:0;z-index:1;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;opacity:0;mix-blend-mode:screen;will-change:transform;transition:opacity .4s;
+  background:radial-gradient(circle,color-mix(in srgb,var(--cur,var(--sun)) 22%,transparent),transparent 60%)}
+body.hasglow .glow{opacity:1}
+.brand i{background:var(--cur,var(--sun));box-shadow:0 0 14px var(--cur,var(--sun));transition:background .4s,box-shadow .4s}
+.tick{overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg2);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.tick-track{display:flex;width:max-content;animation:slide 90s linear infinite;padding:14px 0}
+.tick-track span{display:inline-flex;align-items:center;gap:14px;padding:0 22px;font:700 .78rem/1 var(--f-display);letter-spacing:.04em;color:var(--mute);white-space:nowrap}
+.tick-track span i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.card.rv{opacity:0;transform:translateY(28px) scale(.97)}
+.card.rv.shown{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.2,.8,.2,1) var(--d,0s),transform .7s cubic-bezier(.2,.8,.2,1) var(--d,0s)}
+.cover .pl{position:absolute;inset:0;display:grid;place-items:center;background:rgba(7,6,15,.25);opacity:0;transition:opacity .25s;cursor:pointer;border:0;padding:0}
+.cover .pl b{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--sun);color:var(--bg);font-size:1.3rem;box-shadow:0 10px 30px rgba(0,0,0,.5);transform:scale(.8);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.card:hover .cover .pl,.card:focus-within .cover .pl{opacity:1}.card:hover .cover .pl b{transform:none}
+.stage{transform-origin:0 0}
+.hero-c,.wall{will-change:transform}
+.mark{background:linear-gradient(90deg,#fff,var(--sun) 40%,var(--pink) 70%,var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:shimmer 8s linear infinite}
+.mark span{color:transparent}
+@keyframes shimmer{to{background-position:200% 0}}
+@media (prefers-reduced-motion:reduce){.card.rv{opacity:1;transform:none}.tick-track,.mark{animation:none}.glow{display:none}}
 </style></head><body>
+<div class="prog" id="prog" aria-hidden="true"></div>
+<div class="glow" id="glow" aria-hidden="true"></div>
 
 <header class="top" id="top">
   <div class="in">
@@ -208,6 +233,8 @@ footer p:not(.sig){margin:18px 0 0;color:var(--mute);font-size:.95rem;max-width:
   <div class="scroll-hint" aria-hidden="true"></div>
 </section>
 
+<div class="tick" aria-hidden="true"><div class="tick-track" id="tick"></div></div>
+
 <section class="band cosmic" id="trilogia">
   <div class="in">
     <div class="band-head">
@@ -221,7 +248,7 @@ footer p:not(.sig){margin:18px 0 0;color:var(--mute);font-size:.95rem;max-width:
   </div>
 </section>
 
-<nav class="secnav" id="secnav" aria-label="Ir a una sección"><div class="in" id="chips"></div></nav>
+<nav class="secnav" id="secnav" aria-label="Ir a una sección"><div class="in" id="chips" data-lenis-prevent></div></nav>
 <div id="secs"></div>
 
 <footer>
@@ -235,12 +262,13 @@ footer p:not(.sig){margin:18px 0 0;color:var(--mute);font-size:.95rem;max-width:
     <button class="sb" id="stFull" type="button">Pantalla completa</button>
     <button class="sb sb-x" id="stClose" type="button">Cerrar ✕</button>
   </div>
-  <div class="stage-body">
+  <div class="stage-body" data-lenis-prevent>
     <p class="stage-load">Cargando…</p>
     <iframe id="stFrame" title="Juego" allow="fullscreen; autoplay; gamepad; accelerometer; gyroscope" allowfullscreen></iframe>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
 <script>
 (()=>{
 'use strict';
@@ -1039,6 +1067,9 @@ $('#n').textContent=GAMES.length;
   }
 })();
 
+/* ---------- Cinta de nombres ---------- */
+(function(){const t=$('#tick');if(!t)return;const h=GAMES.map(g=>'<span style="--c:'+CATS[g.cat].c+'"><i></i>'+esc(g.name)+'</span>').join('');t.innerHTML=h+h;})();
+
 /* ---------- Cartas ---------- */
 const slugify=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const slugOf=g=>(g.cat==='relax'?'relax-':g.cat==='catquiz'?'catquiz-':'')+slugify(g.name);
@@ -1050,7 +1081,7 @@ function makeCard(g,idx){
     :g.url?'<a class="play" href="'+esc(g.url)+'" target="_blank" rel="noopener">'+esc(g.cta||'Jugar')+' <span aria-hidden="true">↗</span></a>'
     :'<span class="pending">Próximamente</span>';
   el.innerHTML=
-    '<div class="cover"><canvas aria-hidden="true"></canvas><span class="chip">'+esc(cat.n)+'</span></div>'+
+    '<div class="cover"><canvas aria-hidden="true"></canvas><span class="chip">'+esc(cat.n)+'</span>'+(g.play?'<button class="pl" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'" aria-label="Jugar a '+esc(g.name)+'"><b>▶</b></button>':'')+'</div>'+
     '<div class="body"><h3>'+(g.play&&!window.claude?'<a href="jugar/'+slugOf(g)+'/">'+esc(g.name)+'</a>':esc(g.name))+'</h3>'+(g.note?'<p class="former">'+esc(g.note)+'</p>':'')+
     '<p class="blurb">'+esc(g.blurb)+'</p></div>'+
     '<div class="foot"><ul class="tags">'+g.tags.slice(0,2).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+cta+'</div>';
@@ -1077,9 +1108,16 @@ const secGrids={},secEls={};
 });
 GAMES.forEach((g,i)=>{
   const el=makeCard(g,i);
-  if(g.tri)$('#tri').appendChild(el);
-  else{secGrids[g.cat].appendChild(el);gridCards.push(el);}
+  const grid=g.tri?$('#tri'):secGrids[g.cat];
+  el.style.setProperty('--d',(grid.children.length%4)*.07+'s');
+  grid.appendChild(el);
+  if(!g.tri)gridCards.push(el);
 });
+if(!reduce&&'IntersectionObserver' in window){
+  const cards=document.querySelectorAll('.card');cards.forEach(c=>c.classList.add('rv'));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('shown');io.unobserve(e.target);}}),{rootMargin:'0px 0px -8% 0px',threshold:.1});
+  cards.forEach(c=>io.observe(c));
+}
 
 /* ---------- Navegación de secciones ---------- */
 const chips=$('#chips');
@@ -1094,21 +1132,51 @@ if('IntersectionObserver' in window){
   const io=new IntersectionObserver(es=>{
     es.forEach(e=>{if(!e.isIntersecting)return;const k=e.target.id.replace('sec-','');
       chips.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.k===k));
-      const a=links[k];if(a&&a.scrollIntoView)a.scrollIntoView({block:'nearest',inline:'center',behavior:reduce?'auto':'smooth'});});
+      document.documentElement.style.setProperty('--cur',k==='trilogia'?'#9a8cff':CATS[k].c);
+      const a=links[k];if(a)chips.scrollTo({left:a.offsetLeft-chips.clientWidth/2+a.offsetWidth/2,behavior:reduce?'auto':'smooth'});});
   },{rootMargin:'-40% 0px -55% 0px'});
   secs.forEach(s=>io.observe(s));
 }
 
 /* ---------- Barra superior ---------- */
-const top=$('#top');
-const onScroll=()=>{top.classList.toggle('solid',scrollY>40);};
+const top=$('#top'),prog=$('#prog'),heroC=$('.hero-c'),wallEl=$('.wall');
+const onScroll=()=>{
+  const y=scrollY;top.classList.toggle('solid',y>40);
+  const max=document.documentElement.scrollHeight-innerHeight;prog.style.transform='scaleX('+(max>0?y/max:0)+')';
+  if(!reduce&&y<innerHeight*1.2){heroC.style.transform='translateY('+(y*.28)+'px)';heroC.style.opacity=String(Math.max(0,1-y/(innerHeight*.75)));wallEl.style.transform='translateY('+(y*.14)+'px)';}
+  if(y<=0)document.documentElement.style.setProperty('--cur','#ffd23f');
+};
 window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* Scroll con inercia (solo ratón, sin "reducir movimiento") y anclas suaves */
+let lenis=null;
+if(fine&&!reduce&&window.Lenis){
+  try{lenis=new Lenis({lerp:.09,smoothWheel:true});
+    const raf=t=>{lenis.raf(t);requestAnimationFrame(raf);};requestAnimationFrame(raf);
+  }catch(e){lenis=null;}
+}
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href^="#"]');if(!a)return;
+  const id=a.getAttribute('href').slice(1),el=id?document.getElementById(id):document.body;if(!el)return;
+  e.preventDefault();
+  const off=id?-118:0;
+  if(lenis)lenis.scrollTo(el,{offset:off,duration:1.1});
+  else{const y=el.getBoundingClientRect().top+scrollY+off;window.scrollTo({top:y,behavior:reduce?'auto':'smooth'});}
+  if(id)history.replaceState(null,'','#'+id);
+});
+
+/* Luz que sigue al puntero */
+(function(){const g=$('#glow');if(!g||!fine||reduce)return;let x=innerWidth/2,y=innerHeight/2,cx=x,cy=y,on=false;
+  window.addEventListener('pointermove',e=>{x=e.clientX;y=e.clientY;if(!on){on=true;document.body.classList.add('hasglow');}},{passive:true});
+  document.addEventListener('pointerleave',()=>{document.body.classList.remove('hasglow');on=false;});
+  const tick=()=>{cx+=(x-cx)*.12;cy+=(y-cy)*.12;g.style.transform='translate('+cx+'px,'+cy+'px)';requestAnimationFrame(tick);};requestAnimationFrame(tick);
+})();
 
 /* ---------- Lienzos ---------- */
 function size(it){
-  const r=it.cv.getBoundingClientRect();
-  if(!r.width)return false;
-  const dpr=it.lite?1:Math.min(window.devicePixelRatio||1,2),W=Math.round(r.width*dpr);
+  const w=it.cv.parentNode.clientWidth;
+  if(!w)return false;
+  const dpr=it.lite?1:Math.min(window.devicePixelRatio||1,2),W=Math.round(w*dpr);
   if(it.cv.width!==W){it.cv.width=W;it.cv.height=Math.round(W/1.6);}
   return true;
 }
@@ -1127,21 +1195,27 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(refresh);
 /* ---------- Visor ---------- */
 const st=$('#stage'),fr=$('#stFrame');
 let lastFocus=null;
-function openGame(src,title){
+function openGame(src,title,from){
   lastFocus=document.activeElement;
   $('#stTitle').textContent=title||'';
   $('#stOpen').href=src;
-  st.hidden=false;document.documentElement.style.overflow='hidden';
-  fr.src=src;$('#stClose').focus();
+  st.hidden=false;document.documentElement.style.overflow='hidden';if(lenis)lenis.stop();
+  const cv=from&&from.closest&&from.closest('.card')?from.closest('.card').querySelector('.cover'):null;
+  if(cv&&!reduce&&st.animate){
+    const r=cv.getBoundingClientRect();
+    st.animate([{transform:'translate('+r.left+'px,'+r.top+'px) scale('+(r.width/innerWidth)+','+(r.height/innerHeight)+')',opacity:.4,borderRadius:'22px'},{transform:'none',opacity:1,borderRadius:'0px'}],{duration:460,easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>{fr.src=src;};
+  }else fr.src=src;
+  $('#stClose').focus();
 }
 function closeGame(){
-  fr.src='about:blank';st.hidden=true;document.documentElement.style.overflow='';
+  fr.src='about:blank';document.documentElement.style.overflow='';if(lenis)lenis.start();
+  if(!reduce&&st.animate){st.animate([{opacity:1},{opacity:0,transform:'scale(.98)'}],{duration:220,easing:'ease-out'}).onfinish=()=>{st.hidden=true;};}else st.hidden=true;
   try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});}catch(e){}
   if(lastFocus&&lastFocus.focus)lastFocus.focus();
 }
 document.addEventListener('click',e=>{
-  const b=e.target.closest('[data-play]');if(b){openGame(b.dataset.play,b.dataset.title);return;}
-  if(e.target.closest('[data-random]')){const p=GAMES.filter(g=>g.play);const g=p[Math.floor(Math.random()*p.length)];openGame(g.play,g.name);}
+  const b=e.target.closest('[data-play]');if(b){openGame(b.dataset.play,b.dataset.title,b);return;}
+  if(e.target.closest('[data-random]')){const p=GAMES.filter(g=>g.play);const g=p[Math.floor(Math.random()*p.length)];const c=document.querySelector('.card[data-id="'+g.id+'"]');openGame(g.play,g.name,c);}
 });
 $('#stClose').addEventListener('click',closeGame);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!st.hidden)closeGame();});
