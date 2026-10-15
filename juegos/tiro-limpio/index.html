@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Tiro Limpio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#4fc3ff; --sun:#ffc531; --grape:#7b2ea3; --coral:#ff4d5e;
+  --lime:#5ee36e; --ink:#1c1436; --paper:#fff8ea; --accent:#ffc531;
+  --scope:#1c1436;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --paper:#fff8ea; } }
+:root[data-theme="dark"]{ --paper:#fff8ea; }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--sky);font-family:'Fredoka','Nunito','Arial Rounded MT Bold',Arial,sans-serif;color:var(--ink);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none}
+#app{position:fixed;inset:0}
+#app canvas{display:block;width:100%;height:100%}
+#touch{position:fixed;inset:0;z-index:2}
+
+/* chunky ui primitives */
+.pill{background:var(--paper);border:4px solid var(--ink);border-radius:999px;box-shadow:0 5px 0 var(--ink);padding:.35rem .9rem;font-weight:700;font-size:1.05rem;display:inline-flex;align-items:center;gap:.5rem}
+.btn{appearance:none;font:inherit;font-weight:700;font-size:1.5rem;letter-spacing:.02em;color:var(--ink);background:var(--sun);border:4px solid var(--ink);border-radius:22px;box-shadow:0 7px 0 var(--ink);padding:.75rem 2.2rem;cursor:pointer;transform:translateY(0);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(5px);box-shadow:0 2px 0 var(--ink)}
+.btn:focus-visible{outline:4px solid #fff;outline-offset:2px}
+.btn.ghost{background:var(--paper);font-size:1.1rem;padding:.55rem 1.4rem;border-radius:16px}
+
+/* HUD */
+#hud{position:fixed;inset:0;z-index:3;pointer-events:none;display:none}
+#hud.on{display:block}
+#topbar{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+#cash{background:var(--lime)}
+#missionTag{background:var(--grape);color:#fff}
+#status{position:absolute;top:calc(env(safe-area-inset-top) + 68px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;width:min(78vw,340px)}
+#hp{width:100%;height:26px;background:var(--paper);border:4px solid var(--ink);border-radius:999px;position:relative;box-shadow:0 4px 0 var(--ink)}
+#hpFill{position:absolute;inset:2px;border-radius:999px;background:var(--coral);transform-origin:left;transition:transform .2s}
+#hp::before{content:"♥";position:absolute;left:-18px;top:-16px;font-size:34px;color:var(--coral);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;line-height:1}
+#ammo{background:var(--ink);border-color:var(--ink);display:flex;gap:6px;padding:.4rem 1rem}
+.bullet{width:14px;height:22px;background:var(--sun);border-radius:7px 7px 3px 3px;border:2px solid #9a6b00}
+.bullet.spent{opacity:.2}
+#popup{position:absolute;top:34%;left:50%;transform:translate(-50%,-50%) scale(.6);font-size:2.6rem;font-weight:700;color:var(--sun);-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;opacity:0;pointer-events:none;white-space:nowrap}
+#popup.show{animation:pop .9s ease-out forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6) rotate(-8deg)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(3deg)}80%{opacity:1;transform:translate(-50%,-60%) scale(1)}100%{opacity:0;transform:translate(-50%,-70%) scale(1)}}
+
+/* reticles */
+#reticle{position:absolute;left:50%;top:50%;width:150px;height:150px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,197,49,.85) 0 44%,transparent 45%);border:4px solid var(--ink);display:grid;place-items:center}
+#reticle .ring{width:88px;height:88px;border:4px solid var(--ink);border-radius:50%;position:relative}
+#reticle .ring::before,#reticle .ring::after{content:"";position:absolute;background:var(--ink);left:50%;top:50%}
+#reticle .ring::before{width:4px;height:120px;transform:translate(-50%,-50%)}
+#reticle .ring::after{width:120px;height:4px;transform:translate(-50%,-50%)}
+#reticle .dot{position:absolute;width:12px;height:12px;background:var(--sun);border:3px solid var(--ink);border-radius:50%}
+#scope{position:absolute;left:50%;top:44%;width:min(92vw,440px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:16px solid var(--scope);box-shadow:0 0 0 9999px rgba(10,6,25,.82);display:none}
+#scope::before,#scope::after{content:"";position:absolute;background:var(--scope);left:50%;top:50%}
+#scope::before{width:3px;height:100%;transform:translate(-50%,-50%)}
+#scope::after{width:100%;height:3px;transform:translate(-50%,-50%)}
+#scope .tick{position:absolute;left:50%;top:50%;width:14px;height:14px;border:3px solid var(--scope);border-radius:50%;transform:translate(-50%,-50%);background:transparent}
+body.zoom #reticle{display:none} body.zoom #scope{display:block}
+
+#zoomBtn{position:fixed;right:16px;bottom:calc(env(safe-area-inset-bottom) + 20px);z-index:4;width:84px;height:84px;border-radius:50%;border:4px solid var(--ink);background:var(--sun);box-shadow:0 6px 0 var(--ink);font-size:1.9rem;display:none;place-items:center;cursor:pointer}
+#zoomBtn.on{display:grid}
+#zoomBtn:active,body.zoom #zoomBtn{background:var(--coral);color:#fff;transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+#hint{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translateX(-50%);z-index:3;pointer-events:none;background:rgba(28,20,54,.75);color:#fff;font-weight:500;font-size:.95rem;padding:.4rem 1rem;border-radius:999px;display:none;white-space:nowrap}
+#hint.on{display:block}
+#flash{position:fixed;inset:0;z-index:5;pointer-events:none;background:#fff;opacity:0}
+#hurt{position:fixed;inset:0;z-index:5;pointer-events:none;box-shadow:inset 0 0 120px 40px rgba(255,77,94,.9);opacity:0;transition:opacity .25s}
+
+/* screens */
+.screen{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;background:rgba(15,10,40,.55)}
+.screen.on{display:flex}
+.card{background:var(--sun);border:5px solid var(--ink);border-radius:28px;box-shadow:0 10px 0 var(--ink);padding:22px 20px 24px;width:min(92vw,400px);display:flex;flex-direction:column;gap:14px;align-items:center}
+.card .band{background:var(--grape);color:#fff;border:4px solid var(--ink);border-radius:999px;padding:.35rem 1.4rem;font-size:1.5rem;font-weight:700;margin-top:-44px;box-shadow:0 5px 0 var(--ink)}
+.card p{font-size:1.15rem;font-weight:500;line-height:1.3}
+.title{font-size:clamp(3rem,14vw,5rem);font-weight:700;line-height:.95;color:var(--sun);-webkit-text-stroke:7px var(--ink);paint-order:stroke fill;text-shadow:0 8px 0 var(--ink);transform:rotate(-3deg)}
+.title small{display:block;font-size:.34em;color:#fff;-webkit-text-stroke:5px var(--ink);text-shadow:0 5px 0 var(--ink)}
+.row{width:100%;display:flex;justify-content:space-between;align-items:center;background:var(--paper);border:4px solid var(--ink);border-radius:999px;padding:.5rem 1.1rem;font-size:1.15rem;font-weight:700;box-shadow:0 4px 0 var(--ink)}
+.row b{color:#1f8a3a;font-size:1.35rem}
+.skin{width:100%;display:flex;gap:12px;align-items:center;background:var(--paper);border:4px solid var(--ink);border-radius:22px;padding:10px 12px;box-shadow:0 4px 0 var(--ink)}
+.skin .icon{width:58px;height:58px;border-radius:14px;border:4px solid var(--ink);flex:none;display:grid;place-items:center;font-size:1.8rem;background:conic-gradient(from 0deg,var(--coral),var(--sun),var(--lime),var(--sky),var(--coral))}
+.skin .bar{flex:1;height:26px;border:4px solid var(--ink);border-radius:999px;background:#5a5470;overflow:hidden;position:relative}
+.skin .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--lime);width:0;transition:width 1.2s cubic-bezier(.2,.9,.3,1.2)}
+.skin .bar span{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:700;-webkit-text-stroke:3px var(--ink);paint-order:stroke fill}
+.skin .txt{display:flex;flex-direction:column;gap:6px;flex:1;font-size:.95rem;font-weight:700;text-align:left}
+.thug-face{width:64px;height:64px;border-radius:16px;background:var(--sky);border:4px solid var(--ink);display:grid;place-items:center;font-size:2rem;flex:none}
+
+#locTag{background:var(--sky);color:var(--ink)}
+.travel{width:100%;background:var(--paper);border:4px solid var(--ink);border-radius:22px;padding:14px;box-shadow:0 4px 0 var(--ink);position:relative;overflow:hidden}
+.travel .ends{display:flex;justify-content:space-between;font-size:2.4rem}
+.travel .route{position:relative;height:8px;margin:10px 20px;border-top:5px dashed var(--ink);opacity:.9}
+.travel .plane{position:absolute;left:0;top:-30px;font-size:2rem;animation:fly 2.6s ease-in-out forwards}
+@keyframes fly{0%{left:0;transform:rotate(0) translateY(0)}50%{transform:rotate(-8deg) translateY(-18px)}100%{left:calc(100% - 34px);transform:rotate(0) translateY(0)}}
+.travel h3{font-size:1.5rem;margin-top:8px}
+.travel small{display:block;font-weight:500;font-size:1rem}
+.conts{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;font-size:.85rem;font-weight:700}
+.conts span{background:var(--paper);border:3px solid var(--ink);border-radius:999px;padding:.15rem .6rem;opacity:.45}
+.conts span.done{opacity:1;background:var(--lime)}
+.chest{font-size:6rem;line-height:1;filter:drop-shadow(0 8px 0 var(--ink));cursor:pointer;transition:transform .15s}
+.chest:active{transform:scale(.92)}
+.chest.shake{animation:shake .5s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.loot{display:none;width:100%;flex-direction:column;align-items:center;gap:10px}
+.loot.on{display:flex;animation:pop2 .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop2{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.loot .item{width:100%;background:var(--paper);border:4px solid var(--ink);border-radius:22px;padding:14px;display:flex;gap:14px;align-items:center;box-shadow:0 5px 0 var(--ink)}
+.loot .item .ic{font-size:2.6rem;width:70px;height:70px;border-radius:16px;border:4px solid var(--ink);display:grid;place-items:center;flex:none}
+.loot .item .tx{text-align:left;flex:1}
+.loot .item .tx b{font-size:1.25rem;display:block}
+.loot .item .tx i{font-style:normal;font-weight:500;font-size:.95rem;display:block}
+.rar{display:inline-block;font-size:.8rem;padding:.1rem .6rem;border-radius:999px;border:3px solid var(--ink);color:#fff;margin-bottom:4px}
+.lv{display:flex;gap:4px;margin-top:6px}.lv i{width:22px;height:10px;border:2px solid var(--ink);border-radius:4px;background:#ccc}.lv i.on{background:var(--lime)}
+.gear{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:.85rem;font-weight:700}
+.gear span{background:var(--paper);border:3px solid var(--ink);border-radius:999px;padding:.15rem .6rem}
+@media (prefers-reduced-motion: reduce){ .btn,.skin .bar i,#hpFill{transition:none} #popup.show{animation-duration:.01s} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="touch"></div>
+
+<div id="hud">
+  <div id="topbar">
+    <span class="pill" id="missionTag">Misión 1</span>
+    <span class="pill" id="locTag">🇪🇸 Barcelona</span>
+    <span class="pill" id="cash">💵 <span id="cashVal">0</span></span>
+  </div>
+  <div id="status">
+    <div id="hp"><div id="hpFill"></div></div>
+    <div class="pill" id="ammo"></div>
+  </div>
+  <div id="reticle"><div class="ring"><div class="dot"></div></div></div>
+  <div id="scope"><div class="tick"></div></div>
+  <div id="popup"></div>
+</div>
+<button id="zoomBtn" aria-label="Mira">🔭</button>
+<div id="hint">Arrastra para apuntar · toca para disparar</div>
+<div id="flash"></div>
+<div id="hurt"></div>
+
+<div class="screen on" id="menu">
+  <div class="title">Tiro<br>Limpio<small>francotirador de azotea</small></div>
+  <div class="card" style="margin-top:20px">
+    <p>Los matones han tomado el barrio. Sube a la azotea, apunta con calma y despéjalo en cada misión. Cada bala cuenta.</p>
+    <button class="btn" id="playBtn">Jugar</button>
+    <div style="font-weight:500;font-size:.95rem">Récord: misión <span id="bestVal">1</span> · Próxima: <span id="menuLoc"></span></div>
+    <div class="gear" id="gearMenu"></div>
+  </div>
+</div>
+
+<div class="screen" id="intro">
+  <div class="card">
+    <div class="band" id="introTag">Misión 1</div>
+    <div style="font-size:1.2rem;font-weight:700" id="introLoc">🇪🇸 Barcelona, España</div>
+    <div style="display:flex;gap:14px;align-items:center;width:100%">
+      <div class="thug-face">😈</div>
+      <p style="flex:1;text-align:left"><b id="introTxt">Elimina a los 2 matones.</b><br>Tienes <b id="introAmmo">4</b> balas.</p>
+    </div>
+    <button class="btn" id="goBtn">A por ellos</button>
+  </div>
+</div>
+
+<div class="screen" id="win">
+  <div class="title" style="font-size:clamp(2.4rem,11vw,3.6rem)">Misión<br>completada</div>
+  <div class="card">
+    <div class="skin">
+      <div class="icon">🎯</div>
+      <div class="txt"><span>Nueva mira: <span id="skinName">Neón</span></span><div class="bar"><i id="skinFill"></i><span id="skinPct">0%</span></div></div>
+    </div>
+    <div class="row"><span>Recompensa</span><b id="rewardVal">+20 💵</b></div>
+    <div class="row" style="background:#bfe8ff"><span>Bonus headshot</span><b id="hsVal">+0 💵</b></div>
+    <button class="btn" id="nextBtn">Siguiente</button>
+  </div>
+</div>
+
+<div class="screen" id="chest">
+  <div class="title" style="font-size:clamp(2.2rem,10vw,3.2rem)">Cofre de<br>guerra</div>
+  <div class="card">
+    <div class="chest shake" id="chestIcon">🧰</div>
+    <p id="chestTxt">Toca el cofre para abrirlo</p>
+    <div class="loot" id="loot"></div>
+    <button class="btn" id="chestBtn" style="display:none">Continuar</button>
+  </div>
+</div>
+
+<div class="screen" id="travel">
+  <div class="title" style="font-size:clamp(2.2rem,10vw,3.2rem)">Siguiente<br>destino</div>
+  <div class="card">
+    <div class="travel">
+      <div class="ends"><span id="fromFlag">🇪🇸</span><span id="toFlag">🇺🇸</span></div>
+      <div class="route"><span class="plane" id="plane">✈️</span></div>
+      <h3 id="toName">Nueva York</h3><small id="toInfo">Estados Unidos · América del Norte</small>
+    </div>
+    <div class="conts" id="conts"></div>
+    <button class="btn" id="landBtn">Aterrizar</button>
+  </div>
+</div>
+
+<div class="screen" id="lose">
+  <div class="title" style="color:var(--coral);font-size:clamp(2.4rem,11vw,3.6rem)">Misión<br>fallida</div>
+  <div class="card">
+    <p id="loseTxt">Te has quedado sin balas y aún quedan matones.</p>
+    <button class="btn" id="retryBtn">Reintentar</button>
+    <button class="btn ghost" id="homeBtn">Volver al inicio</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+const T = THREE;
+const $ = id => document.getElementById(id);
+const rand = (a,b) => a + Math.random()*(b-a);
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+/* ---------- persistence ---------- */
+const SAVE_KEY = 'tiro-limpio-v1';
+let save = { cash:0, mission:1, best:1, skinPct:0, skinIdx:0, gear:{ammo:0,armor:0,sway:0,zoom:0,silencer:0,magnet:0} };
+try { const s = localStorage.getItem(SAVE_KEY); if (s) save = Object.assign(save, JSON.parse(s)); } catch(e){}
+const GEAR = {
+  ammo:    { n:'Cargador ampliado', ic:'🔫', bg:'#ffc531', d:l=>`+${l} bala por misión` },
+  armor:   { n:'Chaleco blindado',  ic:'🦺', bg:'#8fe3ff', d:l=>`+${l*25} de vida` },
+  sway:    { n:'Bípode estabilizador', ic:'🎯', bg:'#5ee36e', d:l=>`${l*30}% menos balanceo` },
+  zoom:    { n:'Mira de largo alcance', ic:'🔭', bg:'#f6a6ff', d:l=>`zoom x${(1+l*.5).toFixed(1)}` },
+  silencer:{ n:'Silenciador',        ic:'🤫', bg:'#a3c4ff', d:l=>`los matones tardan ${l*1.5}s más en verte` },
+  magnet:  { n:'Puntería asistida',  ic:'🧲', bg:'#ff8fa3', d:l=>`imán de mira nivel ${l}` },
+};
+const MAXLV = 3;
+const LOCS = [
+  { city:'Barcelona', country:'España', cont:'Europa', flag:'🇪🇸', sky:0x4fc3ff, ground:0x3b3f52, walk:0xe8dcc5, roof:0x4a3d66, pal:[0xffc857,0xff8fa3,0xffb26b,0xfff1a8,0xf6a6ff], tree:'palm' },
+  { city:'Nueva York', country:'Estados Unidos', cont:'América del Norte', flag:'🇺🇸', sky:0x6fb6ff, ground:0x2e3140, walk:0xcfd3dc, roof:0x3d3a4a, pal:[0x9b7b5b,0xb8b8c8,0x7a6c8f,0xc9a57a,0x8ba0b8], tree:'round', tall:true, prop:'taxi' },
+  { city:'Ciudad de México', country:'México', cont:'América del Norte', flag:'🇲🇽', sky:0x64c6ff, ground:0x3b3f52, walk:0xe6d9c2, roof:0x7a3b2e, pal:[0xff4d5e,0xffc531,0x2fb8a8,0xff7a1a,0xf6a6ff], tree:'cactus' },
+  { city:'Río de Janeiro', country:'Brasil', cont:'América del Sur', flag:'🇧🇷', sky:0x47c7ff, ground:0x3b3f52, walk:0xf1e7cf, roof:0x4a3d66, pal:[0x5ee36e,0xffc531,0x8ed6ff,0xffffff,0xb8f2a6], tree:'palm', prop:'hill' },
+  { city:'Londres', country:'Reino Unido', cont:'Europa', flag:'🇬🇧', sky:0x9fb7c9, ground:0x33363f, walk:0xb9bcc4, roof:0x3d3a4a, pal:[0xa8664a,0xc9b39a,0x8b6f5a,0xd9cbb5,0x6f5c4a], tree:'round', prop:'phonebox', fog:0x9fb7c9 },
+  { city:'El Cairo', country:'Egipto', cont:'África', flag:'🇪🇬', sky:0xffd48a, ground:0x8a6a3f, walk:0xf0d9a8, roof:0x9a7a4a, pal:[0xe9c48a,0xd9a86a,0xf3dcb0,0xc99a5a,0xead0a0], tree:'palm', prop:'pyramids', fog:0xffd48a },
+  { city:'Nairobi', country:'Kenia', cont:'África', flag:'🇰🇪', sky:0x7fd0ff, ground:0x8b5a2b, walk:0xe3c99a, roof:0x6b4423, pal:[0xff7a1a,0xffc531,0xb8f2a6,0xff4d5e,0xf1c3a3], tree:'acacia', prop:'savanna' },
+  { city:'Dubái', country:'Emiratos Árabes', cont:'Asia', flag:'🇦🇪', sky:0x8fdcff, ground:0x6b6f7a, walk:0xf4e6c6, roof:0x2a3a6e, pal:[0x8ed6ff,0xa3c4ff,0xdfe5ef,0x5ec8ff,0xffffff], tree:'palm', tall:true },
+  { city:'Nueva Delhi', country:'India', cont:'Asia', flag:'🇮🇳', sky:0xffc98a, ground:0x4a3f3a, walk:0xe6d2b0, roof:0x7a3b2e, pal:[0xff8fa3,0xffc531,0xf6a6ff,0xff7a1a,0x5ee36e], tree:'round', fog:0xffc98a },
+  { city:'Tokio', country:'Japón', cont:'Asia', flag:'🇯🇵', sky:0x1b1440, ground:0x14111f, walk:0x6b6a8a, roof:0x2a1f4d, pal:[0x3a2f6b,0x4a3f7f,0x2f2a5f,0x5a4a8f,0x3f3775], tree:'sakura', night:true, tall:true, fog:0x1b1440 },
+  { city:'Sídney', country:'Australia', cont:'Oceanía', flag:'🇦🇺', sky:0x38c0ff, ground:0x3b3f52, walk:0xf7e7c2, roof:0x4a3d66, pal:[0xffffff,0x8ed6ff,0xfff1a8,0xb8f2a6,0xffc857], tree:'palm', prop:'sea' },
+  { city:'Base McMurdo', country:'Antártida', cont:'Antártida', flag:'🇦🇶', sky:0xcfe9ff, ground:0xe6f1ff, walk:0xffffff, roof:0xff7a1a, pal:[0xff7a1a,0x5ec8ff,0xff4d5e,0xffc531,0x2fb8a8], tree:'none', prop:'ice', low:true, fog:0xcfe9ff },
+];
+const CONTS = ['Europa','América del Norte','América del Sur','África','Asia','Oceanía','Antártida'];
+const locFor = m => LOCS[(m-1) % LOCS.length];
+const gearLv = k => (save.gear && save.gear[k]) || 0;
+const persist = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch(e){} };
+
+const SKINS = [
+  { name:'Clásica', accent:'#ffc531', scope:'#1c1436', tracer:0xffc531 },
+  { name:'Neón',    accent:'#5ee36e', scope:'#0b2b12', tracer:0x5ee36e },
+  { name:'Cereza',  accent:'#ff4d5e', scope:'#3a0a12', tracer:0xff4d5e },
+  { name:'Glacial', accent:'#8fe3ff', scope:'#0c2a4a', tracer:0x8fe3ff },
+];
+function applySkin(){
+  const s = SKINS[save.skinIdx % SKINS.length];
+  document.documentElement.style.setProperty('--accent', s.accent);
+  document.documentElement.style.setProperty('--scope', s.scope);
+  document.documentElement.style.setProperty('--sun', s.accent);
+}
+applySkin();
+
+/* ---------- audio (tiny synth) ---------- */
+let actx = null;
+function audio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return actx; }
+function sfxShot(){
+  const c = audio(); if(!c) return;
+  const len = c.sampleRate*0.25, buf = c.createBuffer(1,len,c.sampleRate), d = buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/len,3);
+  const src = c.createBufferSource(); src.buffer = buf;
+  const f = c.createBiquadFilter(); f.type='lowpass'; f.frequency.value=900;
+  const g = c.createGain(); g.gain.value=0.9;
+  src.connect(f).connect(g).connect(c.destination); src.start();
+}
+function sfxTone(f0,f1,dur,type='square',vol=.25){
+  const c = audio(); if(!c) return;
+  const o = c.createOscillator(), g = c.createGain();
+  o.type=type; o.frequency.setValueAtTime(f0,c.currentTime); o.frequency.exponentialRampToValueAtTime(f1,c.currentTime+dur);
+  g.gain.setValueAtTime(vol,c.currentTime); g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);
+  o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime+dur);
+}
+
+/* ---------- renderer / scene ---------- */
+const renderer = new T.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = T.sRGBEncoding;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = T.PCFSoftShadowMap;
+$('app').appendChild(renderer.domElement);
+
+const scene = new T.Scene();
+scene.background = new T.Color(0x4fc3ff);
+scene.fog = new T.Fog(0x4fc3ff, 70, 160);
+
+const camera = new T.PerspectiveCamera(60, 1, 0.1, 400);
+camera.position.set(0, 13, -2.2);
+camera.rotation.order = 'YXZ';
+const BASE_PITCH = -0.38;
+let yaw = 0, pitch = BASE_PITCH, recoil = 0, shake = 0, zoomed = false, fov = 60;
+
+const hemi = new T.HemisphereLight(0xffffff, 0x6fb0ff, 0.95); scene.add(hemi);
+const sun = new T.DirectionalLight(0xfff1d0, 1.15);
+sun.position.set(30, 60, 10); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0015; sun.shadow.normalBias = 0.05;
+Object.assign(sun.shadow.camera, { left:-70, right:70, top:70, bottom:-70, near:1, far:200 });
+scene.add(sun);
+
+const toon = c => new T.MeshToonMaterial({ color:c });
+let solids = [];
+let env = new T.Group(); scene.add(env);
+function box(w,h,d,c,x,y,z,shadow=true){
+  const m = new T.Mesh(new T.BoxGeometry(w,h,d), toon(c));
+  m.position.set(x,y,z); m.castShadow = shadow; m.receiveShadow = true; env.add(m); solids.push(m); return m;
+}
+
+/* ---------- world per location ---------- */
+const winGeo = new T.PlaneGeometry(1.5, 1.9);
+let clouds = [];
+function buildWorld(L){
+  scene.remove(env); env = new T.Group(); scene.add(env); solids = []; clouds = [];
+  scene.background = new T.Color(L.sky); scene.fog = new T.Fog(L.fog || L.sky, 70, 160);
+  sun.intensity = L.night ? .35 : 1.15; hemi.intensity = L.night ? .55 : .95;
+  const ground = new T.Mesh(new T.PlaneGeometry(400,400), toon(L.ground));
+  ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; env.add(ground); solids.push(ground);
+  box(160, .5, 16, L.walk, 0, .25, -40, false);
+  box(160, .5, 14, L.walk, 0, .25, -10, false);
+  if (L.prop !== 'ice'){ for (let x=-70; x<70; x+=6) box(3, .02, 5, 0xffffff, x, .52, -26, false); for (let x=-75; x<75; x+=8) box(4, .02, .5, 0xffe27a, x, .52, -19, false); }
+  for (let i=0;i<7;i++){ const x = rand(-60,60); box(2.4,.8,1,0x8b5a2b,x,.9,-33.5); box(2.4,.3,1.1,0x6b4423,x,1.35,-33.5); }
+  for (let i=0;i<5;i++){ const x=rand(-70,70); box(.5,1,.5,0xff4d5e,x,1,-34.2); }
+  // rooftop
+  box(46, 8, 18, L.roof, 0, 4, 6); box(46, 1.2, 1.2, 0x8a7ba8, 0, 8.6, -2.6);
+  box(1.2, 1.2, 18, 0x8a7ba8, -22.4, 8.6, 6); box(1.2, 1.2, 18, 0x8a7ba8, 22.4, 8.6, 6); box(3, 2, 3, 0x8a7ba8, 14, 9, 8);
+  // buildings
+  const winMat = new T.MeshToonMaterial({ color: L.night ? 0xffe27a : 0x24356b });
+  const hMul = L.tall ? 1.7 : L.low ? .45 : 1;
+  const building = (x, z, w, h, d, color) => {
+    box(w, h, d, color, x, h/2, z); box(w+1.2, .8, d+1.2, L.roof, x, h+.4, z);
+    const rows = Math.floor(h/3.2), cols = Math.floor(w/2.6);
+    for (let r=0;r<rows;r++) for (let c=0;c<cols;c++){
+      const win = new T.Mesh(winGeo, winMat);
+      win.position.set(x - w/2 + 1.3 + c*2.6 + (w - cols*2.6)/2, 2.3 + r*3.2, z + d/2 + .02); env.add(win);
+      if (r===0 && c===Math.floor(cols/2)) { box(2, 2.6, .2, 0x7b2ea3, win.position.x, 1.3, z + d/2 + .05); box(3.2, .2, 1.6, pick([0xff4d5e,0x5ee36e,0xffc531]), win.position.x, 3, z + d/2 + .8); }
+    }
+  };
+  let bx = -66;
+  while (bx < 70){ const w = rand(8,13), h = rand(10,24)*hMul, d = rand(8,12); building(bx + w/2, -52 - d/2 - rand(0,6), w, Math.max(4,h), d, pick(L.pal)); bx += w + rand(1.5,4); }
+  if (!L.low) for (let i=0;i<10;i++){ const w = rand(10,18), h = rand(16,34)*hMul; box(w, h, 12, L.night?0x2a2450:0x9db6d6, rand(-120,120), h/2, -95 - rand(0,30), false).receiveShadow = false; }
+  // trees
+  const trunk = (x,z,h=2.4,c=0x8b5a2b) => box(.8, h, .8, c, x, h/2, z);
+  const ball = (r,c,x,y,z) => { const m = new T.Mesh(new T.SphereGeometry(r,12,10), toon(c)); m.position.set(x,y,z); m.castShadow = true; env.add(m); solids.push(m); return m; };
+  for (let i=0;i<9;i++){
+    const x = rand(-70,70), z = -47 - rand(0,3);
+    if (L.tree==='round'){ trunk(x,z); ball(2.2, pick([0x5ee36e,0x9be564,0x3fc75a]), x,3.8,z); }
+    else if (L.tree==='sakura'){ trunk(x,z,2.6,0x4a3a3a); ball(2.4, pick([0xffb3d9,0xff8fc8,0xffd1e8]), x,4,z); }
+    else if (L.tree==='palm'){ trunk(x,z,5,0xb07a3a); for (let k=0;k<5;k++){ const l = box(4,.3,1.2,0x3fc75a,x,5.6,z); l.rotation.y = k*1.26; l.rotation.z = .35; } }
+    else if (L.tree==='cactus'){ box(1.2,4,1.2,0x2fb85a,x,2,z); box(.8,2,.8,0x2fb85a,x+1.2,3,z); box(.8,1.6,.8,0x2fb85a,x-1.2,3.4,z); }
+    else if (L.tree==='acacia'){ trunk(x,z,4,0x6b4423); const t = box(6,.9,4,0x7fb33a,x,4.6,z); }
+  }
+  // extras
+  if (L.prop==='pyramids') for (let i=0;i<3;i++){ const m = new T.Mesh(new T.ConeGeometry(28,32,4), toon(0xe0b070)); m.position.set(-60+i*55, 16, -140); m.rotation.y = Math.PI/4; env.add(m); }
+  if (L.prop==='hill'){ const m = new T.Mesh(new T.SphereGeometry(45,16,12), toon(0x3fa25a)); m.position.set(50,-8,-150); env.add(m); box(3,8,3,0xffffff,50,40,-150); }
+  if (L.prop==='sea'){ box(400,.3,80,0x2fa8e8,0,.1,-160,false); }
+  if (L.prop==='ice'){ for (let i=0;i<10;i++) ball(rand(3,7),0xffffff,rand(-90,90),0,-100-rand(0,40)); }
+  if (L.prop==='savanna'){ for (let i=0;i<8;i++) ball(rand(2,4),0xc8a04a,rand(-100,100),-1,-110-rand(0,30)); }
+  if (L.prop==='taxi') for (let i=0;i<4;i++){ const x = rand(-60,60); box(4,1.2,2,0xffc531,x,1.1,-22); box(2.2,.9,1.8,0x24356b,x,2.1,-22); }
+  if (L.prop==='phonebox') for (let i=0;i<3;i++){ box(1.4,3,1.4,0xff4d5e,rand(-60,60),2,-33); }
+  // clouds
+  const cloudMat = new T.MeshToonMaterial({ color: L.night ? 0x4a4070 : 0xffffff });
+  for (let i=0;i<8;i++){
+    const g = new T.Group();
+    for (let k=0;k<4;k++){ const sph = new T.Mesh(new T.SphereGeometry(rand(3,6),10,8), cloudMat); sph.position.set(k*5 - 8, rand(-1,1), 0); g.add(sph); }
+    g.position.set(rand(-120,120), rand(38,70), rand(-160,-90)); env.add(g); clouds.push(g);
+  }
+  if (L.night){ for (let i=0;i<40;i++){ const st = new T.Mesh(new T.SphereGeometry(.4,4,4), new T.MeshBasicMaterial({color:0xffffff})); st.position.set(rand(-200,200), rand(60,140), rand(-220,-140)); env.add(st); } }
+}
+/* ---------- thugs ---------- */
+const thugs = []; let thugMeshes = [];
+const skinTones = [0xffd9b8, 0xd9a877, 0x8d5a3a, 0xf1c3a3];
+const outfits = [0x7b2ea3, 0x24356b, 0xff4d5e, 0x2c8f5b, 0xff7a1a];
+function makeThug(x, z){
+  const g = new T.Group(); const parts = [];
+  const suit = toon(pick(outfits)), skin = toon(pick(skinTones)), dark = toon(0x1c1436), white = toon(0xffffff);
+  const add = (geo, mat, x,y,z, part) => { const m = new T.Mesh(geo, mat); m.position.set(x,y,z); m.castShadow = true; m.userData.part = part; g.add(m); if(part) parts.push(m); return m; };
+  // chunky bean body
+  add(new T.CylinderGeometry(.62,.75,1.1,18), suit, 0,1.15,0,'body');
+  add(new T.SphereGeometry(.62,18,14), suit, 0,1.7,0,'body');
+  add(new T.SphereGeometry(.75,18,14), suit, 0,.6,0,'body');
+  add(new T.BoxGeometry(.55,.3,.9), toon(0xffc531), 0,.85,.12,'body'); // belt buckle-ish
+  const legL = add(new T.CylinderGeometry(.22,.22,.6,10), dark, -.3,.3,0,'body');
+  const legR = add(new T.CylinderGeometry(.22,.22,.6,10), dark, .3,.3,0,'body');
+  add(new T.SphereGeometry(.3,10,8), white, -.3,.1,.05,'body').scale.set(1,.55,1.3);
+  add(new T.SphereGeometry(.3,10,8), white, .3,.1,.05,'body').scale.set(1,.55,1.3);
+  const armL = add(new T.CylinderGeometry(.18,.18,.8,10), suit, -.85,1.45,0,'body'); armL.rotation.z = .5;
+  const armR = add(new T.CylinderGeometry(.18,.18,.8,10), suit, .85,1.35,.35,'body'); armR.rotation.x = -1.2;
+  add(new T.SphereGeometry(.24,10,8), white, -1.05,1.1,0,'body');
+  const hand = add(new T.SphereGeometry(.24,10,8), white, .85,1.35,.8,'body');
+  add(new T.BoxGeometry(.16,.25,.7), dark, .85,1.4,1.05,'body'); // pistol
+  // big head
+  add(new T.SphereGeometry(.7,20,16), skin, 0,2.55,0,'head');
+  const mask = add(new T.CylinderGeometry(.72,.72,.3,20), dark, 0,2.62,0,'head');
+  add(new T.SphereGeometry(.13,8,6), white, -.25,2.62,.64,'head');
+  add(new T.SphereGeometry(.13,8,6), white, .25,2.62,.64,'head');
+  add(new T.SphereGeometry(.06,6,5), dark, -.25,2.62,.76,'head');
+  add(new T.SphereGeometry(.06,6,5), dark, .25,2.62,.76,'head');
+  add(new T.SphereGeometry(.52,16,12), toon(pick(outfits)), 0,3.05,0,'head'); // beanie
+  add(new T.TorusGeometry(.5,.12,8,20), toon(0xfff1a8), 0,2.95,0,'head').rotation.x = Math.PI/2;
+  g.position.set(x,0,z); g.scale.setScalar(1.7); env.add(g);
+  const th = { g, parts, legL, legR, armL, dead:false, dir: Math.random()<.5?1:-1, speed: rand(1.4,2.4) + mission*.12,
+    minX: x - rand(3,7), maxX: x + rand(3,7), shootTimer: rand(3,6), fall:0, phase: rand(0,6) };
+  parts.forEach(p => p.userData.thug = th);
+  thugs.push(th); thugMeshes.push(...parts);
+  return th;
+}
+function clearThugs(){ thugs.forEach(t => t.g.parent && t.g.parent.remove(t.g)); thugs.length = 0; thugMeshes = []; }
+
+/* ---------- effects ---------- */
+const fx = [];
+const tracerMat = () => new T.MeshBasicMaterial({ color: SKINS[save.skinIdx%SKINS.length].tracer, transparent:true, opacity:1 });
+function tracer(a, b, color){
+  const dir = b.clone().sub(a), len = dir.length();
+  const m = new T.Mesh(new T.CylinderGeometry(.05,.05,len,6), color ? new T.MeshBasicMaterial({color, transparent:true, opacity:1}) : tracerMat());
+  m.position.copy(a).add(dir.multiplyScalar(.5));
+  m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0), dir.normalize());
+  scene.add(m); fx.push({ m, life:.14, t:.14 });
+}
+function burst(p, color, n=12){
+  for (let i=0;i<n;i++){
+    const m = new T.Mesh(new T.SphereGeometry(rand(.1,.22),6,5), new T.MeshBasicMaterial({ color }));
+    m.position.copy(p); scene.add(m);
+    fx.push({ m, life:.7, t:.7, v: new T.Vector3(rand(-1,1),rand(.5,2),rand(-1,1)).multiplyScalar(rand(4,8)) });
+  }
+}
+
+/* ---------- game state ---------- */
+let state = 'menu', mission = save.mission, ammo = 0, hp = 100, headshots = 0, missionT = 0, winT = 0;
+let bestFoe = 0, hpMax = 100;
+const hud = $('hud');
+function setAmmoUI(){ $('ammo').innerHTML = Array.from({length:ammoMax}, (_,i) => `<span class="bullet${i<ammo?'':' spent'}"></span>`).join(''); }
+let ammoMax = 4;
+function setHP(){ $('hpFill').style.transform = `scaleX(${Math.max(0,hp)/hpMax})`; }
+function setCash(){ $('cashVal').textContent = save.cash; }
+function popup(txt){ const p = $('popup'); p.textContent = txt; p.classList.remove('show'); void p.offsetWidth; p.classList.add('show'); }
+function show(id){ document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id===id)); }
+
+function setupMission(){
+  clearThugs(); const L = locFor(mission); buildWorld(L);
+  const n = Math.min(2 + Math.floor((mission-1)*.8), 8);
+  ammoMax = n + 3 + gearLv('ammo'); ammo = ammoMax; hpMax = 100 + gearLv('armor')*25; hp = hpMax; headshots = 0; missionT = 0; winT = 0;
+  const spread = Math.min(12 + mission*2.5, 40);
+  for (let i=0;i<n;i++){
+    const x = -spread + (i + .5) * (2*spread/n) + rand(-2,2);
+    const z = -30 - Math.min(mission*.9, 8) + rand(-2,3);
+    makeThug(x, z);
+  }
+  yaw = 0; pitch = BASE_PITCH; setZoom(false);
+  $('missionTag').textContent = `Misión ${mission}`;
+  $('introTag').textContent = `Misión ${mission}`; $('introLoc').textContent = `${L.flag} ${L.city}, ${L.country}`; $('locTag').textContent = `${L.flag} ${L.city}`;
+  $('introTxt').textContent = n===1 ? 'Elimina al matón.' : `Elimina a los ${n} matones.`;
+  $('introAmmo').textContent = ammoMax;
+  setAmmoUI(); setHP(); setCash();
+  state = 'intro'; show('intro'); hud.classList.add('on'); $('zoomBtn').classList.remove('on'); $('hint').classList.remove('on');
+}
+function startPlay(){ state = 'play'; show(null); $('zoomBtn').classList.add('on'); $('hint').classList.add('on'); setTimeout(()=>$('hint').classList.remove('on'), 3500); }
+function finishWin(){
+  state = 'win';
+  const reward = 20 + (mission-1)*6, hs = headshots*10;
+  save.cash += reward + hs; mission += 1; save.mission = mission; save.best = Math.max(save.best, mission);
+  const prev = save.skinPct; let gained = 28 + Math.floor(rand(0,14)); let pct = prev + gained; let unlocked = false;
+  if (pct >= 100){ pct -= 100; unlocked = true; }
+  $('rewardVal').textContent = `+${reward} 💵`; $('hsVal').textContent = `+${hs} 💵`;
+  $('skinName').textContent = SKINS[(save.skinIdx+1)%SKINS.length].name;
+  $('skinFill').style.width = prev + '%'; $('skinPct').textContent = prev + '%';
+  show('win'); $('zoomBtn').classList.remove('on'); setZoom(false);
+  requestAnimationFrame(() => setTimeout(() => {
+    $('skinFill').style.width = (unlocked?100:pct) + '%'; $('skinPct').textContent = (unlocked?100:pct) + '%';
+    if (unlocked) setTimeout(() => { save.skinIdx = (save.skinIdx+1)%SKINS.length; applySkin(); $('skinPct').textContent = '¡Desbloqueada!'; sfxTone(500,1200,.35,'triangle',.3); }, 1300);
+  }, 250));
+  save.skinPct = pct; persist(); setCash();
+  sfxTone(440,880,.3,'triangle',.3); setTimeout(()=>sfxTone(660,1320,.4,'triangle',.3),180);
+}
+function finishLose(reason){
+  state = 'lose'; $('loseTxt').textContent = reason; show('lose'); $('zoomBtn').classList.remove('on'); setZoom(false);
+  sfxTone(300,80,.6,'sawtooth',.25);
+}
+
+/* ---------- shooting ---------- */
+const ray = new T.Raycaster(); const center = new T.Vector2(0,0);
+function shoot(){
+  if (state !== 'play' || ammo <= 0) return;
+  ammo--; setAmmoUI(); sfxShot();
+  recoil = .06; shake = .35;
+  const f = $('flash'); f.style.transition='none'; f.style.opacity=.55; requestAnimationFrame(()=>{ f.style.transition='opacity .15s'; f.style.opacity=0; });
+  ray.setFromCamera(center, camera);
+  const muzzle = camera.position.clone().add(new T.Vector3(.4,-.35,-1).applyQuaternion(camera.quaternion));
+  const hits = ray.intersectObjects(thugMeshes.filter(m => !m.userData.thug.dead), false);
+  let end;
+  if (hits.length){
+    const h = hits[0], th = h.object.userData.thug, head = h.object.userData.part === 'head';
+    end = h.point; th.dead = true; th.fall = 0;
+    if (head){ headshots++; popup('¡Headshot! +10'); burst(end, 0xffc531, 18); sfxTone(900,1600,.2,'square',.2); }
+    else { popup('¡Eliminado!'); burst(end, 0xff4d5e, 12); sfxTone(300,120,.2,'square',.2); }
+  } else {
+    const env = ray.intersectObjects(solids, false);
+    end = env.length ? env[0].point : muzzle.clone().add(ray.ray.direction.clone().multiplyScalar(120));
+    burst(end, 0xdfe5ef, 6);
+  }
+  tracer(muzzle, end);
+  if (thugs.every(t => t.dead)) winT = 1.1;
+  else if (ammo === 0) setTimeout(() => { if (state==='play' && !thugs.every(t=>t.dead)) finishLose('Te has quedado sin balas y aún quedan matones.'); }, 900);
+}
+function thugShoots(th){
+  const from = th.g.position.clone().add(new T.Vector3(1.4,2.4,2));
+  tracer(from, camera.position.clone().add(new T.Vector3(rand(-.6,.6),rand(-.4,.4),0)), 0xff4d5e);
+  hp -= 8 + mission; setHP(); shake = .25;
+  const h = $('hurt'); h.style.opacity = 1; setTimeout(()=>h.style.opacity=0, 250);
+  sfxTone(200,60,.25,'sawtooth',.2);
+  if (hp <= 0) finishLose('Los matones te han alcanzado. Dispara antes de que te vean.');
+}
+
+/* ---------- input ---------- */
+const touch = $('touch');
+let down = null;
+function sens(){ return zoomed ? .0022 : .0058; }
+touch.addEventListener('pointerdown', e => { audio(); down = { x:e.clientX, y:e.clientY, lx:e.clientX, ly:e.clientY, t:performance.now(), moved:0 }; touch.setPointerCapture(e.pointerId); });
+touch.addEventListener('pointermove', e => {
+  if (!down) return;
+  const dx = e.clientX - down.lx, dy = e.clientY - down.ly;
+  down.lx = e.clientX; down.ly = e.clientY;
+  down.moved += Math.abs(dx) + Math.abs(dy);
+  if (state === 'play'){
+    const k = sens() * (nearFoe() ? .45 - gearLv('magnet')*.08 : 1);
+    yaw -= dx*k; pitch -= dy*k;
+    yaw = Math.max(-1.3, Math.min(1.3, yaw)); pitch = Math.max(-.8, Math.min(.1, pitch));
+  }
+});
+function nearFoe(){
+  ray.setFromCamera(center, camera);
+  const d = ray.ray.direction;
+  return thugs.some(th => { if (th.dead) return false;
+    const v = th.g.position.clone().add(new T.Vector3(0,3,0)).sub(camera.position); const dist = v.length(); v.normalize();
+    const ang = Math.acos(Math.min(1, v.dot(d))); return ang < (zoomed ? 2.6 : 4) * (1 + gearLv('magnet')*.5) / dist; });
+}
+const endPointer = e => { if (!down) return; if (down.moved < 12 && performance.now()-down.t < 350) shoot(); down = null; };
+touch.addEventListener('pointerup', endPointer); touch.addEventListener('pointercancel', () => down = null);
+function setZoom(v){ zoomed = v; document.body.classList.toggle('zoom', v); }
+$('zoomBtn').addEventListener('pointerdown', e => { e.stopPropagation(); setZoom(!zoomed); sfxTone(700, zoomed?1000:500, .08, 'sine', .15); });
+addEventListener('keydown', e => { if (e.code==='Space') shoot(); if (e.key.toLowerCase()==='z') setZoom(!zoomed); });
+$('playBtn').onclick = () => { audio(); setupMission(); };
+$('goBtn').onclick = startPlay;
+$('nextBtn').onclick = openChest;
+$('retryBtn').onclick = setupMission;
+$('homeBtn').onclick = () => { refreshMenu(); state='menu'; hud.classList.remove('on'); $('bestVal').textContent = save.best; show('menu'); };
+function refreshMenu(){
+  $('bestVal').textContent = save.best; const L = locFor(save.mission); $('menuLoc').textContent = `${L.flag} ${L.city}`;
+  $('gearMenu').innerHTML = Object.keys(GEAR).filter(k=>gearLv(k)>0).map(k=>`<span>${GEAR[k].ic} Nv ${gearLv(k)}</span>`).join('') || '<span>Sin equipo aún</span>';
+}
+refreshMenu(); buildWorld(locFor(save.mission));
+function openChest(){
+  state = 'chest'; show('chest');
+  const ic = $('chestIcon'); ic.textContent = '🧰'; ic.classList.add('shake'); $('chestTxt').style.display='block'; $('loot').classList.remove('on'); $('loot').innerHTML=''; $('chestBtn').style.display='none';
+  ic.onclick = () => {
+    ic.onclick = null; ic.classList.remove('shake'); ic.textContent = '🎁'; $('chestTxt').style.display='none';
+    sfxTone(300,900,.3,'triangle',.3);
+    const tier = mission-1; const rarity = tier>=9 ? ['Épico','#7b2ea3'] : tier>=4 ? ['Raro','#2f7fe0'] : ['Común','#5a5470'];
+    const open = Object.keys(GEAR).filter(k => gearLv(k) < MAXLV);
+    const bonus = 15 + tier*4; save.cash += bonus;
+    let html = `<div class="item"><div class="ic" style="background:var(--lime)">💵</div><div class="tx"><b>+${bonus} de botín</b><i>Dinero extra del cofre</i></div></div>`;
+    if (open.length){
+      const k = pick(open); save.gear[k] = gearLv(k)+1; const g = GEAR[k], lv = save.gear[k];
+      html += `<div class="item"><div class="ic" style="background:${g.bg}">${g.ic}</div><div class="tx"><span class="rar" style="background:${rarity[1]}">${rarity[0]}</span><b>${g.n}</b><i>${g.d(lv)}</i><div class="lv">${[1,2,3].map(i=>`<i class="${i<=lv?'on':''}"></i>`).join('')}</div></div></div>`;
+      if (tier>=6 && Math.random()<.35){ const o2 = Object.keys(GEAR).filter(x=>x!==k && gearLv(x)<MAXLV); if (o2.length){ const k2 = pick(o2); save.gear[k2]++; const g2 = GEAR[k2]; html += `<div class="item"><div class="ic" style="background:${g2.bg}">${g2.ic}</div><div class="tx"><span class="rar" style="background:${rarity[1]}">${rarity[0]}</span><b>${g2.n}</b><i>${g2.d(save.gear[k2])}</i></div></div>`; } }
+    } else html += `<div class="item"><div class="ic" style="background:#ffc531">🏆</div><div class="tx"><b>Equipo al máximo</b><i>Ya lo tienes todo, francotirador.</i></div></div>`;
+    persist(); setCash();
+    setTimeout(() => { $('loot').innerHTML = html; $('loot').classList.add('on'); $('chestBtn').style.display='inline-block'; sfxTone(600,1400,.35,'triangle',.3); }, 350);
+  };
+  $('chestBtn').onclick = openTravel;
+}
+function openTravel(){
+  state = 'travel'; show('travel');
+  const from = locFor(mission-1), to = locFor(mission);
+  $('fromFlag').textContent = from.flag; $('toFlag').textContent = to.flag;
+  $('toName').textContent = to.city; $('toInfo').textContent = `${to.country} · ${to.cont}`;
+  const visited = new Set(); for (let m=1;m<=mission;m++) visited.add(locFor(m).cont);
+  $('conts').innerHTML = CONTS.map(c=>`<span class="${visited.has(c)?'done':''}">${c}</span>`).join('');
+  const pl = $('plane'); pl.style.animation='none'; void pl.offsetWidth; pl.style.animation='';
+  $('landBtn').onclick = setupMission;
+}
+
+/* ---------- loop ---------- */
+function resize(){ const w = innerWidth, h = innerHeight; renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+const clock = new T.Clock(); let t = 0;
+function loop(){
+  requestAnimationFrame(loop);
+  const dt = Math.min(clock.getDelta(), .05); t += dt;
+  // camera
+  const target = zoomed ? 14/(1+gearLv('zoom')*.5) : 60; fov += (target - fov) * Math.min(1, dt*10);
+  if (Math.abs(camera.fov - fov) > .01){ camera.fov = fov; camera.updateProjectionMatrix(); }
+  recoil *= Math.pow(.02, dt); shake *= Math.pow(.01, dt);
+  const sway = (state==='play' ? (zoomed ? .0012 : .003) : .012) * (1 - gearLv('sway')*.3);
+  camera.rotation.y = yaw + Math.sin(t*.7)*sway + (Math.random()-.5)*shake*.05;
+  camera.rotation.x = pitch + recoil + Math.cos(t*.9)*sway*.6 + (Math.random()-.5)*shake*.05;
+  if (state === 'menu'){ camera.rotation.y = Math.sin(t*.15)*.5; camera.rotation.x = BASE_PITCH; }
+  clouds.forEach((c,i) => { c.position.x += dt*(1 + i*.2); if (c.position.x > 140) c.position.x = -140; });
+  // thugs
+  const playing = state === 'play';
+  if (playing) missionT += dt;
+  thugs.forEach(th => {
+    if (th.dead){
+      th.fall += dt;
+      th.g.rotation.x = -Math.min(1, th.fall*3) * Math.PI/2 * (th.dir);
+      th.g.rotation.z = Math.min(1, th.fall*3) * .3;
+      if (th.fall > 1.4) th.g.position.y = Math.max(-4, th.g.position.y - dt*3);
+      return;
+    }
+    if (!playing && state !== 'intro') return;
+    const walking = playing || state==='intro';
+    if (walking){
+      th.g.position.x += th.dir * th.speed * dt;
+      if (th.g.position.x > th.maxX) th.dir = -1; if (th.g.position.x < th.minX) th.dir = 1;
+      th.g.rotation.y = th.dir > 0 ? .9 : -.9;
+      const s = Math.sin(t*10 + th.phase);
+      th.legL.rotation.x = s*.6; th.legR.rotation.x = -s*.6; th.g.position.y = Math.abs(s)*.08;
+      th.armL.rotation.x = -s*.5;
+    }
+    if (playing && missionT > 4 + gearLv('silencer')*1.5){
+      th.shootTimer -= dt;
+      if (th.shootTimer < .8 && !th.warn){ th.warn = true; th.parts.forEach(m=>{ if(m.userData.part==='head'&&m.material.color) m.material=m.material.clone(); }); th.g.children.forEach(m=>{ if(m.userData.part==='head') m.material.emissive && m.material.emissive.setHex(0xff2233); }); }
+      if (th.shootTimer <= 0){ th.warn=false; th.g.children.forEach(m=>{ if(m.userData.part==='head') m.material.emissive && m.material.emissive.setHex(0); }); th.shootTimer = rand(4, 7) - Math.min(mission*.15, 2); thugShoots(th); }
+    }
+  });
+  if (winT > 0){ winT -= dt; if (winT <= 0 && state==='play') finishWin(); }
+  // fx
+  for (let i=fx.length-1;i>=0;i--){
+    const e = fx[i]; e.life -= dt;
+    if (e.v){ e.v.y -= 18*dt; e.m.position.addScaledVector(e.v, dt); e.m.scale.setScalar(Math.max(.01, e.life/e.t)); }
+    else e.m.material.opacity = e.life/e.t;
+    if (e.life <= 0){ scene.remove(e.m); e.m.geometry.dispose(); e.m.material.dispose(); fx.splice(i,1); }
+  }
+  renderer.render(scene, camera);
+}
+loop();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>CatQuiz Minijocs · Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%;background:#000;overflow:hidden;font-family:'Fredoka',system-ui,sans-serif;color:#FFFFFF}
+  /* Escenari 9:16 centrat: grava només aquest rectangle */
+  #escenari{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);aspect-ratio:9/16;height:100vh;max-width:100vw;background:linear-gradient(180deg,#5EC8FF,#1E7BE0);overflow:hidden}
+  @media (max-aspect-ratio:9/16){#escenari{height:auto;width:100vw}}
+  #escenari.sacseig{animation:sacseig .35s}
+  @keyframes sacseig{0%,100%{transform:translate(-50%,-50%)}20%{transform:translate(calc(-50% - 1.2%),-50%)}40%{transform:translate(calc(-50% + 1.2%),calc(-50% + .6%))}60%{transform:translate(calc(-50% - .8%),calc(-50% - .6%))}80%{transform:translate(calc(-50% + .5%),-50%)}}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .3s,transform .7s cubic-bezier(.2,.8,.2,1);transform-origin:50% 45%}
+  iframe.on{opacity:1}
+  #progres{position:absolute;top:2%;left:4%;right:4%;height:1%;background:rgba(255,248,240,.25);border-radius:999px;z-index:6;overflow:hidden}
+  #progres i{display:block;height:100%;width:0;background:#FFD600;border-radius:999px}
+  #flaix{position:absolute;inset:0;background:#FFFFFF;opacity:0;pointer-events:none;z-index:8}
+  #flaix.on{animation:flaix .25s}
+  @keyframes flaix{0%{opacity:.9}100%{opacity:0}}
+  /* Cartes plenes (hook i CTA) */
+  .carta{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:8%;background:linear-gradient(180deg,#5EC8FF,#1E7BE0);z-index:4;overflow:hidden}
+  .carta::before{content:'';position:absolute;left:50%;top:50%;width:300%;aspect-ratio:1;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.18) 0 8deg,rgba(255,255,255,0) 8deg 16deg);animation:gira 30s linear infinite}
+  .carta>div{position:relative}
+  @keyframes gira{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .carta .em{font-size:min(26vh,40vw);filter:drop-shadow(0 12px 0 rgba(0,0,0,.35));animation:bota 1s ease-in-out infinite}
+  .carta h1{font-family:'Lilita One',sans-serif;font-style:italic;font-weight:400;font-size:min(9.5vh,14vw);line-height:.95;color:#FFD600;-webkit-text-stroke:3px #1D2B64;paint-order:stroke fill;text-shadow:6px 6px 0 #FF3E9A,11px 11px 0 #1D2B64;transform:rotate(-4deg);margin-top:4%;animation:entra .5s cubic-bezier(.2,1.4,.4,1) both}
+  .carta p{margin-top:6%;font-size:min(3.6vh,5.4vw);font-weight:700;background:#FFFFFF;color:#1D2B64;padding:2% 5%;border-radius:999px;border:3px solid #1D2B64;box-shadow:5px 5px 0 #33E0FF;display:inline-block;animation:entra .5s .15s cubic-bezier(.2,1.4,.4,1) both}
+  .carta .etq{position:absolute;top:8%;left:50%;transform:translateX(-50%) rotate(-3deg);background:#7CE800;color:#1D2B64;font-weight:700;font-size:min(3vh,4.5vw);padding:1.5% 5%;border-radius:999px;border:3px solid #1D2B64;box-shadow:4px 4px 0 #1D2B64}
+  .carta.fora{animation:surt .3s ease-in both}
+  @keyframes bota{0%,100%{transform:translateY(0) rotate(-6deg) scale(1)}50%{transform:translateY(-6%) rotate(6deg) scale(1.08)}}
+  @keyframes entra{from{transform:rotate(-4deg) scale(.2);opacity:0}to{transform:rotate(-4deg) scale(1);opacity:1}}
+  @keyframes surt{to{transform:scale(1.6);opacity:0}}
+  /* Subtítols sobre el joc */
+  .sub{position:absolute;left:50%;z-index:5;pointer-events:none;background:#FFD600;color:#1D2B64;font-family:'Lilita One',sans-serif;font-style:italic;font-weight:400;font-size:min(4.2vh,6.2vw);line-height:1.1;padding:2.2% 5%;border-radius:22px;border:3px solid #1D2B64;box-shadow:0 6px 0 #1D2B64;white-space:nowrap;max-width:92%;text-align:center;
+    transform:translateX(-50%) rotate(-3deg) scale(0);animation:pop .45s cubic-bezier(.2,1.6,.4,1) forwards}
+  .sub.fora{animation:popfora .3s ease-in forwards}
+  @keyframes pop{to{transform:translateX(-50%) rotate(-3deg) scale(1)}}
+  @keyframes popfora{from{transform:translateX(-50%) rotate(-3deg) scale(1)}to{transform:translateX(-50%) rotate(8deg) scale(0);opacity:0}}
+  /* Format quiz: pregunta gran + compte enrere, i CTA de comentaris */
+  .quiz{position:absolute;inset:0;z-index:7;pointer-events:none;display:grid;grid-template-rows:1fr auto;align-items:end;background:rgba(29,43,100,.28)}
+  .quiz .preg{justify-self:center;margin-bottom:4%;font-family:'Lilita One',sans-serif;font-style:italic;font-size:min(7vh,10.5vw);line-height:1.05;color:#fff;-webkit-text-stroke:2.5px #1D2B64;paint-order:stroke fill;text-shadow:0 5px 0 #1D2B64;text-align:center;background:linear-gradient(180deg,#C79BFF,#9B5CFF);border:3px solid #1D2B64;border-radius:26px;padding:4% 6%;box-shadow:0 8px 0 #1D2B64;transform:rotate(-2deg);animation:entra .5s cubic-bezier(.2,1.4,.4,1) both}
+  .quiz .num{justify-self:center;margin-bottom:24%;font-family:'Lilita One',sans-serif;font-size:min(14vh,20vw);color:#FFD600;-webkit-text-stroke:3px #1D2B64;paint-order:stroke fill;line-height:1;width:min(24vh,36vw);aspect-ratio:1;display:grid;place-items:center;background:#1D2B64;border:4px solid #fff;border-radius:50%;box-shadow:0 8px 0 rgba(0,0,0,.35)}
+  .quiz .num.pop{animation:numpop .9s cubic-bezier(.2,1.5,.4,1)}
+  @keyframes numpop{from{transform:scale(.2);opacity:0}30%{transform:scale(1.15);opacity:1}to{transform:scale(1)}}
+  .quiz .barra{position:absolute;left:8%;right:8%;bottom:14%;height:2.4%;background:rgba(255,255,255,.35);border:3px solid #1D2B64;border-radius:999px;overflow:hidden}
+  .quiz .barra i{display:block;height:100%;width:100%;background:#7CE800;transform-origin:left;animation:buida 4.5s linear forwards}
+  @keyframes buida{to{transform:scaleX(0)}}
+  #marca{position:absolute;left:50%;bottom:2.5%;transform:translateX(-50%) rotate(-2deg);background:#1D2B64;color:#FFD600;font-weight:700;font-size:min(2.4vh,3.6vw);padding:1% 4%;border-radius:999px;border:3px solid #FFD600;pointer-events:none;z-index:6}
+  #inici{position:absolute;inset:0;display:grid;place-items:center;background:rgba(27,17,64,.92);z-index:10;text-align:center;padding:8%}
+  #inici[hidden]{display:none}
+  #inici button{font:inherit;font-weight:700;font-size:min(3.4vh,5vw);background:#FF3E9A;color:#FFFFFF;border:3px solid #1D2B64;border-radius:999px;padding:3% 7%;cursor:pointer;box-shadow:6px 6px 0 #1D2B64;margin:2%}
+  #inici a.baixa{display:inline-block;background:#7CE800;color:#1D2B64;font-family:'Lilita One',sans-serif;font-size:min(3vh,4.6vw);padding:.5em 1.3em;border-radius:999px;text-decoration:none;margin:3%;border:3px solid #1D2B64;box-shadow:0 6px 0 #1D2B64}
+  #inici small{display:block;margin-top:5%;font-size:min(2vh,3.2vw);color:#DDE6FF;line-height:1.4}
+</style>
+</head>
+<body>
+<div id="escenari">
+  <div id="progres"><i></i></div>
+  <div id="flaix"></div>
+  <div id="inici"><div><p style="font-size:min(4vh,6vw);margin-bottom:4%">Tria el reel</p><label style="display:block;margin-bottom:3%;font-size:min(2.6vh,4vw)"><input type="checkbox" id="grava"> ⏺ Grava el reel i descarrega'l (una passada, amb so)</label><div id="botons"></div><div id="resultat"></div><small>Cada reel dura uns 28 s i es repeteix en bucle. Amb «Grava» marcat, Chrome demana compartir aquesta pestanya (tria «Aquesta pestanya» i activa l'àudio), fa una sola passada retallada al rectangle vertical i et dona el MP4. Paràmetres: <b>?joc=motle</b> · <b>?joc=motle&amp;quiz</b> · <b>?marca=@usuari</b> (per defecte, sense marca)</small></div></div>
+  <div id="marca">catquiz.cat</div>
+</div>
+
+<script>
+// Pantalla fixa: sense zoom ni desplaçament lateral (gestos de pinça i doble toc bloquejats)
+for (const ev of ['gesturestart','gesturechange','gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
+document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+let darrerToc = 0; document.addEventListener('touchend', e => { const t = Date.now(); if (t - darrerToc < 300 && !e.target.closest('button,a')) e.preventDefault(); darrerToc = t; }, { passive: false });
+addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+// Un reel per joc: hook (1.8 s) → joc jugant sol amb subtítols i zooms (≈22 s) → CTA (3 s) → bucle
+const q = new URLSearchParams(location.search);
+const marca = document.getElementById('marca'); marca.hidden = !q.get('marca') || q.get('marca') === '0'; if (q.get('marca')) marca.textContent = q.get('marca');
+const QUIZ = q.has('quiz');
+const REELS = {
+  quizmotle: { quiz:'motle', t:'Motle', e:'🟩', tipus:'QUIZ', c:'#FFD600', hook:'Quina paraula és?', sub:'5 lletres · 6 intents', guio:[[1,'Verd = lloc correcte · Groc = hi és','baix']] },
+  quizpenjat: { quiz:'penjat', t:'Penjat 3D', e:'🪢', tipus:'QUIZ', c:'#7CE800', hook:'Endevina la paraula', sub:'Abans que el bot!', guio:[[1,'Cada error, una peça del ninot','baix']] },
+  quizanagrama: { quiz:'anagrama', t:'Anagrama', e:'🔀', tipus:'QUIZ', c:'#9B5CFF', hook:'Ordena les lletres', sub:'Quina paraula amaguen?', guio:[[1,'Fixa\'t en la pista','baix']] },
+  quizcatala: { quiz:'catala', t:'Com es diu en català?', e:'🗣️', tipus:'QUIZ', c:'#FF3E9A', hook:'Com es diu en català?', sub:'Ho saps?', guio:[[1,'3 opcions · 12 segons','baix']] },
+  quizintrus: { quiz:'intrus', t:"L'intrús", e:'🕵️', tipus:'QUIZ', c:'#33E0FF', hook:'Quin és l\'intrús?', sub:'Tres van juntes…', guio:[[1,'Una no hi pinta res','baix']] },
+  quizaccents: { quiz:'accents', t:'Accents!', e:'✍️', tipus:'QUIZ', c:'#FF8C1A', hook:'Com s\'escriu?', sub:'Només una és correcta', guio:[[1,'Obert, tancat o cap?','baix']] },
+  quizperdudes: { quiz:'perdudes', t:'Lletres perdudes', e:'🧩', tipus:'QUIZ', c:'#7CE800', hook:'Quines lletres falten?', sub:'Completa la paraula', guio:[[1,'Tres errors i es revela','baix']] },
+  quizsopa: { quiz:'sopa', t:'Sopa de lletres', e:'🍲', tipus:'QUIZ', c:'#33E0FF', hook:'En veus alguna?', sub:'6 paraules amagades', guio:[[1,'Horitzontal, vertical o diagonal','baix']] },
+  esquiva: { t:'Esquiva!', e:'🧊', tipus:'ACCIÓ', c:'#FF3E9A', hook:'Quant aguantes?', sub:'Cada segon compta',
+    guio:[[1,'3 carrils. 0 frens.','dalt'],[4.5,'Moneda = +10 punts','baix'],[8,'Cada cop va més ràpid…','dalt','zoom'],[12,'Fletxes o un dit. I prou.','baix'],[16,'El teu rècord es guarda','dalt'],[19.5,'Pots superar els 300?','baix','zoom']] },
+  estrelles: { t:'Caça estrelles', e:'⭐', tipus:'ACCIÓ', c:'#33E0FF', hook:'40 segons.', sub:'Quantes estrelles?',
+    guio:[[1,'Les daurades valen ×3','dalt'],[4.5,'Ràpid = combo!','baix','zoom'],[8,'Ep, bombes 💣','dalt'],[11.5,'Cada bomba: −5 segons','baix'],[15,'Arrossega el dit i ja està','dalt'],[19,'Rècord a superar: 60','baix','zoom']] },
+  motle: { t:'Motle', e:'🟩', tipus:'PARAULES', c:'#FFD600', hook:'Wordle en català.', sub:'Però en 3D',
+    guio:[[1,'5 lletres, 6 intents','dalt'],[4.5,'Verd = lloc correcte','baix'],[8,'Groc = hi és, però no aquí','baix','zoom'],[12,'500 paraules','dalt'],[15.5,'Paraula del dia cada dia','baix'],[19,'La teva ratxa es guarda 🔥','dalt','zoom']] },
+  penjat: { t:'Penjat 3D', e:'🪢', tipus:'PARAULES', c:'#7CE800', hook:'El penjat.', sub:'Peça a peça',
+    guio:[[1,'12 categories','dalt'],[4.5,'Cada error, una peça','baix','zoom'],[8,'8 errors i… penjat','dalt'],[11.5,'Pista: una lletra per 2 errors','baix'],[15,'548 paraules en català','dalt'],[19,'Quina ratxa faràs?','baix','zoom']] },
+  catala: { t:'Com es diu en català?', e:'🗣️', tipus:'PARAULES', c:'#FF3E9A', hook:'Com es diu en català?', sub:'393 castellanismes',
+    guio:[[1,'Un castellanisme, tres opcions','dalt'],[5,'12 segons per ronda','baix'],[9,'Ratxa de 3 = punts dobles','dalt','zoom'],[14,'Tot en català, tot en 3D','baix'],[19,'Quantes en saps?','dalt','zoom']] },
+  intrus: { t:"L'intrús", e:'🕵️', tipus:'PARAULES', c:'#33E0FF', hook:'Quin és l\'intrús?', sub:'Tres van juntes',
+    guio:[[1,'18 categories barrejades','dalt'],[5,'Toca la que sobra','baix'],[9,'Cada segon que et sobra, suma','dalt','zoom'],[14,'10 rondes','baix'],[19,'Ratxa ×3 = punts dobles','dalt','zoom']] },
+  accents: { t:'Accents!', e:'✍️', tipus:'PARAULES', c:'#FF8C1A', hook:'Obert o tancat?', sub:'Tria la forma correcta',
+    guio:[[1,'Una paraula, tres grafies','dalt'],[5,'10 segons','baix'],[9,'Només una és correcta','dalt','zoom'],[14,'240 paraules traïdores','baix'],[19,'Te\'n sortiries?','dalt','zoom']] },
+  perdudes: { t:'Lletres perdudes', e:'🧩', tipus:'PARAULES', c:'#7CE800', hook:'Falten lletres!', sub:'Completa la paraula',
+    guio:[[1,'Escriu les que falten','dalt'],[5,'La groga és la següent','baix'],[9,'Tres errors i es revela','dalt','zoom'],[14,'818 paraules per categories','baix'],[19,'20 segons per ronda','dalt','zoom']] },
+  sopa: { t:'Sopa de lletres', e:'🍲', tipus:'PARAULES', c:'#33E0FF', hook:'Sopa de lletres', sub:'En 3D i en català',
+    guio:[[1,'6 paraules amagades','dalt'],[5,'Arrossega per marcar','baix'],[9,'Horitzontal, vertical i diagonal','dalt','zoom'],[14,'150 segons','baix'],[19,'Les trobaries totes?','dalt','zoom']] },
+  anagrama: { t:'Anagrama', e:'🔀', tipus:'PARAULES', c:'#9B5CFF', hook:'Lletres barrejades.', sub:'Contrarellotge',
+    guio:[[1,'Toca-les en ordre','dalt'],[4.5,'Encert = +5 segons','baix'],[8,'Cada cop més llargues','dalt','zoom'],[11.5,'Combo fins a ×4','baix','zoom'],[15,'500 paraules amb pista','dalt'],[19,'Ho fas abans que el bot?','baix']] },
+};
+const DUR_JOC = 22000;
+const escenari = document.getElementById('escenari'), progres = document.querySelector('#progres i'), flaix = document.getElementById('flaix');
+const espera = ms => new Promise(r => setTimeout(r, ms));
+function flash(){ flaix.classList.remove('on'); void flaix.offsetWidth; flaix.classList.add('on'); }
+function sacseig(){ escenari.classList.remove('sacseig'); void escenari.offsetWidth; escenari.classList.add('sacseig'); }
+
+async function carta(html, ms){
+  const d = document.createElement('div'); d.className = 'carta'; d.innerHTML = html; escenari.appendChild(d);
+  await espera(ms - 300); d.classList.add('fora'); await espera(300); d.remove();
+}
+function subtitol(text, pos, ms){
+  const s = document.createElement('div'); s.className = 'sub'; s.textContent = text;
+  s.style[pos === 'dalt' ? 'top' : 'bottom'] = pos === 'dalt' ? '9%' : '10%';
+  s.style.background = ['#FFD600','#7CE800','#33E0FF','#FF8C1A','#9B5CFF'][Math.floor(Math.random()*5)];
+  escenari.appendChild(s); sacseig();
+  setTimeout(() => { s.classList.add('fora'); setTimeout(() => s.remove(), 300); }, ms);
+}
+let resolQuiz = null, resolFi = null;
+addEventListener('message', e => { const m = e.data && e.data.catquiz; if (m === 'quiz' && resolQuiz) resolQuiz(); if (m === 'fi' && resolFi) resolFi(); });
+async function pregunta(){ // "Quina és?" + compte enrere de 4,5 s + barra que es buida (format CatQuiz)
+  const d = document.createElement('div'); d.className = 'quiz'; d.innerHTML = `<div class="preg">QUINA ÉS? 🤔<br><span style="font-size:.55em">Escriu-la als comentaris 👇</span></div><div class="num"></div><div class="barra"><i></i></div>`;
+  escenari.appendChild(d); sacseig(); const num = d.querySelector('.num');
+  for (const n of [3, 2, 1]) { num.textContent = n; num.classList.remove('pop'); void num.offsetWidth; num.classList.add('pop'); await espera(1350); }
+  num.textContent = '👀'; await espera(500); flash(); d.remove();
+}
+async function reel(id){
+  const r = REELS[id];
+  progres.style.transition = 'none'; progres.style.width = '0';
+  await carta(`<div><span class="etq">${r.tipus}</span><div class="em">${r.e}</div><h1 style="color:${r.c}">${r.hook}</h1><p>${r.sub}</p></div>`, 1800);
+  flash();
+  const f = document.createElement('iframe'); f.src = r.quiz ? `jocs/${r.quiz}.html?demo&quiz` : `jocs/${id}.html?demo`; f.allow = 'autoplay'; escenari.appendChild(f);
+  f.onload = () => setTimeout(() => f.classList.add('on'), 250);
+  if (!r.quiz) requestAnimationFrame(() => { progres.style.transition = `width ${DUR_JOC}ms linear`; progres.style.width = '100%'; });
+  for (const [t, text, pos, zoom] of r.guio) setTimeout(() => {
+    subtitol(text, pos, 3000);
+    if (zoom) { f.style.transform = 'scale(1.12)'; setTimeout(() => f.style.transform = 'scale(1)', 1800); }
+  }, t * 1000);
+  if (r.quiz) { // espera la pausa del joc, fes la pregunta, i acaba quan el joc resol
+    await Promise.race([new Promise(res => resolQuiz = res), espera(40000)]); resolQuiz = null;
+    const fi = new Promise(res => resolFi = res); await pregunta();
+    await Promise.race([fi, espera(20000)]); resolFi = null; await espera(2600); flash();
+  } else { await espera(DUR_JOC); flash(); }
+  f.classList.remove('on'); setTimeout(() => f.remove(), 350);
+  if (r.quiz) await carta(`<div><div class="em">✍️</div><h1>L'HAS ENCERTADA?</h1><p>Comenta-la 👇 · Juga-hi: enllaç a la bio</p></div>`, 3400);
+  else await carta(`<div><div class="em">🎮</div><h1>${r.t}</h1><p>Enllaç a la bio · gratis, sense instal·lar</p></div>`, 3200);
+}
+async function bucle(ids){ while (true) for (const id of ids) await reel(id); }
+// Gravació: captura d'aquesta pestanya retallada a l'escenari (Region Capture), amb l'àudio de la pestanya (inclou els sons dels jocs)
+async function gravaReel(ids){
+  const r = document.getElementById('resultat'); r.innerHTML = '';
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true, preferCurrentTab: true, selfBrowserSurface: 'include', surfaceSwitching: 'exclude', systemAudio: 'exclude' });
+    const [pista] = stream.getVideoTracks();
+    if (window.CropTarget && pista.cropTo) { const ct = await CropTarget.fromElement(escenari); await pista.cropTo(ct); } // retalla al rectangle 9:16
+    else r.textContent = 'Aquest navegador no retalla la captura: el vídeo inclourà tota la pestanya (fes la finestra ben alta i estreta).';
+  } catch (e) { // sense captura (cancel·lada o no disponible): reprodueix el reel igualment, sense gravar
+    r.textContent = 'No s\'ha pogut gravar (' + (e.message || e.name) + '). Reprodueixo el reel sense gravar; per gravar, obre demo.html a Chrome d\'escriptori.'; document.getElementById('grava').checked = false; await espera(1800); bucle(ids); return; }
+  if (!stream.getAudioTracks().length) r.textContent = 'Sense àudio: marca «Compartir àudio de la pestanya» al diàleg de captura.';
+  const mime = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m));
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8e6 }), trossos = []; rec.ondataavailable = e => { if (e.data.size) trossos.push(e.data); };
+  await espera(400); rec.start(1000);
+  for (const id of ids) await reel(id);
+  await new Promise(res => { rec.onstop = res; rec.stop(); }); stream.getTracks().forEach(t => t.stop());
+  const blob = new Blob(trossos, { type: rec.mimeType }), ext = rec.mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
+  const a = document.createElement('a'); a.className = 'baixa'; a.href = URL.createObjectURL(blob); a.download = `catquiz-reel-${ids.join('-')}.${ext}`; a.textContent = `⬇ Descarrega el reel (.${ext}, ${(blob.size/1048576).toFixed(1)} MB)`;
+  r.innerHTML = ''; r.appendChild(a); document.getElementById('inici').hidden = false;
+}
+const potGravar = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia && window.MediaRecorder);
+const arrenca = ids => { document.getElementById('inici').hidden = true; const g = document.getElementById('grava'); if (g && g.checked && potGravar) gravaReel(ids); else bucle(ids); };
+if (!potGravar) { for (const l of document.querySelectorAll('label')) if (l.querySelector('#grava')) { l.innerHTML = '📱 En aquest navegador no es pot gravar la pestanya. Reprodueix el reel i grava la pantalla amb el mòbil, o obre demo.html a Chrome d\'escriptori.'; l.style.color = '#DDE6FF'; } }
+const botons = document.getElementById('botons');
+for (const [id, r] of Object.entries(REELS)) { const b = document.createElement('button'); b.textContent = `${r.e} ${r.quiz ? 'Quiz · ' : ''}${r.t}`; if (r.quiz) { b.style.background = 'linear-gradient(180deg,#C79BFF,#9B5CFF)'; b.style.boxShadow = '0 7px 0 #5A2BB0'; } b.onclick = () => arrenca([id]); botons.appendChild(b); }
+const tots = document.createElement('button'); tots.textContent = '▶ Tots seguits'; tots.style.background = '#FFD600'; tots.style.color = '#1D2B64';
+tots.onclick = () => arrenca(Object.keys(REELS)); botons.appendChild(tots);
+if (q.get('joc') && QUIZ && REELS['quiz' + q.get('joc')]) q.set('joc', 'quiz' + q.get('joc'));
+if (REELS[q.get('joc')]) { const alt = document.getElementById('inici'); alt.innerHTML = `<div><button id="auto">▶ Reel: ${REELS[q.get('joc')].t}</button><label style="display:block;margin-top:3%;font-size:min(2.6vh,4vw)"><input type="checkbox" id="grava" ${q.has('grava') ? 'checked' : ''}> ⏺ Grava i descarrega</label><div id="resultat"></div></div>`; document.getElementById('auto').onclick = () => arrenca([q.get('joc')]); }
+</script>
+</body>
+</html>
