@@ -814,6 +814,34 @@ def _(I):
     for i in range(3): I.add(f'<line x1="{180-i*30}" y1="{345+i*26}" x2="{110-i*30}" y2="{345+i*26}" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".85"/>')
     sparkle(I, 430, 100, 18)
 
+
+@icon('ola-perfecta')
+def _(I):
+    bg(I, '#ffc46b', '#ff7a6b', '#fff3c4', .16)
+    I.add(f'<circle cx="370" cy="150" r="70" fill="#fff1b8" opacity=".95"/><circle cx="370" cy="150" r="96" fill="#fff1b8" opacity=".25"/>')
+    for x, y in ((90, 110), (130, 92)): I.add(f'<path d="M{x-16} {y} q16 -14 32 0 q16 -14 32 0" fill="none" stroke="{INK}" stroke-width="6" stroke-linecap="round"/>')
+    # mar de fondo
+    I.add(f'<path d="M-10 330 C120 310 260 318 522 300 V522 H-10Z" fill="{I.lg("#2fc4c9", "#0f6f8f")}"/>')
+    # la ola que rompe (tubo)
+    I.add(f'<path d="M-10 522 V240 C30 120 170 60 270 96 C340 120 360 190 320 226 C292 250 250 238 252 206 C254 184 280 178 292 196 C280 150 220 140 170 176 C110 220 90 330 140 522Z" {st(I.lg("#7af0e0", "#0f7fa0", 0, 0, .3, 1), 9)}/>')
+    I.add(f'<path d="M140 522 C90 330 110 220 170 176 C220 140 280 150 292 196" fill="none" stroke="#0b4f6e" stroke-width="10" opacity=".35"/>')
+    # espuma del labio
+    I.add(f'<path d="M30 160 C80 100 190 60 270 96 C340 120 360 190 320 226" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>')
+    for x, y, r in ((322, 228, 13), (338, 206, 9), (300, 240, 8), (346, 246, 6), (316, 258, 5)): I.add(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#fff"/>')
+    for d in ('M40 300 C60 270 70 240 90 220', 'M70 380 C80 340 96 300 116 270'): I.add(f'<path d="{d}" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".55"/>')
+    # estela
+    I.add(f'<path d="M232 440 C300 450 380 430 470 380" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" opacity=".8"/>')
+    # tabla
+    I.add(f'<g transform="rotate(-18 300 410)"><ellipse cx="300" cy="410" rx="120" ry="24" {st(I.lg("#fff6e0", "#ffd38a"), 8)}/><path d="M190 410 H410" stroke="#ff6f4f" stroke-width="9"/></g>')
+    # surfista
+    I.add(f'<path d="M262 410 L282 340 M336 392 L318 336" stroke="{INK}" stroke-width="26" stroke-linecap="round"/><path d="M262 410 L282 340 M336 392 L318 336" stroke="#e8a77a" stroke-width="14" stroke-linecap="round"/>')
+    I.add(f'<path d="M270 350 Q300 330 330 346 L326 300 Q300 290 276 302Z" {st("#1fb6a6", 7)}/>')
+    I.add(f'<path d="M282 300 L268 230 Q300 214 330 228 L320 300Z" {st("#ff6f4f", 7)}/>')
+    I.add(f'<path d="M276 246 L208 286 M326 240 L392 214" stroke="{INK}" stroke-width="24" stroke-linecap="round"/><path d="M276 246 L208 286 M326 240 L392 214" stroke="#e8a77a" stroke-width="12" stroke-linecap="round"/>')
+    I.add(f'<circle cx="300" cy="184" r="42" {st(I.rg("#ffd0aa", "#e8a77a", .4, .35, .8), 8)}/><path d="M258 176 C262 136 340 128 344 172 C330 158 300 150 270 168Z" {st("#5a3a26", 6)}/>')
+    eyes(I, 302, 188, .7, 26, 1); smile(I, 302, 206, .7, True)
+    sparkle(I, 452, 300, 16); sparkle(I, 200, 70, 12)
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

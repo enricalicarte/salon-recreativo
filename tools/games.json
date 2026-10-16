@@ -321,6 +321,21 @@
    "play": "juegos/olimpiadas/index.html"
   },
   {
+   "slug": "ola-perfecta",
+   "id": "olaperfecta",
+   "kw": "juego de surf",
+   "cat": "deporte",
+   "name": "Ola Perfecta",
+   "note": "Campeonato mundial de surf",
+   "blurb": "Juego de surf en 3D: rema, levántate justo cuando llega la ola y surfea dentro del tubo. Salta, gira y haz flips en una gira mundial de ocho olas, de Waikiki a los más de 20 metros de Nazaré.",
+   "tags": [
+    "Surf",
+    "Trucos",
+    "Gira mundial"
+   ],
+   "play": "juegos/ola-perfecta/index.html"
+  },
+  {
    "slug": "cabina",
    "id": "cabina",
    "cat": "ritmo",
@@ -980,7 +995,7 @@
   },
   "deporte": {
    "t": "Deporte",
-   "d": "Fútbol 7, Kings League y unas olimpiadas de granja para los más peques."
+   "d": "Fútbol 7, Kings League, surf en olas gigantes y unas olimpiadas de granja para los más peques."
   },
   "ritmo": {
    "t": "Ritmo",
