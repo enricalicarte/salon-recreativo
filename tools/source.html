@@ -379,6 +379,47 @@ body.v-mosaic .mine{padding-top:14px}
 }
 @media (max-width:420px){.top .vbtn{width:36px;height:36px}}
 @media (prefers-reduced-motion:reduce){.tile{transition:none}}
+
+/* ---------- Ficha de juego (vista mosaico) y modo inmersivo ---------- */
+#gview{display:none;padding-top:calc(80px + env(safe-area-inset-top,0px))}
+body.v-mosaic.v-game #gview{display:block}
+body.v-mosaic.v-game #mzHead,body.v-mosaic.v-game #tusalon,body.v-mosaic.v-game #mosaic{display:none!important}
+.gv-back{display:inline-flex;align-items:center;gap:6px;font:600 .9rem var(--f-body);color:var(--mute);background:none;border:0;padding:6px 0;margin-bottom:12px;cursor:pointer}
+.gv-back:hover{color:#fff}
+.gv-wrap{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:22px;align-items:start}
+.gv-card{position:relative;aspect-ratio:16/10;border-radius:26px;overflow:hidden;background:#000;cursor:pointer;isolation:isolate;
+  box-shadow:0 30px 70px -30px color-mix(in srgb,var(--c) 70%,transparent),0 0 0 1px rgba(255,255,255,.08)}
+.gv-card img,.gv-card video,.gv-card canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gv-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,6,15,.15),transparent 40%,rgba(7,6,15,.88));z-index:1}
+.gv-play{position:absolute;z-index:2;left:50%;top:46%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;
+  background:rgba(255,255,255,.88);color:#4d6bff;box-shadow:0 12px 40px rgba(0,0,0,.45);transition:transform .2s}
+.gv-play svg{width:44px;height:44px;fill:currentColor;margin-left:6px}
+.gv-card:hover .gv-play{transform:scale(1.08)}
+.gv-play::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:2px solid rgba(255,255,255,.5);animation:pulse2 2s ease-out infinite}
+@keyframes pulse2{from{transform:scale(.85);opacity:1}to{transform:scale(1.25);opacity:0}}
+.gv-t{position:absolute;z-index:2;left:clamp(18px,3vw,32px);right:18px;bottom:clamp(16px,3vw,28px)}
+.gv-t h1{font-size:clamp(1.7rem,4.4vw,3rem);line-height:1;letter-spacing:-.02em;margin:0 0 8px}
+.gv-t p{margin:0;color:#e1dcf5;font-size:.95rem}
+.gv-info{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:20px}
+.gv-info .chip{position:static;display:inline-block;margin-bottom:12px}
+.gv-info p{margin:0 0 14px;color:#d9d3f2;font-size:.98rem;line-height:1.55}
+.gv-info .tags{margin-bottom:16px}
+.gv-acts{display:flex;flex-wrap:wrap;gap:8px}
+.gv-acts .btn{padding:12px 20px;font-size:.95rem}
+.gv-acts .fv{position:static;width:46px;height:46px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18)}
+.gv-rel-h{font-size:clamp(1.2rem,2.6vw,1.6rem);margin:34px 0 0}
+.gv-rel{margin-top:16px}
+@media (max-width:860px){.gv-wrap{grid-template-columns:1fr}.gv-card{aspect-ratio:1}}
+@media (max-width:640px){.gv-play{width:80px;height:80px;margin:-40px 0 0 -40px}.gv-play svg{width:38px;height:38px}}
+.imm-back{display:none}
+.stage.imm .stage-bar{display:none}
+.stage.imm .imm-back{position:absolute;z-index:5;left:0;top:calc(14px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:6px;padding:8px 14px 8px 10px;border:0;border-radius:0 22px 22px 0;
+  background:#fff;color:var(--bg);box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer;font:700 1.3rem/1 var(--f-body)}
+.imm-back i{width:34px;height:34px;border-radius:50%;background:conic-gradient(var(--sun),var(--pink),var(--cyan),var(--sun));display:grid;place-items:center}
+.imm-back i::after{content:"";width:16px;height:16px;border-radius:50%;background:var(--bg)}
+.stage.imm .imm-fs{position:absolute;z-index:5;right:12px;top:calc(14px + env(safe-area-inset-top,0px));display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:var(--bg);cursor:pointer}
+.imm-fs{display:none}.imm-fs svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2}
+@media (pointer:coarse){.stage.imm .imm-fs{display:none}}
 /* pie */
 .flinks{display:flex;flex-wrap:wrap;gap:8px 18px;margin:26px 0 0!important;font-size:.9rem}
 .flinks a{color:var(--mute);text-decoration:none}.flinks a:hover{color:#fff;text-decoration:underline}
@@ -439,6 +480,8 @@ body.v-mosaic .mine{padding-top:14px}
   </div>
 </section>
 
+<section id="gview" aria-live="polite"></section>
+
 <section id="mzHead" aria-label="Todos los juegos"><div class="in">
   <div class="mz-top"><h1>Juegos <span>gratis</span></h1><div class="vsw" role="group" aria-label="Vista de la web"><button type="button" data-view="salon" aria-pressed="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg><span>Salón</span></button><button type="button" data-view="mosaico" aria-pressed="false"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="2"/><rect x="15" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="11" width="6" height="6" rx="1.5"/><rect x="3" y="15" width="6" height="6" rx="1.5"/><rect x="11" y="19" width="10" height="2" rx="1"/></svg><span>Mosaico</span></button></div></div>
   <div class="mz-q"><button type="button" data-find>🔍 Buscar</button><button type="button" data-find="peques">Para peques</button><button type="button" data-find="cortas">Partidas cortas</button><button type="button" data-find="catala">En catalán</button><button type="button" data-find="nuevos">Novedades</button><button type="button" data-random>Al azar ▶</button></div>
@@ -482,6 +525,8 @@ body.v-mosaic .mine{padding-top:14px}
     <button class="sb" id="stFull" type="button">Pantalla completa</button>
     <button class="sb sb-x" id="stClose" type="button">Cerrar ✕</button>
   </div>
+  <button class="imm-back" id="immBack" type="button" aria-label="Volver">‹<i></i></button>
+  <button class="imm-fs" id="immFs" type="button" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
   <div class="stage-body" data-lenis-prevent>
     <p class="stage-load">Cargando…</p>
     <div class="spop" id="sPop" hidden></div>
@@ -1540,7 +1585,10 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(refresh);
 /* ---------- Visor ---------- */
 const st=$('#stage'),fr=$('#stFrame');
 let lastFocus=null;
-let curG=null;
+let curG=null,stagePushed=false;
+/* cargar el juego sin añadir entradas al historial (así «atrás» vuelve a la ficha) */
+function setFr(u){try{fr.contentWindow.location.replace(u);}catch(e){fr.src=u;}}
+function requestClose(){if(stagePushed){stagePushed=false;history.back();}else closeGame();}
 function openGame(src,title,from){
   lastFocus=document.activeElement;
   curG=GAMES.find(g=>g.play===src)||null;
@@ -1550,16 +1598,18 @@ function openGame(src,title,from){
   if(!fine){try{const fs=st.requestFullscreen||st.webkitRequestFullscreen;if(fs){const pr=fs.call(st,{navigationUI:'hide'});if(pr&&pr.catch)pr.catch(()=>{});}}catch(e){}}
   $('#stTitle').textContent=title||'';
   $('#stOpen').href=src;
+  st.classList.toggle('imm',document.body.classList.contains('v-mosaic'));
+  if(st.classList.contains('imm')){try{history.pushState({stage:1},'');stagePushed=true;}catch(e){}}
   st.hidden=false;document.documentElement.style.overflow='hidden';if(lenis)lenis.stop();
   const hostEl=from&&from.closest?from.closest('.card,.tile,.mini'):null,cv=hostEl?(hostEl.querySelector('.cover,.mt')||hostEl):null;
   if(cv&&!reduce&&st.animate){
     const r=cv.getBoundingClientRect();
-    st.animate([{transform:'translate('+r.left+'px,'+r.top+'px) scale('+(r.width/innerWidth)+','+(r.height/innerHeight)+')',opacity:.4,borderRadius:'22px'},{transform:'none',opacity:1,borderRadius:'0px'}],{duration:460,easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>{fr.src=src;};
-  }else fr.src=src;
-  $('#stClose').focus();
+    st.animate([{transform:'translate('+r.left+'px,'+r.top+'px) scale('+(r.width/innerWidth)+','+(r.height/innerHeight)+')',opacity:.4,borderRadius:'22px'},{transform:'none',opacity:1,borderRadius:'0px'}],{duration:460,easing:'cubic-bezier(.2,.8,.2,1)'}).onfinish=()=>{setFr(src);};
+  }else setFr(src);
+  (st.classList.contains('imm')?$('#immBack'):$('#stClose')).focus();
 }
 function closeGame(){
-  fr.src='about:blank';$('#sPop').hidden=true;renderMine();setTimeout(maybeInstall,900);document.documentElement.style.overflow='';if(lenis)lenis.start();
+  setFr('about:blank');$('#sPop').hidden=true;renderMine();setTimeout(maybeInstall,900);document.documentElement.style.overflow='';if(lenis)lenis.start();
   if(!reduce&&st.animate){st.animate([{opacity:1},{opacity:0,transform:'scale(.98)'}],{duration:220,easing:'ease-out'}).onfinish=()=>{st.hidden=true;};}else st.hidden=true;
   try{if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});}catch(e){}
   if(lastFocus&&lastFocus.focus)lastFocus.focus();
@@ -1571,9 +1621,10 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-play]');if(b){if(!finder.hidden)closeFinder(true);openGame(b.dataset.play,b.dataset.title,b);return;}
   if(e.target.closest('[data-random]')){const p=GAMES.filter(g=>g.play);const g=p[Math.floor(Math.random()*p.length)];const c=document.querySelector('.card[data-id="'+g.id+'"]');openGame(g.play,g.name,c);}
 });
-$('#stClose').addEventListener('click',closeGame);
+$('#stClose').addEventListener('click',requestClose);$('#immBack').addEventListener('click',requestClose);
+$('#immFs').addEventListener('click',()=>{try{(document.fullscreenElement?document.exitFullscreen():st.requestFullscreen()).catch(()=>{});}catch(e){}});
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){if(!$('#sPop').hidden){$('#sPop').hidden=true;return;}if(!finder.hidden){closeFinder();return;}if(!st.hidden)closeGame();return;}
+  if(e.key==='Escape'){if(!$('#sPop').hidden){$('#sPop').hidden=true;return;}if(!finder.hidden){closeFinder();return;}if(!st.hidden)requestClose();return;}
   const typing=/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))||e.target.isContentEditable;
   if(st.hidden&&finder.hidden&&!typing&&(e.key==='/'||((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'))){e.preventDefault();openFinder('');}
 });
@@ -1618,12 +1669,15 @@ renderMine();
 (function(){
   const grid=$('#mzGrid'),bands=$('#mzBands');if(!grid)return;
   let built=false;
+  function paintSc(cv){const g=GAMES.find(x=>x.id===cv.dataset.sc),sc=g&&sceneOf(g);if(!sc)return;const W=cv.closest('.gv-card')?600:360,H=cv.closest('.gv-card')?375:360;cv.width=W;cv.height=H;const c=cv.getContext('2d'),k=H/375;c.setTransform(k,0,0,k,(W-600*k)/2,0);try{sc(c,600,375,2.2);}catch(e){}}
+  function hoverVids(root){root.querySelectorAll('.tile').forEach(t=>{const v=t.querySelector('video');if(!v)return;
+    t.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!reduce)playVid(v);});t.addEventListener('pointerleave',()=>stopVid(v));});}
   const BIG=new Set(['rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
   const tile=(g,cls)=>{const c=CATS[g.cat],m=MEDIA.has(g.slug);
     const media=m?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
     const inner=media+(NEW.has(g.id)?'<span class="sp" title="'+T.nw+'" aria-hidden="true">✦</span>':'')+'<span class="tn">'+esc(g.name)+'</span>';
     const a=' class="tile'+(cls?' '+cls:'')+'" style="--c:'+c.c+'" aria-label="'+T.playX+esc(g.name)+'"';
-    return g.play?'<button type="button"'+a+' data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">'+inner+'</button>':'<a'+a+' href="'+esc(g.url)+'" target="_blank" rel="noopener">'+inner+'</a>';};
+    return g.play?'<button type="button"'+a+' data-g="'+g.id+'">'+inner+'</button>':'<a'+a+' href="'+esc(g.url)+'" target="_blank" rel="noopener">'+inner+'</a>';};
   function build(){
     if(built)return;built=true;
     const all=GAMES.filter(g=>g.play||g.url);
@@ -1636,18 +1690,46 @@ renderMine();
     bands.innerHTML=order.map(k=>{const list=all.filter(g=>g.cat===k);if(!list.length)return '';
       const t=k==='cosmico'?T.saga:(CATD[k]?CATD[k].t:CATS[k].n);
       return '<section class="mz-band" style="--c:'+CATS[k].c+'"><div class="in"><h2><i></i>'+esc(t)+'<small>'+list.length+'</small><button type="button" data-goto="'+(k==='cosmico'?'trilogia':'sec-'+k)+'">'+(LANG==='ca'?'Veure-ho tot':'Ver todos')+' ›</button></h2><div class="mz-row" data-lenis-prevent>'+list.map(g=>tile(g,'')).join('')+'</div></div></section>';}).join('');
-    document.querySelectorAll('#mosaic canvas[data-sc]').forEach(cv=>{const g=GAMES.find(x=>x.id===cv.dataset.sc),sc=g&&sceneOf(g);if(!sc)return;cv.width=cv.height=360;const c=cv.getContext('2d'),k=360/375;c.setTransform(k,0,0,k,(360-600*k)/2,0);try{sc(c,600,375,2.2);}catch(e){}});
-    const tiles=document.querySelectorAll('#mosaic .tile');
-    tiles.forEach(t=>{const v=t.querySelector('video');if(!v)return;
-      t.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!reduce)playVid(v);});
-      t.addEventListener('pointerleave',()=>stopVid(v));});
+    document.querySelectorAll('#mosaic canvas[data-sc]').forEach(paintSc);
+    hoverVids($('#mosaic'));
     if(!reduce&&'IntersectionObserver' in window){        // las piezas grandes se mueven solas cuando están a la vista
       const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector('video');if(!v)return;e.intersectionRatio>.6?playVid(v):stopVid(v);}),{threshold:[0,.6]});
       grid.querySelectorAll('.tile.big').forEach(t=>io.observe(t));
     }
   }
+  /* ficha del juego: portada grande con vídeo, botón de jugar y más juegos debajo */
+  const gv=$('#gview');let gScroll=0;
+  const rel=g=>{const same=GAMES.filter(x=>x!==g&&x.cat===g.cat&&(x.play||x.url)),rest=GAMES.filter(x=>x!==g&&x.cat!==g.cat&&(x.play||x.url));
+    let seed=g.id.length*7;rest.sort((a,b)=>((a.id.charCodeAt(0)*seed)%13)-((b.id.charCodeAt(0)*seed)%13));return same.concat(rest).slice(0,18);};
+  function showGame(id,push){
+    const g=GAMES.find(x=>x.id===id);if(!g||!g.play)return;
+    if(!document.body.classList.contains('v-game'))gScroll=scrollY;
+    const c=CATS[g.cat],m=MEDIA.has(g.slug);
+    const media=m?'<img src="media/'+g.slug+'.jpg" alt=""><video muted loop playsinline autoplay disablepictureinpicture disableremoteplayback poster="media/'+g.slug+'.jpg" src="media/'+g.slug+(WEBM?'.webm':'.mp4')+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
+    gv.innerHTML='<div class="in"><button class="gv-back" type="button" data-gback>‹ '+(LANG==='ca'?'Tots els jocs':'Todos los juegos')+'</button>'+
+      '<div class="gv-wrap"><div class="gv-card" style="--c:'+c.c+'" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">'+media+
+      '<button class="gv-play" type="button" aria-label="'+T.playX+esc(g.name)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></button><div class="gv-t"><h1>'+esc(g.name)+'</h1><p>'+(LANG==='ca'?'per':'por')+' Alica Games Studio</p></div></div>'+
+      '<div class="gv-info"><span class="chip" style="--c:'+c.c+'">'+esc(c.n)+'</span><p>'+esc(g.blurb)+'</p><ul class="tags"><li class="age" style="--c:'+c.c+'">+'+ageOf(g)+'</li>'+g.tags.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul>'+
+      '<div class="gv-acts"><button class="btn p" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">'+T.now+' ▶</button>'+favBtn(g)+'</div></div></div>'+
+      '<h2 class="gv-rel-h">'+(LANG==='ca'?'Més jocs':'Más juegos')+'</h2><div class="mz-grid gv-rel">'+rel(g).map(x=>tile(x,'')).join('')+'</div></div>';
+    gv.querySelectorAll('canvas[data-sc]').forEach(paintSc);
+    hoverVids(gv);
+    document.body.classList.add('v-game');
+    if(push){try{history.pushState({g:id},'');}catch(e){}}
+    if(lenis)lenis.scrollTo(0,{immediate:true});window.scrollTo(0,0);
+    stat('ficha/'+g.slug,g.name);
+  }
+  function hideGame(){
+    if(!document.body.classList.contains('v-game'))return;
+    document.body.classList.remove('v-game');gv.querySelectorAll('video').forEach(v=>v.pause());gv.innerHTML='';
+    requestAnimationFrame(()=>{if(lenis)lenis.scrollTo(gScroll,{immediate:true});window.scrollTo(0,gScroll);});
+  }
+  window.addEventListener('popstate',e=>{
+    if(!st.hidden){stagePushed=false;closeGame();return;}
+    if(e.state&&e.state.g)showGame(e.state.g,false);else hideGame();
+  });
   function setView(v,scroll){
-    const mz=v==='mosaico';if(mz)build();
+    const mz=v==='mosaico';if(mz)build();else if(document.body.classList.contains('v-game'))hideGame();
     document.body.classList.toggle('v-mosaic',mz);store.set('view',v);
     document.querySelectorAll('.vsw [data-view]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===v));
     if(!mz)document.querySelectorAll('#mosaic video').forEach(stopVid);
@@ -1656,7 +1738,9 @@ renderMine();
     stat('vista/'+v,'Vista '+v);
   }
   document.addEventListener('click',e=>{
-    const b=e.target.closest('.vsw [data-view]');if(b){setView(b.dataset.view,true);return;}
+    const tg=e.target.closest('[data-g]');if(tg){showGame(tg.dataset.g,true);return;}
+    if(e.target.closest('[data-gback]')){if(history.state&&history.state.g)history.back();else hideGame();return;}
+    const b=e.target.closest('.vsw [data-view]');if(b){if(document.body.classList.contains('v-game'))hideGame();setView(b.dataset.view,true);return;}
     if(e.target.closest('[data-vtoggle]')){setView(document.body.classList.contains('v-mosaic')?'salon':'mosaico',true);return;}
     const go=e.target.closest('[data-goto]');if(go){setView('salon',false);const el=document.getElementById(go.dataset.goto);if(el)requestAnimationFrame(()=>{const y=el.getBoundingClientRect().top+scrollY-118;if(lenis)lenis.scrollTo(y,{immediate:true});window.scrollTo(0,y);});}
   });
