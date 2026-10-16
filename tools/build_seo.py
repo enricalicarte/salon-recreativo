@@ -3,6 +3,9 @@
 Uso: python3 tools/build_seo.py   (desde la raíz del repo). Datos en tools/games.json, fuente en tools/source.html."""
 import json,re,html,os,datetime
 BASE='https://enricalicarte.github.io/salon-recreativo/'
+# Mientras sea False, ninguna página se indexa. Al lanzar en el dominio definitivo: cambiar BASE, poner True y regenerar.
+INDEXABLE=False
+ROBOTS='index,follow,max-image-preview:large' if INDEXABLE else 'noindex,nofollow'
 TODAY=datetime.date.today().isoformat()
 root=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D=json.load(open(os.path.join(root,'tools/games.json'),encoding='utf-8'))
@@ -73,7 +76,7 @@ for g in play:
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{url}">
-<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="robots" content="{ROBOTS}">
 <meta name="theme-color" content="#0d1230"><meta name="author" content="Alica Games Studio">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Salón Recreativo"><meta property="og:locale" content="{'ca_ES' if ca else 'es_ES'}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{url}"><meta property="og:image" content="{img}"><meta property="og:image:alt" content="Portada de {e(g['name'])}">
@@ -136,7 +139,7 @@ for H in HUBS:
     page=f"""<!doctype html>
 <html lang="{H['lang']}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>{e(H['title'])}</title><meta name="description" content="{e(H['desc'])}"><link rel="canonical" href="{url}">
-<meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#0d1230"><meta name="author" content="Alica Games Studio">
+<meta name="robots" content="{ROBOTS}"><meta name="theme-color" content="#0d1230"><meta name="author" content="Alica Games Studio">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Salón Recreativo"><meta property="og:title" content="{e(H['title'])}"><meta property="og:description" content="{e(H['desc'])}"><meta property="og:url" content="{url}"><meta property="og:image" content="{BASE}img/{sel[0]['slug']}.jpg">
 <meta name="twitter:card" content="summary_large_image">
 {jd({"@context":"https://schema.org","@type":"CollectionPage","name":H['h1'],"url":url,"inLanguage":H['lang'],"description":H['desc'],"mainEntity":{"@type":"ItemList","itemListElement":items}})}
@@ -168,7 +171,7 @@ lst={"@context":"https://schema.org","@type":"ItemList","name":"Minijuegos onlin
 meta=f"""<title>{e(HT)}</title>
 <meta name="description" content="{e(HD)}">
 <link rel="canonical" href="{BASE}">
-<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="robots" content="{ROBOTS}">
 <meta name="theme-color" content="#0d1230"><meta name="author" content="Alica Games Studio">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Salón Recreativo"><meta property="og:locale" content="es_ES"><meta property="og:title" content="{e(HT)}"><meta property="og:description" content="{e(HD)}"><meta property="og:url" content="{BASE}"><meta property="og:image" content="{BASE}img/og-home.jpg"><meta property="og:image:width" content="2400"><meta property="og:image:height" content="1260"><meta property="og:image:alt" content="Salón Recreativo: colección de minijuegos online">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(HT)}"><meta name="twitter:description" content="{e(HD)}"><meta name="twitter:image" content="{BASE}img/og-home.jpg">
@@ -194,6 +197,6 @@ open(os.path.join(root,'index.html'),'w',encoding='utf-8').write(out)
 urls=[BASE]+[BASE+H['slug']+'/' for H in HUBS]+[BASE+'jugar/'+g['slug']+'/' for g in play]
 sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{u}</loc><lastmod>{TODAY}</lastmod><changefreq>{"weekly" if u==BASE else "monthly"}</changefreq><priority>{"1.0" if u==BASE else "0.7"}</priority></url>\n' for u in urls)+'</urlset>\n'
 open(os.path.join(root,'sitemap.xml'),'w',encoding='utf-8').write(sm)
-open(os.path.join(root,'robots.txt'),'w').write(f'User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n')
+open(os.path.join(root,'robots.txt'),'w').write(f'User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n' if INDEXABLE else 'User-agent: *\nDisallow: /juegos/\nDisallow: /media/\n')
 open(os.path.join(root,'404.html'),'w',encoding='utf-8').write(f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Página no encontrada | Salón Recreativo</title><meta name="robots" content="noindex"><style>body{{margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1230;color:#eef1ff;font:18px system-ui;text-align:center}}a{{color:#ffc933}}</style></head><body><div><h1>Esta página no existe</h1><p><a href="{BASE}">Volver al Salón Recreativo</a></p></div></body></html>')
 print('ok',len(play),'paginas')

@@ -1,4 +1,3 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://enricalicarte.github.io/salon-recreativo/sitemap.xml
+Disallow: /juegos/
+Disallow: /media/
