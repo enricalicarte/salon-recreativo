@@ -1,0 +1,1533 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hotel Miramar: junio de 1962</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Yeseva+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --frame:#1b1a24; --paper:#FBF7EE; --ink:#24212B; --blue:#2B6E9E; --red:#B5462E; --sun:#E6B33A; --muted:#6c6672;
+  --display:'Yeseva One','Playfair Display',Georgia,serif;
+  --type:'Courier Prime','Courier New',Courier,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  background:var(--frame);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --frame:#0f0e15; } }
+:root[data-theme="dark"]{ --frame:#0f0e15; }
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);}
+body{height:100%;margin:0;background:var(--frame);color:var(--ink);font-family:var(--type);overflow:hidden;-webkit-tap-highlight-color:transparent;}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+button{font-family:var(--type);color:var(--ink)}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+#stage{position:relative;height:100%;width:100%;max-width:560px;margin:0 auto;overflow:hidden;background:#000;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#scene,#hs{position:absolute;inset:0;width:100%;height:100%;display:block}
+#scene{z-index:1}
+#hs{z-index:4;pointer-events:none}
+#hs .spot{pointer-events:auto;cursor:pointer}
+#hs .ring{animation:pulse 2.2s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pulse{0%{transform:scale(.7);opacity:.9}100%{transform:scale(2.1);opacity:0}}
+#stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;opacity:.3;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .2 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+#stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;opacity:0;transition:opacity .8s;
+  background:radial-gradient(ellipse at 50% 40%,transparent 45%,rgba(5,6,20,.55) 100%)}
+#stage.night::before{opacity:1}
+
+#dark{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .7s;background:rgba(4,5,14,.95);
+  -webkit-mask-image:radial-gradient(circle at var(--x,50%) var(--y,45%),transparent 0,transparent 55px,#000 115px);
+  mask-image:radial-gradient(circle at var(--x,50%) var(--y,45%),transparent 0,transparent 55px,#000 115px)}
+#dark.on{opacity:1}
+
+/* barra superior */
+#top{position:absolute;top:10px;left:10px;right:10px;z-index:10;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;opacity:0;transition:opacity .5s;pointer-events:none}
+#top.show{opacity:1}
+#top.show .cal,#top.show button{pointer-events:auto}
+.cal{background:var(--paper);border-radius:4px;display:flex;align-items:center;gap:10px;padding:5px 12px 5px 5px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.cal .num{background:var(--red);color:#fff;font-family:var(--display);font-size:25px;width:42px;height:42px;display:grid;place-items:center;border-radius:3px}
+.cal .l1{font-weight:700;font-size:13px;line-height:1.2}
+.cal .l2{font-size:12px;color:var(--muted);line-height:1.3}
+.tbtns{display:flex;gap:8px}
+.tbtn{position:relative;width:46px;height:46px;border-radius:50%;border:0;background:var(--paper);box-shadow:0 4px 14px rgba(0,0,0,.3);display:grid;place-items:center;cursor:pointer;padding:0}
+.tbtn svg{width:24px;height:24px}
+.badge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:11px;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:grid;place-items:center;padding:0 5px}
+.tbtn.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.2)}}
+
+/* diálogo */
+#dialog{position:absolute;left:10px;right:10px;bottom:10px;z-index:10;background:var(--paper);border-radius:6px;padding:20px 18px 16px;box-shadow:0 10px 30px rgba(0,0,0,.4);transform:translateY(140%);transition:transform .35s cubic-bezier(.2,.8,.3,1)}
+#dialog.show{transform:none}
+#dialog::before,#sheet::before{content:"";position:absolute;left:0;right:0;top:0;height:7px;border-radius:6px 6px 0 0;
+  background:repeating-linear-gradient(-45deg,var(--red) 0 10px,var(--paper) 10px 15px,var(--blue) 15px 25px,var(--paper) 25px 30px)}
+.who{font-family:var(--display);font-size:20px;margin:0 0 4px;line-height:1.2}
+.txt{font-size:17px;line-height:1.55;margin:0;min-height:3.1em;max-width:62ch}
+.txt.thought{font-style:italic;color:#4a4552}
+.txt.narr{color:#3a3642}
+.nextmark{position:absolute;right:16px;bottom:10px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--red);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.choices button,.pbtn{border:2px solid var(--ink);background:#fff;border-radius:4px;padding:12px 14px;font-size:16px;text-align:left;cursor:pointer;min-height:48px}
+.choices button:active,.pbtn:active{background:#f1e7cf}
+.prompt{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.prompt p{margin:0;font-size:15px;line-height:1.45;font-style:italic;color:#3a3642}
+.pbtn{flex:none;text-align:center;font-weight:700;background:var(--ink);color:var(--paper)}
+.pbtn:disabled{opacity:.3;background:#fff;color:var(--ink);cursor:default}
+
+/* minijuegos */
+#sheet{position:absolute;left:8px;right:8px;bottom:8px;z-index:11;background:var(--paper);border-radius:6px;padding:18px 12px 12px;box-shadow:0 10px 30px rgba(0,0,0,.4);transform:translateY(140%);transition:transform .35s cubic-bezier(.2,.8,.3,1)}
+#sheet.show{transform:none}
+.mg-say{font-size:15px;line-height:1.4;margin:0 0 10px;min-height:2.8em}
+.mg-say b{font-family:var(--display);font-weight:400;font-size:17px;display:block}
+.mg-say.err span{color:var(--red)}
+.mg-row{display:flex;gap:10px;align-items:stretch}
+.res{flex:1 1 46%;background:#fff;border:1px solid #d9cfbd;padding:8px 8px 6px;font-size:12.5px}
+.res h4{margin:0 0 4px;font-family:var(--display);font-weight:400;font-size:15px}
+.res ul{list-style:none;margin:0;padding:0}
+.res li{display:flex;gap:4px;align-items:baseline;line-height:1.75}
+.res .dots{flex:1;border-bottom:1px dotted #8a8090;transform:translateY(-3px)}
+.keys{flex:1 1 54%;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:#7A4B2F;padding:7px;border-radius:4px}
+.key{min-height:46px;background:#5C3520;border:0;border-radius:4px;color:#FBF7EE;font-weight:700;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;padding:2px}
+.key svg{width:18px;height:18px}
+.key:disabled{opacity:.18;cursor:default}
+.key:not(:disabled):active{transform:scale(.93)}
+.hint{margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+.drinks{display:flex;gap:5px}
+.drink{flex:1;background:#fff;border:1px solid #d9cfbd;border-radius:6px;padding:6px 2px 5px;font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;min-height:66px}
+.drink svg{width:34px;height:34px}
+.drink:active{transform:scale(.94)}
+.tray{display:flex;align-items:center;gap:8px;margin-top:10px}
+.slots{flex:1;min-height:50px;border-radius:26px;background:radial-gradient(ellipse at 50% 40%,#e7eaee,#aeb5bf);display:flex;align-items:center;gap:2px;padding:4px 12px;border:2px solid #8d949e}
+.slots svg{width:38px;height:38px}
+.slots span{font-size:12.5px;color:#4b5058}
+.sec{border:2px solid var(--ink);background:#fff;border-radius:4px;padding:10px 12px;font-weight:700;cursor:pointer;min-height:46px}
+
+/* aviso de pista */
+#toast{position:absolute;top:72px;right:10px;z-index:20;max-width:290px;background:var(--ink);color:#FBF7EE;padding:10px 14px;border-radius:4px;font-size:13px;line-height:1.35;transform:translateY(-14px);opacity:0;transition:all .35s;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+#toast.show{transform:none;opacity:1}
+#toast b{font-family:var(--display);font-weight:400;font-size:16px;display:block;color:var(--sun)}
+
+/* capas */
+.ov{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:20px;background:rgba(18,16,28,.62);opacity:0;pointer-events:none;transition:opacity .35s}
+.ov.show{opacity:1;pointer-events:auto}
+.ov.clear{background:transparent}
+.tap{color:#FBF7EE;font-size:13px;opacity:.85;margin:0}
+
+.postal{width:min(100%,390px);aspect-ratio:3/2;background:var(--paper);transform:rotate(-2.5deg) translateY(30px) scale(.92);transition:transform .6s cubic-bezier(.2,.9,.3,1.15);display:grid;grid-template-columns:1.05fr 1fr;padding:16px;gap:14px;box-shadow:0 22px 44px rgba(0,0,0,.45);border-radius:3px}
+.ov.show .postal{transform:rotate(-2.5deg)}
+.pc-l{border-right:1px solid #cfc4ad;padding-right:12px;display:flex;flex-direction:column;justify-content:center}
+.pc-wd{font-size:15px;margin:0}
+.pc-d{font-family:var(--display);font-size:clamp(54px,17vw,76px);line-height:.95;margin:2px 0 4px;color:var(--red)}
+.pc-m{font-size:13px;margin:0}
+.pc-ph{font-family:var(--display);font-size:21px;margin:10px 0 0;color:var(--blue)}
+.pc-r{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:7px;padding-bottom:4px}
+.pc-r .stamp{position:absolute;top:0;right:0;width:62px}
+.pc-r .mark{position:absolute;top:18px;right:34px;width:84px;opacity:.75}
+.pc-r p{margin:0;border-bottom:1px solid #cfc4ad;font-style:italic;font-size:13px;padding-bottom:2px}
+
+.tt{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.1;margin:0 0 10px;color:var(--red)}
+.tcard{position:absolute;left:12px;right:12px;bottom:14px;background:var(--paper);border-radius:6px;padding:20px 18px 16px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.tcard::before{content:"";position:absolute;left:0;right:0;top:0;height:7px;border-radius:6px 6px 0 0;background:repeating-linear-gradient(-45deg,var(--red) 0 10px,var(--paper) 10px 15px,var(--blue) 15px 25px,var(--paper) 25px 30px)}
+.tcard p{margin:0 0 14px;font-size:15px;line-height:1.5}
+.big{width:100%;border:0;border-radius:4px;background:var(--red);color:#fff;font-family:var(--display);font-size:22px;padding:14px;cursor:pointer;min-height:54px}
+
+.page{width:min(100%,440px);max-height:86%;overflow:auto;background-color:#FDFBF4;
+  background-image:linear-gradient(90deg,transparent 38px,#e7a9a1 38px,#e7a9a1 40px,transparent 40px),repeating-linear-gradient(180deg,transparent 0 27px,#c9d9e6 27px 28px);
+  padding:22px 18px 18px 52px;border-radius:3px;box-shadow:0 22px 44px rgba(0,0,0,.45);position:relative;line-height:28px}
+.page h2{font-family:var(--display);font-weight:400;font-size:26px;margin:0 0 14px;line-height:1.2}
+.page h3{font-family:var(--display);font-weight:400;font-size:18px;margin:16px 0 4px;color:var(--blue)}
+.page p{margin:0 0 6px;font-size:14px}
+.page .cl{margin:0 0 10px}
+.page .cl b{display:block;font-size:14.5px}
+.page .cl span{font-size:13.5px;color:#3a3642}
+.page .empty{font-style:italic;color:var(--muted)}
+.close{position:sticky;top:0;float:right;margin:-8px -6px 0 8px;border:2px solid var(--ink);background:#fff;border-radius:4px;padding:6px 10px;font-weight:700;cursor:pointer;min-height:40px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.opts button{border:2px solid var(--ink);background:#fff;border-radius:4px;padding:10px 12px;font-size:14.5px;text-align:left;cursor:pointer;line-height:1.35;min-height:46px}
+.opts button small{display:block;color:var(--muted);font-size:12.5px}
+.page .note{font-style:italic;font-size:15px;line-height:28px}
+
+.letter{background:#F7F1E1;padding:24px 22px 34px;width:min(100%,350px);font-style:italic;font-size:15px;line-height:1.65;transform:rotate(1.2deg);box-shadow:0 18px 40px rgba(0,0,0,.45);
+  clip-path:polygon(0 0,100% 0,100% 92%,94% 96%,88% 91%,80% 97%,72% 92%,63% 98%,55% 93%,46% 99%,38% 93%,30% 97%,21% 92%,12% 98%,5% 93%,0 97%)}
+.letter p{margin:0 0 10px}
+.photo{background:#fff;padding:10px 10px 40px;width:min(100%,330px);transform:rotate(-3deg);box-shadow:0 18px 40px rgba(0,0,0,.45);position:relative}
+.photo svg{display:block;width:100%}
+.photo figcaption{position:absolute;left:12px;bottom:10px;font-style:italic;font-size:14px}
+.carnet{width:min(100%,350px);filter:drop-shadow(0 18px 30px rgba(0,0,0,.5));transform:rotate(-2deg)}
+
+.flame{animation:flick .25s infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes flick{to{transform:scaleY(1.15) skewX(4deg)}}
+.smoke{animation:rise 3s linear infinite;transform-box:fill-box}
+@keyframes rise{from{transform:translateY(0);opacity:.5}to{transform:translateY(-60px);opacity:0}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+#scene,#hs{touch-action:none}
+#scene .idle [data-p="up"],.por .idle [data-p="up"]{animation:breathe 3.4s ease-in-out infinite;animation-delay:var(--d,0s)}
+@keyframes breathe{50%{transform:translateY(-1.5px)}}
+#scene [data-p="ey"],.por [data-p="ey"]{animation:blinkE 5.2s infinite;animation-delay:var(--d,0s);transform-box:fill-box;transform-origin:center}
+@keyframes blinkE{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+#scene .dance [data-p="up"]{animation:dance .46s ease-in-out infinite alternate;animation-delay:var(--d,0s);transform-box:fill-box;transform-origin:50% 100%}
+@keyframes dance{from{transform:rotate(-4deg)}to{transform:rotate(4deg) translateY(-4px)}}
+.drift{animation:drift 6s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translateX(16px)}}
+.sway{animation:sway 4.5s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+.gull{animation:gull 26s linear infinite}
+.gull path{animation:flap .45s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes gull{from{transform:translateX(-60px)}to{transform:translateX(440px)}}
+@keyframes flap{to{transform:scaleY(.3)}}
+.cloud{animation:cloud 90s linear infinite}
+@keyframes cloud{from{transform:translateX(-140px)}to{transform:translateX(420px)}}
+.twinkle{animation:tw 1.4s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.4}}
+.bob{animation:bob 1.1s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-5px)}}
+.fp{animation:fpf 6s linear forwards}
+@keyframes fpf{from{opacity:.5}to{opacity:0}}
+.tapfx{animation:tapfx .5s ease-out forwards;transform-box:fill-box;transform-origin:center}
+@keyframes tapfx{from{transform:scale(.4);opacity:1}to{transform:scale(2.2);opacity:0}}
+#fade{position:absolute;inset:0;z-index:8;background:#0b0a12;opacity:0;pointer-events:none;transition:opacity .28s}
+#fade.on{opacity:1}
+#act{position:absolute;right:16px;bottom:22px;z-index:9;width:78px;height:78px;border-radius:50%;border:3px solid #FBF7EE;background:var(--red);color:#fff;font-family:var(--display);font-size:17px;box-shadow:0 8px 22px rgba(0,0,0,.4);transform:scale(0);transition:transform .2s cubic-bezier(.2,.9,.3,1.3),bottom .3s;cursor:pointer;padding:0}
+#act.show{transform:scale(1)}
+#sheet.show~#act{bottom:200px}
+.tl{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
+#goal{background:rgba(36,33,43,.9);color:#FBF7EE;font-size:12.5px;line-height:1.35;padding:6px 10px 7px;border-radius:4px;max-width:250px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#goal b{display:block;color:var(--sun);font-size:11px;font-weight:700}
+#toast{top:124px;bottom:auto;left:10px;right:auto}
+.por{position:absolute;left:14px;top:-36px;width:62px;height:62px;border-radius:50%;background:#EFE4CC;border:3px solid;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.por svg{width:100%;height:100%;display:block}
+#dialog.hasp .who{margin-left:70px;min-height:24px}
+.tbtn.hint::after{content:"";position:absolute;bottom:0;right:0;width:13px;height:13px;border-radius:50%;background:var(--sun);border:2px solid #fff;animation:blink 1s infinite}
+.tabs{display:flex;gap:6px;margin:0 0 6px;flex-wrap:wrap;line-height:1.2}
+.tabs button{border:2px solid var(--ink);background:#fff;border-radius:16px;padding:5px 10px;font-size:12.5px;font-weight:700;cursor:pointer;min-height:36px}
+.tabs button.on{background:var(--ink);color:#fff}
+.clb{display:block;width:100%;text-align:left;border:2px solid transparent;background:rgba(255,255,255,.65);border-radius:4px;padding:6px 8px;margin:0 0 6px;cursor:pointer;line-height:1.35}
+.clb b{display:block;font-size:14px}.clb span{font-size:13px;color:#3a3642}
+.clb.sel{border-color:var(--red);background:#fff2e6}
+.nbmsg{background:var(--ink);color:#fff;padding:7px 10px;border-radius:4px;font-size:13.5px;line-height:1.45;margin:6px 0 10px!important}
+.nbmsg.ok{background:var(--blue)}
+.page .cl.cc b{color:var(--blue)}
+.opts button.ccb{border-color:var(--blue)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="scene" viewBox="0 0 360 720" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+  <div id="dark"></div>
+  <svg id="hs" viewBox="0 0 360 720" preserveAspectRatio="xMidYMid meet"></svg>
+
+  <div id="top">
+    <div class="tl"><div class="cal" aria-live="polite"><div class="num" id="calNum">16</div><div><div class="l1" id="calL1">Sábado, junio de 1962</div><div class="l2" id="calL2">Mañana</div></div></div><div id="goal" hidden></div></div>
+    <div class="tbtns">
+      <button class="tbtn" id="nbBtn" aria-label="Abrir el cuaderno de Rosa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#24212B" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="1.5" fill="#E6B33A"/><path d="M8 3v18M11 8h5M11 11h5"/></svg>
+        <span class="badge" id="badge" hidden>0</span>
+      </button>
+      <button class="tbtn" id="sndBtn" aria-label="Silenciar el sonido">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#24212B" stroke-width="1.8" id="sndIco"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#2B6E9E"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <div id="dialog" role="dialog" aria-live="polite">
+    <div class="por" id="por" hidden></div>
+    <p class="who" id="who"></p>
+    <p class="txt" id="txt"></p>
+    <div class="choices" id="choices" hidden></div>
+    <div class="prompt" id="prompt" hidden></div>
+    <span class="nextmark" id="nextMark" hidden></span>
+  </div>
+
+  <div id="sheet"></div>
+  <button id="act" aria-label="Acción"></button>
+  <div id="fade"></div>
+  <div class="ov" id="ov"></div>
+  <div class="ov" id="nb"></div>
+</div>
+
+<script>
+/* ============ utilidades ============ */
+const $=(s,r=document)=>r.querySelector(s);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============ paletas ============ */
+const PAL={
+  dia:{sky:'#7FC3DA',sky2:'#D5EDEA',sea:'#1F6A9A',sea2:'#6FB2D4',sand:'#E5C38C',wall:'#F4ECD8',wallShade:'#D8CBAF',roof:'#B5462E',shutter:'#2B6E9E',pine:'#2F5D46',ink:'#24212B',glass:'#B9DDEA',light:'#FFF4CF',floor:'#D8C6A0',floor2:'#A64B32',accent:'#E6B33A',terra:'#C77B4F',terraLine:'#A9603B',wood:'#7A4B2F',wood2:'#5C3520',rock:'#8A6E5A',sun:'#FFF1C1'},
+  tarde:{sky:'#E98B55',sky2:'#F6D59A',sea:'#2A5C85',sea2:'#E39A6A',sand:'#D8A472',wall:'#F1D7B8',wallShade:'#CFA986',roof:'#9E3A28',shutter:'#2B5A80',pine:'#2A4C3D',ink:'#2A1F2B',glass:'#F3C384',light:'#FFE1A6',floor:'#CDB28A',floor2:'#93422D',accent:'#E6A53A',terra:'#B86E46',terraLine:'#985434',wood:'#6E4229',wood2:'#4F2D1B',rock:'#7A5A48',sun:'#FFD27E'},
+  noche:{sky:'#121A3B',sky2:'#2B3566',sea:'#0D2442',sea2:'#3B5F92',sand:'#5C5672',wall:'#8C92B8',wallShade:'#666C9A',roof:'#5E3446',shutter:'#25335E',pine:'#17283C',ink:'#0B0C18',glass:'#F4C152',light:'#F4C152',floor:'#575170',floor2:'#3E3656',accent:'#8E7A4A',terra:'#5D4A63',terraLine:'#4A3A52',wood:'#46344A',wood2:'#2E2236',rock:'#2E3149',sun:'#F2E9C6'}
+};
+const STARS=Array.from({length:46},(_,i)=>[((i*73+11)%380)-10,(i*41+7)%250,.6+(i%3)*.45]);
+
+function defs(c){return `<defs>
+<linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.sky}"/><stop offset="1" stop-color="${c.sky2}"/></linearGradient>
+<pattern id="azu" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#F4F0E4"/><path d="M10 2 L18 10 L10 18 L2 10Z" fill="#2B6E9E"/><circle cx="10" cy="10" r="3" fill="#E6B33A"/></pattern>
+<pattern id="chk" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="${c.floor}"/><rect width="20" height="20" fill="${c.floor2}"/><rect x="20" y="20" width="20" height="20" fill="${c.floor2}"/></pattern>
+<pattern id="hid" width="36" height="36" patternUnits="userSpaceOnUse"><rect width="36" height="36" fill="${c.floor}"/><path d="M18 3 L33 18 L18 33 L3 18Z" fill="${c.floor2}"/><circle cx="18" cy="18" r="4" fill="${c.accent}"/></pattern>
+<pattern id="terra" width="30" height="30" patternUnits="userSpaceOnUse"><rect width="30" height="30" fill="${c.terra}"/><path d="M0 0H30V30" fill="none" stroke="${c.terraLine}" stroke-width="2"/></pattern>
+<radialGradient id="glow"><stop offset="0" stop-color="${c.light}" stop-opacity=".85"/><stop offset="1" stop-color="${c.light}" stop-opacity="0"/></radialGradient>
+<filter id="nf"><feColorMatrix type="matrix" values="0.52 0 0 0 0.02  0 0.56 0 0 0.03  0 0 0.78 0 0.09  0 0 0 1 0"/></filter>
+<filter id="tf"><feColorMatrix type="matrix" values="1 0 0 0 0.04  0 0.9 0 0 0.01  0 0 0.78 0 0  0 0 0 1 0"/></filter>
+</defs>`}
+
+function celestial(t,c){
+  if(t==='dia') return `<circle cx="300" cy="78" r="24" fill="${c.sun}"/>`;
+  if(t==='tarde') return `<circle cx="300" cy="150" r="36" fill="${c.sun}" opacity=".95"/>`;
+  let s='';STARS.forEach(([x,y,r])=>s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#F2E9C6" opacity=".7"/>`);
+  return s+`<circle cx="292" cy="82" r="17" fill="${c.sun}"/><circle cx="300" cy="76" r="15" fill="${c.sky}"/>`;
+}
+function seaLines(y0,y1,col){let s='',i=0;for(let y=y0+10;y<y1;y+=16,i++){for(let k=0;k<5;k++){const x=((k*97+i*53)%420)-30;s+=`<rect x="${x}" y="${y}" width="${22+(k*7)%18}" height="2" rx="1" fill="${col}" opacity=".7"/>`}}return s}
+function palm(x,y,h,c){
+  const tx=x+6,ty=y-h;let s=`<path d="M${x} ${y} Q${x+16} ${y-h*.5} ${tx} ${ty}" stroke="#7A5A3A" stroke-width="8" fill="none" stroke-linecap="round"/><g class="sway" style="transform-origin:${tx}px ${ty}px;animation-delay:-${(x%9)/2}s">`;
+  [-160,-122,-80,-40,0,30].forEach(a=>{const r=a*Math.PI/180,ex=tx+Math.cos(r)*58,ey=ty+Math.sin(r)*58+22,mx=tx+Math.cos(r)*30,my=ty+Math.sin(r)*30-10;
+    s+=`<path d="M${tx} ${ty} Q${mx} ${my-8} ${ex} ${ey} Q${mx+4} ${my+8} ${tx} ${ty}Z" fill="${c.pine}"/>`});
+  return s+'</g>';
+}
+function garland(x1,y1,x2,y2,sag,c,night){
+  const mx=(x1+x2)/2,my=Math.max(y1,y2)+sag;let s=`<path d="M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}" fill="none" stroke="${c.ink}" stroke-width="1.2" opacity=".7"/>`;
+  for(let i=1;i<14;i++){const t=i/14,x=(1-t)*(1-t)*x1+2*(1-t)*t*mx+t*t*x2,y=(1-t)*(1-t)*y1+2*(1-t)*t*my+t*t*y2;
+    const col=['#F4C152','#E86A4A','#7FC3DA','#F4C152','#9ED48A'][i%5];
+    if(night) s+=`<circle class="twinkle" style="animation-delay:-${(i*0.37)%1.4}s" cx="${x}" cy="${y+4}" r="11" fill="url(#glow)" opacity=".6"/>`;
+    s+=`<circle cx="${x}" cy="${y+4}" r="3.2" fill="${night?col:'#FBF7EE'}" stroke="${c.ink}" stroke-width=".6"/>`}
+  return s;
+}
+function gulls(t){if(t==='noche') return '';const w='<path d="M0 0 q6 -7 12 0 q6 -7 12 0" fill="none" stroke="#24212B" stroke-width="1.7" stroke-linecap="round"/>';
+  return `<g transform="translate(0 66)"><g class="gull">${w}</g></g><g transform="translate(0 100) scale(.7)"><g class="gull" style="animation-delay:-13s;animation-duration:34s">${w}</g></g>`}
+function clouds(t){if(t==='noche') return '';const f=t==='tarde'?'#F9D9B8':'#FFFFFF';
+  return `<g class="cloud" opacity=".75"><ellipse cx="60" cy="48" rx="34" ry="9" fill="${f}"/><ellipse cx="80" cy="42" rx="20" ry="9" fill="${f}"/></g><g class="cloud" style="animation-delay:-45s" opacity=".6"><ellipse cx="200" cy="28" rx="28" ry="7" fill="${f}"/></g>`}
+
+/* ============ personajes ============ */
+const PPL={
+  rosa:{skin:'#EDBE97',hair:'#2A1A14',hs:'pony',top:'#E6B33A',dress:true,apron:true,ribbon:'#B5462E'},
+  papa:{skin:'#D9A47C',hair:'#3A2A22',hs:'short',top:'#F4F1E8',bottom:'#5B5F6B',mous:true,vest:'#3B4A63'},
+  albert:{skin:'#E3B795',hair:'#5A4636',hs:'short',top:'#7A5236',bottom:'#6A4630',glasses:true,hat:'fedora',hatC:'#4A3A2C',suit:true,tie:'#7B2D2D'},
+  pilar:{skin:'#EBC2A2',hair:'#A3A3AA',hs:'bun',top:'#2B2530',dress:true,pearls:true},
+  klaus:{skin:'#F0C6A6',hair:'#E2C36A',hs:'wave',top:'#C4472F',bottom:'#E6DCC4',camera:true},
+  tomas:{skin:'#C98E63',hair:'#1E1A18',hs:'short',top:'#F4F1E8',stripes:'#2B5E86',bottom:'#3D4A5C',hat:'gorra',hatC:'#2E3440'},
+  cabo:{skin:'#D7A27E',hair:'#1E1A18',hs:'short',top:'#5B6638',bottom:'#5B6638',hat:'tricornio',hatC:'#151515',mous:true,belt:'#1E1A18'},
+  puig:{skin:'#E2B08C',hair:'#7A7A7A',hs:'short',top:'#D9D2BF',bottom:'#8A8170',hat:'fedora',hatC:'#EADFB8'},
+  sra_puig:{skin:'#EDC3A2',hair:'#7A4A2A',hs:'bun',top:'#6E9C8A',dress:true},
+  vecino:{skin:'#D9A47C',hair:'#2A1C17',hs:'short',top:'#E7D9B0',bottom:'#444'},
+  vecina:{skin:'#E8B48A',hair:'#4A2A1A',hs:'bun',top:'#B5462E',dress:true}
+};
+function person(o){
+  const s=o.s||1,sk=o.skin,hr=o.hair,top=o.top,bot=o.bottom||'#555',sil=o.sil,C=x=>sil||x;
+  let g=`<g transform="translate(${o.x} ${o.y}) scale(${s})"${o.cls?` class="${o.cls}"`:''} style="--d:-${(o.delay||0).toFixed(2)}s">`;
+  if(!sil) g+=`<ellipse cx="0" cy="0" rx="22" ry="4.5" fill="#000" opacity=".18"/>`;
+  const leg=o.dress?sk:bot,sh=C('#2B2222');
+  g+=`<g data-p="lL"><rect x="-12" y="-60" width="10" height="58" rx="3" fill="${C(leg)}"/><rect x="-15" y="-6" width="14" height="6" rx="3" fill="${sh}"/></g>`;
+  g+=`<g data-p="lR"><rect x="2" y="-60" width="10" height="58" rx="3" fill="${C(leg)}"/><rect x="1" y="-6" width="14" height="6" rx="3" fill="${sh}"/></g>`;
+  g+=`<g data-p="up">`;
+  g+=`<g data-p="aL"><rect x="-27" y="-116" width="10" height="52" rx="5" fill="${C(top)}"/><circle cx="-22" cy="-62" r="5" fill="${C(sk)}"/></g>`;
+  g+=`<g data-p="aR"><rect x="17" y="-116" width="10" height="52" rx="5" fill="${C(top)}"/><circle cx="22" cy="-62" r="5" fill="${C(sk)}"/>${(!sil&&o.lamp)?'<g transform="translate(22 -64)"><rect x="-4" y="-2" width="8" height="12" fill="#C9A24A"/><circle cx="0" cy="-8" r="6.5" fill="#FFE7A0"/><circle cx="0" cy="-8" r="16" fill="#FFE7A0" opacity=".25"/></g>':''}</g>`;
+  if(o.dress) g+=`<path d="M-17 -120 H17 L29 -46 H-29Z" fill="${C(top)}"/>`;
+  else g+=`<rect x="-18" y="-120" width="36" height="62" rx="7" fill="${C(top)}"/><rect x="-17" y="-64" width="34" height="8" fill="${C(bot)}"/>`;
+  if(!sil){
+    if(o.stripes) for(let i=0;i<5;i++) g+=`<rect x="-17" y="${-113+i*11}" width="34" height="4" fill="${o.stripes}"/>`;
+    if(o.apron) g+=`<path d="M-12 -92 H12 L16 -50 H-16Z" fill="#FBF7EE"/>`;
+    if(o.vest) g+=`<path d="M-18 -116 L-6 -116 L0 -96 L6 -116 L18 -116 L18 -62 L-18 -62Z" fill="${o.vest}"/>`;
+    if(o.suit) g+=`<path d="M-5 -120 L0 -100 L5 -120Z" fill="#F4F1E8"/><path d="M-1.6 -116 H1.6 L2.6 -98 L0 -94 L-2.6 -98Z" fill="${o.tie}"/>`;
+    if(o.belt) g+=`<rect x="-18" y="-72" width="36" height="5" fill="${o.belt}"/><path d="M-16 -116 L16 -76" stroke="${o.belt}" stroke-width="4"/>`;
+    if(o.camera) g+=`<path d="M-12 -118 L0 -102 L12 -118" fill="none" stroke="#222" stroke-width="2"/><rect x="-10" y="-105" width="20" height="13" rx="2" fill="#2A2A2E"/><circle cx="0" cy="-98.5" r="4.2" fill="#8A93A0"/>`;
+    if(o.pearls) for(let i=-3;i<=3;i++) g+=`<circle cx="${i*3.6}" cy="${-113-Math.abs(i)*1.1}" r="1.6" fill="#F4F1E8"/>`;
+  }
+  g+=`<rect x="-5" y="-130" width="10" height="12" fill="${C(sk)}"/>`;
+  const H=C(hr);
+  if(o.hs==='pony') g+=`<ellipse cx="16" cy="-136" rx="6" ry="13" fill="${H}" transform="rotate(-15 16 -136)"/>`;
+  g+=`<circle cx="0" cy="-141" r="16" fill="${C(sk)}"/>`;
+  if(o.hs==='pony'){g+=`<path d="M-17 -140 Q-18 -161 0 -161 Q18 -161 17 -140 Q12 -151 0 -152 Q-12 -151 -17 -140Z" fill="${H}"/>`;if(!sil&&o.ribbon)g+=`<circle cx="14" cy="-151" r="3.5" fill="${o.ribbon}"/>`}
+  else if(o.hs==='bun') g+=`<circle cx="0" cy="-160" r="8" fill="${H}"/><path d="M-17 -138 Q-18 -159 0 -159 Q18 -159 17 -138 Q12 -150 0 -150 Q-12 -150 -17 -138Z" fill="${H}"/>`;
+  else if(o.hs==='wave') g+=`<path d="M-17 -141 Q-17 -162 2 -161 Q20 -160 17 -142 Q14 -152 4 -150 Q-6 -156 -17 -141Z" fill="${H}"/>`;
+  else g+=`<path d="M-16.5 -141 Q-16 -160 0 -159.5 Q16 -160 16.5 -141 Q11 -151 0 -151 Q-11 -151 -16.5 -141Z" fill="${H}"/>`;
+  if(!sil){
+    g+=`<g data-p="ey"><circle cx="-5.5" cy="-140" r="1.9" fill="#1C1414"/><circle cx="5.5" cy="-140" r="1.9" fill="#1C1414"/></g>`;
+    g+=`<circle cx="-9.5" cy="-134" r="2.8" fill="#E07A5F" opacity=".33"/><circle cx="9.5" cy="-134" r="2.8" fill="#E07A5F" opacity=".33"/>`;
+    if(o.mous) g+=`<path d="M-7 -132.5 Q0 -136.5 7 -132.5 Q0 -130 -7 -132.5Z" fill="${hr}"/>`;
+    if(o.glasses) g+=`<g fill="none" stroke="#1C1414" stroke-width="1.3"><circle cx="-5.5" cy="-140" r="4.3"/><circle cx="5.5" cy="-140" r="4.3"/><path d="M-1.2 -140 H1.2"/></g>`;
+  }
+  const HC=C(o.hatC||'#333');
+  if(o.hat==='fedora') g+=`<ellipse cx="0" cy="-153" rx="23" ry="4.5" fill="${HC}"/><path d="M-13 -153 Q-14 -170 0 -169 Q14 -170 13 -153Z" fill="${HC}"/>${sil?'':'<rect x="-13" y="-158" width="26" height="3" fill="#2A1F18" opacity=".6"/>'}`;
+  if(o.hat==='gorra') g+=`<path d="M-17 -146 Q-16 -163 3 -161 Q17 -159 19 -150 L27 -147 Q10 -144 -17 -146Z" fill="${HC}"/>`;
+  if(o.hat==='tricornio') g+=`<path d="M-15 -150 Q-15 -168 0 -168 Q15 -168 15 -150Z" fill="${HC}"/><path d="M-23 -150 Q0 -146 23 -150 Q21 -158 15 -163 Q12 -153 0 -153 Q-12 -153 -15 -163 Q-21 -158 -23 -150Z" fill="${HC}"/>`;
+  return g+'</g></g>';
+}
+function people(list,t){
+  if(!list||!list.length) return '';
+  let s='';list.forEach(([k,x,y,sc,ex])=>{s+=person({...PPL[k],x,y,s:sc,cls:'idle',delay:((x*13+y*7)%50)/10,...(ex||{})})});
+  if(t==='noche') return `<g filter="url(#nf)">${s}</g>`;
+  if(t==='tarde') return `<g filter="url(#tf)">${s}</g>`;
+  return s;
+}
+
+/* ============ bebidas ============ */
+const DRINKS=[{id:'vermut',n:'Vermut'},{id:'gaseosa',n:'Gaseosa'},{id:'cerveza',n:'Cerveza'},{id:'cafe',n:'Café'},{id:'conac',n:'Coñac'}];
+function drinkInner(id){
+  switch(id){
+    case 'vermut':return `<path d="M12 14h16l-2 18h-12z" fill="#ffffff" fill-opacity=".4" stroke="#24212B" stroke-width="1.5"/><path d="M13.6 20h12.8l-1.4 11h-10z" fill="#9C2A2A"/><circle cx="27" cy="14" r="5" fill="#F0A030" stroke="#24212B" stroke-width="1"/>`;
+    case 'gaseosa':return `<path d="M17 7h6v5l3 5v17a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2V17l3-5z" fill="#8CC3A6" stroke="#24212B" stroke-width="1.5"/><rect x="16.5" y="4" width="7" height="3.5" fill="#B5462E"/><rect x="14" y="21" width="12" height="7" fill="#FBF7EE"/>`;
+    case 'cerveza':return `<path d="M13 11h14l-1.5 24h-11z" fill="#E6A53A" stroke="#24212B" stroke-width="1.5"/><path d="M12 11q1-6 6-4q2-3 5-1q5-1 5 5z" fill="#FBF7EE" stroke="#24212B" stroke-width="1.2"/>`;
+    case 'cafe':return `<ellipse cx="20" cy="31" rx="14" ry="4" fill="#FBF7EE" stroke="#24212B" stroke-width="1.5"/><path d="M11 18h18v7a6 6 0 0 1-6 6h-6a6 6 0 0 1-6-6z" fill="#FBF7EE" stroke="#24212B" stroke-width="1.5"/><ellipse cx="20" cy="18" rx="9" ry="2.4" fill="#5A3420"/><path d="M29 20q5 0 4 4t-4 3" fill="none" stroke="#24212B" stroke-width="1.5"/><path d="M17 8q2 3 0 6M22 7q2 3 0 6" stroke="#8a7f76" fill="none" stroke-width="1.3"/>`;
+    case 'conac':return `<path d="M9 15q0 14 11 14t11-14z" fill="#ffffff" fill-opacity=".4" stroke="#24212B" stroke-width="1.5"/><path d="M10.5 21q1.5 8 9.5 8t9.5-8z" fill="#B8742A"/><rect x="19" y="29" width="2" height="5" fill="#24212B"/><rect x="14" y="34" width="12" height="2" fill="#24212B"/>`;
+  }
+  return '';
+}
+const drinkSVG=id=>`<svg viewBox="0 0 40 40" aria-hidden="true">${drinkInner(id)}</svg>`;
+const keyIco=`<svg viewBox="0 0 20 20" fill="none" stroke="#E6B33A" stroke-width="2"><circle cx="6" cy="10" r="3.6"/><path d="M9.5 10H18M15 10v3M17.5 10v2"/></svg>`;
+
+/* ============ escenas ============ */
+function sFachada(t,o={}){
+  const c=PAL[t];let s=defs(c);
+  s+=`<rect x="-400" y="-400" width="1160" height="980" fill="url(#gs)"/>`+celestial(t,c)+clouds(t);
+  s+=`<path d="M-400 520 L-400 440 Q-120 400 20 432 Q90 448 130 520Z" fill="${c.pine}"/>`;
+  s+=`<path d="M760 520 L760 455 Q420 430 330 470 L300 520Z" fill="${c.pine}" opacity=".85"/>`;
+  s+=`<rect x="-400" y="556" width="1160" height="800" fill="${c.sea}"/><g class="drift">${seaLines(556,760,c.sea2)}</g>`;
+  s+=`<rect x="-400" y="500" width="1160" height="60" fill="${c.sand}"/><rect x="-400" y="500" width="1160" height="5" fill="${c.wallShade}"/>`;
+  s+=`<rect x="50" y="170" width="260" height="335" fill="${c.wall}"/><rect x="282" y="170" width="28" height="335" fill="${c.wallShade}"/>`;
+  s+=`<rect x="42" y="160" width="276" height="14" fill="${c.roof}"/>`;
+  s+=`<line x1="112" y1="150" x2="112" y2="160" stroke="${c.ink}" stroke-width="3"/><line x1="248" y1="150" x2="248" y2="160" stroke="${c.ink}" stroke-width="3"/>`;
+  s+=`<rect x="88" y="112" width="184" height="40" rx="3" fill="${c.shutter}"/>`;
+  if(t==='noche') s+=`<ellipse cx="180" cy="132" rx="120" ry="34" fill="url(#glow)" opacity=".45"/>`;
+  s+=`<text x="180" y="140" text-anchor="middle" font-family="Yeseva One, Georgia, serif" font-size="22" fill="${t==='noche'?c.light:'#F4ECD8'}">Hotel Miramar</text>`;
+  const rows=[{y:190,b:9},{y:265,b:5},{y:340,b:1}],cols=[72,132,192,252];
+  const lit=o.lit||[2,5,9,11];
+  rows.forEach(r=>cols.forEach((x,i)=>{
+    const n=r.b+i,on=t==='noche'&&(n===7?!!o.light7:lit.includes(n));
+    s+=`<rect x="${x-7}" y="${r.y}" width="7" height="48" fill="${c.shutter}"/><rect x="${x+36}" y="${r.y}" width="7" height="48" fill="${c.shutter}"/>`;
+    s+=`<rect x="${x}" y="${r.y}" width="36" height="48" fill="${on?c.light:(t==='noche'?'#1B2448':c.glass)}"/>`;
+    if(on) s+=`<circle cx="${x+18}" cy="${r.y+24}" r="34" fill="url(#glow)" opacity=".5"/>`;
+    s+=`<line x1="${x+18}" y1="${r.y}" x2="${x+18}" y2="${r.y+48}" stroke="${c.wallShade}" stroke-width="2"/>`;
+    s+=`<rect x="${x-5}" y="${r.y+46}" width="46" height="5" fill="${c.ink}" opacity=".7"/>`;
+  }));
+  for(let i=0;i<13;i++){const col=i%2?'#F4ECD8':c.shutter;s+=`<rect x="${50+i*20}" y="410" width="20" height="18" fill="${col}"/><path d="M${50+i*20} 428 q10 10 20 0Z" fill="${col}"/>`}
+  s+=`<path d="M156 505 V455 Q180 430 204 455 V505Z" fill="${c.wood}"/><path d="M161 505 V457 Q180 437 199 457 V505Z" fill="${t==='noche'?c.light:c.wood2}"/>`;
+  s+=`<rect x="70" y="450" width="58" height="40" fill="${t==='noche'?c.light:c.glass}" opacity="${t==='noche'?.8:1}"/><rect x="232" y="450" width="58" height="40" fill="${t==='noche'?c.light:c.glass}" opacity="${t==='noche'?.8:1}"/>`;
+  s+=`<path d="M300 556 L360 556 L360 600 L330 600Z" fill="${c.wallShade}"/><path d="M308 562 h40 M314 572 h40 M320 582 h40 M326 592 h34" stroke="${c.wood2}" stroke-width="2" opacity=".5"/>`;
+  s+=palm(28,506,190,c)+palm(332,506,170,c)+gulls(t);
+  if(o.fiesta) s+=garland(50,412,310,412,26,c,t==='noche');
+  return {bg:s,props:[],ob:[]};
+}
+
+function sRecepcion(t,o={}){
+  const c=PAL[t];let s=defs(c);
+  s+=`<rect x="-400" y="-400" width="1160" height="880" fill="${c.wall}"/>`;
+  s+=`<rect x="-400" y="-400" width="1160" height="430" fill="${c.wallShade}" opacity=".25"/><rect x="-400" y="28" width="1160" height="4" fill="${c.wood}" opacity=".5"/>`;
+  s+=`<rect x="-400" y="330" width="1160" height="70" fill="url(#azu)"/>`;
+  s+=`<rect x="226" y="112" width="112" height="162" fill="${c.wood}"/><rect x="234" y="120" width="96" height="146" fill="url(#gs)"/><rect x="234" y="206" width="96" height="60" fill="${c.sea}"/>`;
+  if(t==='noche') s+=`<circle cx="300" cy="150" r="8" fill="${c.sun}"/>`; else s+=`<g class="drift"><path d="M252 206 L262 186 L262 206Z" fill="#FBF7EE"/></g>`;
+  s+=`<line x1="282" y1="120" x2="282" y2="266" stroke="${c.wood}" stroke-width="4"/><line x1="234" y1="193" x2="330" y2="193" stroke="${c.wood}" stroke-width="4"/>`;
+  const keys=o.keys||new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
+  s+=`<rect x="24" y="116" width="138" height="154" rx="4" fill="${c.wood2}"/><rect x="30" y="122" width="126" height="142" rx="2" fill="${c.wood}"/>`;
+  for(let n=1;n<=12;n++){const col=(n-1)%4,row=Math.floor((n-1)/4),x=48+col*31,y=134+row*44;
+    s+=`<circle cx="${x}" cy="${y}" r="2.4" fill="#C9A24A"/>`;
+    if(keys.has(n)) s+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+8}" stroke="#C9A24A" stroke-width="1.5"/><circle cx="${x}" cy="${y+12}" r="4" fill="none" stroke="#C9A24A" stroke-width="2"/><rect x="${x-1}" y="${y+15}" width="2.4" height="9" fill="#C9A24A"/><rect x="${x-7}" y="${y+25}" width="14" height="10" rx="1.5" fill="${c.roof}"/><text x="${x}" y="${y+33}" text-anchor="middle" font-family="Courier Prime, monospace" font-size="8" font-weight="700" fill="#FBF7EE">${n}</text>`;
+  }
+  const ck={'10':[300,60],'9':[270,0],'5':[150,0],'1':[45,270],'11':[330,0]}[o.clock||'10'];
+  s+=`<circle cx="195" cy="80" r="21" fill="#FBF7EE" stroke="${c.wood}" stroke-width="4"/><line x1="195" y1="80" x2="${195+Math.sin(ck[0]*Math.PI/180)*11}" y2="${80-Math.cos(ck[0]*Math.PI/180)*11}" stroke="${c.ink}" stroke-width="2.5" stroke-linecap="round"/><line x1="195" y1="80" x2="${195+Math.sin(ck[1]*Math.PI/180)*16}" y2="${80-Math.cos(ck[1]*Math.PI/180)*16}" stroke="${c.ink}" stroke-width="1.6" stroke-linecap="round"/>`;
+  s+=`<rect x="173" y="130" width="44" height="54" fill="#FBF7EE"/><rect x="173" y="130" width="44" height="14" fill="${c.roof}"/><text x="195" y="172" text-anchor="middle" font-family="Yeseva One, Georgia, serif" font-size="22" fill="#24212B">${o.day||16}</text>`;
+  s+=people(o.back,t);
+  s+=`<rect x="-400" y="398" width="1160" height="92" fill="${c.wood}"/><rect x="-400" y="392" width="1160" height="12" fill="${c.wood2}"/>`;
+  for(let i=-1;i<6;i++) s+=`<rect x="${i*74+8}" y="416" width="58" height="60" fill="none" stroke="${c.wood2}" stroke-width="3" opacity=".55"/>`;
+  s+=`<rect x="276" y="386" width="30" height="5" rx="2" fill="${c.ink}"/><path d="M279 386 Q291 362 303 386Z" fill="#C9A24A"/><circle cx="291" cy="366" r="2.5" fill="#C9A24A"/>`;
+  s+=`<path d="M110 390 L150 384 L150 392 L110 396Z" fill="#FBF7EE"/><path d="M150 384 L190 390 L190 396 L150 392Z" fill="#EFE6D2"/><rect x="106" y="394" width="88" height="4" fill="${c.roof}"/>`;
+  s+=`<rect x="-400" y="490" width="1160" height="800" fill="url(#chk)"/>`;
+  s+=`<rect x="-400" y="490" width="1160" height="800" fill="#000" opacity="${t==='noche'?.25:0}"/>`;
+  return {bg:s,props:[],ob:[]};
+}
+
+const TB={t1:{x:78,y:440},t2:{x:282,y:440},t3:{x:180,y:525},t4:{x:180,y:350,small:true}};
+function tableSVG(id,tb,c,t,fiesta){
+  const p=TB[id],sc=p.small?.72:.88;let s='';
+  if(!fiesta&&!p.small&&t!=='noche'){
+    s+=`<line x1="${p.x}" y1="${p.y-28}" x2="${p.x}" y2="${p.y-150}" stroke="${c.ink}" stroke-width="3"/>`;
+    for(let k=0;k<6;k++){const a=p.x-62+k*20.7;s+=`<path d="M${p.x} ${p.y-186} L${a} ${p.y-142} Q${a+10.3} ${p.y-134} ${a+20.7} ${p.y-142}Z" fill="${k%2?'#FBF7EE':c.shutter}"/>`}
+  }
+  s+=people((tb.who||[]).map(([k,dx,ex])=>[k,p.x+dx,p.y+18,sc,ex]),t);
+  const w=p.small?26:36,n=p.small?5:7;
+  s+=`<rect x="${p.x-w}" y="${p.y-28}" width="${w*2}" height="${p.small?40:48}" fill="#F3EEE1"/><ellipse cx="${p.x}" cy="${p.y-28}" rx="${w}" ry="${p.small?7:9}" fill="#FFFDF6"/>`;
+  for(let k=0;k<n;k++) s+=`<path d="M${p.x-w+k*w*2/n} ${p.y+(p.small?12:20)} q${w/n} 7 ${w*2/n} 0Z" fill="#F3EEE1"/>`;
+  if(t==='noche') s+=`<rect x="${p.x-w}" y="${p.y-37}" width="${w*2}" height="${p.small?55:65}" fill="#1a2550" opacity=".35"/>`;
+  if(tb.served) tb.served.forEach((d,k)=>{s+=`<svg x="${p.x-22+k*18}" y="${p.y-48}" width="24" height="24" viewBox="0 0 40 40">${drinkInner(d)}</svg>`});
+  if(tb.bubble){const bw=tb.bubble.length*34+16,bx=p.x-bw/2,by=p.y-(p.small?160:212);
+    s+=`<g class="bob"><rect x="${bx}" y="${by}" width="${bw}" height="44" rx="10" fill="#FFFDF6" stroke="${c.ink}" stroke-width="2"/><path d="M${p.x-8} ${by+43} L${p.x} ${by+56} L${p.x+8} ${by+43}Z" fill="#FFFDF6" stroke="${c.ink}" stroke-width="2"/><rect x="${p.x-9}" y="${by+40}" width="18" height="5" fill="#FFFDF6"/>`;
+    tb.bubble.forEach((d,k)=>{s+=`<svg x="${bx+8+k*34}" y="${by+3}" width="38" height="38" viewBox="0 0 40 40">${drinkInner(d)}</svg>`});s+='</g>'}
+  return s;
+}
+function sTerraza(t,o={}){
+  const c=PAL[t];let s=defs(c);
+  s+=`<rect x="-400" y="-400" width="1160" height="600" fill="url(#gs)"/>`+celestial(t,c)+clouds(t);
+  s+=`<rect x="-400" y="190" width="1160" height="110" fill="${c.sea}"/>`;
+  if(t==='tarde') s+=`<rect x="270" y="196" width="60" height="3" fill="${c.sun}" opacity=".7"/><rect x="282" y="206" width="36" height="3" fill="${c.sun}" opacity=".6"/>`;
+  s+=`<g class="drift">${seaLines(190,262,c.sea2)}</g>`;
+  if(t==='dia') s+=`<g class="drift" style="animation-duration:11s"><path d="M86 214 L98 186 L98 214Z" fill="#FBF7EE"/><path d="M80 214 H104 L100 220 H84Z" fill="${c.wood}"/></g>`;
+  s+=gulls(t);
+  if(o.fiesta) s+=garland(-30,100,390,110,60,c,true)+garland(-30,40,390,60,40,c,true);
+  s+=`<rect x="-400" y="258" width="1160" height="9" fill="${c.wall}"/>`;
+  for(let x=-30;x<400;x+=16) s+=`<path d="M${x} 267 h8 q-4 6 0 13 q4 7 0 13 h-8 q4 -6 0 -13 q-4 -7 0 -13Z" fill="${c.wall}"/>`;
+  s+=`<rect x="-400" y="292" width="1160" height="8" fill="${c.wallShade}"/><rect x="-400" y="300" width="1160" height="900" fill="url(#terra)"/>`;
+  const tabs=o.tables||{},props=[],ob=[];
+  Object.keys(tabs).forEach(id=>{const p=TB[id];props.push({y:p.y+20,svg:tableSVG(id,tabs[id],c,t,o.fiesta)});ob.push({x:p.x,y:p.y+4,rx:p.small?30:40,ry:p.small?13:18})});
+  return {bg:s,props,ob};
+}
+
+function sHab7(t,o={}){
+  const c=PAL[t];let s=defs(c);
+  const wall=t==='noche'?'#5A5E80':'#EADCBB';
+  s+=`<rect x="-400" y="-400" width="1160" height="800" fill="${wall}"/>`;
+  for(let x=-400;x<760;x+=24) s+=`<rect x="${x}" y="-400" width="6" height="800" fill="${c.roof}" opacity=".07"/>`;
+  s+=`<rect x="-400" y="326" width="1160" height="6" fill="${c.wood}" opacity=".6"/>`;
+  s+=`<rect x="114" y="94" width="98" height="162" fill="${c.wood}"/><rect x="121" y="101" width="84" height="148" fill="url(#gs)"/><rect x="121" y="190" width="84" height="59" fill="${c.sea}"/><g class="drift">${seaLines(190,246,c.sea2).replace(/x="-?\d+"/g,m=>m)}</g>`;
+  if(t==='noche') s+=`<circle cx="182" cy="128" r="9" fill="${c.sun}"/>`;
+  if(o.blind) for(let y=101;y<249;y+=7) s+=`<rect x="121" y="${y}" width="84" height="5" fill="${c.shutter}"/>`;
+  s+=`<rect x="105" y="94" width="9" height="162" fill="${c.wall}"/><rect x="212" y="94" width="9" height="162" fill="${c.wall}"/>`;
+  s+=`<rect x="-400" y="94" width="505" height="162" fill="${wall}"/><rect x="221" y="94" width="540" height="162" fill="${wall}"/>`;
+  for(let x=-400;x<760;x+=24) if(x<114||x>212) s+=`<rect x="${x}" y="94" width="6" height="162" fill="${c.roof}" opacity=".07"/>`;
+  s+=`<rect x="114" y="94" width="98" height="162" fill="none" stroke="${c.wood}" stroke-width="7"/><line x1="163" y1="101" x2="163" y2="249" stroke="${c.wood}" stroke-width="3"/>`;
+  s+=`<rect x="106" y="252" width="114" height="8" fill="${c.wallShade}"/>`;
+  s+=`<ellipse cx="190" cy="250" rx="12" ry="3.5" fill="#9AA0A8"/><rect x="183" y="246" width="9" height="2.5" fill="#FBF7EE" transform="rotate(-12 187 247)"/><rect x="190" y="245" width="8" height="2.5" fill="#E8DFC8" transform="rotate(18 194 246)"/>`;
+  s+=`<rect x="12" y="140" width="96" height="262" fill="${c.wood}"/><rect x="8" y="132" width="104" height="12" fill="${c.wood2}"/><line x1="60" y1="148" x2="60" y2="396" stroke="${c.wood2}" stroke-width="3"/>`;
+  s+=`<ellipse cx="36" cy="250" rx="15" ry="44" fill="${c.glass}" opacity=".55"/><circle cx="54" cy="270" r="3" fill="#C9A24A"/><circle cx="66" cy="270" r="3" fill="#C9A24A"/>`;
+  if(o.hat!==false) s+=`<g transform="translate(78 132)"><ellipse cx="0" cy="0" rx="22" ry="4.5" fill="#4A3A2C"/><path d="M-13 0 Q-14 -16 0 -15 Q14 -16 13 0Z" fill="#4A3A2C"/></g>`;
+  s+=`<g stroke="#2F2A33" stroke-width="4" fill="none"><line x1="208" y1="248" x2="208" y2="402"/><line x1="346" y1="248" x2="346" y2="402"/><path d="M208 262 Q277 228 346 262"/>`;
+  for(let x=228;x<340;x+=20) s+=`<line x1="${x}" y1="${262-Math.sin((x-208)/138*Math.PI)*20+6}" x2="${x}" y2="330"/>`;
+  s+=`</g><rect x="202" y="330" width="150" height="66" rx="4" fill="#F5F0E6"/><rect x="202" y="352" width="150" height="44" rx="3" fill="${c.shutter}"/><rect x="202" y="350" width="150" height="6" fill="#FBF7EE"/><ellipse cx="244" cy="333" rx="30" ry="10" fill="#FFFFFF"/>`;
+  s+=`<rect x="148" y="338" width="48" height="62" fill="${c.wood}"/><rect x="144" y="334" width="56" height="6" fill="${c.wood2}"/><rect x="158" y="318" width="8" height="16" fill="#C9A24A"/><path d="M150 320 L174 320 L168 300 L156 300Z" fill="#E9C46A"/>`;
+  if(o.lamp) s+=`<circle cx="162" cy="312" r="70" fill="url(#glow)" opacity=".7"/>`;
+  if(o.letter!==false) s+=`<rect x="174" y="326" width="20" height="13" fill="#FBF7EE" stroke="#bbb" stroke-width=".6" transform="rotate(-8 184 332)"/>`;
+  s+=`<rect x="-400" y="400" width="1160" height="900" fill="url(#hid)"/>`;
+  s+=`<rect x="252" y="468" width="36" height="36" fill="none" stroke="${c.ink}" stroke-width="2" opacity=".55" transform="rotate(2 270 486)"/>`;
+  if(t==='noche') s+=`<rect x="-400" y="400" width="1160" height="900" fill="#000" opacity=".25"/>`;
+  const props=[],ob=[];
+  if(o.maleta!==false){props.push({y:494,svg:`<rect x="56" y="440" width="96" height="54" rx="6" fill="#8A5A3B"/><rect x="56" y="452" width="96" height="4" fill="#5C3520"/><rect x="74" y="440" width="6" height="54" fill="#5C3520"/><rect x="128" y="440" width="6" height="54" fill="#5C3520"/><path d="M92 440 v-8 h24 v8" fill="none" stroke="#3C2416" stroke-width="4"/>`});ob.push({x:104,y:476,rx:56,ry:24})}
+  return {bg:s,props,ob};
+}
+
+function sCala(t,o={}){
+  const c=PAL[t];let s=defs(c);
+  s+=`<rect x="-400" y="-400" width="1160" height="640" fill="url(#gs)"/>`+celestial(t,c)+clouds(t);
+  s+=`<rect x="-400" y="230" width="1160" height="260" fill="${c.sea}"/><g class="drift">${seaLines(230,470,c.sea2)}</g>`;
+  if(t==='noche') for(let y=244;y<460;y+=12) s+=`<rect class="twinkle" style="animation-delay:-${(y%7)/5}s" x="${284-(y%24)/2}" y="${y}" width="${16+(y%36)/3}" height="2" fill="${c.sun}" opacity=".45"/>`;
+  s+=gulls(t);
+  s+=`<path d="M232 480 L250 262 Q300 232 360 240 L760 240 L760 480Z" fill="${c.rock}"/>`;
+  s+=`<rect x="284" y="172" width="72" height="72" fill="${c.wall}"/><rect x="280" y="166" width="80" height="8" fill="${c.roof}"/>`;
+  for(let i=0;i<3;i++) for(let j=0;j<2;j++) s+=`<rect x="${292+i*20}" y="${182+j*26}" width="10" height="14" fill="${t==='noche'?(i+j===1?'#1B2448':c.light):c.glass}"/>`;
+  s+=`<path d="M318 480 L322 470 L330 470 L336 458 L344 458 L350 446 L360 446 L360 480Z" fill="${c.wallShade}" opacity=".8"/>`;
+  s+=`<path d="M-400 480 L-400 300 Q-60 290 20 330 Q70 360 90 480Z" fill="${c.rock}"/><path d="M-10 480 Q30 400 70 420 Q100 440 112 480Z" fill="${c.pine}" opacity=".5"/>`;
+  s+=`<rect x="-400" y="478" width="1160" height="800" fill="${c.sand}"/><path class="drift" style="animation-duration:4s" d="M-400 482 Q-100 470 60 484 T360 480 T760 482" fill="none" stroke="#FBF7EE" stroke-width="3" opacity=".6"/>`;
+  if(o.figures) s+=`<g id="figs" style="transition:transform 8s linear">${person({sil:'#06070F',x:30,y:500,s:.42,hat:'gorra',hs:'short'})}${person({sil:'#06070F',x:76,y:500,s:.44,hs:'short'})}<rect x="34" y="456" width="40" height="11" rx="5" fill="#06070F"/></g>`;
+  let b=`<line x1="172" y1="490" x2="164" y2="420" stroke="${c.wood2}" stroke-width="3"/>`;
+  b+=`<path d="M110 476 Q190 508 284 474 L272 498 Q190 524 122 498Z" fill="${t==='noche'?'#9AA0BC':'#F4ECD8'}"/><path d="M114 484 Q190 512 280 482 L278 487 Q190 517 116 489Z" fill="${c.shutter}"/><path d="M110 476 Q190 508 284 474" fill="none" stroke="${c.ink}" stroke-width="2"/>`;
+  if(o.motor) b+=`<rect x="274" y="456" width="16" height="30" rx="3" fill="#9AA3AD"/><rect x="277" y="460" width="4" height="20" fill="#E8EEF4"/><rect x="280" y="486" width="4" height="22" fill="#5D6670"/>`;
+  return {bg:s,props:[{y:512,svg:b}],ob:[{x:196,y:498,rx:96,ry:18}]};
+}
+
+function sPatio(t,o={}){
+  const c=PAL[t];let s=defs(c);
+  s+=`<rect x="-400" y="-400" width="1160" height="530" fill="url(#gs)"/>`+celestial(t,c)+clouds(t)+gulls(t);
+  s+=`<rect x="-400" y="120" width="1160" height="320" fill="${c.wall}"/><rect x="-400" y="112" width="1160" height="12" fill="${c.roof}"/>`;
+  s+=`<line x1="-10" y1="166" x2="370" y2="186" stroke="${c.ink}" stroke-width="1.4"/>`;
+  s+=`<g class="sway" style="transform-origin:60px 168px;animation-duration:3s"><rect x="34" y="168" width="54" height="66" fill="#FBF7EE"/></g><g class="sway" style="transform-origin:124px 171px;animation-duration:3.6s"><rect x="100" y="171" width="48" height="58" fill="#EFE8D6"/></g>`;
+  s+=`<g class="sway" style="transform-origin:234px 180px;animation-duration:3.3s"><path d="M206 178 L222 176 L230 184 L244 182 L250 178 L264 179 L262 196 L254 194 L254 232 L214 232 L214 192 L206 194Z" fill="#FBF7EE"/><ellipse cx="217" cy="200" rx="5" ry="7" fill="#6B2A2A" opacity=".75"/></g>`;
+  s+=`<rect x="20" y="296" width="62" height="140" fill="${c.shutter}"/><rect x="28" y="306" width="46" height="40" fill="${c.glass}" opacity=".6"/>`;
+  s+=`<rect x="226" y="248" width="128" height="190" fill="${c.wood}"/><path d="M218 252 L362 236 L362 248 L218 262Z" fill="${c.wood2}"/>`;
+  for(let x=236;x<354;x+=12) s+=`<line x1="${x}" y1="262" x2="${x}" y2="436" stroke="${c.wood2}" stroke-width="1.5" opacity=".6"/>`;
+  s+=`<rect x="264" y="300" width="34" height="138" fill="#1A1410"/><rect x="298" y="300" width="18" height="138" fill="${c.wood2}" transform="skewY(-8)" transform-origin="298 300"/>`;
+  s+=`<rect x="-400" y="436" width="1160" height="900" fill="${t==='noche'?'#4C4660':'#CDB089'}"/>`;
+  s+=`<line x1="222" y1="438" x2="206" y2="318" stroke="#8A6A45" stroke-width="5" stroke-linecap="round"/><path d="M196 312 L216 310 L214 296 Q205 290 197 297Z" fill="#7D7F86"/><path d="M198 306 L214 304 L213 298 Q205 294 199 299Z" fill="#4A3626"/><circle cx="203" cy="309" r="1.4" fill="${c.sand}"/><circle cx="209" cy="306" r="1.4" fill="${c.sand}"/>`;
+  [150,182].forEach(x=>{s+=`<path d="M${x-14} 420 h28 l-4 26 h-20Z" fill="${c.terra}"/><circle cx="${x-6}" cy="410" r="9" fill="${c.pine}"/><circle cx="${x+7}" cy="406" r="9" fill="${c.pine}"/><circle cx="${x-4}" cy="402" r="4" fill="#D63B3B"/><circle cx="${x+6}" cy="398" r="4" fill="#D63B3B"/><circle cx="${x+1}" cy="408" r="3.5" fill="#E85A4A"/>`});
+  let b=`<rect x="64" y="404" width="58" height="68" rx="3" fill="#5C6670"/><rect x="64" y="418" width="58" height="4" fill="#47505A"/><rect x="64" y="452" width="58" height="4" fill="#47505A"/><ellipse cx="93" cy="404" rx="29" ry="6" fill="#2E3338"/>`;
+  if(o.fire) b+=`<g><path class="flame" d="M78 404 Q80 374 92 360 Q90 382 104 372 Q110 392 108 404Z" fill="#E8833A"/><path class="flame" d="M86 404 Q88 384 96 376 Q98 392 104 388 Q104 398 102 404Z" fill="#F4C152"/><circle class="smoke" cx="94" cy="340" r="12" fill="#9A9AA0"/><circle class="smoke" cx="102" cy="316" r="15" fill="#AFAFB4" style="animation-delay:1.2s"/></g>`;
+  return {bg:s,props:[{y:472,svg:b}],ob:[{x:93,y:464,rx:36,ry:14}]};
+}
+
+const SCENES={fachada:sFachada,recepcion:sRecepcion,terraza:sTerraza,hab7:sHab7,cala:sCala,patio:sPatio};
+function S(name,t,o={}){
+  const sc=SCENES[name](t,o),list=(sc.props||[]).map(p=>({y:p.y,s:p.svg}));
+  [...(o.people||[]),...(o.front||[])].forEach(pp=>list.push({y:pp[2],s:people([pp],t)}));
+  list.sort((a,b)=>a.y-b.y);
+  $('#scene').innerHTML=sc.bg+list.map(i=>i.s).join('');
+  $('#stage').classList.toggle('night',t==='noche');
+  $('#dark').classList.remove('on');$('#hs').innerHTML='';$('#act').classList.remove('show');
+}
+
+/* ============ estado ============ */
+const st={clues:[],met:new Set(),keys:null,theory:null};
+const CLUES={
+  deudas:['Las deudas de papá','La señora Puig dice que papá se ha endeudado hasta las cejas para abrir el hotel.'],
+  hab7:['La habitación siete','El señor Vidal tenía reservada la tres, pero quiso la siete. Papá se la dio sin hacer preguntas.'],
+  firma:['Una firma temblorosa','Firmó como «A. Vidal», con letra de alguien que tiene miedo.'],
+  munich:['Lo de Múnich','Según la señora Roig, están deteniendo a los que fueron a un congreso en Múnich. Cree que el señor Vidal es uno de ellos.'],
+  barca:['Una barca sin luces','Klaus vio una barca sin luces muy cerca de la orilla la noche antes de la fiesta.'],
+  marea:['La marea','El señor Vidal preguntó a qué hora sube la marea y si salen barcas de noche.'],
+  martes:['El martes','Tomàs y papá hablaban de algo para el martes, con un motor nuevo. Se callaron al verme.'],
+  discusion:['La discusión','En la fiesta, el señor Vidal le dijo a papá: «Si me encuentran aquí, se hunde usted conmigo».'],
+  luz:['La luz de la siete','Se apagó a las dos menos cuarto de la madrugada. Después nadie volvió a verlo.'],
+  cama:['La cama sin deshacer','Nadie durmió en la habitación siete la noche de la fiesta.'],
+  maleta:['Una maleta sin papeles','Dos camisas, una corbata y libros de poesía. Ni cartera ni documentos.'],
+  carta:['La carta sin enviar','Para una tal Montse: «Hay un hombre en este hotel que sabe quién soy, y no sé si me ayudará o me venderá».'],
+  colillas:['Dos colillas','Una de Ducados y otra de Celtas cortos. Papá fuma Celtas cortos.'],
+  billete:['Billete de ida','De Barcelona a Sant Elm. Solo ida.'],
+  sombrero:['El sombrero','Su sombrero se quedó encima del armario.'],
+  baldosa:['La baldosa','Una baldosa de la siete se mueve al pisarla.'],
+  mentira:['Papá mintió','Le dijo al cabo que solo habló con el señor Vidal para darle la llave.'],
+  averia:['El tren de las seis','El cabo cree que se fue en el tren de las seis. Pero ese día el tren se averió y no pasó ninguno hasta las diez.'],
+  cobertizo:['Luz en el cobertizo','La noche de la fiesta, la señora Roig vio luz en el cobertizo del patio a altas horas.'],
+  evasivo:['Tomàs esquiva','Cuando le pregunté por el martes, me dijo que no removiera.'],
+  maletafuera:['La maleta ha desaparecido','Por la mañana estaba en la siete. Por la noche ya no.'],
+  golpes:['Golpes bajo el suelo','Tres golpes debajo de la baldosa suelta. Papá dice que son las tuberías.'],
+  foto:['La foto de Klaus','La cala a la una y cuarenta. Dos hombres junto a una barca. Uno lleva sombrero.'],
+  pala:['La pala','Tierra húmeda y arena de playa en la pala del cobertizo.'],
+  mantas:['Las mantas','Faltan dos mantas nuevas en el cobertizo.'],
+  mancha:['La mancha','Una mancha oscura en la manga de la camisa de papá.'],
+  motor:['El motor nuevo','Tomàs ha estrenado motor. Dice que con sus ahorros.'],
+  bulto:['El bulto','El martes de madrugada, dos hombres llevaron algo envuelto en una manta hasta la barca de Tomàs.'],
+  carnet:['El carnet quemado','Papá quemaba un carnet con la foto del señor Vidal. Pero el nombre era otro: Alberto Ferrer.'],
+  montse:['Montse, de Perpiñán','La señora Roig dice que Montse es Montserrat Ferrer, de Perpiñán. Tenía un hermano catedrático en Barcelona.'],
+  gafas:['Dos hombres en el cobertizo','La señora Roig vio salir del cobertizo a papá y a un hombre con gafas y sin sombrero.'],
+  foto2:['La segunda foto','A las tres, Klaus fotografió a un solo hombre volviendo de la cala al hotel. Sin sombrero y con gafas.'],
+  tomas_sombrero:['El sombrero de Tomàs','Tomàs dice que el del sombrero en la foto era él. Tomàs no se pone sombrero ni en agosto.'],
+  solo_barca:['Solo la barca','Tomàs dice que él solo pone la barca. Y que cobra.'],
+  pagador:['Otro pagó el motor','Tomàs admite que el motor no lo pagaron ni él ni papá.'],
+  aviso:['La prohibición','Papá me ha prohibido volver a entrar en la siete. Nunca me había prohibido nada.']
+};
+const TOTAL=Object.keys(CLUES).length;
+const PERS={
+  papa:['Papá','Ha levantado el hotel con todo lo que tenía. Y con lo que no tenía.'],
+  albert:['Sr. Vidal, habitación 7','Profesor, dice. Llegó con una maleta pequeña y pidió la siete.'],
+  pilar:['Sra. Roig, habitación 5','Viuda. Lo ve todo y lo cuenta todo.'],
+  klaus:['Klaus Berger, habitación 9','Fotógrafo alemán. Nunca se separa de la cámara.'],
+  tomas:['Tomàs','Pescador. Amigo de papá desde niños.'],
+  cabo:['Cabo Sánchez','Guardia Civil. Tiene prisa por cerrar el caso.']
+};
+const N={rosa:['Rosa','#B07A10'],papa:['Papá','#2B6E9E'],albert:['Sr. Vidal','#7A5236'],pilar:['Sra. Roig','#6B3F6E'],klaus:['Klaus','#B5462E'],tomas:['Tomàs','#2F5D46'],cabo:['Cabo Sánchez','#4E5B31'],puig:['Sr. Puig','#6E6650'],sra_puig:['Sra. Puig','#3E7A66']};
+const DAYS=[['Sábado',16],['Domingo',17],['Lunes',18],['Martes',19],['Miércoles',20]];
+function meet(k){st.met.add(k)}
+
+/* ============ audio ============ */
+const AU={ctx:null,on:true,mode:'off',next:0,step:0,drone:null};
+const mf=m=>440*Math.pow(2,(m-69)/12);
+function aInit(){
+  if(AU.ctx){AU.ctx.resume();return}
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC) return;
+  const ctx=new AC();AU.ctx=ctx;
+  const comp=ctx.createDynamicsCompressor();comp.connect(ctx.destination);
+  AU.master=ctx.createGain();AU.master.gain.value=AU.on?.9:0;AU.master.connect(comp);
+  AU.music=ctx.createGain();AU.music.gain.value=0;AU.music.connect(AU.master);
+  AU.sfx=ctx.createGain();AU.sfx.gain.value=.85;AU.sfx.connect(AU.master);
+  const dl=ctx.createDelay(1);dl.delayTime.value=.27;const fb=ctx.createGain();fb.gain.value=.28;const lp=ctx.createBiquadFilter();lp.frequency.value=2000;const wet=ctx.createGain();wet.gain.value=.35;
+  AU.music.connect(dl);dl.connect(lp);lp.connect(fb);fb.connect(dl);lp.connect(wet);wet.connect(AU.master);
+  const len=ctx.sampleRate*3,buf=ctx.createBuffer(1,len,ctx.sampleRate),d=buf.getChannelData(0);let last=0;
+  for(let i=0;i<len;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;d[i]=last*3.5}
+  const nb=ctx.createBuffer(1,ctx.sampleRate,ctx.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;AU.noise=nb;
+  const src=ctx.createBufferSource();src.buffer=buf;src.loop=true;const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=650;
+  const swell=ctx.createGain();swell.gain.value=.55;const lfo=ctx.createOscillator();lfo.frequency.value=.11;const lg=ctx.createGain();lg.gain.value=.45;lfo.connect(lg);lg.connect(swell.gain);
+  AU.waveG=ctx.createGain();AU.waveG.gain.value=0;src.connect(f);f.connect(swell);swell.connect(AU.waveG);AU.waveG.connect(AU.master);
+  src.start();lfo.start();
+  setInterval(tick,25);
+}
+function waves(v){if(!AU.ctx) return;AU.waveG.gain.setTargetAtTime(v,AU.ctx.currentTime,.9)}
+function note(freq,t,dur,vol,type,cut,dest){
+  const ctx=AU.ctx,o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();
+  o.type=type||'triangle';o.frequency.value=freq;f.type='lowpass';f.frequency.value=cut||Math.min(freq*5,9000);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(f);f.connect(g);g.connect(dest||AU.music);o.start(t);o.stop(t+dur+.05);
+}
+function noiseHit(t,dur,vol,ftype,freq,dest){
+  const ctx=AU.ctx,s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();
+  s.buffer=AU.noise;f.type=ftype;f.frequency.value=freq;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  s.connect(f);f.connect(g);g.connect(dest||AU.music);s.start(t);s.stop(t+dur+.02);
+}
+const MODES={
+  dia:{bpm:88,ch:[[50,57,61,66],[47,54,57,62],[43,50,54,59],[45,52,55,61]],
+    mel:[78,0,81,0,0,78,76,0,74,0,78,0,0,76,74,0,71,0,74,0,76,0,78,0,76,0,0,0,73,0,0,0],
+    play(st,t){const ch=this.ch[Math.floor(st/8)%4],i=[0,1,2,3,2,1,3,2][st%8];note(mf(ch[i]+12),t,.9,.06,'triangle',2200);
+      if(st%8===0) note(mf(ch[0]-12),t,1.4,.13,'sine');if(st%8===4) note(mf(ch[0]-5),t,.9,.07,'sine');
+      const m=this.mel[st%32];if(Math.floor(st/32)%2===1&&m) note(mf(m),t,.75,.05,'sine');}},
+  fiesta:{bpm:150,ch:[[48,55,60,64],[45,52,57,60],[41,48,53,57],[43,50,55,59]],
+    mel:[76,0,79,0,81,79,76,0,72,0,76,0,79,0,76,0,77,0,81,0,84,81,77,0,79,0,77,0,76,0,74,0],
+    play(st,t){const ch=this.ch[Math.floor(st/8)%4];
+      if(st%2===0) note(mf((st%4===0?ch[0]:ch[1])-12),t,.3,.15,'triangle',900);
+      else ch.slice(1).forEach(n=>note(mf(n),t,.14,.022,'square',1600));
+      noiseHit(t,.04,st%2?.05:.025,'highpass',7000);if(st%4===2) noiseHit(t,.12,.05,'bandpass',1800);
+      const m=this.mel[st%32];if(st>=32&&m) note(mf(m),t,.24,.045,'square',2600);}},
+  misterio:{bpm:70,ch:[[45,52,60,59],[41,48,57,55],[50,57,65,64],[40,47,56,62]],
+    mel:[76,0,0,0,72,0,0,0,69,0,0,0,0,0,0,0,77,0,0,0,76,0,72,0,71,0,0,0,0,0,0,0],
+    play(st,t){const ch=this.ch[Math.floor(st/8)%4],i=[0,1,2,3,-1,2,1,-1][st%8];if(i>=0) note(mf(ch[i]+(i?0:12)),t,1.5,.05,'triangle',1700);
+      if(st%8===0) note(mf(ch[0]-12),t,2.2,.1,'sine');const m=this.mel[st%32];if(Math.floor(st/32)%2===1&&m) note(mf(m),t,1.6,.04,'sine');}},
+  suspense:{bpm:60,play(st,t){
+      if(st%4===0){[0,.24].forEach(d=>{const o=AU.ctx.createOscillator(),g=AU.ctx.createGain();o.frequency.setValueAtTime(95,t+d);o.frequency.exponentialRampToValueAtTime(38,t+d+.25);g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(d?.22:.32,t+d+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d+.3);o.connect(g);g.connect(AU.music);o.start(t+d);o.stop(t+d+.35)})}
+      if(st%16===6) note(932,t,3,.022,'sine');if(st%16===14) note(mf(81),t,2.5,.018,'sine');}}
+};
+function tick(){
+  if(!AU.ctx) return;const m=MODES[AU.mode];if(!m) return;
+  while(AU.next<AU.ctx.currentTime+.15){m.play(AU.step,AU.next);AU.next+=60/m.bpm/2;AU.step++}
+}
+function setMode(mode){
+  if(!AU.ctx||AU.mode===mode) return;const ctx=AU.ctx;
+  AU.music.gain.cancelScheduledValues(ctx.currentTime);AU.music.gain.setTargetAtTime(0,ctx.currentTime,.15);
+  setTimeout(()=>{
+    if(AU.drone){AU.drone.forEach(n=>{try{n.stop()}catch(e){}});AU.drone=null}
+    AU.mode=mode;AU.step=0;AU.next=ctx.currentTime+.08;
+    if(mode==='suspense'){const g=ctx.createGain();g.gain.value=.05;const f=ctx.createBiquadFilter();f.frequency.value=240;
+      const l=ctx.createOscillator();l.frequency.value=.07;const lg=ctx.createGain();lg.gain.value=120;l.connect(lg);lg.connect(f.frequency);
+      const a=ctx.createOscillator(),b=ctx.createOscillator();a.type=b.type='sawtooth';a.frequency.value=55;b.frequency.value=55.5;
+      a.connect(f);b.connect(f);f.connect(g);g.connect(AU.music);a.start();b.start();l.start();AU.drone=[a,b,l]}
+    AU.music.gain.setTargetAtTime(mode==='off'?0:.6,ctx.currentTime+.05,.4);
+  },500);
+}
+const SFX={
+  bell(){if(!AU.ctx)return;const t=AU.ctx.currentTime;[[1,.16,1.8],[2.76,.06,1],[5.4,.03,.5]].forEach(([r,v,d])=>note(1350*r,t,d,v,'sine',12000,AU.sfx))},
+  chime(){if(!AU.ctx)return;const t=AU.ctx.currentTime;note(1047,t,.7,.07,'sine',6000,AU.sfx);note(1568,t+.1,.9,.06,'sine',6000,AU.sfx)},
+  page(){if(!AU.ctx)return;noiseHit(AU.ctx.currentTime,.16,.12,'bandpass',2800,AU.sfx)},
+  clink(){if(!AU.ctx)return;const t=AU.ctx.currentTime;note(2600,t,.3,.06,'sine',9000,AU.sfx);note(3300,t+.07,.3,.05,'sine',9000,AU.sfx)},
+  click(){if(!AU.ctx)return;noiseHit(AU.ctx.currentTime,.05,.25,'bandpass',1200,AU.sfx)},
+  knock(){if(!AU.ctx)return;const t=AU.ctx.currentTime;for(let i=0;i<3;i++){const tt=t+i*.42,o=AU.ctx.createOscillator(),g=AU.ctx.createGain();o.frequency.setValueAtTime(120,tt);o.frequency.exponentialRampToValueAtTime(50,tt+.15);g.gain.setValueAtTime(.0001,tt);g.gain.exponentialRampToValueAtTime(.55,tt+.006);g.gain.exponentialRampToValueAtTime(.0001,tt+.2);o.connect(g);g.connect(AU.sfx);o.start(tt);o.stop(tt+.25);noiseHit(tt,.08,.3,'lowpass',500,AU.sfx)}},
+  motor(){if(!AU.ctx)return;const ctx=AU.ctx,t=ctx.currentTime,o=ctx.createOscillator(),f=ctx.createBiquadFilter(),g=ctx.createGain(),tr=ctx.createOscillator(),tg=ctx.createGain();
+    o.type='sawtooth';o.frequency.setValueAtTime(42,t);o.frequency.linearRampToValueAtTime(58,t+2);f.frequency.value=380;tr.frequency.value=16;tg.gain.value=.5;tr.connect(tg);
+    const am=ctx.createGain();am.gain.value=.5;tg.connect(am.gain);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+1);g.gain.exponentialRampToValueAtTime(.0001,t+7);
+    o.connect(f);f.connect(am);am.connect(g);g.connect(AU.sfx);o.start(t);tr.start(t);o.stop(t+7.2);tr.stop(t+7.2)}
+};
+$('#sndBtn').addEventListener('click',e=>{e.stopPropagation();AU.on=!AU.on;if(AU.master) AU.master.gain.setTargetAtTime(AU.on?.9:0,AU.ctx.currentTime,.1);
+  $('#sndBtn').setAttribute('aria-label',AU.on?'Silenciar el sonido':'Activar el sonido');
+  $('#sndIco').innerHTML=AU.on?'<path d="M4 9h4l5-4v14l-5-4H4z" fill="#2B6E9E"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/>':'<path d="M4 9h4l5-4v14l-5-4H4z" fill="#2B6E9E"/><path d="M16 9l5 6M21 9l-5 6"/>'});
+document.addEventListener('visibilitychange',()=>{if(!AU.ctx) return;document.hidden?AU.ctx.suspend():AU.ctx.resume()});
+
+/* ============ diálogo ============ */
+const D={mode:'off',typing:false,full:'',resolve:null,timer:null};
+const dlg=$('#dialog'),who=$('#who'),txt=$('#txt'),nextMark=$('#nextMark'),choicesEl=$('#choices'),promptEl=$('#prompt');
+function dlgHide(){dlg.classList.remove('show')}
+function say(k,text){
+  return new Promise(res=>{
+    const th=k==='think',meta=k&&!th?N[k]:(th?['Rosa, para sí','#B07A10']:null);
+    who.hidden=!meta;if(meta){who.textContent=meta[0];who.style.color=meta[1]}
+    setPor(th?'rosa':(k&&N[k]?k:null),meta?meta[1]:null);
+    txt.hidden=false;txt.className='txt'+(th?' thought':'')+(!k?' narr':'');
+    choicesEl.hidden=true;promptEl.hidden=true;nextMark.hidden=true;dlg.classList.add('show');
+    D.mode='say';D.resolve=res;D.full=text;clearInterval(D.timer);
+    if(RM){txt.textContent=text;D.typing=false;nextMark.hidden=false;return}
+    txt.textContent='';D.typing=true;let i=0;
+    D.timer=setInterval(()=>{i++;txt.textContent=text.slice(0,i);if(i>=text.length){clearInterval(D.timer);D.typing=false;nextMark.hidden=false}},17);
+  });
+}
+function advance(){
+  if(D.mode!=='say') return;
+  if(D.typing){clearInterval(D.timer);txt.textContent=D.full;D.typing=false;nextMark.hidden=false;return}
+  D.mode='off';const r=D.resolve;D.resolve=null;r&&r();
+}
+function choose(opts,q){
+  return new Promise(res=>{
+    D.mode='choose';setPor(null);dlg.classList.add('show');who.hidden=true;nextMark.hidden=true;promptEl.hidden=true;
+    txt.hidden=!q;if(q){txt.className='txt narr';txt.textContent=q}
+    choicesEl.innerHTML='';choicesEl.hidden=false;
+    opts.forEach((o,i)=>{const b=document.createElement('button');b.textContent=o;b.addEventListener('click',e=>{e.stopPropagation();choicesEl.hidden=true;D.mode='off';res(i)});choicesEl.appendChild(b)});
+  });
+}
+$('#stage').addEventListener('click',e=>{if(D.mode==='say'&&!e.target.closest('#top,.ov,#sheet,button,.spot')) advance()});
+document.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&D.mode==='say'&&!document.activeElement.closest?.('button')){e.preventDefault();advance()}});
+
+/* ============ calendario, pistas ============ */
+function setCal(d,ph){$('#calNum').textContent=DAYS[d][1];$('#calL1').textContent=DAYS[d][0]+', junio de 1962';$('#calL2').textContent=ph;$('#top').classList.add('show')}
+let toastT;
+async function clue(id){
+  if(st.clues.includes(id)) return;st.clues.push(id);SFX.chime();updHint();
+  const b=$('#badge');b.hidden=false;b.textContent=st.clues.length;$('#nbBtn').classList.remove('bump');void $('#nbBtn').offsetWidth;$('#nbBtn').classList.add('bump');
+  const tt=$('#toast');tt.innerHTML=`Anotado en el cuaderno<b>${CLUES[id][0]}</b>`;tt.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>tt.classList.remove('show'),2600);
+}
+
+/* ============ capas ============ */
+function showOv(html,{tapClose=true,clear=false,minMs=500}={}){
+  return new Promise(res=>{
+    const ov=$('#ov');ov.innerHTML=html;ov.classList.toggle('clear',clear);ov.classList.add('show');D.mode='ov';
+    const t0=Date.now();
+    if(tapClose){const h=e=>{if(Date.now()-t0<minMs) return;ov.removeEventListener('click',h);ov.classList.remove('show');setTimeout(res,300)};ov.addEventListener('click',h)}
+    else res(ov);
+  });
+}
+function hideOv(){$('#ov').classList.remove('show')}
+const STAMP=`<svg class="stamp" viewBox="0 0 62 74"><rect width="62" height="74" fill="#FBF7EE"/><rect x="0" y="0" width="62" height="74" fill="none" stroke="#B5462E" stroke-width="3" stroke-dasharray="3 3"/><rect x="6" y="6" width="50" height="50" fill="#7FC3DA"/><rect x="6" y="40" width="50" height="16" fill="#1F6A9A"/><rect x="16" y="22" width="30" height="20" fill="#F4ECD8"/><rect x="14" y="19" width="34" height="4" fill="#B5462E"/><rect x="20" y="27" width="5" height="6" fill="#2B6E9E"/><rect x="29" y="27" width="5" height="6" fill="#2B6E9E"/><rect x="38" y="27" width="5" height="6" fill="#2B6E9E"/><text x="31" y="68" text-anchor="middle" font-family="Courier Prime,monospace" font-size="8" font-weight="700" fill="#B5462E">1 PTA</text></svg>`;
+function MARK(d){return `<svg class="mark" viewBox="0 0 84 84"><circle cx="34" cy="42" r="26" fill="none" stroke="#24212B" stroke-width="2"/><circle cx="34" cy="42" r="19" fill="none" stroke="#24212B" stroke-width="1"/><text x="34" y="38" text-anchor="middle" font-family="Courier Prime,monospace" font-size="7" fill="#24212B">SANT ELM</text><text x="34" y="48" text-anchor="middle" font-family="Courier Prime,monospace" font-size="8" font-weight="700" fill="#24212B">${d} JUN 62</text>${[0,1,2,3].map(i=>`<path d="M58 ${30+i*7} q6 -4 12 0 t12 0" fill="none" stroke="#24212B" stroke-width="1.4"/>`).join('')}</svg>`}
+async function card(d,ph){
+  dlgHide();goal('');setCal(d,ph);SFX.page();st.strikes={};
+  await showOv(`<div class="postal" role="img" aria-label="${DAYS[d][0]} ${DAYS[d][1]} de junio de 1962, ${ph}"><div class="pc-l"><p class="pc-wd">${DAYS[d][0]}</p><p class="pc-d">${DAYS[d][1]}</p><p class="pc-m">de junio de 1962</p><p class="pc-ph">${ph}</p></div><div class="pc-r">${STAMP}${MARK(DAYS[d][1])}<p>Hotel Miramar</p><p>Sant Elm de Mar</p><p>Gerona</p></div></div><p class="tap">Toca para continuar</p>`,{minMs:700});
+}
+function letterDoc(){return showOv(`<div class="letter"><p>Querida Montse:</p><p>Si todo sale como está previsto, el miércoles estaré lejos de aquí. No me busques.</p><p>Hay un hombre en este hotel que sabe quién soy, y no sé si me ayudará o me venderá. Si no vuelves a saber de mí</p></div><p class="tap">Toca para cerrar</p>`)}
+function photoDoc(){return showOv(`<figure class="photo" style="margin:0"><svg viewBox="0 0 300 210"><defs><filter id="gr"><feTurbulence baseFrequency=".9" numOctaves="1"/><feColorMatrix values="0 0 0 0 .8 0 0 0 0 .8 0 0 0 0 .8 0 0 0 .25 0"/><feComposite in2="SourceGraphic" operator="in"/></filter></defs><rect width="300" height="210" fill="#26272c"/><rect y="70" width="300" height="80" fill="#3a3c43"/><circle cx="230" cy="40" r="12" fill="#d9d6cc"/><path d="M0 150 L0 90 Q50 80 80 110 L96 150Z" fill="#17181c"/><rect y="150" width="300" height="60" fill="#55565c"/><path d="M150 158 Q200 172 262 156 L254 168 Q200 182 156 168Z" fill="#9b9ca2"/>${person({sil:'#0b0b0e',x:118,y:170,s:.42,hat:'fedora',hs:'short'})}${person({sil:'#0b0b0e',x:146,y:172,s:.44,hs:'short'})}<rect width="300" height="210" filter="url(#gr)" opacity=".9"/></svg><figcaption>Cala, 1.40 h. 18-VI-62</figcaption></figure><p class="tap">Toca para cerrar</p>`)}
+function carnetDoc(){return showOv(`<svg class="carnet" viewBox="0 0 320 200"><rect x="4" y="4" width="312" height="192" rx="10" fill="#E8DDC2"/><rect x="4" y="4" width="312" height="30" rx="10" fill="#B9A77E"/><text x="18" y="25" font-family="Courier Prime,monospace" font-size="11.5" font-weight="700" fill="#3a2f1e">Documento Nacional de Identidad</text><rect x="18" y="48" width="78" height="100" fill="#cfc6b2"/><circle cx="57" cy="84" r="20" fill="#8a7f6d"/><rect x="33" y="108" width="48" height="40" rx="14" fill="#8a7f6d"/><g fill="none" stroke="#2a241a" stroke-width="2"><circle cx="50" cy="83" r="6"/><circle cx="64" cy="83" r="6"/></g><text x="110" y="64" font-family="Courier Prime,monospace" font-size="10" fill="#5a4f3e">Nombre</text><text x="110" y="82" font-family="Courier Prime,monospace" font-size="16" font-weight="700" fill="#2a241a">ALBERTO</text><text x="110" y="104" font-family="Courier Prime,monospace" font-size="10" fill="#5a4f3e">Apellidos</text><text x="110" y="122" font-family="Courier Prime,monospace" font-size="16" font-weight="700" fill="#2a241a">FERRER SOL</text><text x="110" y="146" font-family="Courier Prime,monospace" font-size="10" fill="#5a4f3e">Profesión: catedrático</text><path d="M232 4 Q246 30 236 52 Q258 70 242 94 Q262 120 246 140 Q264 166 250 196 L316 196 L316 4Z" fill="#2a1d14"/><path d="M226 4 Q240 30 230 52 Q252 70 236 94 Q256 120 240 140 Q258 166 244 196 L252 196 Q266 166 248 140 Q264 120 244 94 Q260 70 238 52 Q248 30 234 4Z" fill="#8a4b20" opacity=".8"/><path d="M4 170 Q30 160 40 196 L14 196 Q4 190 4 180Z" fill="#2a1d14"/></svg><p class="tap">Toca para cerrar</p>`)}
+
+/* ============ motor de movimiento ============ */
+const NS='http://www.w3.org/2000/svg';
+const hs=$('#hs'),dark=$('#dark'),actBtn=$('#act');
+const WALK={
+  fachada:{x0:24,x1:336,y0:514,y1:556,s0:.7,s1:.82,sand:true},
+  recepcion:{x0:28,x1:332,y0:508,y1:650,s0:1,s1:1.28},
+  terraza:{x0:22,x1:338,y0:318,y1:640,s0:.64,s1:1.08},
+  hab7:{x0:30,x1:330,y0:424,y1:650,s0:1.02,s1:1.28},
+  cala:{x0:24,x1:326,y0:506,y1:650,s0:.86,s1:1.1,sand:true},
+  patio:{x0:26,x1:334,y0:450,y1:650,s0:.92,s1:1.2}
+};
+const OUT={fachada:1,terraza:1,cala:1,patio:1};
+const EXITS={
+  fachada:[{to:'recepcion',x:180,y:516,label:'Hotel',dir:'u',entry:[180,620]},{to:'cala',x:334,y:548,label:'Cala',dir:'r',entry:[300,560]}],
+  recepcion:[{to:'fachada',x:180,y:668,label:'Calle',dir:'d',entry:[180,530]},{to:'terraza',x:334,y:580,label:'Terraza',dir:'r',entry:[56,470]},{to:'patio',x:30,y:640,label:'Patio',dir:'l',entry:[64,500]},{to:'hab7',x:34,y:520,label:'Escalera',dir:'u',entry:[180,620]}],
+  terraza:[{to:'recepcion',x:24,y:470,label:'Recepción',dir:'l',entry:[300,590]}],
+  hab7:[{to:'recepcion',x:180,y:668,label:'Escalera',dir:'d',entry:[70,530]}],
+  cala:[{to:'fachada',x:312,y:522,label:'Paseo',dir:'u',entry:[318,540]}],
+  patio:[{to:'recepcion',x:54,y:464,label:'Recepción',dir:'l',entry:[56,620]}]
+};
+const R={active:false,busy:false,keys:{},done:new Set(),actors:[],props:[],items:[],exits:[],ob:[]};
+function W(){return {...WALK[R.scene],...(((R.cfg||{}).band||{})[R.scene]||{})}}
+function sAt(name,y){const w=WALK[name],k=Math.max(0,Math.min(1,(y-w.y0)/(w.y1-w.y0)));return w.s0+k*(w.s1-w.s0)}
+function clampB(x,y){const w=W();return [Math.max(w.x0,Math.min(w.x1,x)),Math.max(w.y0,Math.min(w.y1,y))]}
+function toSvg(cx,cy){const svg=$('#scene'),m=svg.getScreenCTM();if(!m) return {x:0,y:0};const pt=svg.createSVGPoint();pt.x=cx;pt.y=cy;const r=pt.matrixTransform(m.inverse());return {x:r.x,y:r.y}}
+function toScreen(x,y){const svg=$('#scene'),m=svg.getScreenCTM();if(!m) return {x:0,y:0};const pt=svg.createSVGPoint();pt.x=x;pt.y=y;const r=pt.matrixTransform(m),b=$('#stage').getBoundingClientRect();return {x:r.x-b.left,y:r.y-b.top}}
+function makeActor(d){
+  const g=document.createElementNS(NS,'g');
+  g.innerHTML=person({...PPL[d.k],x:0,y:0,s:1,...(d.ex||{}),cls:d.cls||'idle',delay:((d.x*13)%40)/10});
+  if(R.t==='noche') g.setAttribute('filter','url(#nf)'); else if(R.t==='tarde') g.setAttribute('filter','url(#tf)');
+  const a={k:d.k,x:d.x,y:d.y,s:d.s||sAt(R.scene,d.y),fixedS:!!d.s,face:d.face||1,ph:0,amp:0,el:g,parts:{}};
+  g.querySelectorAll('[data-p]').forEach(n=>a.parts[n.getAttribute('data-p')]=n);
+  placeActor(a);return a;
+}
+function placeActor(a){a.el.setAttribute('transform',`translate(${a.x.toFixed(1)} ${a.y.toFixed(1)}) scale(${(a.face*a.s).toFixed(3)} ${a.s.toFixed(3)})`)}
+function animBody(a,t){
+  const sw=Math.sin(a.ph)*26*a.amp,P=a.parts;
+  P.lL.setAttribute('transform',`rotate(${sw.toFixed(1)} -7 -60)`);
+  P.lR.setAttribute('transform',`rotate(${(-sw).toFixed(1)} 7 -60)`);
+  P.aL.setAttribute('transform',`rotate(${(-sw*.8).toFixed(1)} -22 -112)`);
+  P.aR.setAttribute('transform',`rotate(${(sw*.8).toFixed(1)} 22 -112)`);
+  const bob=-Math.abs(Math.sin(a.ph))*2.6*a.amp+Math.sin(t*1.9)*.8*(1-a.amp);
+  P.up.setAttribute('transform',`translate(0 ${bob.toFixed(2)})`);
+}
+const visItems=()=>R.items.filter(it=>!it.cond||it.cond());
+const actorOf=k=>R.actors.find(a=>a.k===k);
+function markerPos(it){if(it.who){const a=actorOf(it.who);if(a) return {x:a.x,y:a.y-180*a.s}}return {x:it.x,y:it.y}}
+function approach(it){
+  if(it.ax!=null) return clampB(it.ax,it.ay);
+  if(it.who){const a=actorOf(it.who);if(a){const side=R.rosa&&R.rosa.x<a.x?-1:1;return clampB(a.x+side*44*a.s,a.y+3)}}
+  return clampB(it.x,it.y+40);
+}
+function exitOk(e){const c=R.cfg||{};return (c.allow||[]).includes(e.to)||(c.okExit?!!c.okExit(e):false)}
+function arrowPath(d,x,y){
+  if(d==='l') return `M${x+3} ${y-5} L${x+3} ${y+5} L${x-4} ${y}Z`;
+  if(d==='r') return `M${x-3} ${y-5} L${x-3} ${y+5} L${x+4} ${y}Z`;
+  if(d==='d') return `M${x-5} ${y-3} L${x+5} ${y-3} L${x} ${y+4}Z`;
+  return `M${x-5} ${y+3} L${x+5} ${y+3} L${x} ${y-4}Z`;
+}
+function drawMarkers(){
+  if(!R.active){hs.innerHTML='';return}
+  let s='';const dk=R.def&&R.def.dark;
+  R.exits.forEach(e=>{const ok=exitOk(e),near=R.near&&R.near.exit===e,lw=e.label.length*6.9+32;
+    const x=e.x<70?Math.max(3,e.x-16):e.x>290?Math.min(357-lw,e.x+16-lw):e.x-lw/2;
+    s+=`<g opacity="${ok?1:.5}"><rect x="${x}" y="${e.y-12}" width="${lw}" height="24" rx="12" fill="${near?'#B5462E':'#24212B'}" opacity=".9"/><path d="${arrowPath(e.dir,x+13,e.y)}" fill="#FBF7EE"/><text x="${x+24}" y="${e.y+4}" font-family="Courier Prime, monospace" font-size="12" font-weight="700" fill="#FBF7EE">${e.label}</text></g>`});
+  visItems().forEach(it=>{const m=markerPos(it),done=R.done.has(it.id),near=R.near&&R.near.item===it;
+    if((dk||it.quiet)&&!near) return;
+    if(!done&&!it.quiet){
+      if(it.who||it.talk) s+=`<g class="bob"><circle cx="${m.x}" cy="${m.y}" r="11" fill="#FFF4CF" stroke="#24212B" stroke-width="2"/><text x="${m.x}" y="${m.y+5.5}" text-anchor="middle" font-family="Yeseva One, Georgia, serif" font-size="16" fill="#B5462E">!</text></g>`;
+      else s+=`<circle class="ring" cx="${m.x}" cy="${m.y}" r="9" fill="none" stroke="#FFF4CF" stroke-width="2.5"/><circle cx="${m.x}" cy="${m.y}" r="6" fill="#FFF4CF" stroke="#24212B" stroke-width="2"/>`;
+    }
+    if(near){const lw=it.label.length*6.9+20;s+=`<rect x="${m.x-lw/2}" y="${m.y+15}" width="${lw}" height="22" rx="11" fill="#B5462E"/><text x="${m.x}" y="${m.y+30}" text-anchor="middle" font-family="Courier Prime, monospace" font-size="12" font-weight="700" fill="#FBF7EE">${it.label}</text>`}
+  });
+  if(R.tap) s+=`<circle class="tapfx" cx="${R.tap.x}" cy="${R.tap.y}" r="10" fill="none" stroke="#FFF4CF" stroke-width="2.5"/>`;
+  hs.innerHTML=s;
+}
+function updAct(){
+  const ok=R.active&&!R.busy&&R.near&&D.mode!=='say'&&D.mode!=='choose'&&D.mode!=='ov';
+  if(ok){actBtn.textContent=R.near.exit?'Ir':(R.near.item.act||'Mirar');actBtn.classList.add('show')}else actBtn.classList.remove('show');
+}
+function checkNear(force){
+  const r=R.rosa;let best=null,bd=50;
+  if(r&&!R.busy){
+    R.exits.forEach(e=>{const [x,y]=clampB(e.x,e.y),d=Math.hypot(x-r.x,y-r.y);if(d<bd){bd=d;best={exit:e}}});
+    visItems().forEach(it=>{const [x,y]=approach(it),d=Math.hypot(x-r.x,y-r.y);if(d<bd){bd=d;best={item:it}}});
+  }
+  const key=best?(best.exit?'e'+best.exit.to:'i'+best.item.id):'';
+  if(force||key!==R.nearKey){R.nearKey=key;R.near=best;drawMarkers();updAct()}
+}
+function hitTest(p){
+  for(const it of visItems()){
+    const m=markerPos(it);if(Math.hypot(p.x-m.x,p.y-m.y)<34) return {item:it};
+    if(it.who){const a=actorOf(it.who);if(a&&Math.abs(p.x-a.x)<26*a.s&&p.y<a.y+8&&p.y>a.y-172*a.s) return {item:it}}
+    if(it.box){const [bx,by,bw,bh]=it.box;if(p.x>bx&&p.x<bx+bw&&p.y>by&&p.y<by+bh) return {item:it}}
+  }
+  for(const e of R.exits) if(Math.hypot(p.x-e.x,p.y-e.y)<38) return {exit:e};
+  return null;
+}
+function goTo(h){const [x,y]=h.exit?clampB(h.exit.x,h.exit.y):approach(h.item);R.target={x,y};R.pending=h;R.drag=null}
+function inOb(x,y){let v=9;for(const o of R.ob){const q=((x-o.x)/o.rx)**2+((y-o.y)/o.ry)**2;if(q<v) v=q}return v}
+function blocked(x,y,cx,cy){const n=inOb(x,y);return n<1&&n<inOb(cx,cy)}
+async function fadeOut(){$('#fade').classList.add('on');await sleep(RM?0:280)}
+async function fadeIn(){$('#fade').classList.remove('on');await sleep(RM?0:180)}
+async function enterScene(name,pos,fade){
+  if(fade) await fadeOut();
+  R.scene=name;const mk=R.cfg.scenes&&R.cfg.scenes[name];const def=mk?mk():{t:'dia'};
+  R.def=def;R.t=def.t||'dia';
+  const sc=SCENES[name](R.t,def.opts||{});
+  const svg=$('#scene');svg.innerHTML=`<g>${sc.bg}</g><g id="fpL"></g><g id="dyn"></g>`;
+  $('#stage').classList.toggle('night',R.t==='noche');
+  R.ob=[...(sc.ob||[])];const dyn=$('#dyn');
+  R.props=(sc.props||[]).map(p=>{const g=document.createElementNS(NS,'g');g.innerHTML=p.svg;dyn.appendChild(g);return {y:p.y,el:g}});
+  R.actors=(def.npcs||[]).map(n=>{const a=makeActor(n);dyn.appendChild(a.el);R.ob.push({x:a.x,y:a.y,rx:17*a.s,ry:8*a.s});return a});
+  const [x,y]=clampB(pos[0],pos[1]);
+  R.rosa=makeActor({k:'rosa',x,y,cls:'rosa'});R.rosa.face=pos[2]||1;dyn.appendChild(R.rosa.el);placeActor(R.rosa);animBody(R.rosa,0);
+  R.items=def.items||[];R.exits=EXITS[name]||[];R.target=null;R.pending=null;R.order=null;
+  sortDepth();
+  dark.classList.toggle('on',!!def.dark);if(def.dark) moveCandle();
+  waves(def.waves!=null?def.waves:(OUT[name]?(R.t==='noche'?.3:.38):.07));
+  R.near=null;R.nearKey=null;checkNear(true);
+  if(fade) await fadeIn();
+  const hook=R.cfg.onEnter&&R.cfg.onEnter[name];
+  if(hook){R.cfg.onEnter[name]=null;const wasBusy=R.busy;R.busy=true;updAct();await hook();R.busy=wasBusy;if(D.mode!=='mg') D.mode='roam';dlgHide();checkNear(true)}
+}
+const reloadScene=()=>enterScene(R.scene,[R.rosa.x,R.rosa.y,R.rosa.face],false);
+function sortDepth(){
+  const list=[...R.props,...R.actors,R.rosa].sort((a,b)=>a.y-b.y);
+  const key=list.map(o=>o.y.toFixed(0)).join();
+  const dyn=$('#dyn');if(!dyn) return;
+  let same=dyn.children.length===list.length;if(same) for(let i=0;i<list.length;i++) if(dyn.children[i]!==list[i].el){same=false;break}
+  if(!same) list.forEach(o=>dyn.appendChild(o.el));
+}
+function moveCandle(){const r=R.rosa;if(!r) return;const p=toScreen(r.x+14*r.s*r.face,r.y-110*r.s);dark.style.setProperty('--x',p.x+'px');dark.style.setProperty('--y',p.y+'px')}
+function footstep(a){
+  const w=WALK[R.scene];
+  if(AU.ctx&&AU.noise){if(w.sand) noiseHit(AU.ctx.currentTime,.1,.06,'lowpass',650,AU.sfx);else noiseHit(AU.ctx.currentTime,.05,.05,'bandpass',2300,AU.sfx)}
+  if(w.sand){const fp=$('#fpL');if(!fp) return;a.foot=-(a.foot||1);const e=document.createElementNS(NS,'ellipse');
+    e.setAttribute('cx',(a.x+a.foot*5*a.s).toFixed(1));e.setAttribute('cy',(a.y-1).toFixed(1));e.setAttribute('rx',(3.4*a.s).toFixed(1));e.setAttribute('ry',(1.7*a.s).toFixed(1));
+    e.setAttribute('class','fp');e.setAttribute('fill',R.t==='noche'?'#262439':'#9C7B4E');fp.appendChild(e);setTimeout(()=>e.remove(),6000)}
+}
+function gullCry(){if(!AU.ctx) return;const t=AU.ctx.currentTime;[0,.22].forEach(d=>{const o=AU.ctx.createOscillator(),g=AU.ctx.createGain();o.frequency.setValueAtTime(1900,t+d);o.frequency.exponentialRampToValueAtTime(1150,t+d+.18);g.gain.setValueAtTime(.0001,t+d);g.gain.exponentialRampToValueAtTime(.025,t+d+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d+.2);o.connect(g);g.connect(AU.sfx);o.start(t+d);o.stop(t+d+.25)})}
+function loop(ts){
+  if(!R.active){R.raf=null;return}
+  const dt=Math.min(.05,(ts-(R.last||ts))/1000);R.last=ts;const r=R.rosa,tt=ts/1000;
+  let vx=0,vy=0,moving=false,run=false;
+  if(!R.busy&&r){
+    const K=R.keys,kx=(K.ArrowRight||K.d?1:0)-(K.ArrowLeft||K.a?1:0),ky=(K.ArrowDown||K.s?1:0)-(K.ArrowUp||K.w?1:0);
+    if(kx||ky){const l=Math.hypot(kx,ky);vx=kx/l;vy=ky/l*.8;moving=true;R.target=null;R.pending=null;run=!!K.Shift}
+    else if(R.target){const dx=R.target.x-r.x,dy=R.target.y-r.y,d=Math.hypot(dx,dy);
+      if(d<3){R.target=null;if(R.pending){const h=R.pending;R.pending=null;trigger(h)}}
+      else{vx=dx/d;vy=dy/d;moving=true;run=d>150&&!(R.drag&&R.drag.follow)}}
+  }
+  if(moving){
+    const sp=(run?155:92)*dt*(.55+.45*r.s);let nx=r.x+vx*sp,ny=r.y+vy*sp;[nx,ny]=clampB(nx,ny);
+    if(blocked(nx,ny,r.x,r.y)){if(!blocked(nx,r.y,r.x,r.y)) ny=r.y;else if(!blocked(r.x,ny,r.x,r.y)) nx=r.x;else{nx=r.x;ny=r.y}}
+    if(Math.abs(nx-r.x)+Math.abs(ny-r.y)<.01){R.stuck=(R.stuck||0)+dt;if(R.stuck>.35){R.stuck=0;const h=R.pending;R.target=null;R.pending=null;if(h) trigger(h)}}else R.stuck=0;
+    if(Math.abs(vx)>.2) r.face=vx<0?-1:1;
+    r.x=nx;r.y=ny;r.s=sAt(R.scene,r.y);
+    const prev=Math.sin(r.ph);r.ph+=dt*(run?15:10.5);if(prev*Math.sin(r.ph)<=0) footstep(r);
+    r.amp=Math.min(run?1.3:1,r.amp+dt*6);
+  }else r.amp=Math.max(0,r.amp-dt*6);
+  if(r){animBody(r,tt);placeActor(r);sortDepth();checkNear();if(R.def&&R.def.dark) moveCandle()}
+  if(OUT[R.scene]&&R.t!=='noche'&&Math.random()<dt/16) gullCry();
+  R.raf=requestAnimationFrame(loop);
+}
+async function trigger(h){
+  if(R.busy||!R.active) return;R.busy=true;R.target=null;updAct();
+  if(h.exit) await useExit(h.exit);
+  else{const it=h.item,m=markerPos(it);if(Math.abs(m.x-R.rosa.x)>6){R.rosa.face=m.x<R.rosa.x?-1:1;placeActor(R.rosa)}
+    await it.on();R.done.add(it.id);if(R.active&&R.cfg.after) await R.cfg.after(it.id)}
+  if(!R.active) return;
+  R.busy=false;if(D.mode!=='mg') D.mode='roam';dlgHide();checkNear(true);
+}
+async function useExit(e){
+  if(R.cfg.exitHook&&await R.cfg.exitHook(e)) return;
+  if(!exitOk(e)){await say('think',R.cfg.lockMsg||'Ahora no. Tengo cosas que hacer aquí.');return}
+  await enterScene(e.to,e.entry,true);
+}
+function roam(cfg){
+  return new Promise(async res=>{
+    R.cfg=cfg;R.done=new Set();R.active=true;R.busy=true;R.keys={};R.drag=null;D.mode=D.mode==='mg'?'mg':'roam';dlgHide();
+    R.end=()=>{R.active=false;R.busy=false;R.target=null;actBtn.classList.remove('show');hs.innerHTML='';dark.classList.remove('on');res()};
+    if(cfg.goal) goal(cfg.goal);
+    await enterScene(cfg.start,cfg.pos,cfg.fade===true);
+    if(cfg.onStart) cfg.onStart();
+    R.busy=false;checkNear(true);R.last=0;if(!R.raf) R.raf=requestAnimationFrame(loop);
+  });
+}
+/* entrada */
+$('#stage').addEventListener('pointerdown',e=>{
+  aInit&&AU.ctx&&AU.ctx.state==='suspended'&&AU.ctx.resume();
+  if(!R.active||R.busy) return;if(e.target.closest('#top,#dialog,#sheet,.ov,#act,#nb')) return;
+  if(D.mode==='say'||D.mode==='choose'||D.mode==='ov') return;
+  const p=toSvg(e.clientX,e.clientY),h=hitTest(p);
+  R.tap={x:p.x,y:p.y};clearTimeout(R.tapT);R.tapT=setTimeout(()=>{R.tap=null},500);
+  if(h){goTo(h);drawMarkers();vib(8);return}
+  R.pending=null;const [x,y]=clampB(p.x,p.y);R.target={x,y};
+  R.drag={id:e.pointerId,t0:performance.now(),x:e.clientX,y:e.clientY,follow:false};drawMarkers();
+});
+window.addEventListener('pointermove',e=>{
+  const d=R.drag;if(!d||e.pointerId!==d.id||!R.active||R.busy) return;
+  if(!d.follow&&(Math.hypot(e.clientX-d.x,e.clientY-d.y)>10||performance.now()-d.t0>220)) d.follow=true;
+  if(d.follow){const p=toSvg(e.clientX,e.clientY),[x,y]=clampB(p.x,p.y);R.target={x,y};R.pending=null}
+});
+['pointerup','pointercancel'].forEach(ev=>window.addEventListener(ev,e=>{if(R.drag&&e.pointerId===R.drag.id) R.drag=null}));
+actBtn.addEventListener('click',e=>{e.stopPropagation();if(R.active&&!R.busy&&R.near){goTo(R.near);vib(8)}});
+document.addEventListener('keydown',e=>{
+  if(!R.active) return;const k=e.key.length===1?e.key.toLowerCase():e.key;
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','Shift'].includes(k)){R.keys[k]=true;if(k!=='Shift') e.preventDefault()}
+  else if((k==='e'||k==='Enter')&&!R.busy&&R.near&&D.mode!=='say'&&D.mode!=='choose'){e.preventDefault();goTo(R.near)}
+});
+document.addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;R.keys[k]=false});
+function vib(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
+function goal(t){const g=$('#goal');if(!t){g.hidden=true;return}g.hidden=false;g.innerHTML=`<b>Ahora</b>${t}`}
+let tipShown=false;
+function tip(t){if(tipShown) return;tipShown=true;const tt=$('#toast');tt.innerHTML=`<b>Cómo moverse</b>${t}`;tt.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>tt.classList.remove('show'),7000)}
+function setPor(k,col){const p=$('#por');if(!k){p.hidden=true;dlg.classList.remove('hasp');return}p.hidden=false;dlg.classList.add('hasp');p.style.borderColor=col||'#24212B';p.innerHTML=`<svg viewBox="-25 -176 50 50">${person({...PPL[k],x:0,y:0,s:1,cls:'idle'})}</svg>`}
+
+/* ============ conclusiones y pruebas ============ */
+const CONC={
+  papa_en_7:{t:'Papá estuvo en la siete',d:'Las colillas de Celtas cortos dicen que papá estuvo allí. Al cabo le dijo que solo le dio la llave.',p:[['colillas','mentira']]},
+  no_tren:{t:'No se fue en tren',d:'El tren de las seis no pasó, y se dejó el sombrero y la maleta. No se marchó como dice el cabo.',p:[['averia','sombrero'],['averia','maleta'],['averia','cama']]},
+  plan_martes:{t:'Un plan para el martes',d:'Papá y Tomàs preparaban algo para el martes, y para eso hacía falta un motor nuevo.',p:[['martes','motor'],['martes','evasivo']]},
+  por_mar:{t:'Quería irse por mar',d:'El señor Vidal preguntaba por la marea y por barcas de noche. Y alguien había ensayado con una barca sin luces.',p:[['marea','barca']]},
+  perseguido:{t:'Un hombre perseguido',d:'Vidal era un nombre falso. Alberto Ferrer estuvo en lo de Múnich, y a esos los están deteniendo.',p:[['munich','carnet'],['firma','carnet']]},
+  bajo_suelo:{t:'Hay algo bajo la siete',d:'La baldosa se mueve y debajo se oyen golpes. Bajo la habitación siete hay un hueco.',p:[['baldosa','golpes'],['maletafuera','golpes']]},
+  noche_cobertizo:{t:'La noche del cobertizo',d:'La noche de la fiesta alguien usó la pala del cobertizo. Tierra húmeda y arena de la cala.',p:[['pala','cobertizo']]},
+  manta:{t:'La manta del bulto',d:'El bulto que llevaron a la barca iba envuelto en una de las mantas que faltan en el cobertizo.',p:[['mantas','bulto']]},
+  otro_sombrero:{t:'¿Quién llevaba sombrero?',d:'En la foto de la cala alguien lleva sombrero, pero el del señor Vidal seguía en su cuarto.',p:[['foto','sombrero']]},
+  dinero:{t:'¿Quién pagó el motor?',d:'Papá está lleno de deudas y Tomàs no ahorra. Alguien más ha puesto el dinero del motor.',p:[['deudas','motor']]},
+  el_hombre:{t:'El hombre de la carta',d:'«Un hombre en este hotel sabe quién soy». Papá discutía con él en la terraza. Ese hombre es papá.',p:[['discusion','carta']]},
+  volvio:{t:'Volvió al hotel',d:'Después de la cala, el hombre de gafas volvió al hotel con papá. El señor Vidal no se fue aquella noche.',p:[['foto2','gafas'],['foto2','golpes']]},
+  hermano:{t:'El hermano de Montse',d:'Alberto Ferrer es el hermano de Montse. La carta iba a Perpiñán: quería llegar a Francia.',p:[['montse','carnet']]}
+};
+const evName=id=>CONC[id]?CONC[id].t:CLUES[id][0];
+const evText=id=>CONC[id]?CONC[id].d:CLUES[id][1];
+function canJoin(){return Object.entries(CONC).some(([id,c])=>!st.concl.has(id)&&c.p.some(([a,b])=>st.clues.includes(a)&&st.clues.includes(b)))}
+function updHint(){
+  const can=canJoin();$('#nbBtn').classList.toggle('hint',can);
+  if(can&&!st.joinTip){st.joinTip=true;setTimeout(()=>{const tt=$('#toast');tt.innerHTML='<b>Hay pistas que encajan</b>Abre el cuaderno y une dos pistas para sacar una conclusión.';tt.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>tt.classList.remove('show'),6000)},2800)}
+}
+function tryJoin(a,b){
+  const hit=Object.entries(CONC).find(([id,c])=>c.p.some(([x,y])=>(x===a&&y===b)||(x===b&&y===a)));
+  if(!hit){SFX.page();return {t:'No ves cómo encajan esas dos.'}}
+  const [id,c]=hit;if(st.concl.has(id)) return {t:'Eso ya lo habías deducido.'};
+  st.concl.add(id);SFX.chime();vib(30);updHint();
+  return {ok:true,t:`Nueva conclusión: ${c.t}. ${c.d}`};
+}
+let nbTab='pistas',nbSel=[];
+function nbOpen(){SFX.page();nbSel=[];nbDraw();$('#nb').classList.add('show')}
+function nbDraw(msg){
+  const nb=$('#nb');
+  const tabs=[['pistas',`Pistas (${st.clues.length})`],['concl',`Conclusiones (${st.concl.size})`],['pers','Personas']];
+  let h=`<div class="page" role="dialog" aria-label="Cuaderno de Rosa"><button class="close" id="nbClose">Cerrar</button><h2>Cuaderno de Rosa</h2><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${nbTab===k?'on':''}">${l}</button>`).join('')}</div>`;
+  if(nbTab==='pistas'){
+    h+=`<p class="note">Toca dos pistas que encajen para sacar una conclusión.</p>`;
+    if(msg) h+=`<p class="nbmsg${msg.ok?' ok':''}">${msg.t}</p>`;
+    h+=st.clues.length?st.clues.map(id=>`<button class="clb${nbSel.includes(id)?' sel':''}" data-c="${id}"><b>${CLUES[id][0]}</b><span>${CLUES[id][1]}</span></button>`).join(''):'<p class="empty">Aún no hay nada raro. Aún.</p>';
+  }else if(nbTab==='concl'){
+    h+=st.concl.size?[...st.concl].map(id=>`<div class="cl cc"><b>${CONC[id].t}</b><span>${CONC[id].d}</span></div>`).join(''):'<p class="empty">Une dos pistas en la pestaña de pistas para sacar conclusiones.</p>';
+    h+=`<p class="note" style="margin-top:10px">Las conclusiones se pueden enseñar a la gente para ver cómo reacciona.</p>`;
+  }else{
+    const met=[...st.met];
+    h+=met.length?met.map(k=>`<div class="cl"><b>${PERS[k][0]}</b><span>${PERS[k][1]}</span></div>`).join(''):'<p class="empty">Todavía no ha llegado nadie.</p>';
+  }
+  nb.innerHTML=h+'</div>';
+  const close=()=>nb.classList.remove('show');
+  $('#nbClose').addEventListener('click',ev=>{ev.stopPropagation();close()});
+  nb.onclick=ev=>{if(ev.target===nb) close()};
+  nb.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();nbTab=b.dataset.t;nbSel=[];nbDraw()}));
+  nb.querySelectorAll('.clb').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();const id=b.dataset.c;
+    nbSel=nbSel.includes(id)?nbSel.filter(x=>x!==id):[...nbSel,id];
+    if(nbSel.length===2){const r=tryJoin(nbSel[0],nbSel[1]);nbSel=[];nbDraw(r);nb.querySelector('.page').scrollTop=0}else nbDraw()}));
+}
+$('#nbBtn').addEventListener('click',e=>{e.stopPropagation();nbOpen()});
+
+function pickEvidence(k){
+  return new Promise(res=>{
+    const ov=$('#ov');D.mode='ov';
+    const cs=[...st.concl],cl=[...st.clues];
+    ov.innerHTML=`<div class="page"><h2>¿Qué le enseñas?</h2><p class="note">Elige una prueba para ${N[k][0]}.</p>
+      ${cs.length?`<h3>Conclusiones</h3><div class="opts">${cs.map(id=>`<button data-id="${id}" class="ccb">${CONC[id].t}<small>${CONC[id].d}</small></button>`).join('')}</div>`:''}
+      <h3>Pistas</h3><div class="opts">${cl.map(id=>`<button data-id="${id}">${CLUES[id][0]}<small>${CLUES[id][1]}</small></button>`).join('')}</div>
+      <div class="opts"><button id="pkCancel"><b>No enseñar nada</b></button></div></div>`;
+    ov.classList.remove('clear');ov.classList.add('show');
+    const done=v=>{ov.classList.remove('show');setTimeout(()=>res(v),250)};
+    ov.querySelectorAll('.opts button[data-id]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();SFX.page();done(b.dataset.id)}));
+    $('#pkCancel').addEventListener('click',e=>{e.stopPropagation();done(null)});
+  });
+}
+const DEFL={
+  pilar:['No sé qué quieres que te diga, criatura.','Eso no tiene nada que ver conmigo.','Yo de eso no sé nada. Y mira que sé de todo.'],
+  klaus:['No entiendo, Rosa. ¿Qué tengo que ver yo?','Ach, yo solo hago fotos.','¿Esto es importante? No lo veo.'],
+  tomas:['Rosa, tengo trabajo.','¿Y eso qué tiene que ver conmigo?','No sé de qué me hablas.'],
+  papa:['Rosa, hay doce habitaciones que limpiar.','Eso son cosas tuyas.','No tengo tiempo para juegos.']
+};
+const TIRED={pilar:'Ya está bien, Rosa. Pareces la Guardia Civil.',klaus:'Rosa, por favor. Mi cerveza se calienta.',tomas:'Vete a casa, Rosa. En serio.',papa:'Basta. Vete a ayudar a la cocina.'};
+const REACT={};
+function rx(k,ids,key,fn){REACT[k]=REACT[k]||{};ids.forEach(id=>REACT[k][id]={key,fn})}
+rx('pilar',['carta'],'montse',async()=>{await say('pilar','¿Montse? Déjame ver la letra… Ferrer. Montserrat Ferrer, la de la mercería de Perpiñán. Le compré botones en el cincuenta y ocho.');await say('pilar','Tenía un hermano catedrático en Barcelona. Muy de izquierdas, decían.');await clue('montse')});
+rx('pilar',['noche_cobertizo','pala'],'gafas',async()=>{await say('pilar','¿La pala? Ahora que lo dices… De esa luz del cobertizo salieron dos hombres. Uno era tu padre.');await say('pilar','El otro llevaba gafas. Y no llevaba sombrero, que me llamó la atención.');await clue('gafas')});
+rx('pilar',['munich','perseguido'],'munich',async()=>{await say('pilar','Pobre hombre. Si lo cogen, no lo vuelve a ver nadie.');await say('pilar','Y a quien le haya ayudado, tampoco.')});
+rx('klaus',['otro_sombrero','sombrero'],'foto2',async()=>{await say('klaus','¿Sombrero? Warte… Tengo otra foto, de más tarde. A las tres.');await say('klaus','Un solo hombre vuelve de la cala hacia el hotel. Sin sombrero. Con gafas, creo.');await clue('foto2')});
+rx('klaus',['foto'],'foto',async()=>{await say('klaus','Muy oscura, lo sé. Pero mira la barca: es la del pescador, la de las rayas azules.')});
+rx('klaus',['barca','por_mar'],'barca',async()=>{await say('klaus','Sí, la noche antes de la fiesta. Iba muy despacio, como si midiera la distancia hasta la orilla.')});
+rx('tomas',['foto','otro_sombrero'],'tsomb',async()=>{await say(null,'A Tomàs se le cae la red de las manos.');await say('tomas','…Ese de la izquierda soy yo. Con el sombrero de paja de mi padre.');await say('think','Tomàs no se pone sombrero ni en agosto.');await clue('tomas_sombrero')});
+rx('tomas',['martes','plan_martes','evasivo'],'barca',async()=>{await say('tomas','Pregúntale a tu padre. Yo solo pongo la barca.');await say('tomas','Y cobro. Que nadie hace estas cosas gratis.');await clue('solo_barca')});
+rx('tomas',['dinero','motor'],'pagador',async()=>{await say('tomas','El motor no lo he pagado yo, ¿vale? Ni tu padre, que no tiene un duro.');await say('tomas','Y no me preguntes más.');await clue('pagador')});
+rx('papa',['papa_en_7','colillas'],'p7',async()=>{await say('papa','Le subí tabaco. Un cliente pide tabaco y se le sube. Fin.')});
+rx('papa',['bajo_suelo','golpes','baldosa'],'aviso',async()=>{await say(null,'Papá deja de escribir.');await say('papa','No vuelvas a entrar en la siete, Rosa. No te lo pido: te lo mando.');await clue('aviso')});
+rx('papa',['el_hombre','discusion','mentira'],'hombre',async()=>{await say(null,'Papá tarda en contestar.');await say('papa','Hay cosas que te protegen mejor si no las sabes.')});
+rx('papa',['no_tren','averia'],'tren',async()=>{await say('papa','El cabo dice que se fue en tren. Y el cabo es la autoridad.')});
+async function confront(k){
+  for(;;){
+    const c=await choose(['Enseñarle una pista','Despedirte']);
+    if(c===1) return;
+    const used=st.strikes[k]||0;
+    if(used>=3){await say(k,TIRED[k]);return}
+    const id=await pickEvidence(k);
+    if(!id) continue;
+    const r=(REACT[k]||{})[id];
+    if(r){if(st.reacted.has(k+'|'+r.key)) await say(k,'Ya te lo he dicho, Rosa.');else{st.reacted.add(k+'|'+r.key);await r.fn()}}
+    else{st.strikes[k]=used+1;await say(k,DEFL[k][used%3]);if(st.strikes[k]>=3){await say(k,TIRED[k]);return}}
+  }
+}
+function talkOn(id,k,first,again){return async()=>{if(!R.done.has(id)) await first();else if(again) await say(k,again);await confront(k)}}
+
+/* ============ minijuego: llaves ============ */
+const sheet=$('#sheet');
+const RES=[['Matrimonio Puig',2],['Sr. Durán',4],['Sra. Roig',5],['K. Berger',9],['Familia Soler',11],['A. Vidal',3]];
+function keySheet(name,line,err){
+  return new Promise(res=>{
+    sheet.innerHTML=`<p class="mg-say${err?' err':''}"><b style="color:${N[name][1]}">${N[name][0]}</b><span>${line}</span></p>
+    <div class="mg-row"><div class="res"><h4>Reservas, sábado</h4><ul>${RES.map(r=>`<li><span>${r[0]}</span><span class="dots"></span><b>${r[1]}</b></li>`).join('')}</ul></div>
+    <div class="keys">${Array.from({length:12},(_,i)=>i+1).map(n=>`<button class="key" data-k="${n}" ${st.keys.has(n)?'':'disabled'} aria-label="Llave ${n}">${keyIco}<span>${n}</span></button>`).join('')}</div></div>
+    <p class="hint">Busca su nombre en las reservas y toca su llave.</p>`;
+    sheet.classList.add('show');dlgHide();D.mode='mg';
+    sheet.querySelectorAll('.key').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();res(+b.dataset.k)}));
+  });
+}
+const hideSheet=()=>sheet.classList.remove('show');
+function recep(front,back){S('recepcion','dia',{keys:st.keys,day:16,clock:'5',back:back||[['rosa',112,470,1.08]],front:front||[]})}
+async function keysGame(guests){
+  for(const g of guests){
+    recep(g.front);await sleep(250);
+    let line=g.line,err=false;
+    for(;;){
+      const k=await keySheet(g.who,line,err);
+      if(g.special){if(k===3||k===7){hideSheet();await g.special(k);break}}
+      else if(k===g.room){hideSheet();SFX.bell();st.keys.delete(k);recep(g.front);await say(g.who,g.thanks);if(g.after) await g.after();break}
+      line=g.wrong[(Math.random()*g.wrong.length)|0].replace('{n}',k);err=true;
+    }
+  }
+  hideSheet();
+}
+
+/* ============ minijuego: terraza ============ */
+let tray=[];
+function traySheet(msg){
+  sheet.innerHTML=`<p class="mg-say${msg?' err':''}"><b style="color:#B07A10">${msg?'Vaya':'Servir mesas'}</b><span>${msg||'Mira el bocadillo, carga la bandeja y lleva a Rosa hasta la mesa.'}</span></p>
+  <div class="drinks">${DRINKS.map(d=>`<button class="drink" data-d="${d.id}">${drinkSVG(d.id)}<span>${d.n}</span></button>`).join('')}</div>
+  <div class="tray"><div class="slots" id="slots">${tray.length?tray.map(drinkSVG).join(''):'<span>Bandeja vacía</span>'}</div><button class="sec" id="emptyT">Vaciar</button></div>`;
+  sheet.classList.add('show');dlgHide();D.mode='mg';
+  sheet.querySelectorAll('.drink').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();if(tray.length>=3) return;tray.push(b.dataset.d);SFX.clink();$('#slots').innerHTML=tray.map(drinkSVG).join('')}));
+  $('#emptyT').addEventListener('click',e=>{e.stopPropagation();tray=[];$('#slots').innerHTML='<span>Bandeja vacía</span>'});
+  updAct();
+}
+function sameMulti(a,b){return a.length===b.length&&[...a].sort().join()===[...b].sort().join()}
+function mkTables(occ,active,order,served){const t={};Object.keys(occ).forEach(id=>{t[id]={who:occ[id],bubble:id===active?order:null,served:served[id]}});return t}
+async function serveRoam(rounds){
+  let i=0;const served={};const cur=()=>rounds[Math.min(i,rounds.length-1)];tray=[];
+  await roam({start:'terraza',pos:[56,470],allow:[],lockMsg:'Primero, las mesas. Papá me mataría.',band:{terraza:{y1:592}},goal:'Sirve a cada mesa lo que pide',
+    onStart:()=>traySheet(),
+    scenes:{terraza:()=>{const r=cur();R.serveTable=i<rounds.length?'srv'+i+r.table:null;R.serveOrder=r.order;
+      return {t:'tarde',opts:{tables:mkTables(r.occ,i<rounds.length?r.table:null,i<rounds.length?r.order:null,served)},
+      items:Object.keys(r.occ).map(id=>{const p=TB[id],sm=!!p.small;return {id:'srv'+i+id,quiet:true,x:p.x,y:p.y-(sm?58:76),ax:p.x,ay:p.y+(sm?36:46),label:r.names[id],act:'Servir',box:[p.x-44,p.y-(sm?100:130),88,sm?130:160],
+        on:async()=>{const r=cur();hideSheet();
+          if(id!==r.table){await say('think','Esa mesa no ha pedido nada todavía.');traySheet();return}
+          if(!sameMulti(tray,r.order)){await say(r.who,r.wrong);tray=[];traySheet();return}
+          SFX.clink();vib(15);served[id]=r.order;tray=[];await r.after();i++;
+          if(i>=rounds.length){R.end();return}
+          await reloadScene();traySheet();}}})}}}});
+  hideSheet();R.serveTable=null;
+}
+
+/* ============ deducción ============ */
+async function deduction(){
+  const ov=$('#ov');D.mode='ov';
+  const page=(inner)=>{ov.innerHTML=`<div class="page">${inner}</div>`;ov.classList.remove('clear');ov.classList.add('show');return ov};
+  const pick=(q,opts)=>new Promise(res=>{page(`<h2>¿Qué pasó?</h2><p class="note">${q}</p><div class="opts">${opts.map((o,i)=>`<button data-i="${i}">${o}</button>`).join('')}</div>`);
+    ov.querySelectorAll('.opts button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();SFX.page();res(+b.dataset.i)}))});
+  const evid=(q)=>new Promise(res=>{page(`<h2>La prueba</h2><p class="note">${q}</p><div class="opts">${[...st.concl,...st.clues].map(id=>`<button data-id="${id}"${CONC[id]?' class="ccb"':''}>${evName(id)}<small>${evText(id)}</small></button>`).join('')}</div>`);
+    ov.querySelectorAll('.opts button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();SFX.page();res(b.dataset.id)}))});
+  const note=(t)=>new Promise(res=>{page(`<p class="note">${t}</p><div class="opts"><button id="okN">Seguir escribiendo</button></div>`);$('#okN').addEventListener('click',e=>{e.stopPropagation();res()})});
+  const Q1=['Se marchó en el tren de las seis','Alguien lo mató y se deshizo del cuerpo','Huyó por mar con ayuda de alguien','Sigue escondido en el hotel'];
+  const R1=['Rosa escribe: «Se fue en tren». Luego se queda mirando la frase. Ese día no pasó ningún tren hasta las diez.','Rosa escribe: «Lo mataron». Al lado, con letra muy pequeña, escribe un nombre. Lo tacha. Lo vuelve a escribir.','Rosa escribe: «Se fue en la barca de Tomàs». Pero ¿vivo o envuelto en una manta? Esa parte la deja en blanco.','Rosa escribe: «Sigue aquí». Esa noche no consigue dormir.'];
+  const Q2=['Papá','Tomàs','Klaus','La señora Roig'];
+  const R2=['Debajo escribe: «Papá sabe la verdad». Y lo subraya dos veces.','Debajo escribe: «Tomàs sabe más de lo que dice. Ese motor no salió de ningún ahorro».','Debajo escribe: «Klaus lo fotografía todo. Quizá también lo que no debía».','Debajo escribe: «La señora Roig lo ve todo. ¿Y si también hizo algo?».'];
+  const a=await pick('¿Qué le pasó al señor Vidal?',Q1);
+  const ea=await evid('¿Qué pista lo demuestra mejor?');
+  await note(R1[a]);
+  const b=await pick('¿Quién sabe más de lo que cuenta?',Q2);
+  const eb=await evid('¿Por qué lo crees?');
+  await note(R2[b]);
+  st.theory={ai:a,a:Q1[a],ea:evName(ea),b:Q2[b],eb:evName(eb)};
+}
+async function ending(){
+  const ov=$('#ov'),T=st.theory;
+  ov.innerHTML=`<div class="page"><h2>La teoría de Rosa</h2>
+  <div class="cl"><b>Qué pasó</b><span>${T.a}. Prueba: ${T.ea.toLowerCase()}.</span></div>
+  <div class="cl"><b>Quién sabe más</b><span>${T.b}. Prueba: ${T.eb.toLowerCase()}.</span></div>
+  <p class="note">Rosa guarda el cuaderno en el cajón de recepción, debajo del libro de huéspedes. Reunió ${st.clues.length} de ${TOTAL} pistas y sacó ${st.concl.size} de ${Object.keys(CONC).length} conclusiones. Lo volverá a abrir en agosto de 1967, y quien lo lea después heredará su teoría, acierte o no.</p>
+  ${(st.concl.has('bajo_suelo')&&st.concl.has('volvio')&&st.concl.has('hermano'))?`<p class="note" style="color:#2B6E9E">${T.ai===2?'Rosa todavía no lo sabe, pero ha dado con casi toda la verdad.':'Rosa tiene en el cuaderno todo lo necesario para dar con la verdad. Solo le falta atreverse a creerla.'}</p>`:''}
+  <h3>Continuará en agosto de 1967</h3><p>Fin del prototipo.</p>
+  <div class="opts"><button id="again">Volver a empezar</button></div></div>`;
+  ov.classList.add('show');D.mode='ov';setMode('dia');
+  await new Promise(res=>$('#again').addEventListener('click',e=>{e.stopPropagation();res()}));
+  ov.classList.remove('show');
+}
+
+/* ============ historia ============ */
+async function title(){
+  S('fachada','dia',{});dlgHide();$('#top').classList.remove('show');goal('');
+  const ov=$('#ov');ov.classList.add('clear');
+  ov.innerHTML=`<div class="tcard"><h1 class="tt">Un año, un siglo</h1><p>Costa Brava, junio de 1962. Rosa tiene dieciocho años, el hotel de su padre está a punto de abrir y un huésped está a punto de desaparecer.</p><p style="color:#6c6672;font-size:13px">Prototipo jugable del primer mes. Camina tocando el suelo. Une pistas en el cuaderno para sacar conclusiones y enséñaselas a la gente para que se delate. Mejor con auriculares.</p><button class="big" id="go">Abrir el hotel</button></div>`;
+  ov.classList.add('show');D.mode='ov';
+  await new Promise(res=>$('#go').addEventListener('click',e=>{e.stopPropagation();aInit();res()}));
+  ov.classList.remove('show');await sleep(300);ov.classList.remove('clear');
+}
+const KEYS16=()=>({keys:st.keys,day:16,clock:'5'});
+async function day1(){
+  await card(0,'Mañana');setMode('dia');waves(.35);
+  S('fachada','dia',{people:[['rosa',150,536,.76],['papa',206,532,.78]]});
+  await say(null,'Sant Elm de Mar, en la Costa Brava. Falta un día para que abra el Hotel Miramar.');
+  await say('papa','Mírala, Rosa. Doce habitaciones y todas dan al mar. Tu abuelo echaba las redes justo ahí delante.');
+  await say('rosa','Y tú te has gastado hasta el último duro en ella.');
+  await say('papa','Hasta el último y alguno más. Por eso hoy no puede fallar nada. Llegan los primeros huéspedes y tú estarás en recepción.');
+  await say('rosa','¿Yo sola?');
+  await say('papa','Tienes dieciocho años y la mejor letra de la familia. A cada huésped, su llave. Te espero dentro.');
+  meet('papa');
+  tip('Toca el suelo para que Rosa camine. Si mantienes el dedo, te sigue. Toca a la gente y las cosas para hablar o mirar.');
+  await roam({start:'fachada',pos:[150,536],allow:['recepcion','fachada','cala'],lockMsg:'Ahora no. Papá me espera en recepción.',goal:'Entra en el hotel y ponte detrás del mostrador',
+    scenes:{
+      fachada:()=>({t:'dia',items:[
+        {id:'rotulo',x:180,y:132,ax:180,ay:522,label:'Rótulo',on:async()=>{await say('think','Hotel Miramar. Papá pintó las letras él mismo, subido a una escalera que no me gustaba nada.')}},
+        {id:'mar',x:84,y:600,ax:84,ay:556,label:'El mar',on:async()=>{await say('think','Huele a sal y a pintura fresca. Hoy empieza todo.')}}]}),
+      cala:()=>({t:'dia',items:[{id:'barca',x:196,y:470,ax:150,ay:540,label:'Barca',on:async()=>{await say('think','La barca de Tomàs. Dice que es la más rápida de la costa. Lo dice de todas las suyas.')}}]}),
+      recepcion:()=>({t:'dia',opts:{day:16,clock:'10',back:[['papa',300,470,1.12]]},items:[
+        {id:'papa',talk:true,x:300,y:298,ax:300,ay:514,box:[272,290,56,110],label:'Papá',act:'Hablar',on:async()=>{await say('papa','Detrás del mostrador, Rosa. Ya están llegando.')}},
+        {id:'mostrador',x:150,y:418,ax:150,ay:514,label:'Mostrador',act:'Ponerse',on:async()=>{R.end()}}]})
+    }});
+  goal('Entrega a cada huésped su llave');
+  st.keys=new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
+  const Wr=['Me parece que esa no es la mía, señorita.','¿La {n}? Mire bien el libro.','Esa llave no es, criatura.'];
+  await keysGame([
+    {who:'puig',front:[['sra_puig',150,652,1.3],['puig',240,656,1.36]],line:'Buenos días, señorita. Matrimonio Puig, de Sabadell. Tenemos reserva.',room:2,wrong:Wr,thanks:'Muy amable, señorita.',
+      after:async()=>{await say('sra_puig','Qué maravilla, todo nuevo. Aunque dicen que el dueño se ha endeudado hasta las cejas para levantarlo.');await say('puig','Montserrat, por favor, que la chica es la hija.');await clue('deudas')}},
+    {who:'pilar',front:[['pilar',236,656,1.36]],line:'Pilar Roig, viuda de Roig. Quiero una habitación tranquila, que yo no pego ojo.',room:5,wrong:Wr,thanks:'Gracias, criatura.',
+      after:async()=>{await say('pilar','Y que no me pongan cerca de extranjeros, que hablan a gritos.');meet('pilar')}},
+    {who:'klaus',front:[['klaus',236,656,1.38]],line:'Guten Tag! Klaus Berger, fotógrafo. Tengo reserva, ¿sí?',room:9,wrong:['Nein, nein, esta no es.','¿La {n}? Creo que no, Fräulein.'],thanks:'Danke!',
+      after:async()=>{await say('klaus','¡La luz de esta costa! Mañana lo fotografío todo. El mar, las barcas, el hotel.');meet('klaus')}},
+    {who:'albert',front:[['albert',236,656,1.38]],line:'Buenas tardes. Vidal. Creo que tengo una habitación reservada.',wrong:['Perdone, no creo que sea esa.','¿La {n}? Debe de haber un error.'],
+      special:async k=>{
+        const fr=[['albert',236,656,1.38]],withPapa=[['rosa',112,470,1.08],['papa',300,470,1.12]];
+        if(k===3){
+          await say('albert','Perdone, señorita. ¿No podría ser la siete?');
+          await say('rosa','La siete está libre, pero usted tiene reservada la tres. Es más fresca, da al jardín.');
+          await say('albert','La siete, por favor. Si no es molestia.');
+          recep(fr,withPapa);
+          await say('papa','Dale la siete, Rosa.');
+          await say('rosa','Pero la reserva…');
+          await say('papa','La siete.');
+        }else{
+          await say('albert','La siete… ¿Cómo lo ha sabido?');
+          await say('rosa','No lo sé. Me he equivocado de número, perdone, usted tenía…');
+          recep(fr,withPapa);
+          await say('papa','Está bien así, Rosa. La siete.');
+          await say('think','¿Está bien así? Tenía reservada la tres.');
+        }
+        st.keys.delete(7);SFX.bell();recep(fr,withPapa);await clue('hab7');
+        await say('albert','Gracias. Es usted muy amable.');
+        await say('rosa','Firme aquí, por favor.');
+        recep([],withPapa);meet('albert');
+        await say(null,'El señor Vidal firma deprisa, sin quitarse el sombrero, y sube con su maleta pequeña.');
+      }}
+  ]);
+  const both=()=>R.done.has('libro')&&R.done.has('papa');
+  await roam({start:'recepcion',pos:[150,540],allow:['recepcion','fachada','terraza','patio','cala'],goal:'Mira el libro de huéspedes y habla con papá',
+    okExit:e=>e.to==='hab7'&&both(),
+    exitHook:async e=>{if(e.to!=='hab7') return false;
+      if(both()){await fadeOut();await say(null,'Esa noche, Rosa se duerme pensando en una firma temblorosa.');R.end();await fadeIn();return true}
+      await say('think','Todavía no. Antes quiero mirar el libro y hablar con papá.');return true},
+    after:id=>{if(both()) goal('Puedes pasear. Cuando quieras, sube a dormir por la escalera')},
+    scenes:{
+      recepcion:()=>({t:'dia',opts:{...KEYS16(),back:[['papa',300,470,1.12]]},items:[
+        {id:'libro',x:150,y:378,ax:150,ay:514,label:'Libro',on:async()=>{await say(null,'En el libro de huéspedes, la firma del señor Vidal tiembla como la de un anciano. Y no es un anciano.');await clue('firma')}},
+        {id:'papa',talk:true,x:300,y:298,ax:300,ay:514,box:[272,290,56,110],label:'Papá',act:'Hablar',on:async()=>{await say('rosa','¿Le conoces, papá?');await say('papa','Es un cliente. A los clientes no se les pregunta, se les atiende.');await say('think','Ha contestado demasiado rápido.')}},
+        {id:'llaves',x:94,y:196,ax:94,ay:514,label:'Llaves',on:async()=>{await say(null,'Faltan cuatro llaves en el tablero. El hotel empieza a estar vivo.')}},
+        {id:'ventana',x:282,y:160,ax:262,ay:514,label:'Ventana',on:async()=>{await say('think','El mar está quieto como un plato. Mañana será un gran día.')}}]}),
+      fachada:()=>({t:'tarde',items:[{id:'atardecer',x:84,y:600,ax:84,ay:556,label:'El mar',on:async()=>{await say('think','El sol baja detrás del cabo. Mañana, la fiesta.')}}]}),
+      terraza:()=>({t:'tarde',opts:{tables:{t1:{},t2:{},t3:{},t4:{}}},items:[{id:'sillas',x:180,y:300,ax:180,ay:400,label:'Terraza',on:async()=>{await say('think','Mañana estará llena. Eso espera papá.')}}]}),
+      patio:()=>({t:'tarde',items:[{id:'sabanas',x:90,y:210,ax:90,ay:470,label:'Sábanas',on:async()=>{await say('think','Sábanas nuevas, recién tendidas. Todo huele a estreno.')}}]}),
+      cala:()=>({t:'tarde',items:[]})
+    }});
+}
+
+async function day2(){
+  await card(1,'Tarde');setMode('dia');waves(.4);
+  const occ={t1:[['puig',-17],['sra_puig',17]],t2:[['pilar',0]],t3:[['klaus',0]],t4:[['albert',0]]};
+  const names={t1:'Los Puig',t2:'Sra. Roig',t3:'Klaus',t4:'Sr. Vidal'};
+  const occ2={...occ,t1:[['papa',-17],['tomas',17]]},names2={...names,t1:'Papá y Tomàs'};
+  S('terraza','tarde',{tables:mkTables(occ,null,null,{}),people:[['rosa',56,470,.86]]});
+  await say(null,'Domingo. Faltan unas horas para la fiesta de inauguración y la terraza ya está llena.');
+  await say('think','Papá dice que una buena camarera lo oye todo y no repite nada. Lo primero lo sé hacer.');
+  await serveRoam([
+    {occ,names,table:'t1',order:['gaseosa','vermut'],who:'sra_puig',wrong:'Era una gaseosa y un vermut, bonita.',after:async()=>{
+      await say('sra_puig','Fíjate en el dueño. Lleva toda la tarde cuchicheando con el pescador ese.');
+      await say('puig','Serán cosas de barcas, mujer.')}},
+    {occ,names,table:'t2',order:['vermut'],who:'pilar',wrong:'Un vermut, criatura. Solo un vermut.',after:async()=>{
+      await say('pilar','Gracias. ¿Te has fijado en el señor de la siete? No ha bajado ni a comer.');
+      await say('rosa','Estará cansado del viaje.');
+      await say('pilar','Cansado o escondido. Esta semana han detenido a varios que fueron a ese congreso de Múnich. Profesores, abogados… Y ese tiene cara de profesor.');
+      await clue('munich')}},
+    {occ,names,table:'t3',order:['cerveza'],who:'klaus',wrong:'Nein! Bier, por favor. Cerveza.',after:async()=>{
+      await say('klaus','Danke! Anoche no podía dormir y fotografié la cala. Había una barca sin luces, muy cerca de la orilla. ¿Aquí se pesca así?');
+      await say('rosa','No. Aquí sin luces no pesca nadie.');
+      await clue('barca')}},
+    {occ,names,table:'t4',order:['conac'],who:'albert',wrong:'Coñac, por favor. Solo coñac.',after:async()=>{
+      await say('albert','Señorita, ¿sabe a qué hora sube la marea esta noche? ¿Salen barcas de aquí de noche?');
+      await say('rosa','¿Quiere ir a pescar?');
+      await say('albert','Algo parecido.');
+      await clue('marea');
+      await say('albert','¿Usted cree que uno puede empezar de cero en otro sitio?');
+      const c=await choose(['Claro que sí','Depende de lo que deje atrás']);
+      if(c===0) await say('albert','Ojalá tenga razón. Ojalá.');
+      else await say('albert','Lo que dejo atrás es casi todo. Y aun así.')}},
+    {occ:occ2,names:names2,table:'t1',order:['cafe','cafe'],who:'papa',wrong:'Dos cafés, Rosa. Dos.',after:async()=>{
+      meet('tomas');
+      await say(null,'Al acercarse, Rosa oye el final de una frase.');
+      await say('tomas','…el martes, con el motor nuevo. Ni un día antes.');
+      await say(null,'Los dos se callan en seco al verla.');
+      await say('papa','Gracias, Rosa. Ve a ver si queda hielo.');
+      await clue('martes')}}
+  ]);
+
+  await card(1,'Noche');setMode('fiesta');waves(.25);
+  S('terraza','noche',{fiesta:true,tables:{t2:{who:[['pilar',0]]}},people:[['papa',180,560,.96],['rosa',96,600,1.02]]});
+  await say(null,'A las diez, medio pueblo baila en la terraza del Miramar.');
+  await say('papa','¡Por el Miramar! ¡Que dure cien años!');
+  await say(null,'Todos brindan. Rosa también. Al fondo, junto a la barandilla, dos hombres no brindan.');
+  await roam({start:'terraza',pos:[96,600],allow:[],lockMsg:'No puedo irme en mitad de la fiesta.',goal:'Algo pasa al fondo de la terraza',
+    scenes:{terraza:()=>({t:'noche',opts:{fiesta:true,tables:{t2:{who:[['pilar',0]]}}},
+      npcs:[{k:'papa',x:318,y:302,s:.5},{k:'albert',x:342,y:302,s:.5},{k:'vecino',x:120,y:520,cls:'dance'},{k:'vecina',x:152,y:520,cls:'dance'},{k:'puig',x:206,y:560,cls:'dance'},{k:'sra_puig',x:238,y:560,cls:'dance'},{k:'klaus',x:56,y:420}],
+      items:[
+        {id:'pilar',talk:true,x:282,y:326,ax:282,ay:486,box:[238,320,88,150],label:'Sra. Roig',act:'Hablar',on:talkOn('pilar','pilar',async()=>{await say('pilar','Mira al fondo, criatura. Tu padre y el de la siete. Esos no están hablando del tiempo.')},'Qué noche, ¿eh?')},
+        {id:'klaus',who:'klaus',label:'Klaus',act:'Hablar',on:talkOn('klaus','klaus',async()=>{await say('klaus','¡Esta noche no duermo! Las bombillas sobre el mar, la gente bailando… Es perfecto.')},'¡Rosa! ¿Bailas?')},
+        {id:'baile',who:'vecina',quiet:true,label:'Baile',on:async()=>{await say(null,'Los vecinos bailan un twist con más voluntad que acierto. La orquesta toca más fuerte para disimular.')}},
+        {id:'fondo',x:330,y:236,ax:316,ay:334,label:'Al fondo',on:async()=>{
+          await say(null,'Rosa se acerca despacio, recogiendo copas vacías por el camino.');
+          await say('albert','…si me encuentran aquí, se hunde usted conmigo, Miralles.');
+          await say('papa','Aquí no va a encontrar nadie a nadie. Haga exactamente lo que le he dicho.');
+          await say(null,'Su padre la ve.');
+          await say('papa','Rosa. ¿No hay copas que recoger?');
+          await clue('discusion');R.end()}}]})}});
+
+  await card(1,'Madrugada');setMode('misterio');
+  let light=true;
+  S('fachada','noche',{light7:true,lit:[5,9],people:[['rosa',60,540,.78]]});
+  await say(null,'Pasada la una, la fiesta se acaba. Rosa baja al paseo a tomar el aire.');
+  await roam({start:'fachada',pos:[60,540],allow:[],lockMsg:'Es tarde. Solo he bajado a tomar el aire.',goal:'Pasea un poco antes de dormir',
+    scenes:{fachada:()=>({t:'noche',opts:{light7:light,lit:[5,9]},items:[
+      {id:'siete',x:210,y:290,ax:206,ay:540,label:'La siete',on:async()=>{
+        await say('think','Hay luz en la siete. El señor Vidal tampoco duerme.');
+        await sleep(RM?200:1300);SFX.click();light=false;await reloadScene();
+        await say(null,'A las dos menos cuarto, la luz de la siete se apaga.');
+        await clue('luz');
+        await say(null,'Nadie volvió a ver al señor Vidal.');R.end()}}]})}});
+}
+
+async function day3(){
+  await card(2,'Mañana');setMode('misterio');waves(.08);
+  S('recepcion','dia',{keys:st.keys,day:18,clock:'9',back:[['papa',300,470,1.12]],people:[['rosa',170,580,1.15]]});
+  await say('papa','El de la siete no ha bajado a desayunar. Súbele una bandeja, Rosa. Que no se diga que en el Miramar se pasa hambre.');
+  const need=()=>['cama','maleta','carta'].every(x=>R.done.has(x));
+  const all=['cama','maleta','carta','cenicero','armario','sombrero','baldosa'];
+  await roam({start:'recepcion',pos:[170,580],allow:['hab7','recepcion'],lockMsg:'Primero, el desayuno de la siete.',goal:'Sube el desayuno a la siete por la escalera',
+    onEnter:{hab7:async()=>{goal('Busca alguna explicación en la habitación');await say(null,'Rosa llama tres veces. Nadie contesta. La puerta no tiene el pestillo echado.');await say('think','La habitación está demasiado ordenada.')}},
+    exitHook:async e=>{if(R.scene!=='hab7') return false;if(need()){R.end();return true}await say('think','Todavía no. Aquí hay algo que no cuadra.');return true},
+    after:async()=>{if(all.every(x=>R.done.has(x))){R.end();return}if(need()) goal('Mira lo que quieras y vuelve a la escalera')},
+    scenes:{
+      recepcion:()=>({t:'dia',opts:{keys:st.keys,day:18,clock:'9',back:[['papa',300,470,1.12]]},items:[]}),
+      hab7:()=>({t:'dia',items:[
+        {id:'cama',x:286,y:372,ax:286,ay:434,label:'Cama',on:async()=>{await say('think','La cama está sin deshacer. Aquí no ha dormido nadie.');await clue('cama')}},
+        {id:'maleta',x:104,y:446,ax:104,ay:518,label:'Maleta',on:async()=>{await say(null,'Dentro hay dos camisas, una corbata y unos libros de poesía. Ni cartera ni documentos.');await clue('maleta')}},
+        {id:'carta',x:184,y:326,ax:184,ay:434,label:'Carta',on:async()=>{await letterDoc();await say('think','No está firmada. Y no la llegó a enviar.');await clue('carta')}},
+        {id:'cenicero',x:190,y:236,ax:200,ay:434,label:'Cenicero',on:async()=>{await say(null,'En el cenicero hay dos colillas. Una de Ducados. La otra, de Celtas cortos.');await say('think','Papá fuma Celtas cortos.');await clue('colillas')}},
+        {id:'armario',x:36,y:300,ax:50,ay:434,label:'Armario',on:async()=>{await say(null,'La chaqueta del señor Vidal sigue colgada. En el bolsillo hay un billete de tren de Barcelona a Sant Elm. Solo ida.');await clue('billete')}},
+        {id:'sombrero',x:78,y:112,ax:80,ay:434,label:'Sombrero',on:async()=>{await say('think','Su sombrero. Nadie se marcha sin el sombrero.');await clue('sombrero')}},
+        {id:'baldosa',x:270,y:486,ax:262,ay:520,label:'Suelo',on:async()=>{await say(null,'Una baldosa se mueve un poco al pisarla.');await say('think','Será la obra. Está todo recién puesto.');await clue('baldosa')}}]})
+    }});
+  S('hab7','dia',{people:[['papa',180,660,1.3],['rosa',250,560,1.18]]});
+  await say('papa','Rosa. Sal de aquí y no toques nada.');
+  await say('rosa','No ha dormido aquí, papá. La cama está sin deshacer.');
+  await say('papa','Se habrá ido temprano. Hay gente así.');
+  await say('rosa','¿Sin la maleta? ¿Sin el sombrero?');
+  await say(null,'Su padre tarda un momento en contestar.');
+  await say('papa','Baja. Voy a llamar a la Guardia Civil.');
+
+  S('recepcion','dia',{keys:st.keys,day:18,clock:'11',back:[['rosa',112,470,1.08],['papa',300,470,1.12]],front:[['cabo',230,656,1.4]]});
+  meet('cabo');
+  await say('cabo','Así que se le escapa un huésped el primer día, Miralles. Mal empezamos.');
+  await say('papa','Se habrá ido sin pagar, cabo. Pasa en todas partes.');
+  await say('cabo','¿Habló usted con él?');
+  await say('papa','Lo justo. Le di la llave y las buenas noches.');
+  await say('think','Eso no es verdad. Los vi discutiendo al fondo de la terraza.');
+  const c=await choose(['Contar lo que viste','Callar']);
+  if(c===0){
+    await say('rosa','Papá, anoche hablaste con él en la terraza. Os vi.');
+    await say(null,'Su padre la mira un segundo de más.');
+    await say('papa','Discutíamos el precio, cabo. Quería una rebaja. Los de Barcelona, ya sabe.');
+    await say('cabo','Ja. Siempre igual.');
+  }else await say('think','¿Por qué miente papá?');
+  await clue('mentira');
+  await say('cabo','Vidal, Vidal… A lo mejor ni se llama así. Con lo de Múnich hay mucho rojo escondiéndose. Habrá cogido el tren de las seis a Barcelona.');
+  await say('cabo','Caso cerrado. Y usted, Miralles, la próxima vez cobre por adelantado.');
+
+  await card(2,'Tarde');
+  S('recepcion','dia',{keys:st.keys,day:18,clock:'5',people:[['rosa',180,600,1.18]]});
+  await say(null,'Por la tarde, Rosa decide preguntar por su cuenta.');
+  let n=0;const seen=new Set();const g3=()=>`Pregunta a la señora Roig y a Klaus en la terraza, y a Tomàs en la cala (${n} de 3)`;
+  await roam({start:'recepcion',pos:[180,600],allow:['recepcion','terraza','fachada','cala','patio'],goal:g3(),
+    exitHook:async e=>{if(e.to==='hab7'){await say('think','Papá ha cerrado la siete con llave.');return true}return false},
+    after:async id=>{if(['pilar','klaus','tomas'].includes(id)&&!seen.has(id)){seen.add(id);n=seen.size;goal(g3());if(n>=3){await say('think','Ya está. Esta noche volveré a la siete.');R.end()}}},
+    scenes:{
+      recepcion:()=>({t:'dia',opts:{keys:st.keys,day:18,clock:'5'}}),
+      fachada:()=>({t:'dia'}),patio:()=>({t:'dia'}),
+      terraza:()=>({t:'dia',opts:{tables:{t2:{who:[['pilar',0]]},t3:{who:[['klaus',0]]}}},items:[
+        {id:'pilar',talk:true,x:282,y:326,ax:282,ay:486,box:[238,320,88,150],label:'Sra. Roig',act:'Hablar',on:talkOn('pilar','pilar',async()=>{
+          await say('pilar','¿El tren de las seis? Imposible, criatura. Ayer se averió en Calella y no pasó ninguno hasta las diez. Lo sé por mi sobrino, que es factor en la estación.');
+          await clue('averia');
+          await say('pilar','Y otra cosa. La noche de la fiesta, a las tantas, había luz en el cobertizo del patio. Yo no duermo, ya te lo dije.');
+          await clue('cobertizo')},'¿Qué más quieres saber, criatura?')},
+        {id:'klaus',talk:true,x:180,y:410,ax:180,ay:574,box:[136,404,88,150],label:'Klaus',act:'Hablar',on:talkOn('klaus','klaus',async()=>{
+          await say('klaus','Rosa! Hice muchas fotos la noche de la fiesta. Las revelo esta noche en el baño, que es mi cuarto oscuro. Mañana te las enseño.');
+          await say('rosa','¿Vio usted al señor Vidal esa noche?');
+          await say('klaus','Bebía coñac solo, muy triste. Después ya no lo vi. Yo fotografiaba el mar.')},'¿Sí, Rosa?')}]}),
+      cala:()=>({t:'dia',npcs:[{k:'tomas',x:96,y:572}],items:[
+        {id:'tomas',who:'tomas',label:'Tomàs',act:'Hablar',on:talkOn('tomas','tomas',async()=>{
+          await say('tomas','Hola, Rosa. ¿Te manda tu padre?');
+          await say('rosa','No. ¿Saliste a pescar anoche?');
+          await say('tomas','¿Con la fiesta? ¿Quién iba a pescar?');
+          await say('rosa','El alemán vio una barca sin luces cerca de la orilla.');
+          await say('tomas','Los alemanes ven muchas cosas. Será la cerveza.');
+          const c2=await choose(['Preguntarle por el martes','Despedirte']);
+          if(c2===0){await say('rosa','¿Qué pasa el martes, Tomàs?');await say(null,'Tomàs deja de remendar la red.');await say('tomas','Rosa, hazme caso: no remuevas. Hay cosas que se rompen si se tocan.');await clue('evasivo')}
+          else await say('tomas','Saluda a tu padre de mi parte.')},'¿Otra vez tú, Rosa?')}]})
+    }});
+
+  await card(2,'Noche');setMode('suspense');
+  S('hab7','noche',{maleta:false,blind:true,letter:false,people:[['rosa',180,640,1.26]]});
+  dark.style.setProperty('--x','50%');dark.style.setProperty('--y','60%');dark.classList.add('on');
+  await say(null,'Pasada la medianoche, al cruzar el pasillo, Rosa oye algo en la siete. Papá ha dejado la llave puesta.');
+  await say(null,'Dentro no se ve nada. Rosa enciende una vela.');
+  await roam({start:'hab7',pos:[180,640],allow:[],lockMsg:'No. Quiero saber qué es ese ruido.',goal:'Busca de dónde viene el ruido',
+    after:()=>{if(R.done.has('maleta')&&R.done.has('baldosa')) R.end()},
+    scenes:{hab7:()=>({t:'noche',dark:true,opts:{maleta:false,blind:true,letter:false},items:[
+      {id:'cama',x:286,y:372,ax:286,ay:434,label:'Cama',on:async()=>{await say(null,'La cama sigue intacta.')}},
+      {id:'maleta',x:104,y:466,ax:104,ay:470,label:'Maleta',on:async()=>{await say(null,'La maleta ya no está. Esta mañana estaba aquí.');await clue('maletafuera')}},
+      {id:'ventana',x:162,y:176,ax:162,ay:434,label:'Ventana',on:async()=>{await say('think','La persiana está bajada. Esta mañana estaba subida.')}},
+      {id:'baldosa',x:270,y:486,ax:262,ay:520,label:'Suelo',on:async()=>{SFX.knock();vib(60);await sleep(RM?100:1300);await say(null,'Toc. Toc. Toc.');await say('think','Viene de debajo del suelo.');await clue('golpes')}}]})}});
+  S('hab7','noche',{maleta:false,blind:true,letter:false,lamp:true,people:[['papa',110,660,1.38,{lamp:true}],['rosa',262,530,1.18]]});
+  await say('papa','¿Qué haces aquí a estas horas?');
+  await say('rosa','He oído golpes, papá. Debajo del suelo.');
+  await say(null,'Su padre no contesta enseguida.');
+  await say('papa','Son las tuberías. El edificio es nuevo y se está asentando.');
+  await say('papa','A dormir, Rosa.');
+  await say(null,'No se mueve de la puerta hasta que ella se va.');
+}
+
+async function day4(){
+  await card(3,'Mañana');setMode('dia');
+  const st4=()=>({k:R.done.has('klaus'),p:R.done.has('pala')&&R.done.has('cobertizo'),t:R.done.has('tomas')});
+  const g4=()=>{const s=st4();return !s.k?'Klaus quiere enseñarte algo en la terraza':!s.p?'Busca en el patio, donde la señora Roig vio luz':!s.t?'Ve a ver a Tomàs a la cala':''};
+  await roam({start:'terraza',pos:[56,470],allow:['terraza','recepcion','patio','fachada','cala'],goal:g4(),fade:true,
+    exitHook:async e=>{if(e.to==='hab7'){await say('think','La siete sigue cerrada con llave.');return true}return false},
+    after:async()=>{const s=st4();if(s.k&&s.p&&s.t){R.end();return}goal(g4())},
+    scenes:{
+      terraza:()=>({t:'dia',opts:{tables:{t2:{who:[['pilar',0]]},t3:{who:[['klaus',0]]}}},items:[
+        {id:'pilar',talk:true,x:282,y:326,ax:282,ay:486,box:[238,320,88,150],label:'Sra. Roig',act:'Hablar',on:talkOn('pilar','pilar',async()=>{await say('pilar','¿Otra vez tú, criatura? Siéntate, que me aburro.')},'Dime, dime.')},
+        {id:'klaus',talk:true,x:180,y:410,ax:180,ay:574,box:[136,404,88,150],label:'Klaus',act:'Hablar',on:talkOn('klaus','klaus',async()=>{
+          await say('klaus','Rosa! Las fotos. Casi todas son bombillas y gente bailando. Pero esta…');
+          await photoDoc();
+          await say('klaus','La cala, a la una y cuarenta. Dos hombres junto a una barca. Muy oscura, lo siento.');
+          await say('rosa','Uno lleva sombrero.');
+          await say('think','Pero el sombrero del señor Vidal estaba en su habitación.');
+          await clue('foto');
+          await say('klaus','Te la regalo. Para el hotel.')},'¿Quieres ver más fotos?')}]}),
+      recepcion:()=>({t:'dia',opts:{keys:st.keys,day:19,clock:'10',back:[['papa',300,470,1.12]]},items:[{id:'papa',talk:true,x:300,y:298,ax:300,ay:514,box:[272,290,56,110],label:'Papá',act:'Hablar',on:talkOn('papa','papa',async()=>{await say('papa','Hoy hay mucho trabajo, Rosa. ¿Qué quieres?')},'¿Otra vez?')}]}),
+      fachada:()=>({t:'dia'}),
+      patio:()=>({t:'dia',items:[
+        {id:'pala',x:208,y:322,ax:212,ay:462,label:'Pala',on:async()=>{await say(null,'La pala tiene tierra húmeda pegada. Y arena de playa.');await clue('pala')}},
+        {id:'cobertizo',x:282,y:350,ax:282,ay:462,label:'Cobertizo',on:async()=>{await say(null,'En la estantería faltan dos mantas de las nuevas. Rosa las contó el viernes.');await clue('mantas')}},
+        {id:'bidon',x:93,y:396,ax:93,ay:494,label:'Bidón',on:async()=>{await say(null,'Ceniza fría en el bidón.');await say('think','Aquí se quema lo que sobra de la obra.')}},
+        {id:'camisa',x:234,y:206,ax:234,ay:462,label:'Camisa',on:async()=>{await say(null,'En la manga de la camisa de papá, tendida al sol, hay una mancha oscura.');await say('think','Vino. Será vino. Seguro que es vino.');await clue('mancha')}}]}),
+      cala:()=>({t:'dia',opts:{motor:true},npcs:[{k:'tomas',x:250,y:572}],items:[
+        {id:'tomas',who:'tomas',label:'Tomàs',act:'Hablar',on:talkOn('tomas','tomas',async()=>{
+          await say('rosa','Un motor nuevo.');
+          await say('tomas','De segunda mano.');
+          await say('rosa','Pues parece recién salido de la tienda.');
+          await say('tomas','Tengo mis ahorros.');
+          await say('think','Tomàs no ha ahorrado un duro en su vida.');
+          await clue('motor');
+          await say('tomas','Esta noche no bajes a la playa, Rosa. Va a refrescar.')},'Estoy liado, Rosa.')}]})
+    }});
+
+  await card(3,'Noche');setMode('suspense');waves(.35);
+  S('cala','noche',{motor:true,figures:true});
+  await say(null,'Rosa no baja a la playa. Pero tampoco se acuesta. Mira por la ventana de su cuarto.');
+  const f=document.getElementById('figs');if(f) requestAnimationFrame(()=>{f.style.transform='translateX(90px)'});
+  await say(null,'Dos hombres cruzan la arena. Entre los dos cargan algo largo y pesado, envuelto en una manta.');
+  await say('think','Uno de ellos camina como papá.');
+  await clue('bulto');
+  SFX.motor();vib(120);
+  await say(null,'Un motor arranca. La barca se aleja sin luces hasta que el ruido se pierde en el mar.');
+}
+
+async function day5(){
+  await card(4,'Mañana');setMode('misterio');
+  S('patio','dia',{fire:true,people:[['papa',170,560,1.12],['rosa',270,600,1.14]]});
+  await say(null,'Miércoles. Rosa baja temprano. Su padre está quemando papeles en el bidón. Silba.');
+  await say('papa','Buenos días, Rosa. Papeles viejos de la obra. Facturas, planos… Ya no sirven para nada.');
+  await say(null,'Entra en la cocina y la deja sola junto al fuego.');
+  await roam({start:'patio',pos:[270,600],allow:[],lockMsg:'Antes quiero ver qué está quemando papá.',goal:'Mira qué está quemando papá',
+    scenes:{patio:()=>({t:'dia',opts:{fire:true},items:[{id:'fuego',x:93,y:378,ax:96,ay:494,label:'Fuego',on:async()=>{
+      await say(null,'Rosa mete la mano entre las llamas y saca un cartón medio quemado.');
+      await carnetDoc();
+      await say('rosa','Alberto Ferrer.');
+      await say('think','No se llamaba Vidal. Y papá estaba quemando su carnet.');
+      await clue('carnet');R.end()}}]})}});
+  S('patio','dia',{fire:true,people:[['papa',190,560,1.15],['rosa',110,600,1.16]]});
+  await say('papa','Hoy hace un día precioso para el mar, ¿verdad?');
+  const c=await choose(['¿Dónde está el señor Vidal, papá?','Sí, precioso.']);
+  if(c===0){
+    await say(null,'Su padre se queda mirando el humo.');
+    await say('papa','Hay preguntas, Rosa, que es mejor hacer dentro de muchos años.');
+    await say(null,'Y vuelve a entrar en la cocina.');
+  }else{
+    await say('papa','Precioso. Como el primer día.');
+    await say('think','Papá sonríe. Hacía días que no le veía sonreír.');
+  }
+  dlgHide();goal('');
+  S('fachada','noche',{lit:[5,9,2]});
+  await say(null,'Esa noche, Rosa abre su cuaderno y escribe lo que cree que pasó.');
+  dlgHide();
+  await deduction();
+}
+
+async function main(){
+  for(;;){
+    st.clues=[];st.met=new Set();st.theory=null;st.concl=new Set();st.strikes={};st.reacted=new Set();st.joinTip=false;$('#badge').hidden=true;$('#nbBtn').classList.remove('hint');
+    await title();
+    await day1();await day2();await day3();await day4();await day5();
+    await ending();
+  }
+}
+main();
+</script>
+</body>
+</html>

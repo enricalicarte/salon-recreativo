@@ -202,7 +202,10 @@
     "Misterio",
     "Años 60",
     "Investigación"
-   ]
+   ],
+   "kw": "juego de misterio para adultos",
+   "note": "Prototipo: junio de 1962",
+   "play": "juegos/miramar/index.html"
   },
   {
    "slug": "porrazo-party",
@@ -327,7 +330,9 @@
     "DJ",
     "Música",
     "Para niños"
-   ]
+   ],
+   "kw": "app de DJ online",
+   "play": "juegos/cabina/index.html"
   },
   {
    "slug": "cube-runner",

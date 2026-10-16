@@ -229,7 +229,7 @@ HUBS = [
   desc='Juegos de ritmo y música online gratis: juegos tipo Guitar Hero, de guitarra, un portero al ritmo de la música y más. Para móvil y PC, sin descargas.',
   intro=['Juegos de ritmo musical para jugar en el navegador: pulsa las notas a tiempo en juegos tipo Guitar Hero, toca la guitarra en el año 3000 o para balones al compás de la canción.',
          'Todas las canciones son originales. Se juegan en móvil y ordenador, gratis y sin anuncios.'],
-  pick=lambda g: g['id'] in ('martin', 'supernova', 'cosmicguitar', 'paradon', 'tiradora', 'constructora', 'rutacosmica')),
+  pick=lambda g: g['id'] in ('martin', 'supernova', 'cosmicguitar', 'cabina', 'paradon', 'tiradora', 'constructora', 'rutacosmica')),
  dict(slug='juegos-de-motor', lang='es', title='Juegos de motos, coches y karts online gratis | Salón Recreativo', h1='Juegos de motos, coches y karts',
   desc='Juegos de motor online gratis: motos con trucos y loopings, monster trucks, karts con turbo, coches por la costa y montañas rusas. Para móvil y PC, sin descargas ni anuncios.',
   intro=['Juegos de motor para jugar en el navegador: haz trucos en el aire con una moto de motocross, salta con un monster truck, derrapa con un kart para cargar el turbo o conduce por una carretera de neón.',
