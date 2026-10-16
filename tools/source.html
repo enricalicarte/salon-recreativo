@@ -1693,8 +1693,8 @@ renderMine();
   function hoverVids(root){root.querySelectorAll('.tile').forEach(t=>{const v=t.querySelector('video');if(!v)return;
     t.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!reduce)playVid(v);});t.addEventListener('pointerleave',()=>stopVid(v));});}
   const BIG=new Set(['rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
-  const tile=(g,cls)=>{const c=CATS[g.cat],m=MEDIA.has(g.slug);
-    const media=m?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
+  const tile=(g,cls)=>{const c=CATS[g.cat],m=MEDIA.has(g.slug),big=/big/.test(cls||'');
+    const media=!big?'<img src="icons/games/'+g.slug+'.svg" alt="" loading="lazy" decoding="async">'+(m?'<video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':''):m?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
     const inner=media+(NEW.has(g.id)?'<span class="sp" title="'+T.nw+'" aria-hidden="true">✦</span>':'')+'<span class="tn">'+esc(g.name)+'</span>';
     const a=' class="tile'+(cls?' '+cls:'')+'" style="--c:'+c.c+'" aria-label="'+T.playX+esc(g.name)+'"';
     return g.play?'<button type="button"'+a+' data-g="'+g.id+'">'+inner+'</button>':'<a'+a+' href="'+esc(g.url)+'" target="_blank" rel="noopener">'+inner+'</a>';};
