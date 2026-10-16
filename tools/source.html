@@ -1714,7 +1714,7 @@ renderMine();
     document.querySelectorAll('#mosaic canvas[data-sc]').forEach(paintSc);
     hoverVids($('#mosaic'));
     if(!reduce&&'IntersectionObserver' in window){        // las piezas grandes se mueven solas cuando están a la vista
-      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector('video');if(!v)return;e.intersectionRatio>.6?playVid(v):stopVid(v);}),{threshold:[0,.6]});
+      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector('video');if(!v)return;e.intersectionRatio>.35?playVid(v):stopVid(v);}),{threshold:[0,.35]});
       grid.querySelectorAll('.tile.big').forEach(t=>io.observe(t));
     }
   }

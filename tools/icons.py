@@ -18,10 +18,16 @@ class Icon:
         i = s.gid(); s.defs.append(f'<radialGradient id="{i}" cx="{cx}" cy="{cy}" r="{r}"><stop offset="0" stop-color="{c1}"/><stop offset="1" stop-color="{c2}"/></radialGradient>'); return f'url(#{i})'
     def add(s, x): s.body.append(x); return s
     def svg(s):
-        return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><defs>' + ''.join(s.defs) + '</defs>' + ''.join(s.body) + '</svg>')
+        base = ('<filter id="ds" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#140c33" flood-opacity=".38"/></filter>'
+                '<filter id="bk" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>'
+                '<radialGradient id="vig" cx=".5" cy=".46" r=".75"><stop offset=".62" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#0a0620" stop-opacity=".42"/></radialGradient>'
+                '<linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient>')
+        over = '<rect width="512" height="512" fill="url(#vig)"/><rect width="512" height="512" fill="url(#gl)"/>'
+        return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><defs>' + base + ''.join(s.defs) + '</defs>' + ''.join(s.body) + over + '</svg>')
 
 def st(fill, w=SW, extra=''):
-    return f'fill="{fill}" stroke="{INK}" stroke-width="{w}" stroke-linejoin="round" stroke-linecap="round" {extra}'
+    sh = ' filter="url(#ds)"' if w >= 7 else ''
+    return f'fill="{fill}" stroke="{INK}" stroke-width="{w}" stroke-linejoin="round" stroke-linecap="round"{sh} {extra}'
 
 def bg(I, c1, c2, rays=None, ra=.12):
     I.add(f'<rect width="512" height="512" fill="{I.rg(c1, c2, .5, .42, .75)}"/>')
@@ -31,6 +37,9 @@ def bg(I, c1, c2, rays=None, ra=.12):
             a0 = k * math.pi / 8; a1 = a0 + math.pi / 16
             p += f'M256 230L{256+700*math.cos(a0):.0f} {230+700*math.sin(a0):.0f}L{256+700*math.cos(a1):.0f} {230+700*math.sin(a1):.0f}Z'
         I.add(f'<path d="{p}" fill="{rays}" opacity="{ra}"/>')
+    import random; rnd = random.Random(len(c1) * 31 + ord(c1[1]))
+    for _ in range(6):
+        I.add(f'<circle cx="{rnd.uniform(0,512):.0f}" cy="{rnd.uniform(0,512):.0f}" r="{rnd.uniform(18,46):.0f}" fill="#fff" opacity="{rnd.uniform(.08,.18):.2f}" filter="url(#bk)"/>')
 
 def sparkle(I, x, y, r, c='#fff', o=1):
     I.add(f'<path d="M{x} {y-r}Q{x+r*.18} {y-r*.18} {x+r} {y}Q{x+r*.18} {y+r*.18} {x} {y+r}Q{x-r*.18} {y+r*.18} {x-r} {y}Q{x-r*.18} {y-r*.18} {x} {y-r}Z" fill="{c}" opacity="{o}"/>')
@@ -64,6 +73,29 @@ def planet(I, x, y, r, c1, c2, ring=None):
     I.add(f'<circle cx="{x}" cy="{y}" r="{r}" {st(I.rg(c1, c2, .35, .3, .9))}/>')
     if ring: I.add(f'<ellipse cx="{x}" cy="{y}" rx="{r*1.7}" ry="{r*.45}" fill="none" stroke="{ring}" stroke-width="{max(6,r*.18):.0f}" transform="rotate(-18 {x} {y})" opacity=".95"/>')
     shine(I, x - r * .35, y - r * .4, r * .32, r * .18, -30, .5)
+
+def eyes(I, x, y, s=1, d=24, look=0):
+    for k in (-1, 1):
+        I.add(f'<ellipse cx="{x+k*d*s}" cy="{y}" rx="{11*s}" ry="{14*s}" fill="#fff" stroke="{INK}" stroke-width="{4*s}"/><circle cx="{x+k*d*s+look*4*s}" cy="{y+2*s}" r="{6.5*s}" fill="{INK}"/><circle cx="{x+k*d*s+look*4*s+2.5*s}" cy="{y-1*s}" r="{2.4*s}" fill="#fff"/>')
+
+def smile(I, x, y, s=1, open_=False):
+    if open_: I.add(f'<path d="M{x-16*s} {y} Q{x} {y+26*s} {x+16*s} {y}Z" fill="#7a1530" stroke="{INK}" stroke-width="{4*s}" stroke-linejoin="round"/><path d="M{x-8*s} {y+11*s} Q{x} {y+18*s} {x+8*s} {y+11*s}" fill="#ff7a9a"/>')
+    else: I.add(f'<path d="M{x-14*s} {y} Q{x} {y+14*s} {x+14*s} {y}" fill="none" stroke="{INK}" stroke-width="{5*s}" stroke-linecap="round"/>')
+
+def blush(I, x, y, s=1, d=36):
+    for k in (-1, 1): I.add(f'<ellipse cx="{x+k*d*s}" cy="{y}" rx="{10*s}" ry="{6*s}" fill="#ff6b8a" opacity=".45"/>')
+
+def cat(I, x, y, s=1, c='#ffb23e'):
+    # mascota de CatQuiz: gato que se asoma
+    I.add(f'<g transform="translate({x} {y}) scale({s})">'
+          f'<path d="M-62 -20 L-58 -92 L-12 -58Z M62 -20 L58 -92 L12 -58Z" {st(c, 8)}/><path d="M-52 -40 L-50 -76 L-26 -58Z M52 -40 L50 -76 L26 -58Z" fill="#ff9ab8"/>'
+          f'<ellipse cx="0" cy="0" rx="78" ry="64" {st(I.rg("#ffe2b0", c, .4, .3, .9))}/>'
+          f'<path d="M-30 -60 q8 14 0 26 M0 -64 q8 14 0 26 M30 -60 q8 14 0 26" stroke="#d9781a" stroke-width="7" fill="none" stroke-linecap="round"/></g>')
+    eyes(I, x, y - 2 * s, s * .95, 26)
+    I.add(f'<path d="M{x-7*s} {y+20*s} L{x+7*s} {y+20*s} L{x} {y+28*s}Z" fill="#ff6b8a" stroke="{INK}" stroke-width="{3*s}" stroke-linejoin="round"/>')
+    I.add(f'<path d="M{x} {y+28*s} q-10 10 -20 2 M{x} {y+28*s} q10 10 20 2" stroke="{INK}" stroke-width="{4*s}" fill="none" stroke-linecap="round"/>')
+    I.add(f'<path d="M{x-40*s} {y+18*s} H{x-80*s} M{x-40*s} {y+28*s} L{x-78*s} {y+36*s} M{x+40*s} {y+18*s} H{x+80*s} M{x+40*s} {y+28*s} L{x+78*s} {y+36*s}" stroke="{INK}" stroke-width="{3*s}" stroke-linecap="round"/>')
+    blush(I, x, y + 18 * s, s, 44)
 
 def stars_bg(I, n=22, seed=3, c='#fff'):
     import random; rnd = random.Random(seed)
@@ -635,6 +667,157 @@ def _(I):
         tile(I, 36 + i * 112, 190, 104, ch, '#fff' if ch != '?' else '#b98cff', INK if ch != '?' else '#fff', 68, 18)
     I.add(f'<g transform="translate(390 400) rotate(-30)"><rect x="-90" y="-22" width="160" height="44" rx="8" {st("#ffd23f", 7)}/><path d="M70 -22 L110 0 L70 22Z" {st("#ffc4a0", 7)}/><rect x="-110" y="-22" width="30" height="44" rx="8" {st("#ff7ab0", 7)}/></g>')
     sparkle(I, 90, 100, 18)
+
+# ===================== v2: personajes y escenas más ilustrativas =====================
+@icon('aura-battle')
+def _(I):
+    bg(I, '#ffd23f', '#ff4fa3', '#ffffff', .22)
+    for r, o, c in ((205, .3, '#b98cff'), (165, .45, '#ff7ad9'), (128, .55, '#fff3a0')): I.add(f'<ellipse cx="256" cy="300" rx="{r}" ry="{r*1.05:.0f}" fill="{c}" opacity="{o}"/>')
+    for a in range(0, 360, 30):
+        x = 256 + 175 * math.cos(math.radians(a)); y = 300 + 185 * math.sin(math.radians(a))
+        I.add(f'<path d="M{x:.0f} {y:.0f} q8 -30 0 -60 q-8 30 0 60Z" fill="#b98cff" opacity=".7" transform="rotate({a+90} {x:.0f} {y:.0f})"/>')
+    I.add(f'<path d="M190 200 L120 120" stroke="{INK}" stroke-width="30" stroke-linecap="round"/><path d="M190 200 L120 120" stroke="#6ad0ff" stroke-width="18" stroke-linecap="round"/>'
+          f'<path d="M322 230 L400 260" stroke="{INK}" stroke-width="30" stroke-linecap="round"/><path d="M322 230 L400 260" stroke="#6ad0ff" stroke-width="18" stroke-linecap="round"/>'
+          f'<circle cx="115" cy="114" r="20" {st("#fff", 7)}/><circle cx="404" cy="262" r="20" {st("#fff", 7)}/>'
+          f'<path d="M220 410 L200 470 H245 L250 420Z M292 410 L312 470 H267 L262 420Z" {st("#2b2440", 7)}/>'
+          f'<path d="M256 150 C330 150 345 230 340 320 C336 400 300 430 256 430 C212 430 176 400 172 320 C167 230 182 150 256 150Z" {st(I.lg("#7ae0ff", "#3a7aff"))}/>'
+          f'<path d="M190 330 Q256 360 322 330 L330 380 Q256 410 182 380Z" fill="#ffd23f" stroke="{INK}" stroke-width="6"/>'
+          f'<path d="M200 170 Q256 120 312 170 Q300 140 256 132 Q212 140 200 170Z" {st("#ff4fa3", 7)}/>')
+    eyes(I, 256, 235, 1.1, 30, 1); smile(I, 256, 280, 1.2, True); blush(I, 256, 270, 1, 52)
+    shine(I, 215, 200, 16, 34, -20, .45)
+    for x, y, r in ((90, 90, 22), (430, 110, 20), (430, 400, 18), (80, 400, 16)): sparkle(I, x, y, r)
+
+@icon('tiro-limpio')
+def _(I):
+    bg(I, '#ffb38a', '#ff6a5a', '#fff3c4', .2)
+    I.add(f'<circle cx="390" cy="150" r="70" fill="#fff3c4" opacity=".9"/>')
+    for x, h, c in ((-10, 230, '#a05a8a'), (90, 300, '#c06a8a'), (200, 190, '#a05a8a'), (300, 260, '#c06a8a'), (410, 220, '#a05a8a')):
+        I.add(f'<rect x="{x}" y="{512-h}" width="104" height="{h}" fill="{c}"/>' + ''.join(f'<rect x="{x+16+(i%3)*28}" y="{530-h+(i//3)*36}" width="16" height="20" fill="#ffd36b" opacity=".75"/>' for i in range(min(9, h // 36 * 3))))
+    I.add(f'<rect x="-10" y="400" width="532" height="130" fill="#5a3a6a"/><rect x="-10" y="392" width="532" height="18" fill="#7a5a8a"/>')
+    I.add(f'<path d="M140 360 L440 300" stroke="{INK}" stroke-width="30" stroke-linecap="round" filter="url(#ds)"/><path d="M140 360 L440 300" stroke="#4a4f6a" stroke-width="16" stroke-linecap="round"/>'
+          f'<rect x="250" y="300" width="110" height="34" rx="14" {st("#2b2440", 7)} transform="rotate(-11 305 317)"/><circle cx="356" cy="302" r="18" fill="#9cf2ff" stroke="{INK}" stroke-width="6"/><circle cx="352" cy="298" r="5" fill="#fff"/>'
+          f'<path d="M60 410 C60 330 120 300 180 310 L250 330 L240 380 L150 410Z" {st(I.lg("#3fbf8a", "#1f7a5a"))}/>')
+    I.add(f'<circle cx="215" cy="300" r="56" {st(I.rg("#ffe0c2", "#f2b48a", .4, .35, .9))}/>'
+          f'<path d="M160 296 C160 240 270 230 272 290 Z" {st("#ff3b5a", 7)}/><circle cx="270" cy="270" r="10" fill="#fff" stroke="{INK}" stroke-width="4"/>')
+    I.add(f'<ellipse cx="236" cy="312" rx="9" ry="12" fill="{INK}"/><path d="M200 300 q-10 -6 -20 0" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M220 334 q10 6 20 -2" stroke="{INK}" stroke-width="5" fill="none" stroke-linecap="round"/>')
+    sparkle(I, 450, 290, 26); sparkle(I, 90, 100, 16)
+
+@icon('anguera-superstars')
+def _(I):
+    bg(I, '#2bd46a', '#0d6b33', '#ffffff', .14)
+    I.add(f'<path d="M-10 380 H522" stroke="#fff" stroke-width="8" opacity=".55"/><circle cx="256" cy="380" r="120" fill="none" stroke="#fff" stroke-width="8" opacity=".55"/>')
+    I.add(f'<path d="M230 330 L180 420 L140 410" fill="none" stroke="{INK}" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><path d="M230 330 L180 420 L140 410" fill="none" stroke="#f2b48a" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<path d="M270 330 L330 380 L380 360" fill="none" stroke="{INK}" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/><path d="M270 330 L330 380 L380 360" fill="none" stroke="#f2b48a" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<path d="M118 398 L150 396 L152 426 L112 428Z M372 346 L404 342 L410 372 L374 376Z" {st("#ff5a3c", 7)}/>'
+          f'<rect x="210" y="300" width="84" height="50" rx="14" {st("#1d3a8a", 7)}/>'
+          f'<path d="M206 214 L150 270 L170 290 L216 250Z M300 214 L360 180 L372 204 L306 250Z" {st("#ffd23f", 7)}/>'
+          f'<path d="M206 200 L300 200 L310 310 L196 310Z" {st(I.lg("#ffd23f", "#ff9a1f"))}/><text x="253" y="285" text-anchor="middle" font-size="54" {FONT} fill="{INK}">7</text>')
+    I.add(f'<circle cx="253" cy="152" r="54" {st(I.rg("#ffe0c2", "#f2b48a", .4, .35, .9))}/><path d="M200 146 C196 96 310 96 306 146 C290 120 220 120 200 146Z" {st("#5a3a1f", 7)}/>')
+    eyes(I, 253, 156, .8, 22, 1); smile(I, 256, 180, .9, True)
+    I.add(f'<circle cx="420" cy="320" r="44" {st("#fff")}/><path d="M420 296 L444 313 L435 341 L405 341 L396 313Z" fill="{INK}"/>')
+    for i in range(3): I.add(f'<path d="M{440+i*10} {250+i*20} l26 -14" stroke="#fff" stroke-width="8" stroke-linecap="round"/>')
+    sparkle(I, 80, 90, 18); sparkle(I, 440, 120, 14)
+
+@icon('martin-leyenda-del-rock')
+def _(I):
+    bg(I, '#ff5a3c', '#5a0f2a', '#ffd23f', .16)
+    for x, c in ((110, '#ffd23f'), (256, '#ffffff'), (402, '#38e5ff')): I.add(f'<path d="M{x} -20 L{x-80} 520 H{x+80}Z" fill="{c}" opacity=".12"/>')
+    I.add(f'<path d="M150 512 C150 400 190 360 256 360 C322 360 362 400 362 512Z" {st(I.lg("#2b2440", "#120a24"))}/>'
+          f'<path d="M226 362 L256 420 L286 362" fill="none" stroke="#ff4fa3" stroke-width="10"/>')
+    I.add(f'<circle cx="256" cy="250" r="92" {st(I.rg("#ffe0c2", "#e8a37a", .4, .35, .9))}/>'
+          f'<path d="M168 230 C160 140 352 140 344 230 C330 190 300 176 256 178 C212 176 182 190 168 230Z" {st("#e8e8f0", 7)}/>'
+          f'<path d="M180 270 C190 380 322 380 332 270 C310 300 280 296 256 296 C232 296 202 300 180 270Z" {st("#f4f4fa", 7)}/>'
+          f'<path d="M226 300 Q256 286 286 300" stroke="{INK}" stroke-width="7" fill="none" stroke-linecap="round"/>')
+    I.add(f'<path d="M188 232 H324 L318 262 Q300 276 276 262 L268 244 H244 L236 262 Q212 276 194 262Z" fill="#141018" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/><path d="M200 240 L222 240" stroke="#fff" stroke-width="5" opacity=".6"/>')
+    I.add(f'<path d="M252 324 Q256 352 260 324" fill="#7a1530" stroke="{INK}" stroke-width="4"/>')
+    I.add('<g transform="translate(400 440) rotate(25) scale(.85)">'
+          f'<rect x="-11" y="-230" width="22" height="170" rx="5" {st("#6b3d1f", 7)}/><path d="M-22 -258 H22 L18 -228 H-18Z" {st("#2b2440", 7)}/>'
+          f'<path d="M0 -70 C45 -86 80 -52 60 -18 C92 8 80 76 26 84 C10 108 -10 108 -26 84 C-80 76 -92 8 -60 -18 C-80 -52 -45 -86 0 -70Z" {st(I.lg("#ffd23f", "#ff8a1f"))}/>'
+          f'<circle cx="0" cy="0" r="16" fill="#2b1a0f"/></g>')
+    I.add(f'<path d="{star5(90, 110, 40)}" {st("#ffd23f", 7)}/>'); note(I, 430, 130, .8, '#fff')
+
+@icon('catquiz-l-intrus')
+def _(I):
+    cq_bg(I, '#b98cff', '#5a3ad6')
+    for (x, y) in ((140, 150), (372, 150), (140, 360)):
+        I.add(f'<path d="M{x} {y-60} C{x+90} {y-90} {x+100} {y+40} {x+40} {y+76} C{x+20} {y+86} {x-20} {y+86} {x-40} {y+76} C{x-100} {y+40} {x-90} {y-90} {x} {y-60}Z" {st(I.rg("#ff8a8a", "#d42a3a", .35, .3, .9))}/>'
+              f'<path d="M{x} {y-60} Q{x+6} {y-90} {x+24} {y-100}" stroke="#7a4a2a" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M{x+10} {y-82} Q{x+50} {y-110} {x+60} {y-80} Q{x+30} {y-70} {x+10} {y-82}Z" {st("#5ac65a", 6)}/>')
+        shine(I, x - 30, y - 20, 14, 26, -10, .45)
+    I.add(f'<g transform="rotate(10 372 362)"><path d="M290 362 C320 320 410 320 440 362 C410 404 320 404 290 362Z" {st(I.lg("#7ae0ff", "#2a8fd6"))}/><path d="M432 362 L476 330 L470 362 L476 394Z" {st("#2a8fd6", 7)}/><circle cx="320" cy="354" r="9" fill="{INK}"/></g>')
+    I.add(f'<circle cx="440" cy="270" r="30" {st("#ffd23f", 7)}/><text x="440" y="284" text-anchor="middle" font-size="40" {FONT} fill="{INK}">!</text>')
+
+@icon('relax-constelaciones')
+def _(I):
+    I.add(f'<rect width="512" height="512" fill="{I.lg("#020411", "#1a2b5a")}"/>'); stars_bg(I, 60, 71)
+    I.add(f'<circle cx="420" cy="90" r="40" fill="#fff6d0"/><circle cx="440" cy="78" r="36" fill="#0a1230"/>')
+    pts = [(80, 120), (170, 90), (240, 150), (320, 110), (400, 190), (350, 280), (250, 260), (150, 240)]
+    I.add('<path d="M' + ' L'.join(f'{x} {y}' for x, y in pts) + f' L240 150" fill="none" stroke="#bfd6ff" stroke-width="5" opacity=".85"/>')
+    for x, y in pts: I.add(f'<circle cx="{x}" cy="{y}" r="18" fill="#bfd6ff" opacity=".25"/>'); sparkle(I, x, y, 16)
+    I.add(f'<path d="M-10 420 Q200 340 522 400 V522 H-10Z" fill="#14234a"/>')
+    I.add(f'<path d="M300 410 L280 470 M300 410 L320 470 M300 410 L300 470" stroke="{INK}" stroke-width="8" stroke-linecap="round"/>'
+          f'<rect x="230" y="350" width="150" height="40" rx="14" {st(I.lg("#ffd23f", "#ff9a1f"))} transform="rotate(-30 300 370)"/><rect x="350" y="300" width="30" height="54" rx="8" {st("#ff4fa3", 7)} transform="rotate(-30 365 327)"/>')
+
+@icon('relax-jardin-zen')
+def _(I):
+    I.add(f'<rect width="512" height="512" fill="{I.lg("#f4e8cc", "#d5bf92")}"/>')
+    for k in range(-6, 14): I.add(f'<path d="M-10 {k*44} C150 {k*44-30} 360 {k*44+30} 522 {k*44}" fill="none" stroke="#c4a873" stroke-width="5"/>')
+    for (x, y, r) in ((190, 300, 70), (380, 400, 50)):
+        for rr in (r + 26, r + 50, r + 74): I.add(f'<ellipse cx="{x}" cy="{y}" rx="{rr}" ry="{rr*.7:.0f}" fill="none" stroke="#c4a873" stroke-width="5"/>')
+        I.add(f'<ellipse cx="{x}" cy="{y}" rx="{r}" ry="{r*.75:.0f}" {st(I.lg("#a8a8b8", "#5a5a6a"))}/>'); shine(I, x - r * .3, y - r * .3, r * .3, r * .15, -20, .5)
+    I.add(f'<path d="M522 40 C420 60 360 120 300 110 M420 70 C400 120 380 150 340 170" fill="none" stroke="{INK}" stroke-width="16" stroke-linecap="round"/><path d="M522 40 C420 60 360 120 300 110 M420 70 C400 120 380 150 340 170" fill="none" stroke="#6b3d1f" stroke-width="8" stroke-linecap="round"/>')
+    for (x, y) in ((300, 110), (340, 170), (380, 92), (450, 60), (410, 130), (360, 130)):
+        I.add(''.join(f'<circle cx="{x+12*math.cos(a):.0f}" cy="{y+12*math.sin(a):.0f}" r="11" fill="#ffc4d8" stroke="{INK}" stroke-width="3"/>' for a in [k * 1.257 for k in range(5)]) + f'<circle cx="{x}" cy="{y}" r="6" fill="#ff7aa8"/>')
+    for x, y in ((150, 160), (250, 200), (110, 230)): I.add(f'<ellipse cx="{x}" cy="{y}" rx="8" ry="5" fill="#ffc4d8" transform="rotate(30 {x} {y})"/>')
+
+@icon('kings-league-mini-game')
+def _(I):
+    bg(I, '#2c2a5a', '#0c0b24', '#ffd23f', .16)
+    for x in (60, 452): I.add(f'<path d="M{x} 0 L{x-60} 300 H{x+60}Z" fill="#fff" opacity=".1"/><circle cx="{x}" cy="20" r="26" fill="#fff6c2"/>')
+    ground(I, 410, '#2fbf5c', '#16803a')
+    I.add(f'<circle cx="256" cy="330" r="110" {st("#fff")}/>')
+    for a in range(5):
+        cx = 256 + 72 * math.cos(math.radians(a * 72 - 90)); cy = 330 + 72 * math.sin(math.radians(a * 72 - 90))
+        I.add(f'<circle cx="{cx:.0f}" cy="{cy:.0f}" r="20" fill="{INK}" opacity=".85"/>')
+    I.add(f'<path d="M256 300 L284 320 L274 352 L238 352 L228 320Z" fill="{INK}"/>')
+    shine(I, 215, 280, 26, 14, -30, .7)
+    I.add(f'<g transform="rotate(-8 256 210)"><path d="M166 230 L180 130 L222 178 L256 104 L290 178 L332 130 L346 230Z" {st(I.lg("#ffe680", "#ffb11f"))}/>'
+          f'<rect x="160" y="222" width="192" height="34" rx="10" {st("#ffb11f")}/></g>')
+    for x, c in ((200, '#38e5ff'), (256, '#ff4fa3'), (312, '#38e5ff')): I.add(f'<circle cx="{x}" cy="{236 - (x-256)*.14:.0f}" r="10" fill="{c}" stroke="{INK}" stroke-width="4"/>')
+    sparkle(I, 90, 160, 18, '#ffd23f'); sparkle(I, 430, 170, 16, '#ffd23f')
+
+@icon('olimpiadas-de-la-granja')
+def _(I):
+    bg(I, '#7fd6ff', '#3a9fe0', '#ffffff', .2)
+    ground(I, 380, '#7ed957', '#3b9a2c')
+    I.add(f'<path d="M-10 430 C150 400 360 400 522 430" stroke="#fff" stroke-width="8" fill="none" opacity=".7"/><path d="M-10 470 C150 440 360 440 522 470" stroke="#fff" stroke-width="8" fill="none" opacity=".7"/>')
+    # podio
+    for x, h, n, c in ((110, 70, 2, '#d9dcef'), (256, 110, 1, '#ffd23f'), (402, 50, 3, '#ff9a5a')):
+        I.add(f'<rect x="{x-70}" y="{470-h}" width="140" height="{h+60}" rx="8" {st(c)}/><text x="{x}" y="{470-h+48}" text-anchor="middle" font-size="40" {FONT} fill="{INK}">{n}</text>')
+    # cerdito campeón
+    I.add(f'<ellipse cx="256" cy="250" rx="96" ry="84" {st(I.rg("#ffd0dc", "#ff8fb0", .4, .35, .8))}/>'
+          f'<path d="M180 190 L172 140 L218 172Z M332 190 L340 140 L294 172Z" {st("#ff8fb0", 8)}/>'
+          f'<ellipse cx="256" cy="272" rx="38" ry="28" {st("#ff9fbd", 7)}/><ellipse cx="243" cy="272" rx="7" ry="10" fill="{INK}"/><ellipse cx="269" cy="272" rx="7" ry="10" fill="{INK}"/>')
+    eyes(I, 256, 222, .9, 34); blush(I, 256, 262, 1, 62)
+    I.add(f'<path d="M226 320 L256 352 L286 320" fill="none" stroke="#ff4fa3" stroke-width="14" stroke-linejoin="round"/><circle cx="256" cy="362" r="26" {st(I.lg("#ffe680", "#ffb11f"), 7)}/><path d="{star5(256, 364, 14)}" fill="#fff6c2"/>')
+    I.add(f'<path d="M150 200 L110 150" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M150 200 L110 150" stroke="#ffb3c8" stroke-width="12" stroke-linecap="round"/><path d="M362 200 L402 150" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M362 200 L402 150" stroke="#ffb3c8" stroke-width="12" stroke-linecap="round"/>')
+    for x, y, c in ((90, 90, '#ff4fa3'), (420, 80, '#ffd23f'), (380, 130, '#38e5ff'), (140, 120, '#7af0b0')): I.add(f'<rect x="{x}" y="{y}" width="18" height="10" fill="{c}" transform="rotate(30 {x} {y})"/>')
+
+@icon('cube-runner')
+def _(I):
+    bg(I, '#9a6bff', '#3a1a9a', '#ff9ad5', .15)
+    I.add(f'<path d="M256 170 L-80 522 H592Z" fill="{I.lg("#7af0b0", "#2bb36a")}"/><path d="M256 170 L110 522 M256 170 L402 522" stroke="#ff4fa3" stroke-width="10"/>'
+          + ''.join(f'<line x1="-10" y1="{y}" x2="522" y2="{y}" stroke="#fff" stroke-width="3" opacity=".25"/>' for y in (240, 300, 380, 470)))
+    for x, y, s in ((180, 230, 44), (310, 210, 34), (350, 300, 66)):
+        I.add(f'<path d="M{x-s/2} {y-s/2} l{s*.3:.0f} {-s*.3:.0f} h{s} l{-s*.3:.0f} {s*.3:.0f}Z" {st("#ff8fb0", 5)}/><rect x="{x-s/2}" y="{y-s/2}" width="{s}" height="{s}" {st("#ff5f8f", 6)}/>')
+    I.add(f'<path d="M200 320 l30 -26 h110 l-30 26Z" {st("#ffe680", 7)}/><path d="M310 320 l30 -26 v110 l-30 26Z" {st("#e09a1f", 7)}/><rect x="200" y="320" width="110" height="110" {st(I.lg("#ffe680", "#ffb11f"))}/>')
+    eyes(I, 255, 365, .9, 24, 1); smile(I, 255, 398, .9, True)
+    for i in range(3): I.add(f'<line x1="{180-i*30}" y1="{345+i*26}" x2="{110-i*30}" y2="{345+i*26}" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".85"/>')
+    sparkle(I, 430, 100, 18)
+
+# CatQuiz: la mascota gata asoma en la esquina
+for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles']:
+    ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
+
 
 def main():
     D = json.load(open(os.path.join(root, 'tools/games.json'), encoding='utf-8'))
