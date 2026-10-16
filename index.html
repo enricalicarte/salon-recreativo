@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Minijuegos online gratis y sin anuncios | Salón Recreativo</title><meta name="description" content="Minijuegos online gratis y sin anuncios: juegos relajantes, de ritmo, karts, fútbol y juegos de palabras en catalán. En el navegador, móvil y PC, sin…"><link rel="canonical" href="https://enricalicarte.github.io/salon-recreativo/"><link rel="alternate" hreflang="es" href="https://enricalicarte.github.io/salon-recreativo/"><link rel="alternate" hreflang="ca" href="https://enricalicarte.github.io/salon-recreativo/ca/"><link rel="alternate" hreflang="x-default" href="https://enricalicarte.github.io/salon-recreativo/">
+<title>Minijuegos online gratis y sin anuncios | Salón Recreativo</title><meta name="description" content="Minijuegos online gratis y sin anuncios: juegos relajantes, de ritmo, karts, fútbol y juegos de palabras en catalán. En el navegador, móvil y PC, sin…"><link rel="canonical" href="https://enricalicarte.github.io/salon-recreativo/">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#07060f"><meta name="author" content="Alica Games Studio">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Salón Recreativo"><meta property="og:locale" content="es_ES"><meta property="og:title" content="Minijuegos online gratis y sin anuncios | Salón Recreativo"><meta property="og:description" content="Minijuegos online gratis y sin anuncios: juegos relajantes, de ritmo, karts, fútbol y juegos de palabras en catalán. En el navegador, móvil y PC, sin…"><meta property="og:url" content="https://enricalicarte.github.io/salon-recreativo/"><meta property="og:image" content="https://enricalicarte.github.io/salon-recreativo/img/og-home.jpg">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Minijuegos online gratis y sin anuncios | Salón Recreativo"><meta name="twitter:description" content="Minijuegos online gratis y sin anuncios: juegos relajantes, de ritmo, karts, fútbol y juegos de palabras en catalán. En el navegador, móvil y PC, sin…"><meta name="twitter:image" content="https://enricalicarte.github.io/salon-recreativo/img/og-home.jpg">
@@ -273,22 +273,29 @@ body.hasglow .glow{opacity:1}
 @keyframes pop{40%{transform:scale(1.3)}}
 .tags li.age{color:var(--text);border-color:color-mix(in srgb,var(--c) 55%,transparent);font-weight:600}
 /* tu salón */
-.mine{padding-block:clamp(30px,5vw,60px) 0}
-.mine-h{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px 24px;margin-bottom:6px}
-.mine-h h2{font-size:clamp(1.5rem,3.4vw,2.4rem);padding-left:16px;border-left:6px solid var(--pink)}
-.mine-h p{margin:0;color:var(--mute);font-size:.92rem}
-.mgrp h3{font:600 .95rem var(--f-body);color:var(--text);margin:22px 0 12px}
-.mrow{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px;scroll-snap-type:x proximity}
+.mine{padding:clamp(22px,4vw,40px) 0 0}
+.mine-box{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:24px;padding:16px 16px 14px}
+.mine-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.mine-top h2{font-size:1rem;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.mine-top h2::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--pink);box-shadow:0 0 12px var(--pink)}
+.mtabs{display:flex;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:3px}
+.mtabs button{font:600 .8rem var(--f-body);color:var(--mute);background:none;border:0;border-radius:999px;padding:7px 12px;cursor:pointer;white-space:nowrap}
+.mtabs button[aria-selected="true"]{background:#fff;color:var(--bg)}
+.mtabs small{opacity:.55;margin-left:4px;font-size:.9em}
+.mrow{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding-bottom:2px}
 .mrow::-webkit-scrollbar{display:none}
-.mini{position:relative;flex:0 0 clamp(170px,22vw,230px);scroll-snap-align:start;--c:var(--sun)}
-.mini .mt{display:block;width:100%;aspect-ratio:1.6;border-radius:16px;overflow:hidden;border:1px solid var(--line);padding:0;cursor:pointer;background:var(--panel2);position:relative;color:#fff;text-decoration:none}
-.mini .mt img{width:100%;height:100%;object-fit:cover;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
-.mini .mt:hover img{transform:scale(1.06)}
-.mini .mt:hover{border-color:var(--c)}
-.mini b{display:block;margin-top:9px;font-size:.92rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mini small{display:block;color:var(--mute);font-size:.78rem}
-.mini .fv{width:32px;height:32px;right:8px;top:8px}.mini .fv svg{width:16px;height:16px}
-.emo{position:absolute;inset:0;display:grid;place-items:center;font-size:2.6rem;background:linear-gradient(135deg,var(--a,#1f1941),var(--b,#3b2a8f))}
+.mini{position:relative;flex:0 0 clamp(148px,15vw,188px);scroll-snap-align:start;--c:var(--sun)}
+.mini .mt{display:block;position:relative;width:100%;aspect-ratio:1.6;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--panel2);padding:0;cursor:pointer;color:#fff;text-decoration:none;transition:border-color .2s}
+.mini .mt img{width:100%;height:100%;object-fit:cover;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.mini .mt::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(7,6,15,.88))}
+.mini .nm{position:absolute;left:10px;right:10px;bottom:8px;z-index:1;font:600 .8rem/1.2 var(--f-body);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .nm i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:1px}
+.mini .go{position:absolute;z-index:1;left:50%;top:42%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--sun);color:var(--bg);display:grid;place-items:center;font-size:.85rem;opacity:0;transform:scale(.8);transition:opacity .2s,transform .2s}
+.mini .mt:hover{border-color:var(--c)}.mini .mt:hover img{transform:scale(1.07)}
+.mini .mt:hover .go,.mini .mt:focus-visible .go{opacity:1;transform:none}
+.mini .fv{width:28px;height:28px;right:6px;top:6px}.mini .fv svg{width:14px;height:14px}
+.emo{position:absolute;inset:0;display:grid;place-items:center;font-size:2.4rem;background:linear-gradient(135deg,var(--a,#1f1941),var(--b,#3b2a8f))}
+@media (hover:none){.mini .go{opacity:1;transform:none;width:34px;height:34px;margin:-17px 0 0 -17px}}
 /* buscador */
 .finder[hidden]{display:none!important}
 .finder{position:fixed;inset:0;z-index:90;display:flex;justify-content:center;align-items:flex-start;padding:8vh 16px 16px;background:rgba(4,3,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -320,27 +327,6 @@ body.hasglow .glow{opacity:1}
 @media (max-width:520px){.top .rnd{display:none}.top .acts{gap:6px}}
 .f-empty{grid-column:1/-1;padding:30px 10px;text-align:center;color:var(--mute)}
 @media (max-width:640px){.finder{padding:0}.f-panel{max-height:none;height:100%;border-radius:0;border:0;padding-top:env(safe-area-inset-top,0px)}.f-res{grid-template-columns:1fr}.f-top{padding-left:16px}}
-/* marcas */
-.brands{position:relative;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse 60% 80% at 85% 30%,rgba(232,224,74,.16),transparent 60%),radial-gradient(ellipse 50% 70% at 10% 90%,rgba(255,79,163,.14),transparent 60%),var(--bg)}
-.brands-g{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(28px,5vw,70px);align-items:center}
-.kick{margin:0 0 14px;font:700 .72rem/1 var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:#e8e04a}
-.brands h2{font-size:clamp(1.9rem,4.6vw,3.6rem);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px}
-.brands h2 em{font-style:normal;color:#e8e04a}
-.brands-t>p{margin:0;color:var(--mute);font-size:1.05rem;max-width:54ch}
-.ticks{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 20px}
-.ticks li{position:relative;padding-left:26px;font-size:.95rem}
-.ticks li::before{content:"";position:absolute;left:0;top:.35em;width:14px;height:14px;border-radius:50%;background:#e8e04a;box-shadow:0 0 0 4px rgba(232,224,74,.15)}
-.ctas.l{justify-content:flex-start;margin-top:28px}
-.brands-v{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.case{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--panel);aspect-ratio:4/5;display:block;color:#fff;text-decoration:none;cursor:pointer;padding:0;font:inherit;text-align:left}
-.case:nth-child(2){transform:translateY(34px)}
-.case img,.case video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.case video{opacity:0;transition:opacity .5s}.case.vid video{opacity:1}
-.case::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,6,15,.92),rgba(7,6,15,.1) 55%)}
-.case span{position:absolute;z-index:1;left:16px;right:16px;bottom:16px}
-.case b{display:block;font:700 1.05rem/1.15 var(--f-display)}
-.case small{display:block;margin-top:5px;color:#ddd8f3;font-size:.82rem;line-height:1.35}
-@media (max-width:860px){.brands-g{grid-template-columns:1fr}.case:nth-child(2){transform:none}.ticks{grid-template-columns:1fr}}
 /* pie */
 .flinks{display:flex;flex-wrap:wrap;gap:8px 18px;margin:26px 0 0!important;font-size:.9rem}
 .flinks a{color:var(--mute);text-decoration:none}.flinks a:hover{color:#fff;text-decoration:underline}
@@ -369,7 +355,7 @@ body.hasglow .glow{opacity:1}
     <nav aria-label="Secciones">
       <a href="#trilogia">Saga cósmica</a><a href="#sec-accion">Acción</a><a href="#sec-ritmo">Ritmo</a><a href="#sec-motor">Motor</a><a href="#sec-relax">Relax</a><a href="#sec-catquiz">CatQuiz</a>
     </nav>
-    <div class="acts"><a class="lng" href="ca/" hreflang="ca" lang="ca" title="Versió en català">CA</a><button class="srch" type="button" data-find aria-label="Buscar juegos"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="l">Buscar</span><kbd>/</kbd></button>
+    <div class="acts"><button class="srch" type="button" data-find aria-label="Buscar juegos"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="l">Buscar</span><kbd>/</kbd></button>
     <button class="rnd" type="button" data-random><span class="l">Jugar a uno al azar</span><span class="s">Al azar ▶</span></button></div>
   </div>
 </header>
@@ -400,12 +386,11 @@ body.hasglow .glow{opacity:1}
   </div>
 </section>
 
-<section class="band mine" id="tusalon" hidden>
-  <div class="in">
-    <div class="mine-h"><h2>Tu salón</h2><p>Se guarda solo en este navegador, sin cuentas.</p></div>
-    <div class="mgrp" id="gRecent" hidden><h3>Seguir jugando</h3><div class="mrow" id="mRecent" data-lenis-prevent></div></div>
-    <div class="mgrp" id="gFav" hidden><h3>Tus favoritos</h3><div class="mrow" id="mFav" data-lenis-prevent></div></div>
-  </div>
+<section class="mine" id="tusalon" hidden>
+  <div class="in"><div class="mine-box">
+    <div class="mine-top"><h2>Tu salón</h2><div class="mtabs" role="tablist"><button type="button" role="tab" data-mt="recent" aria-selected="true">Seguir jugando<small id="nR"></small></button><button type="button" role="tab" data-mt="fav" aria-selected="false">Favoritos<small id="nF"></small></button></div></div>
+    <div class="mrow" id="mRow" data-lenis-prevent></div>
+  </div></div>
 </section>
 
 <section class="band cosmic" id="trilogia">
@@ -424,21 +409,8 @@ body.hasglow .glow{opacity:1}
 <nav class="secnav" id="secnav" aria-label="Ir a una sección"><div class="in" id="chips" data-lenis-prevent></div></nav>
 <div id="secs"></div>
 
-<section class="band brands" id="marcas">
-  <div class="in brands-g">
-    <div class="brands-t">
-      <p class="kick">Para marcas, museos y eventos</p>
-      <h2>Tu marca, convertida en <em>juego</em></h2>
-      <p>Diseñamos y programamos minijuegos a medida que la gente juega de verdad: en el móvil, sin descargas y con tu universo dentro. Una zapatería que se gestiona como un Monkey Mart, un museo que se recorre jugando.</p>
-      <ul class="ticks"><li>Advergaming y campañas en redes</li><li>Activaciones en tienda, ferias y eventos</li><li>Juegos educativos para museos y escuelas</li><li>De la idea al juego publicado en semanas</li></ul>
-      <div class="ctas l"><a class="btn p" href="marcas/" id="bCta">Hablemos de tu juego</a><button class="btn g" type="button" data-play="juegos/suo/index.html" data-title="SÛO Shop Rush">Probar un caso ▶</button></div>
-    </div>
-    <div class="brands-v" id="cases"></div>
-  </div>
-</section>
-
 <footer>
-  <div class="in"><p class="mark">Alica <span>Games</span> Studio</p><p class="sig">Salón Recreativo · Juegos para el navegador, en móvil y PC · 2026</p><p class="flinks"><a href="marcas/">Juegos para marcas</a><a href="estudio/">Sobre el estudio</a><a href="aviso-legal/">Aviso legal</a><a href="privacidad/">Privacidad</a><a href="cookies/">Cookies</a><a href="ca/" hreflang="ca" lang="ca">Versió en català</a></p><button class="btn g inst" type="button" data-install hidden>Instalar la app en este dispositivo</button><p>Salón Recreativo es una colección de minijuegos online y gratis de Alica Games Studio: fútbol, juegos de ritmo musical, karts, motos, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p><p><a href="jocs-en-catala/">Jocs en català online i gratis</a> · <a href="juegos-relajantes/">Juegos relajantes online</a> · <a href="juegos-de-ritmo/">Juegos de ritmo online</a> · <a href="juegos-de-motor/">Juegos de motos, coches y karts</a></p><nav class="dir" aria-label="Todos los juegos"><div><h2>Cósmico</h2><ul><li><a href="jugar/ruta-cosmica/">Ruta Cósmica</a></li><li><a href="jugar/tiradora-cosmica/">Tiradora Cósmica</a></li><li><a href="jugar/constructor-cosmico/">Constructor Cósmico</a></li><li><a href="jugar/paradon-cosmico/">Paradón Cósmico</a></li><li><a href="jugar/cosmic-guitar/">Cosmic Guitar</a></li></ul></div><div><h2>Acción</h2><ul><li><a href="jugar/aura-battle/">Aura Battle</a></li><li><a href="jugar/porrazo-party/">Porrazo Party</a></li><li><a href="jugar/tiro-limpio/">Tiro Limpio</a></li><li><a href="jugar/cube-runner/">Cube Runner</a></li><li><a href="jugar/tower-stack/">Tower Stack</a></li></ul></div><div><h2>Deporte</h2><ul><li><a href="jugar/anguera-superstars/">Anguera Superstars</a></li><li><a href="jugar/olimpiadas-de-la-granja/">Olimpiadas de la Granja</a></li></ul></div><div><h2>Ritmo</h2><ul><li><a href="jugar/martin-leyenda-del-rock/">Martín, leyenda del rock</a></li><li><a href="jugar/supernova-guitar/">Supernova Guitar</a></li><li><a href="jugar/cabina/">Cabina</a></li></ul></div><div><h2>Motor</h2><ul><li><a href="jugar/monster-smash/">Monster Smash</a></li><li><a href="jugar/aventura-porc/">Aventura Porc</a></li><li><a href="jugar/turbo-kart-rally/">Turbo Kart Rally</a></li><li><a href="jugar/neon-coast/">Neon Coast</a></li><li><a href="jugar/moto-fury/">Moto Fury</a></li></ul></div><div><h2>Historias</h2><ul><li><a href="jugar/l-ultim-estiu/">L’últim estiu</a></li><li><a href="jugar/hotel-miramar/">Hotel Miramar</a></li></ul></div><div><h2>Con marca</h2><ul><li><a href="jugar/suo-shop-rush/">SÛO Shop Rush</a></li><li><a href="jugar/mnac-rush/">MNAC Rush</a></li></ul></div><div><h2>Relax</h2><ul><li><a href="jugar/relax-estanque-de-koi/">Estanque de Koi</a></li><li><a href="jugar/relax-farolillos-del-lago/">Farolillos del Lago</a></li><li><a href="jugar/relax-pompas-musicales/">Pompas Musicales</a></li><li><a href="jugar/relax-isla-jardin/">Isla Jardín</a></li><li><a href="jugar/relax-jardin-zen/">Jardín Zen</a></li><li><a href="jugar/relax-cristal-de-lluvia/">Cristal de Lluvia</a></li><li><a href="jugar/relax-hoguera-nocturna/">Hoguera Nocturna</a></li><li><a href="jugar/relax-bola-de-nieve/">Bola de Nieve</a></li><li><a href="jugar/relax-pesca-al-atardecer/">Pesca al Atardecer</a></li><li><a href="jugar/relax-arrecife-de-coral/">Arrecife de Coral</a></li><li><a href="jugar/relax-velero-entre-islas/">Velero entre Islas</a></li><li><a href="jugar/relax-orilla-y-marea/">Orilla y Marea</a></li><li><a href="jugar/relax-vuelo-del-amanecer/">Vuelo del Amanecer</a></li><li><a href="jugar/relax-aurora-boreal/">Aurora Boreal</a></li><li><a href="jugar/relax-orbitas-musicales/">Órbitas Musicales</a></li><li><a href="jugar/relax-constelaciones/">Constelaciones</a></li><li><a href="jugar/relax-cometa-al-viento/">Cometa al Viento</a></li><li><a href="jugar/relax-rana-y-luciernagas/">Rana y Luciérnagas</a></li></ul></div><div><h2>CatQuiz</h2><ul><li><a href="jugar/catquiz-com-es-diu-en-catala/">Com es diu en català?</a></li><li><a href="jugar/catquiz-l-intrus/">L&#x27;intrús</a></li><li><a href="jugar/catquiz-motle/">Motle</a></li><li><a href="jugar/catquiz-esquiva/">Esquiva!</a></li><li><a href="jugar/catquiz-accents/">Accents!</a></li><li><a href="jugar/catquiz-penjat-3d/">Penjat 3D</a></li><li><a href="jugar/catquiz-anagrama/">Anagrama</a></li><li><a href="jugar/catquiz-caca-estrelles/">Caça estrelles</a></li><li><a href="jugar/catquiz-sopa-de-lletres/">Sopa de lletres</a></li><li><a href="jugar/catquiz-lletres-perdudes/">Lletres perdudes</a></li></ul></div></nav></div>
+  <div class="in"><p class="mark">Alica <span>Games</span> Studio</p><p class="sig">Salón Recreativo · Juegos para el navegador, en móvil y PC · 2026</p><p class="flinks"><a href="estudio/">Sobre el estudio</a><a href="aviso-legal/">Aviso legal</a><a href="privacidad/">Privacidad</a><a href="cookies/">Cookies</a></p><button class="btn g inst" type="button" data-install hidden>Instalar la app en este dispositivo</button><p>Salón Recreativo es una colección de minijuegos online y gratis de Alica Games Studio: fútbol, juegos de ritmo musical, karts, motos, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p><p><a href="jocs-en-catala/">Jocs en català online i gratis</a> · <a href="juegos-relajantes/">Juegos relajantes online</a> · <a href="juegos-de-ritmo/">Juegos de ritmo online</a> · <a href="juegos-de-motor/">Juegos de motos, coches y karts</a></p><nav class="dir" aria-label="Todos los juegos"><div><h2>Cósmico</h2><ul><li><a href="jugar/ruta-cosmica/">Ruta Cósmica</a></li><li><a href="jugar/tiradora-cosmica/">Tiradora Cósmica</a></li><li><a href="jugar/constructor-cosmico/">Constructor Cósmico</a></li><li><a href="jugar/paradon-cosmico/">Paradón Cósmico</a></li><li><a href="jugar/cosmic-guitar/">Cosmic Guitar</a></li></ul></div><div><h2>Acción</h2><ul><li><a href="jugar/aura-battle/">Aura Battle</a></li><li><a href="jugar/porrazo-party/">Porrazo Party</a></li><li><a href="jugar/tiro-limpio/">Tiro Limpio</a></li><li><a href="jugar/cube-runner/">Cube Runner</a></li><li><a href="jugar/tower-stack/">Tower Stack</a></li></ul></div><div><h2>Deporte</h2><ul><li><a href="jugar/anguera-superstars/">Anguera Superstars</a></li><li><a href="jugar/olimpiadas-de-la-granja/">Olimpiadas de la Granja</a></li></ul></div><div><h2>Ritmo</h2><ul><li><a href="jugar/martin-leyenda-del-rock/">Martín, leyenda del rock</a></li><li><a href="jugar/supernova-guitar/">Supernova Guitar</a></li><li><a href="jugar/cabina/">Cabina</a></li></ul></div><div><h2>Motor</h2><ul><li><a href="jugar/monster-smash/">Monster Smash</a></li><li><a href="jugar/aventura-porc/">Aventura Porc</a></li><li><a href="jugar/turbo-kart-rally/">Turbo Kart Rally</a></li><li><a href="jugar/neon-coast/">Neon Coast</a></li><li><a href="jugar/moto-fury/">Moto Fury</a></li></ul></div><div><h2>Historias</h2><ul><li><a href="jugar/l-ultim-estiu/">L’últim estiu</a></li><li><a href="jugar/hotel-miramar/">Hotel Miramar</a></li></ul></div><div><h2>Con marca</h2><ul><li><a href="jugar/suo-shop-rush/">SÛO Shop Rush</a></li><li><a href="jugar/mnac-rush/">MNAC Rush</a></li></ul></div><div><h2>Relax</h2><ul><li><a href="jugar/relax-estanque-de-koi/">Estanque de Koi</a></li><li><a href="jugar/relax-farolillos-del-lago/">Farolillos del Lago</a></li><li><a href="jugar/relax-pompas-musicales/">Pompas Musicales</a></li><li><a href="jugar/relax-isla-jardin/">Isla Jardín</a></li><li><a href="jugar/relax-jardin-zen/">Jardín Zen</a></li><li><a href="jugar/relax-cristal-de-lluvia/">Cristal de Lluvia</a></li><li><a href="jugar/relax-hoguera-nocturna/">Hoguera Nocturna</a></li><li><a href="jugar/relax-bola-de-nieve/">Bola de Nieve</a></li><li><a href="jugar/relax-pesca-al-atardecer/">Pesca al Atardecer</a></li><li><a href="jugar/relax-arrecife-de-coral/">Arrecife de Coral</a></li><li><a href="jugar/relax-velero-entre-islas/">Velero entre Islas</a></li><li><a href="jugar/relax-orilla-y-marea/">Orilla y Marea</a></li><li><a href="jugar/relax-vuelo-del-amanecer/">Vuelo del Amanecer</a></li><li><a href="jugar/relax-aurora-boreal/">Aurora Boreal</a></li><li><a href="jugar/relax-orbitas-musicales/">Órbitas Musicales</a></li><li><a href="jugar/relax-constelaciones/">Constelaciones</a></li><li><a href="jugar/relax-cometa-al-viento/">Cometa al Viento</a></li><li><a href="jugar/relax-rana-y-luciernagas/">Rana y Luciérnagas</a></li></ul></div><div><h2>CatQuiz</h2><ul><li><a href="jugar/catquiz-com-es-diu-en-catala/">Com es diu en català?</a></li><li><a href="jugar/catquiz-l-intrus/">L&#x27;intrús</a></li><li><a href="jugar/catquiz-motle/">Motle</a></li><li><a href="jugar/catquiz-esquiva/">Esquiva!</a></li><li><a href="jugar/catquiz-accents/">Accents!</a></li><li><a href="jugar/catquiz-penjat-3d/">Penjat 3D</a></li><li><a href="jugar/catquiz-anagrama/">Anagrama</a></li><li><a href="jugar/catquiz-caca-estrelles/">Caça estrelles</a></li><li><a href="jugar/catquiz-sopa-de-lletres/">Sopa de lletres</a></li><li><a href="jugar/catquiz-lletres-perdudes/">Lletres perdudes</a></li></ul></div></nav></div>
 </footer>
 
 <div class="stage" id="stage" role="dialog" aria-modal="true" aria-label="Juego" hidden>
@@ -1563,17 +1535,23 @@ function toggleFav(id,btn){
 $('#stFav').addEventListener('click',()=>{if(curG)toggleFav(curG.id,$('#stFav'));});
 function thumb(g){return MEDIA.has(g.slug)?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async">':'<span class="emo" style="--a:'+((g.pal&&g.pal[0])||'#1f1941')+';--b:'+((g.pal&&g.pal[2])||CATS[g.cat].c)+'">'+((g.pal&&g.pal[3])||'🎮')+'</span>';}
 function mini(g){
-  const c=CATS[g.cat];
-  const t=g.play?'<button class="mt" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'" aria-label="'+T.playX+esc(g.name)+'">'+thumb(g)+'</button>'
-    :'<a class="mt" href="'+esc(g.url)+'" target="_blank" rel="noopener" aria-label="'+T.playX+esc(g.name)+'">'+thumb(g)+'</a>';
-  return '<div class="mini" style="--c:'+c.c+'">'+t+favBtn(g)+'<b>'+esc(g.name)+'</b><small>'+esc(c.n)+' · +'+ageOf(g)+'</small></div>';
+  const c=CATS[g.cat],inner=thumb(g)+'<span class="go" aria-hidden="true">▶</span><span class="nm"><i></i>'+esc(g.name)+'</span>';
+  const t=g.play?'<button class="mt" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'" aria-label="'+T.playX+esc(g.name)+'">'+inner+'</button>'
+    :'<a class="mt" href="'+esc(g.url)+'" target="_blank" rel="noopener" aria-label="'+T.playX+esc(g.name)+'">'+inner+'</a>';
+  return '<div class="mini" style="--c:'+c.c+'">'+t+favBtn(g)+'</div>';
 }
+let mineTab='recent';
 function renderMine(){
   const sec=$('#tusalon');if(!sec)return;
   const rg=recent.map(id=>GAMES.find(g=>g.id===id)).filter(Boolean),fg=GAMES.filter(g=>favs.has(g.id)&&(g.play||g.url));
-  $('#mRecent').innerHTML=rg.map(mini).join('');$('#mFav').innerHTML=fg.map(mini).join('');
-  $('#gRecent').hidden=!rg.length;$('#gFav').hidden=!fg.length;sec.hidden=!rg.length&&!fg.length;
+  sec.hidden=!rg.length&&!fg.length;if(sec.hidden)return;
+  if(mineTab==='recent'&&!rg.length)mineTab='fav';if(mineTab==='fav'&&!fg.length)mineTab='recent';
+  const tabs=sec.querySelectorAll('[data-mt]');
+  tabs.forEach(b=>{const on=b.dataset.mt===mineTab;b.setAttribute('aria-selected',on);b.hidden=!(b.dataset.mt==='recent'?rg.length:fg.length);});
+  $('#nR').textContent=rg.length;$('#nF').textContent=fg.length;
+  $('#mRow').innerHTML=(mineTab==='recent'?rg:fg).map(mini).join('');
 }
+$('#tusalon').addEventListener('click',e=>{const b=e.target.closest('[data-mt]');if(!b)return;mineTab=b.dataset.mt;renderMine();});
 renderMine();
 
 /* ---------- Buscador ---------- */
@@ -1668,15 +1646,6 @@ function maybeInstall(){
 syncInstall();
 if(!window.claude&&'serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
 
-/* ---------- Juegos para marcas ---------- */
-(function(){
-  const box=$('#cases');if(!box)return;
-  const list=['suo','mnac'].map(id=>GAMES.find(g=>g.id===id)).filter(g=>g&&g.play);
-  box.innerHTML=list.map(g=>'<button class="case" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">'+(MEDIA.has(g.slug)?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" poster="media/'+g.slug+'.jpg" data-src="media/'+g.slug+'"></video>':'')+'<span><b>'+esc(g.name)+'</b><small>'+esc(g.note||g.tags.join(' · '))+'</small></span></button>').join('');
-  if(!reduce&&'IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector('video');if(!v)return;e.isIntersecting?playVid(v):stopVid(v);}),{threshold:.5});box.querySelectorAll('.case').forEach(c=>io.observe(c));}
-  const cta=$('#bCta');
-  if(window.claude){if(EMAIL)cta.href='mailto:'+EMAIL;else cta.hidden=true;}
-})();
 if(document.fullscreenEnabled){
   $('#stFull').addEventListener('click',()=>{try{(document.fullscreenElement?document.exitFullscreen():st.requestFullscreen()).catch(()=>{});}catch(e){}});
 }else $('#stFull').hidden=true;

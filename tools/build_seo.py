@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Genera la web publicable a partir de tools/source.html y tools/games.json:
-index.html (castellano), ca/index.html (catalán), jugar/<slug>/ y ca/jugar/<slug>/ (una ficha por juego),
-páginas temáticas, Juegos para marcas, Sobre el estudio, páginas legales, sitemap.xml, robots.txt, 404.html,
+index.html, jugar/<slug>/ (una ficha por juego),
+páginas temáticas, Sobre el estudio, páginas legales, sitemap.xml, robots.txt, 404.html,
 manifest.webmanifest y sw.js (app instalable).
 Uso: python3 tools/build_seo.py   (desde la raíz del repo)."""
 import json, re, html, os, datetime, sys
@@ -121,14 +121,14 @@ def share_bar(ca):
 
 def header(p, ca, alt=None):
     """p: prefijo hasta la raíz. alt: enlace a la otra versión de idioma."""
-    home = p + ('ca/' if ca else '')
+    home = p
     lng = f'<a href="{alt}" hreflang="{"es" if ca else "ca"}" lang="{"es" if ca else "ca"}">{"ES" if ca else "CA"}</a>' if alt else ''
     return (f'<header class="t"><div class="w"><a class="br" href="{home}"><i></i>SALÓN RECREATIVO</a><nav>'
-            f'<a class="hide" href="{p}marcas/">{"Per a marques" if ca else "Para marcas"}</a><a href="{home}">{"Tots els jocs" if ca else "Todos los juegos"}</a>{lng}</nav></div></header>')
+            f'<a href="{home}">{"Tots els jocs" if ca else "Todos los juegos"}</a>{lng}</nav></div></header>')
 
 def footer(p, ca):
     return (f'<footer class="f"><div class="w"><p>© 2026 <b>Alica Games Studio</b> · Salón Recreativo · {"Minijocs en línia gratuïts" if ca else "Minijuegos online gratis"}</p>'
-            f'<p class="fl"><a href="{p}marcas/">{"Jocs per a marques" if ca else "Juegos para marcas"}</a><a href="{p}estudio/">{"Sobre l’estudi" if ca else "Sobre el estudio"}</a>'
+            f'<p class="fl"><a href="{p}estudio/">{"Sobre l’estudi" if ca else "Sobre el estudio"}</a>'
             f'<a href="{p}aviso-legal/">{"Avís legal" if ca else "Aviso legal"}</a><a href="{p}privacidad/">{"Privacitat" if ca else "Privacidad"}</a><a href="{p}cookies/">Cookies</a></p></div></footer>')
 
 def head(lang, title, desc, url, p, img=None, alts=None, robots=None, extra=''):
@@ -149,7 +149,7 @@ def landing(g0, lang):
     p = '../../../' if ca else '../../'
     path = ('ca/' if ca else '') + 'jugar/' + g['slug'] + '/'
     url = BASE + path
-    alts = {'es': BASE + 'jugar/' + g['slug'] + '/', 'ca': BASE + 'ca/jugar/' + g['slug'] + '/', 'x-default': BASE + 'jugar/' + g['slug'] + '/'}
+    alts = None
     img = BASE + 'img/' + g['slug'] + '.jpg'
     cat = (CA_CATS if ca else {k: v['n'] for k, v in CATS.items()})[g['cat']]
     cd = (CA_CATD if ca else CATD).get(g['cat'], {})
@@ -188,7 +188,7 @@ def landing(g0, lang):
     other_rel = (p + 'jugar/' + g['slug'] + '/') if ca else (p + 'ca/jugar/' + g['slug'] + '/')
     page = head(lang, title, desc, url, p, img, alts) + jd(jgame) + jd(bc) + f"""
 <style>{CSS}</style></head>
-<body>{header(p, ca, other_rel)}
+<body>{header(p, ca)}
 <main class="w">
 <nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="{p}{'ca/' if ca else ''}">{'Inici' if ca else 'Inicio'}</a> › <a href="{p}{'ca/' if ca else ''}#sec-{g['cat']}">{e(cat)}</a> › {e(g['name'])}</nav>
 <h1>{e(g['name'])}</h1>
@@ -211,7 +211,7 @@ def landing(g0, lang):
     W(path + 'index.html', page)
 
 for g in play:
-    landing(g, 'es'); landing(g, 'ca')
+    landing(g, 'es')
 
 # ================= PÁGINAS TEMÁTICAS =================
 HUBS = [
@@ -244,7 +244,7 @@ for H in HUBS:
     ca = H['lang'] == 'ca'
     url = BASE + H['slug'] + '/'
     sel = [loc(g, H['lang']) for g in play if H['pick'](g)]
-    lp = (lambda g: '../ca/jugar/' + g['slug'] + '/') if ca else (lambda g: '../jugar/' + g['slug'] + '/')
+    lp = lambda g: '../jugar/' + g['slug'] + '/'
     items = [{"@type": "ListItem", "position": k + 1, "url": BASE + lp(g)[3:], "name": g['name']} for k, g in enumerate(sel)]
     cards = ''.join(f'<li><a href="{lp(g)}"><img src="../img/{g["slug"]}.jpg" alt="{e(g["name"])}" loading="lazy" width="344" height="216"><b>{e(g["name"])}</b><span>{e(short(g["blurb"], 120))}</span></a></li>' for g in sel)
     others = ''.join(f'<a href="../{h["slug"]}/">{e(h["h1"])}</a>' for h in HUBS if h is not H)
@@ -252,10 +252,10 @@ for H in HUBS:
 <style>{CSS}
 {HUB_CSS}</style></head>
 <body>{header('../', ca)}
-<main class="w"><nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="../{'ca/' if ca else ''}">{'Inici' if ca else 'Inicio'}</a> › {e(H['h1'])}</nav>
+<main class="w"><nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="../">{'Inici' if ca else 'Inicio'}</a> › {e(H['h1'])}</nav>
 <h1>{e(H['h1'])}</h1>{''.join('<p class="lead">' + e(t) + '</p>' if i == 0 else '<p>' + e(t) + '</p>' for i, t in enumerate(H['intro']))}
 <ul class="hub">{cards}</ul>
-<h2>{'Més col·leccions' if ca else 'Más colecciones'}</h2><p class="more">{others} <a href="../{'ca/' if ca else ''}">{'Tots els jocs' if ca else 'Todos los juegos'}</a></p>
+<h2>{'Més col·leccions' if ca else 'Más colecciones'}</h2><p class="more">{others} <a href="../">{'Tots els jocs' if ca else 'Todos los juegos'}</a></p>
 </main>{footer('../', ca)}</body></html>"""
     W(H['slug'] + '/index.html', page)
 
@@ -273,56 +273,6 @@ def simple(slug, title, desc, h1, body, robots=None, extra_css='', extra_js=''):
 V = lambda x: e(x) if x else PEND
 MAIL = (f'<a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a>' if EMAIL else PEND)
 
-# --- Juegos para marcas ---
-cases = [g for g in play if g['id'] in ('suo', 'mnac', 'anguera')]
-CASE_TXT = {'suo': 'Una zapatería convertida en juego de gestión tipo Monkey Mart, con las tres personas del equipo como personajes.',
-            'mnac': "El Museu Nacional d'Art de Catalunya como juego: los visitantes recorren salas y obras reales de su colección.",
-            'anguera': 'Un juego de fútbol 7 para los niños del club PB Anguera, con su liga, sus temporadas y su equipo.'}
-case_html = ''.join(f'''<a class="case" href="../jugar/{g["slug"]}/"><span class="cv">{('<video autoplay muted loop playsinline disablepictureinpicture disableremoteplayback preload="metadata" poster="../media/' + g["slug"] + '.jpg"><source src="../media/' + g["slug"] + '.webm" type="video/webm"><source src="../media/' + g["slug"] + '.mp4" type="video/mp4"></video>') if has_media(g) else '<img src="../img/' + g["slug"] + '.jpg" alt="">'}</span><b>{e(g["name"])}</b><span class="d">{e(CASE_TXT[g["id"]])}</span><span class="go">Jugar al caso ▶</span></a>''' for g in cases)
-MK_CSS = """.hero{padding:30px 0 10px}.kick{font:700 .72rem/1 'Unbounded';letter-spacing:.1em;text-transform:uppercase;color:#e8e04a;margin:10px 0 14px}
-.hero h1 em{font-style:normal;color:#e8e04a}.hero .lead{max-width:60ch}
-.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:18px;margin-top:18px}
-.case{display:flex;flex-direction:column;text-decoration:none;color:#fff;background:#171232;border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden}.case:hover{border-color:#e8e04a}
-.case .cv{position:relative;aspect-ratio:1.6;background:#1f1941}.case video,.case img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.case b{font:700 1.05rem 'Unbounded';padding:16px 18px 4px}.case .d{padding:0 18px;color:#a79fcb;font-size:.93rem;flex:1}.case .go{padding:14px 18px 18px;color:#e8e04a;font-weight:600;font-size:.9rem}
-.steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px;list-style:none;padding:0}
-.steps li{counter-increment:s;background:#171232;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px}
-.steps li::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#e8e04a;color:#07060f;font:700 .9rem 'Unbounded';margin-bottom:10px}
-.steps b{display:block;color:#fff;margin-bottom:4px}
-.form{display:grid;gap:12px;max-width:640px}.form label{display:grid;gap:6px;font-size:.9rem;color:#a79fcb}
-.form input,.form textarea,.form select{font:500 1rem 'Onest',system-ui;color:#fff;background:#171232;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:12px 14px}
-.form textarea{min-height:120px;resize:vertical}.form input:focus,.form textarea:focus,.form select:focus{outline:2px solid #e8e04a;border-color:transparent}
-.note{font-size:.85rem;color:#a79fcb}"""
-form = ('<form class="form" id="mk"><label>Nombre<input name="n" required autocomplete="name"></label><label>Empresa o marca<input name="e" autocomplete="organization"></label>'
-        '<label>Tipo de juego<select name="t"><option>Advergaming / campaña</option><option>Activación en tienda o evento</option><option>Juego educativo o de museo</option><option>Otra idea</option></select></label>'
-        '<label>Cuéntanos la idea<textarea name="m" required placeholder="Qué quieres conseguir, para quién y para cuándo"></textarea></label>'
-        + ('<button class="btn" type="submit">Enviar por email ▶</button><p class="note">Se abrirá tu programa de correo con el mensaje preparado. Usamos tus datos solo para responderte (<a href="../privacidad/">privacidad</a>).</p>'
-           if EMAIL else '<button class="btn" type="button" disabled style="opacity:.6;cursor:default">Contacto disponible muy pronto</button>')
-        + '</form>')
-form_js = (f"""<script>document.getElementById('mk').addEventListener('submit',function(ev){{ev.preventDefault();var f=ev.target,v=function(k){{return f.elements[k].value}};
-location.href='mailto:{EMAIL}?subject='+encodeURIComponent('Juego para '+(v('e')||v('n'))+' · '+v('t'))+'&body='+encodeURIComponent(v('m')+'\\n\\n— '+v('n')+(v('e')?' ('+v('e')+')':''));}});</script>""" if EMAIL else '')
-simple('marcas', 'Juegos para marcas, museos y eventos (advergaming) | Alica Games Studio',
-       'Minijuegos a medida para marcas, museos y eventos: advergaming, activaciones en tienda y juegos educativos que se juegan en el móvil, sin descargas. Casos reales: SÛO y MNAC.',
-       'Juegos para marcas', f"""<section class="hero"><p class="kick">Alica Games Studio · Para marcas</p>
-<h1>Tu marca, convertida en <em>juego</em></h1>
-<p class="lead">Diseñamos y programamos minijuegos a medida que la gente juega de verdad: en el móvil, sin descargas, con un enlace o un código QR, y con tu universo dentro. Del briefing al juego publicado en semanas, no en meses.</p>
-<div class="acts"><a class="btn" href="#contacto">Hablemos de tu juego</a><a class="btn g" href="#casos">Ver casos</a></div></section>
-<h2 id="casos">Casos reales</h2>
-<div class="cases">{case_html}</div>
-<h2>Qué podemos hacer</h2>
-<div class="grid2">
-<div class="card"><h3>Advergaming y campañas</h3><p>Un juego corto con tu producto como protagonista, pensado para compartirse en redes y para retos con premio.</p></div>
-<div class="card"><h3>Activaciones y eventos</h3><p>Juegos para pantallas en tienda, stands y ferias: se juega desde el móvil del visitante escaneando un QR, con ranking en directo.</p></div>
-<div class="card"><h3>Museos y educación</h3><p>Recorridos jugables por una colección, juegos de vocabulario o de historia, en catalán, castellano o inglés.</p></div>
-<div class="card"><h3>Juegos de marca permanentes</h3><p>Un juego propio en tu web o tu app que la gente vuelva a abrir: niveles, récords y novedades.</p></div>
-</div>
-<h2>Cómo trabajamos</h2>
-<ol class="steps"><li><b>Briefing</b>Objetivo, público, tono y dónde se va a jugar.</li><li><b>Prototipo jugable</b>En pocos días tienes una versión que se puede jugar y probar.</li><li><b>Marca y ajustes</b>Personajes, música, textos e idiomas a tu medida.</li><li><b>Lanzamiento</b>Publicado en tu web o la nuestra, con analítica de partidas.</li></ol>
-<h2>Qué incluye siempre</h2>
-<ul><li>Funciona en móvil y ordenador, directamente en el navegador.</li><li>Sin descargas, sin registro y sin anuncios de terceros.</li><li>Música y gráficos originales.</li><li>Textos en catalán, castellano o inglés.</li></ul>
-<h2 id="contacto">Cuéntanos tu idea</h2>
-{form}""", extra_css=MK_CSS, extra_js=form_js)
-
 # --- Sobre el estudio ---
 simple('estudio', 'Sobre Alica Games Studio | Salón Recreativo',
        'Alica Games Studio hace minijuegos para el navegador: gratis, sin anuncios, sin registro y en catalán y castellano. Conoce el estudio detrás del Salón Recreativo.',
@@ -336,7 +286,7 @@ simple('estudio', 'Sobre Alica Games Studio | Salón Recreativo',
 <div class="card"><h3>En catalán y castellano</h3><p>Juegos de palabras en catalán, historias en catalán y una web en los dos idiomas.</p></div>
 </div>
 <h2>Qué hacemos</h2>
-<p>Juegos propios, como la saga cósmica de Lyra y la Patrulla Nova, los juegos de ritmo o los Relax Games, y también <a href="../marcas/">juegos a medida para marcas, museos y clubes</a>, como SÛO Shop Rush, MNAC Rush o Anguera Superstars.</p>
+<p>Juegos propios, como la saga cósmica de Lyra y la Patrulla Nova, los juegos de ritmo o los Relax Games, y también juegos hechos para clientes, como SÛO Shop Rush, MNAC Rush o Anguera Superstars.</p>
 <h2>Contacto</h2>
 <p>Escríbenos a {MAIL}.</p>""")
 
@@ -367,7 +317,7 @@ simple('privacidad', 'Política de privacidad | Salón Recreativo', 'Qué datos 
 <p>{V(OWNER['name'])} (Alica Games Studio), NIF {V(OWNER['nif'])}, con domicilio en {V(OWNER['addr'])}. Contacto: {MAIL}.</p>
 <h2>Qué datos tratamos</h2>
 <ul>
-<li><b>Si nos escribes</b> (por email o desde el formulario de <a href="../marcas/">juegos para marcas</a>): tu nombre, tu email y lo que nos cuentes, solo para responderte. Base legal: tu consentimiento al escribirnos. Los conservamos mientras dure la conversación y, como máximo, dos años.</li>
+<li><b>Si nos escribes</b> (por email): tu nombre, tu email y lo que nos cuentes, solo para responderte. Base legal: tu consentimiento al escribirnos. Los conservamos mientras dure la conversación y, como máximo, dos años.</li>
 <li><b>Estadísticas de uso</b>: {'usamos GoatCounter, un servicio de analítica que no usa cookies ni guarda tu dirección IP; solo cuenta visitas y partidas de forma agregada y anónima.' if GOATCOUNTER else 'si activamos estadísticas, será con un servicio sin cookies que no guarda tu dirección IP y solo cuenta visitas y partidas de forma agregada y anónima.'}</li>
 <li><b>Favoritos, partidas recientes y récords</b>: se guardan en el almacenamiento local de tu navegador, en tu dispositivo. No nos llegan. Puedes borrarlos desde los ajustes del navegador.</li>
 </ul>
@@ -415,7 +365,7 @@ def home(lang):
     items = [{"@type": "ListItem", "position": k + 1, "url": lp(g), "name": loc(g, lang)['name']} for k, g in enumerate(play)]
     site = {"@context": "https://schema.org", "@type": "WebSite", "name": "Salón Recreativo", "url": url, "inLanguage": lang, "description": HD, "publisher": {"@type": "Organization", "name": "Alica Games Studio", "url": BASE + 'estudio/'}}
     lst = {"@context": "https://schema.org", "@type": "ItemList", "name": 'Minijocs en línia gratis' if ca else 'Minijuegos online gratis', "itemListElement": items}
-    alts = {'es': BASE, 'ca': BASE + 'ca/', 'x-default': BASE}
+    alts = None
     pre = ('<base href="../">' if ca else '')
     extra = '<link rel="preload" href="assets/fonts/unbounded-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>'
     if ca:
@@ -435,12 +385,12 @@ def home(lang):
     hubl = ' · '.join(f'<a href="{H["slug"]}/">{e(H["h1"])}</a>' for H in HUBS)
     if ca:
         about = '<p>El Salón Recreativo és una col·lecció de minijocs en línia i gratuïts d\'Alica Games Studio: futbol, jocs de ritme musical, karts, motos, muntanyes russes, jocs relaxants i jocs de paraules en català. Tots es juguen al navegador, al mòbil i a l\'ordinador, sense descàrregues ni registre.</p><p>' + hubl + '</p>'
-        fl = '<p class="flinks"><a href="marcas/">Jocs per a marques</a><a href="estudio/">Sobre l’estudi</a><a href="aviso-legal/">Avís legal</a><a href="privacidad/">Privacitat</a><a href="cookies/">Cookies</a><a href="./" hreflang="es" lang="es">Versión en castellano</a></p>'
-        lng = '<a class="lng" href="./" hreflang="es" lang="es" title="Versión en castellano">ES</a>'
+        fl = '<p class="flinks"><a href="estudio/">Sobre l’estudi</a><a href="aviso-legal/">Avís legal</a><a href="privacidad/">Privacitat</a><a href="cookies/">Cookies</a></p>'
+        lng = ''
     else:
         about = '<p>Salón Recreativo es una colección de minijuegos online y gratis de Alica Games Studio: fútbol, juegos de ritmo musical, karts, motos, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p><p>' + hubl + '</p>'
-        fl = '<p class="flinks"><a href="marcas/">Juegos para marcas</a><a href="estudio/">Sobre el estudio</a><a href="aviso-legal/">Aviso legal</a><a href="privacidad/">Privacidad</a><a href="cookies/">Cookies</a><a href="ca/" hreflang="ca" lang="ca">Versió en català</a></p>'
-        lng = '<a class="lng" href="ca/" hreflang="ca" lang="ca" title="Versió en català">CA</a>'
+        fl = '<p class="flinks"><a href="estudio/">Sobre el estudio</a><a href="aviso-legal/">Aviso legal</a><a href="privacidad/">Privacidad</a><a href="cookies/">Cookies</a></p>'
+        lng = ''
     nav = f'<nav class="dir" aria-label="{"Tots els jocs" if ca else "Todos los juegos"}">{cols}</nav>'
     assert body.count('<!--FLINKS-->') == 1 and body.count('<!--LNG-->') == 1
     body = body.replace('<!--FLINKS-->', fl).replace('</button></div>\n</footer>', '</button>' + about + nav + '</div>\n</footer>').replace('<!--LNG-->', lng)
@@ -448,16 +398,13 @@ def home(lang):
     out = h + '<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}</style>\n' + head_part.replace('<link rel="stylesheet" href="assets/fonts.css">', '') + '</head><body>' + body + '</body></html>'
     W(('ca/' if ca else '') + 'index.html', out)
 
-home('es'); home('ca')
+home('es')
 
 # ================= SITEMAP / ROBOTS / 404 =================
-pairs = [(BASE, BASE + 'ca/', '1.0', 'weekly')] + [(BASE + 'jugar/' + g['slug'] + '/', BASE + 'ca/jugar/' + g['slug'] + '/', '0.7', 'monthly') for g in play]
-sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
-for es, cat_, pr, fq in pairs:
-    alt = f'<xhtml:link rel="alternate" hreflang="es" href="{es}"/><xhtml:link rel="alternate" hreflang="ca" href="{cat_}"/><xhtml:link rel="alternate" hreflang="x-default" href="{es}"/>'
-    for u in (es, cat_):
-        sm += f'<url><loc>{u}</loc>{alt}<lastmod>{TODAY}</lastmod><changefreq>{fq}</changefreq><priority>{pr}</priority></url>\n'
-for u in [BASE + H['slug'] + '/' for H in HUBS] + [BASE + 'marcas/', BASE + 'estudio/']:
+sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+for u, pr, fq in [(BASE, '1.0', 'weekly')] + [(BASE + 'jugar/' + g['slug'] + '/', '0.7', 'monthly') for g in play]:
+    sm += f'<url><loc>{u}</loc><lastmod>{TODAY}</lastmod><changefreq>{fq}</changefreq><priority>{pr}</priority></url>\n'
+for u in [BASE + H['slug'] + '/' for H in HUBS] + [BASE + 'estudio/']:
     sm += f'<url><loc>{u}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>\n'
 sm += '</urlset>\n'
 W('sitemap.xml', sm)
@@ -472,7 +419,7 @@ manifest = {"name": "Salón Recreativo · Alica Games Studio", "short_name": "Sa
             "shortcuts": [{"name": "Juegos relajantes", "url": "./#sec-relax"}, {"name": "CatQuiz", "url": "./#sec-catquiz"}, {"name": "Saga cósmica", "url": "./#trilogia"}]}
 W('manifest.webmanifest', json.dumps(manifest, ensure_ascii=False, indent=1))
 W('sw.js', """/* Salón Recreativo: service worker. Portada y recursos básicos disponibles sin conexión; los juegos se guardan al jugarlos. */
-const V='sr-""" + TODAY + """',CORE=['./','ca/','assets/fonts.css','assets/lenis.min.js','manifest.webmanifest','icons/icon-192.png'];
+const V='sr-""" + TODAY + """',CORE=['./','assets/fonts.css','assets/lenis.min.js','manifest.webmanifest','icons/icon-192.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{
@@ -484,4 +431,4 @@ self.addEventListener('fetch',e=>{
   e.respondWith(caches.match(r).then(m=>{const f=fetch(r).then(put).catch(()=>m);return m||f;}));
 });
 """)
-print('ok', len(play), 'juegos ·', 2 * len(play), 'fichas')
+print('ok', len(play), 'juegos')
