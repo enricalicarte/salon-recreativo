@@ -135,6 +135,7 @@ h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:-.01em;marg
 .cover img.shot{animation:kb 18s ease-in-out infinite alternate;transform-origin:60% 40%}
 @keyframes kb{from{transform:scale(1.03)}to{transform:scale(1.13) translate(-2%,-1.5%)}}
 .cover video{opacity:0;transition:opacity .4s}.cover.vid video{opacity:1}
+video::-webkit-media-controls,video::-webkit-media-controls-start-playback-button,video::-webkit-media-controls-overlay-play-button,video::-webkit-media-controls-panel{display:none!important;-webkit-appearance:none;opacity:0!important}
 .cover::after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgba(7,6,15,.45));pointer-events:none}
 .row img{width:100%;height:100%;object-fit:cover;display:block}
 @media (prefers-reduced-motion:reduce){.cover img.shot{animation:none}}
@@ -216,7 +217,7 @@ body.hasglow .glow{opacity:1}
 .feat-track::-webkit-scrollbar{display:none}
 .slide{position:relative;flex:0 0 100%;scroll-snap-align:start;aspect-ratio:21/9;max-height:620px;min-height:340px;overflow:hidden;background:var(--panel);isolation:isolate}
 .slide img,.slide video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.slide video{opacity:0;transition:opacity .6s}.slide.on video{opacity:1}
+.slide video{opacity:0;transition:opacity .6s}.slide.vid video{opacity:1}
 .slide::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(7,6,15,.92) 0%,rgba(7,6,15,.65) 34%,rgba(7,6,15,0) 62%),linear-gradient(0deg,rgba(7,6,15,.6),transparent 40%)}
 .slide-c{position:absolute;z-index:2;left:clamp(20px,4vw,56px);bottom:clamp(22px,4vw,52px);max-width:min(520px,80%)}
 .slide-c .chip{position:static;display:inline-block;margin-bottom:14px}
@@ -1165,7 +1166,7 @@ const MEDIA=new Set(/*MEDIA*/["anguera-superstars", "aura-battle", "aventura-por
 /* ---------- Cartas ---------- */
 const vids=[];
 const WEBM=(()=>{try{return !!document.createElement('video').canPlayType('video/webm; codecs="vp9"')}catch(e){return false}})();
-function playVid(v){if(!v.src)v.src=v.dataset.src+(WEBM?'.webm':'.mp4');const p=v.play();if(p&&p.catch)p.catch(()=>{});v.parentNode.classList.add('vid');}
+function playVid(v){if(!v.src){v.src=v.dataset.src+(WEBM?'.webm':'.mp4');v.addEventListener('playing',()=>{if(!v.paused)v.parentNode.classList.add('vid');});}const p=v.play();if(p&&p.catch)p.catch(()=>{});if(v.readyState>2&&!v.paused)v.parentNode.classList.add('vid');}
 function stopVid(v){v.pause();v.parentNode.classList.remove('vid');}
 function makeCard(g,idx){
   const cat=CATS[g.cat];
@@ -1175,7 +1176,7 @@ function makeCard(g,idx){
     :g.url?'<a class="play" href="'+esc(g.url)+'" target="_blank" rel="noopener">'+esc(g.cta||'Jugar')+' <span aria-hidden="true">↗</span></a>'
     :'<span class="pending">Próximamente</span>';
   el.innerHTML=
-    '<div class="cover">'+(MEDIA.has(slugOf(g))?'<img class="shot" src="media/'+slugOf(g)+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline preload="none" data-src="media/'+slugOf(g)+'"></video>':'<canvas aria-hidden="true"></canvas>')+'<span class="chip">'+esc(cat.n)+'</span>'+(g.play?'<button class="pl" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'" aria-label="Jugar a '+esc(g.name)+'"><b>▶</b></button>':'')+'</div>'+
+    '<div class="cover">'+(MEDIA.has(slugOf(g))?'<img class="shot" src="media/'+slugOf(g)+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" poster="media/'+slugOf(g)+'.jpg" data-src="media/'+slugOf(g)+'"></video>':'<canvas aria-hidden="true"></canvas>')+'<span class="chip">'+esc(cat.n)+'</span>'+(g.play?'<button class="pl" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'" aria-label="Jugar a '+esc(g.name)+'"><b>▶</b></button>':'')+'</div>'+
     '<div class="body"><h3>'+(g.play&&!window.claude?'<a href="jugar/'+slugOf(g)+'/">'+esc(g.name)+'</a>':esc(g.name))+'</h3>'+(g.note?'<p class="former">'+esc(g.note)+'</p>':'')+
     '<p class="blurb">'+esc(g.blurb)+'</p></div>'+
     '<div class="foot"><ul class="tags">'+g.tags.slice(0,2).map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+cta+'</div>';
@@ -1226,7 +1227,7 @@ if(!reduce&&'IntersectionObserver' in window){
   const list=FEAT.map(id=>GAMES.find(g=>g.id===id)).filter(g=>g&&g.play&&MEDIA.has(slugOf(g)));
   const track=$('#fTrack'),dots=$('#fDots');if(!track||!list.length){const f=$('#destacados');if(f)f.hidden=true;return;}
   track.innerHTML=list.map((g,i)=>{const sl=slugOf(g),cat=CATS[g.cat];return '<article class="slide" style="--c:'+cat.c+'" aria-roledescription="diapositiva" aria-label="'+(i+1)+' de '+list.length+'">'+
-    '<img src="media/'+sl+'.jpg" alt="" '+(i?'loading="lazy" ':'')+'decoding="async"><video muted loop playsinline preload="none" data-src="media/'+sl+'"></video>'+
+    '<img src="media/'+sl+'.jpg" alt="" '+(i?'loading="lazy" ':'')+'decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" poster="media/'+sl+'.jpg" data-src="media/'+sl+'"></video>'+
     '<div class="slide-c"><span class="chip">'+esc(cat.n)+'</span><h3>'+esc(g.name)+'</h3><p>'+esc(g.blurb)+'</p><div class="acts">'+
     '<button class="play" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">Jugar ahora <span aria-hidden="true">▶</span></button>'+
     (window.claude?'':'<a class="more" href="jugar/'+sl+'/">Ver ficha</a>')+'</div></div></article>';}).join('');
