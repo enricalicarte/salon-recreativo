@@ -1,0 +1,44 @@
+{
+ "name": "Salón Recreativo · Alica Games Studio",
+ "short_name": "Salón",
+ "description": "Minijuegos gratis para el navegador, sin anuncios ni descargas.",
+ "lang": "es",
+ "start_url": "./?app=1",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#07060f",
+ "theme_color": "#07060f",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Juegos relajantes",
+   "url": "./#sec-relax"
+  },
+  {
+   "name": "CatQuiz",
+   "url": "./#sec-catquiz"
+  },
+  {
+   "name": "Saga cósmica",
+   "url": "./#trilogia"
+  }
+ ]
+}
