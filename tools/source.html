@@ -259,7 +259,7 @@ body.hasglow .glow{opacity:1}
   <div class="hero-c">
     <p class="pre">Alica Games Studio presenta</p>
     <h1 class="ttl" id="ttl"><span>Salón</span><span>Recreativo</span></h1>
-    <p class="lede"><b id="n">52</b> minijuegos online gratis para jugar en el navegador, sin descargas. Fútbol con las reglas de la Kings League, rock cósmico, karts, montañas rusas, juegos relajantes y palabras en catalán. Para móvil y PC.</p>
+    <p class="lede">Minijuegos online gratis para jugar en el navegador, sin descargas. Fútbol con las reglas de la Kings League, rock cósmico, karts, montañas rusas, juegos relajantes y palabras en catalán. Para móvil y PC.</p>
     <div class="ctas">
       <button class="btn p" type="button" data-random>Jugar a uno al azar ▶</button>
       <a class="btn g" href="#destacados" id="go">Ver los juegos</a>
@@ -1127,7 +1127,6 @@ function track(cv,scene,t0,lite){
   const it={cv:cv,cx:cv.getContext('2d'),scene:scene,t:t0,vis:false,fast:false,lite:!!lite};
   items.push(it);byCanvas.set(cv,it);return it;
 }
-$('#n').textContent=GAMES.length;
 const slugify=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const slugOf=g=>(g.cat==='relax'?'relax-':g.cat==='catquiz'?'catquiz-':'')+slugify(g.name);
 const MEDIA=new Set(/*MEDIA*/["anguera-superstars", "aura-battle", "aventura-porc", "catquiz-accents", "catquiz-anagrama", "catquiz-caca-estrelles", "catquiz-com-es-diu-en-catala", "catquiz-esquiva", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-sopa-de-lletres", "constructor-cosmico", "cosmic-guitar", "cube-runner", "l-ultim-estiu", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "neon-coast", "olimpiadas-de-la-granja", "paradon-cosmico", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "suo-shop-rush", "supernova-guitar", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally"]/*/MEDIA*/);

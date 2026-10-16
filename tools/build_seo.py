@@ -160,7 +160,7 @@ head_part=src[:i];body=src[i:]
 head_part=re.sub(r'<title>.*?</title>\s*','',head_part,flags=re.S)
 head_part=re.sub(r'<meta name="claude:viewport-fit-sides"[^>]*>\s*','',head_part)
 HT='Minijuegos online gratis y sin anuncios | Salón Recreativo'
-HD=f'{len(G)} minijuegos online gratis y sin anuncios: juegos relajantes, de ritmo, karts, fútbol y juegos de palabras en catalán. En el navegador, móvil y PC, sin descargas.'
+HD=f'Minijuegos online gratis y sin anuncios: juegos relajantes, de ritmo, karts, fútbol y juegos de palabras en catalán. En el navegador, móvil y PC, sin descargas.'
 HD=short(HD,158)
 items=[{"@type":"ListItem","position":k+1,"url":BASE+'jugar/'+g['slug']+'/',"name":g['name']} for k,g in enumerate(play)]
 site={"@context":"https://schema.org","@type":"WebSite","name":"Salón Recreativo","url":BASE,"inLanguage":"es","description":HD,"publisher":{"@type":"Organization","name":"Alica Games Studio","url":BASE}}
@@ -183,7 +183,7 @@ for k in ['cosmico']+ORDER:
     if k not in bycat:continue
     cols+=f'<div><h2>{e(CATS[k]["n"])}</h2><ul>'+''.join(f'<li><a href="jugar/{g["slug"]}/">{e(g["name"])}</a></li>' for g in bycat[k])+'</ul></div>'
 hubl=' · '.join(f'<a href="{H["slug"]}/">{e(H["h1"])}</a>' for H in HUBS)
-about=f'<p>Salón Recreativo es una colección de {len(G)} minijuegos online y gratis hechos con HTML y Three.js: fútbol, juegos de ritmo musical, karts, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p><p>'+hubl+'</p>'
+about=f'<p>Salón Recreativo es una colección de minijuegos online y gratis hechos con HTML y Three.js: fútbol, juegos de ritmo musical, karts, montañas rusas, juegos relajantes y juegos de palabras en catalán. Todos se juegan en el navegador, en móvil y ordenador, sin descargas ni registro.</p><p>'+hubl+'</p>'
 nav=f'<nav class="dir" aria-label="Todos los juegos">{cols}</nav>'
 fb='</p></div>\n</footer>'
 assert body.count(fb)==1
