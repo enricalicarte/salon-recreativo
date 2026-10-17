@@ -83,6 +83,12 @@ button{font:inherit;color:inherit}
 .stats{display:grid;grid-template-columns:1fr auto;gap:6px 18px;font-size:15px}
 .stats span:nth-child(odd){color:var(--dim)}.stats span:nth-child(even){font-family:var(--disp);font-weight:600;text-align:right}
 .rank{font-family:var(--disp);font-size:64px;font-weight:700;line-height:1;color:var(--acc)}
+#story{z-index:9;align-items:center;justify-content:center;background:rgba(3,7,14,.82)}
+#story .card{width:min(560px,100%);gap:12px}#story .kick{font-family:var(--disp);font-size:11px;letter-spacing:.24em;color:var(--acc);text-transform:uppercase}
+#story p{margin:0;font-size:16px;line-height:1.5;color:var(--fg)}#story p.q{color:var(--dim);font-style:italic}
+#radio{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);z-index:6;width:min(560px,58vw);box-sizing:border-box;padding:9px 14px;background:rgba(5,10,18,.78);border:1px solid var(--line);border-left:3px solid var(--acc);font-size:14px;line-height:1.35;opacity:0;transition:opacity .35s;pointer-events:none}
+#radio.on{opacity:1}#radio b{display:block;font-family:var(--disp);font-size:10px;letter-spacing:.22em;color:var(--acc);text-transform:uppercase;margin-bottom:2px}
+.epi{margin:0;font-size:15px;line-height:1.5;color:var(--fg);font-style:italic}
 #rotate{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;text-align:center;background:rgba(3,7,14,.94);font-family:var(--disp);letter-spacing:.14em;text-transform:uppercase;padding:24px}
 #nogl{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;background:var(--bg)}
 @media (max-width:700px){#menu{background:rgba(3,7,14,.82)}.mpanel{width:100%}}
@@ -146,6 +152,14 @@ button{font:inherit;color:inherit}
     <button class="cta" id="bAgain" type="button">Jugar de nuevo</button>
     <button class="cta sec" id="bEndMenu" type="button">Menú principal</button></div>
 </div>
+<div id="story" class="ov" hidden>
+  <div class="card"><div class="kick">Octubre de 1944 · Puerto Alba</div><h2>La última mañana</h2>
+    <p>Puerto Alba es el último puerto libre de la costa. Esta noche zarpa el convoy con tres mil civiles a bordo: familias, heridos, niños. Solo necesita un amanecer sin bombas.</p>
+    <p>Tu escuadrilla, <b>Alas de Acero</b>, ya no existe. Quedas tú, el último piloto, y un caza con el depósito lleno.</p>
+    <p class="q">«Halcón, aquí Torre Alba. Cinco oleadas vienen hacia el puerto. No hay refuerzos: hoy el cielo es tuyo.»</p>
+    <button class="cta" id="bGo" type="button">Despegar</button></div>
+</div>
+<div id="radio" role="status"></div>
 <div id="rotate"><div>Gira el dispositivo<br><small style="letter-spacing:.2em;color:#8da5bd">Alas de Acero se juega en horizontal</small></div></div>
 <div id="nogl"><div><h2 style="font-family:var(--disp);letter-spacing:.12em">WebGL no disponible</h2><p class="hint">Este navegador no puede mostrar gráficos 3D. Prueba con otro navegador o activa la aceleración por hardware.</p></div></div>
 
@@ -163,9 +177,9 @@ if(typeof THREE==='undefined'){$('nogl').style.display='flex';return;}
 const {Vector3:V3,Quaternion:Q,Euler:E,Color:Col}=THREE;
 
 /* ------------------------------------------------------------------ settings */
-const S={mode:'mission',diff:'normal',tod:'day',ctrl:'keys',level:'arcade',v2:0,assist:true,invert:false,quality:isTouch?'med':'high',sound:true,best:0};
+const S={mode:'mission',diff:'easy',tod:'day',ctrl:'keys',level:'arcade',v2:0,assist:true,invert:false,quality:isTouch?'med':'high',sound:true,best:0};
 try{const j=JSON.parse(localStorage.getItem('alasdeacero.v1')||'{}');Object.assign(S,j);}catch(e){}
-S.level='arcade';S.assist=true;if(!S.diff)S.diff='normal';if(!['arcade','easy','normal','manual'].includes(S.level))S.level='arcade';S.assist=S.level!=='manual';
+if(!S.ez){S.diff='easy';S.ez=1;}S.level='arcade';S.assist=true;if(!S.diff)S.diff='easy';if(!['arcade','easy','normal','manual'].includes(S.level))S.level='arcade';S.assist=S.level!=='manual';
 function save(){try{localStorage.setItem('alasdeacero.v1',JSON.stringify(S));}catch(e){}}
 
 /* ------------------------------------------------------------------ noise / terrain */
@@ -200,7 +214,7 @@ function qcfg(){return S.quality==='high'?{pr:Math.min(devicePixelRatio||1,2),R:
 let QC=qcfg();
 function resize(){W=innerWidth;H=innerHeight;QC=qcfg();renderer.setPixelRatio(QC.pr);renderer.setSize(W,H,false);camera.aspect=W/H;camera.updateProjectionMatrix();
   dprHud=Math.min(devicePixelRatio||1,2);hudc.width=Math.round(W*dprHud);hudc.height=Math.round(H*dprHud);UI=clamp(Math.min(W,H)/720,.7,1.5);
-  $('rotate').style.display=(isTouch&&H>W)?'flex':'none';}
+  $('rotate').style.display='none';}
 
 function canvasTex(w,h,fn,rep){const c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);if(rep){t.wrapS=t.wrapT=THREE.RepeatWrapping;}t.anisotropy=4;return t;}
 const glowTex=canvasTex(64,64,(g)=>{const r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.3,'rgba(255,255,255,.55)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,64,64);});
@@ -528,7 +542,7 @@ function beep(f,d,type,g,delay){if(!AC||!S.sound)return;const t=AC.currentTime+(
 function noiseHit(dur,f0,f1,g){if(!AC||!S.sound)return;const t=AC.currentTime,s=AC.createBufferSource();s.buffer=A.nb;const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.setValueAtTime(f0,t);lp.frequency.exponentialRampToValueAtTime(f1,t+dur);const gg=AC.createGain();gg.gain.setValueAtTime(g,t);gg.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(lp);lp.connect(gg);gg.connect(master);s.start(t);s.stop(t+dur+.05);}
 
 /* ------------------------------------------------------------------ combat */
-const DIFF={easy:{dmg:.55,spread:1.7,rate:.65,hp:.8},normal:{dmg:1,spread:1,rate:1,hp:1},hard:{dmg:1.5,spread:.7,rate:1.35,hp:1.25}};
+const DIFF={easy:{dmg:.4,spread:2.4,rate:.55,hp:.7},normal:{dmg:.8,spread:1.4,rate:.8,hp:.9},hard:{dmg:1.5,spread:.7,rate:1.35,hp:1.25}};
 const WAVES=[{f:2,b:0},{f:3,b:0},{f:3,b:1},{f:5,b:0},{f:4,b:2}];
 let M={wave:0,score:0,hp:100,kills:0,time:0,hitFlash:0,hitMark:0,fireT:0,sinceHit:99,banner:0,bannerT:0,spawnT:2,done:false,crashes:0,enemies:[],acc:{shots:0,hits:0},started:false};
 function tracerPool(n,color,w){
@@ -553,11 +567,18 @@ function spawnEnemy(type,i,n){
   pos.y=Math.max(P.pos.y+(Math.random()*200-70),groundH(pos.x,pos.z)+110);
   const m=makeWW2(type==='b'?PAL_BOMB:PAL_ENEMY);if(type==='b')m.g.scale.set(1.9,1.7,1.9);
   scene.add(m.g);
-  const e={g:m.g,pr:m.parts,type,pos,dir:new V3().copy(P.pos).sub(pos).normalize(),speed:type==='b'?44:(62+M.wave*2),hp:Math.round((type==='b'?42:7)*d.hp),max:type==='b'?42*d.hp:7*d.hp,
-    state:'attack',timer:0,bdir:1,fireT:1+Math.random()*2,burst:0,bank:0,r:type==='b'?14:8,dying:false,dyT:0,seed:Math.random()*10,smokeT:0};
+  const e={g:m.g,pr:m.parts,type,pos,dir:new V3().copy(P.pos).sub(pos).normalize(),speed:type==='b'?44:(62+M.wave*2),hp:Math.round((type==='b'?36:5)*d.hp),max:Math.round((type==='b'?36:5)*d.hp),
+    state:'attack',timer:0,bdir:1,fireT:1+Math.random()*2,burst:0,bank:0,r:type==='b'?17:11,dying:false,dyT:0,seed:Math.random()*10,smokeT:0};
   m.g.position.copy(pos);M.enemies.push(e);}
+const WAVE_MSG=[
+ ['Torre Alba','Halcón, dos cazas de reconocimiento al norte. Si ven el puerto, avisan al resto. ¡Que no vuelvan!'],
+ ['Torre Alba','Más cazas llegan por el horizonte. Mantén la calma, Halcón: ahí abajo cuentan contigo.'],
+ ['Torre Alba','¡Bombardero pesado en camino! Va lento y aguanta mucho: dispara a las alas y no le dejes llegar al puerto.'],
+ ['Torre Alba','Cinco cazas negros: la escuadrilla de élite. Son rápidos y van en grupo. Usa el retrovisor, Halcón.'],
+ ['Torre Alba','Es la última oleada: bombarderos con escolta. Derríbalos y el convoy zarpará al anochecer. ¡Tú puedes!']];
+let radioH=0;function radio(who,t){const e=$('radio');e.innerHTML='<b></b><span></span>';e.firstChild.textContent=who;e.lastChild.textContent=t;e.className='on';clearTimeout(radioH);radioH=setTimeout(()=>{e.className='';},7000);}
 function startWave(){const w=WAVES[M.wave];M.wave++;let i=0;const n=w.f+w.b;for(let k=0;k<w.f;k++)spawnEnemy('f',i++,n);for(let k=0;k<w.b;k++)spawnEnemy('b',i++,n);
-  M.banner=M.wave;M.bannerT=2.6;toast('Oleada '+M.wave+' de '+WAVES.length+' · '+n+' enemigos');beep(520,.12,'square',.14);beep(780,.2,'square',.14,.12);}
+  M.banner=M.wave;M.bannerT=2.6;{const m=WAVE_MSG[M.wave-1];if(m)radio(m[0],m[1]);}toast('Oleada '+M.wave+' de '+WAVES.length+' · '+n+' enemigos');beep(520,.12,'square',.14);beep(780,.2,'square',.14,.12);}
 function fireBullet(pool,origin,dir,spd,life,owner){if(pool.list.length>=pool.n)return;pool.list.push({p:origin.clone(),v:dir.clone().multiplyScalar(spd).add(owner||eTmp.set(0,0,0)),life});}
 function damagePlayer(a){const d=DIFF[S.diff]||DIFF.normal;M.hp-=a*d.dmg;M.hitFlash=1;M.sinceHit=0;noiseHit(.15,900,200,.45);beep(110,.14,'square',.2);
   if(M.hp<=0&&!P.crashed){M.hp=0;crash('Tu avión ha sido derribado');}}
@@ -568,6 +589,7 @@ function lastFire(){return !!(K.Space||T.brake||mouse.down);}
 function combatStep(dt){
   if(!M.started||M.done)return;
   M.time+=dt;M.sinceHit+=dt;M.hitFlash=Math.max(0,M.hitFlash-dt*1.6);M.hitMark=Math.max(0,M.hitMark-dt*4);M.bannerT=Math.max(0,M.bannerT-dt);
+  if(M.hp<35&&!M.lowMsg){M.lowMsg=true;radio('Torre Alba','¡Halcón, el casco está muy dañado! Sepárate de ellos y respira: te recuperas si no te alcanzan.');}
   if(M.sinceHit>5&&M.hp<100)M.hp=Math.min(100,M.hp+4*dt);
   fwd.set(0,0,-1).applyQuaternion(P.q);up.set(0,1,0).applyQuaternion(P.q);right.set(1,0,0).applyQuaternion(P.q);
   /* --- disparo del jugador --- */
@@ -642,7 +664,7 @@ function finishCombat(){
   const rank=total>=3300?'S':total>=2800?'A':total>=2300?'B':'C';
   if(total>S.best){S.best=total;save();}
   $('endTitle').textContent='¡Victoria!';$('endTitle').className='good';
-  $('endBody').innerHTML=`<div class="rank">${rank}</div><div class="stats"><span>Enemigos derribados</span><span>${M.kills}</span><span>Puntería</span><span>${acc}%</span><span>Bonus de casco</span><span>${bonus}</span><span>Bonus de tiempo</span><span>${tb}</span><span>Total</span><span>${total}</span></div>`;
+  $('endBody').innerHTML=`<p class="epi">El convoy zarpó al atardecer con las luces apagadas. Desde cubierta, tres mil personas vieron un solo caza dar una última vuelta sobre el puerto. Nadie supo tu nombre; todos recordaron tu señal: Halcón. «Torre Alba a Halcón: misión cumplida. Bienvenido a casa.»</p><div class="rank">${rank}</div><div class="stats"><span>Enemigos derribados</span><span>${M.kills}</span><span>Puntería</span><span>${acc}%</span><span>Bonus de casco</span><span>${bonus}</span><span>Bonus de tiempo</span><span>${tb}</span><span>Total</span><span>${total}</span></div>`;
   $('end').hidden=false;beep(660,.18,'triangle',.25);beep(880,.18,'triangle',.25,.15);beep(1320,.4,'triangle',.25,.3);}
 
 /* ------------------------------------------------------------------ game flow */
@@ -664,7 +686,7 @@ function nearestAirport(){let bi=0,bd=1e12;AIRPORTS.forEach((a,i)=>{const d=Math
 function crash(reason){if(P.crashed)return;P.crashed=true;crashMsg=reason;crashT=0;M.crashes++;state='crashed';planeG.visible=false;
   burst(P.pos,150,1,.7,.2,38,1.8,8);burst(P.pos,80,1,.3,.05,20,2.6,14);burst(P.pos,50,.5,.5,.5,14,3,6);noiseHit(1.6,1800,60,.9);beep(90,.6,'sawtooth',.3);setState('crashed');
   if(M.score>S.best){S.best=M.score;save();}
-  $('endTitle').textContent='Derribado';$('endTitle').className='bad';$('endBody').innerHTML=`<p class="hint" style="font-size:16px;color:var(--fg)">${reason}</p><div class="stats"><span>Enemigos derribados</span><span>${M.kills}</span><span>Puntos</span><span>${M.score}</span></div>`;}
+  $('endTitle').textContent='Derribado';$('endTitle').className='bad';$('endBody').innerHTML=`<p class="hint" style="font-size:16px;color:var(--fg)">${reason}</p><p class="epi">«Torre Alba a Halcón… Halcón, responde…» El puerto aún resiste. Otro piloto sube a la cabina: inténtalo de nuevo.</p><div class="stats"><span>Enemigos derribados</span><span>${M.kills}</span><span>Puntos</span><span>${M.score}</span></div>`;}
 
 /* ------------------------------------------------------------------ physics */
 const wheelPts=[[-1.45,-GEAR_H,.4],[1.45,-GEAR_H,.4],[0,-GEAR_H+.05,-2.25]];
@@ -695,7 +717,7 @@ function manStep(dt){
 function loopStep(dt){
   fwd.set(0,0,-1).applyQuaternion(P.q);
   const danger=P.agl<130&&fwd.y<-.05;
-  const holding=P.pD>.45&&!danger;
+  const holding=(P.pRaw||0)>.45&&!danger;
   if(holding){tq.setFromAxisAngle(AX_X,2.3*dt);P.q.multiply(tq);P.q.normalize();P.loopAng+=2.3*dt;
     if(P.loopAng>=2*Math.PI){P.loopAng-=2*Math.PI;M.score+=40;toast('¡Looping! +40','good');beep(520,.12,'triangle',.12);beep(780,.14,'triangle',.12,.08);}}
   else{
@@ -718,10 +740,10 @@ function arcadeStep(dt){
   if(P.autoPull)pT=Math.max(pT,.5);
   pT=clamp(pT,-.6,.6);
   pit+=(pT-pit)*Math.min(1,dt*(P.autoPull?3.2:2.4));
-  if(P.pD>.72&&pit>.45&&!P.autoPull){P.pullT=(P.pullT||0)+dt;}else P.pullT=0;
-  if(P.pullT>.5&&P.agl>150){P.looping=true;P.loopAng=0;P.pullT=0;}
-  const bT=P.rD*.85;bank+=(bT-bank)*Math.min(1,dt*3.6);
-  const turn=bank*1.3;
+  if((P.pRaw||0)>.72&&pit>.45&&!P.autoPull){P.pullT=(P.pullT||0)+dt;}else P.pullT=0;
+  if(P.pullT>.9&&P.agl>150){P.looping=true;P.loopAng=0;P.pullT=0;}
+  const bT=P.rD*.95;bank+=(bT-bank)*Math.min(1,dt*4.6);
+  const turn=bank*1.65;
   yaw-=turn*dt;
   /* velocidad */
   const sp=approach(V,Vt,dt*(Vt>V?9:6))+(-Math.sin(pit)*5)*dt;
@@ -839,10 +861,12 @@ function stepSim(dt){
   if(S.ctrl==='mouse'&&mouse.on&&!isTouch){const dz=v=>Math.abs(v)<.07?0:v;pT+=clamp(dz(mouse.y)*1.5,-1,1);rT+=clamp(dz(mouse.x)*1.5,-1,1);}
   const ex=v=>v*Math.abs(v)*.45+v*.55;
   pT+=ex(T.sy);rT+=ex(T.sx);
-  /* ayuda de apuntado: al disparar, el morro se orienta suavemente hacia el enemigo más cercano a la mira */
-  if(M.started&&!M.done&&lastFire()){fwd.set(0,0,-1).applyQuaternion(P.q);right.set(1,0,0).applyQuaternion(P.q);up.set(0,1,0).applyQuaternion(P.q);
-    let bt=null,bs=1e9;for(const e of M.enemies){if(e.dying)continue;tv.copy(e.pos).sub(P.pos);const d=tv.length();if(d>1500||d<30)continue;const c=tv.dot(fwd)/d;if(c<.6)continue;const sc=Math.acos(clamp(c,-1,1))+d/20000;if(sc<bs){bs=sc;bt=e;bt.d=d;}}
-    if(bt){tv.copy(bt.pos).addScaledVector(bt.dir,bt.speed*bt.d/720).sub(P.pos).normalize();const lx=tv.dot(right),ly=tv.dot(up);rT+=clamp(lx*3,-.7,.7);pT+=-clamp(ly*3,-.7,.7);}}
+  const pRaw0=pT;
+  /* ayuda de apuntado: siempre activa (suave); al disparar, más fuerte y con cono más ancho */
+  if(M.started&&!M.done&&!P.man&&!P.looping){const fr=lastFire();fwd.set(0,0,-1).applyQuaternion(P.q);right.set(1,0,0).applyQuaternion(P.q);up.set(0,1,0).applyQuaternion(P.q);
+    let bt=null,bs=1e9;for(const e of M.enemies){if(e.dying)continue;tv.copy(e.pos).sub(P.pos);const d=tv.length();if(d>(fr?1600:1200)||d<30)continue;const c=tv.dot(fwd)/d;if(c<(fr?.45:.8))continue;const sc=Math.acos(clamp(c,-1,1))+d/20000;if(sc<bs){bs=sc;bt=e;bt.d=d;}}
+    if(bt){tv.copy(bt.pos).addScaledVector(bt.dir,bt.speed*bt.d/720).sub(P.pos).normalize();const lx=tv.dot(right),ly=tv.dot(up),g=fr?4.2:1.6,mx=fr?.9:.45;rT+=clamp(lx*g,-mx,mx);pT+=-clamp(ly*g,-mx,mx);}}
+  P.pRaw=(S.invert!==isE())?-pRaw0:pRaw0;
   if(S.invert!==isE())pT=-pT;
   pT=clamp(pT,-1,1);rT=clamp(rT,-1,1);
   const rate=(c,t)=>Math.abs(t)>Math.abs(c)||Math.sign(t)!==Math.sign(c)?4.5*dt:7*dt;
@@ -1072,7 +1096,7 @@ function lvHint(){return;$('lvHint').textContent={arcade:'Vuelo fluido tipo arca
 modeHint();lvHint();
 if(isTouch){$('rCtrl').style.display='none';$('keysHelp').style.display='none';}
 $('bestLine').textContent=S.best?'Mejor puntuación: '+S.best:(isTouch?'Joystick: mover · FUEGO: disparar':'Mantén ESPACIO para disparar: el avión corrige la puntería.');
-$('bStart').addEventListener('click',startGame);
+$('bStart').addEventListener('click',()=>{$('story').hidden=false;});$('bGo').addEventListener('click',()=>{$('story').hidden=true;startGame();});
 $('bResume').addEventListener('click',resumeGame);$('bRestart').addEventListener('click',restartFlight);$('bToMenu').addEventListener('click',toMenu);
 $('bAgain').addEventListener('click',()=>{if(state==='finished')M.crashes=0;restartFlight();});$('bEndMenu').addEventListener('click',toMenu);
 $('bPause').addEventListener('click',()=>{if(state==='play')pauseGame();else if(state==='paused')resumeGame();});
