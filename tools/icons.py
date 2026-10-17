@@ -842,6 +842,67 @@ def _(I):
     eyes(I, 302, 188, .7, 26, 1); smile(I, 302, 206, .7, True)
     sparkle(I, 452, 300, 16); sparkle(I, 200, 70, 12)
 
+
+def skier(I, x, y, rot=0, s=1, pose='fly'):
+    """Esquiador cartoon: casco, gafas, mono naranja y esquís azules."""
+    g = f'<g transform="translate({x} {y}) rotate({rot}) scale({s})">'
+    if pose == 'fly':   # estilo V, cuerpo inclinado sobre los esquís
+        g += (f'<path d="M-120 34 L150 -6" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-120 34 L150 -6" stroke="#14b8ff" stroke-width="11" stroke-linecap="round"/>'
+              f'<path d="M-110 56 L150 40" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-110 56 L150 40" stroke="#14b8ff" stroke-width="11" stroke-linecap="round"/>'
+              f'<path d="M-30 30 L-74 4" stroke="{INK}" stroke-width="30" stroke-linecap="round"/><path d="M-30 30 L-74 4" stroke="#1c2233" stroke-width="18" stroke-linecap="round"/>'
+              f'<path d="M-78 2 C-40 -40 40 -46 70 -26 L62 4 C30 -8 -20 -2 -60 22Z" {st("#ff5a1f", 8)}/>'
+              f'<path d="M10 -26 L-40 -8 M20 -14 L-34 10" stroke="#ffb08a" stroke-width="6" stroke-linecap="round" opacity=".7"/>'
+              f'<path d="M-10 -24 L-70 -34" stroke="{INK}" stroke-width="20" stroke-linecap="round"/><path d="M-10 -24 L-70 -34" stroke="#ff5a1f" stroke-width="9" stroke-linecap="round"/>'
+              f'<circle cx="92" cy="-36" r="34" {st(I.rg("#ffffff", "#d9dcef", .4, .35, .8), 8)}/>'
+              f'<path d="M86 -40 h40 a10 10 0 0 1 0 20 h-40Z" {st("#1b2a4a", 6)}/><path d="M96 -36 h22" stroke="#7fd3ff" stroke-width="5" stroke-linecap="round"/>'
+              f'<rect x="-18" y="-20" width="30" height="26" rx="4" fill="#fff" stroke="{INK}" stroke-width="5" transform="rotate(-14)"/><text x="-4" y="1" text-anchor="middle" font-size="20" {FONT} fill="{INK}" transform="rotate(-14)">7</text>')
+    else:               # agrupado en voltereta
+        g += (f'<path d="M-96 60 L96 60" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-96 60 L96 60" stroke="#14b8ff" stroke-width="11" stroke-linecap="round"/>'
+              f'<path d="M-90 80 L100 80" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-90 80 L100 80" stroke="#14b8ff" stroke-width="11" stroke-linecap="round"/>'
+              f'<path d="M-6 66 L-40 20 L10 -4" fill="none" stroke="{INK}" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 66 L-40 20 L10 -4" fill="none" stroke="#1c2233" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>'
+              f'<ellipse cx="18" cy="-16" rx="46" ry="40" {st("#ff5a1f", 8)}/>'
+              f'<path d="M30 -26 L-30 10" stroke="{INK}" stroke-width="20" stroke-linecap="round"/><path d="M30 -26 L-30 10" stroke="#ff5a1f" stroke-width="9" stroke-linecap="round"/>'
+              f'<circle cx="52" cy="-62" r="32" {st(I.rg("#ffffff", "#d9dcef", .4, .35, .8), 8)}/>'
+              f'<path d="M50 -66 h36 a10 10 0 0 1 0 20 h-36Z" {st("#1b2a4a", 6)}/><path d="M58 -62 h20" stroke="#7fd3ff" stroke-width="5" stroke-linecap="round"/>')
+    I.add(g + '</g>')
+
+def alpine(I):
+    """Fondo de cartel alpino: cielo al atardecer, sol marfil con franjas y montañas nevadas."""
+    bg(I, '#ffb38a', '#2b4c8f', '#fff3c4', .12)
+    I.add(f'<circle cx="256" cy="230" r="150" fill="none" stroke="#c9ab62" stroke-width="4" opacity=".8"/>'
+          f'<clipPath id="sunc"><circle cx="256" cy="230" r="132"/></clipPath><circle cx="256" cy="230" r="132" fill="#f7f2e4"/>'
+          '<g clip-path="url(#sunc)" fill="#f2c9a4">' + ''.join(f'<rect x="100" y="{270+i*18}" width="320" height="{5+i*2}"/>' for i in range(5)) + '</g>')
+    I.add(f'<path d="M-10 522 V360 L70 290 L130 340 L220 250 L300 340 L380 280 L522 380 V522Z" fill="#15496a" stroke="{INK}" stroke-width="7"/>'
+          f'<path d="M206 266 L220 250 L236 268 L226 262 L220 274 L212 262Z M58 300 L70 290 L84 304 L76 300 L70 310 L64 300Z M368 290 L380 280 L394 294 L386 290 L380 300 L374 290Z" fill="#f7f2e4"/>'
+          f'<path d="M-10 522 V420 L90 370 L180 420 L290 360 L400 420 L522 380 V522Z" fill="#13795b" stroke="{INK}" stroke-width="7"/>')
+
+@icon('el-gran-salto')
+def _(I):
+    alpine(I)
+    # trampolín
+    I.add(f'<path d="M-10 250 L120 330 L150 336" fill="none" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-10 250 L120 330 L150 336" fill="none" stroke="#cfe6ff" stroke-width="12" stroke-linecap="round"/>'
+          f'<path d="M20 268 V522 M90 312 V522" stroke="{INK}" stroke-width="10"/>')
+    # pista de aterrizaje y marcas
+    I.add(f'<path d="M140 522 C260 470 400 440 522 430 V522Z" fill="#f7f2e4" stroke="{INK}" stroke-width="7"/>'
+          f'<path d="M330 452 L338 500" stroke="#d8201f" stroke-width="9" stroke-linecap="round"/><path d="M420 440 L426 486" stroke="#2d6bff" stroke-width="7" stroke-linecap="round"/>')
+    for i, (x, y) in enumerate(((176, 196), (150, 214), (128, 230))): I.add(f'<path d="M{x} {y} l-46 26" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity="{.9 - i*.25}"/>')
+    skier(I, 300, 200, -14, .95, 'fly')
+    sparkle(I, 440, 110, 16); sparkle(I, 90, 120, 12)
+    for x, y in ((60, 70), (150, 50), (420, 190), (470, 60), (240, 80)): I.add(f'<circle cx="{x}" cy="{y}" r="5" fill="#fff" opacity=".85"/>')
+
+@icon('la-gran-pirueta')
+def _(I):
+    alpine(I)
+    I.add(f'<path d="M70 470 Q256 -60 450 470" fill="none" stroke="#fff" stroke-width="7" stroke-dasharray="2 18" stroke-linecap="round" opacity=".9"/>')
+    # rotación: flechas curvas alrededor del esquiador
+    I.add(f'<path d="M150 150 A120 120 0 0 1 380 160" fill="none" stroke="#ffd23f" stroke-width="12" stroke-linecap="round"/><path d="M380 160 l-30 -10 l20 30Z" fill="#ffd23f" stroke="{INK}" stroke-width="5"/>'
+          f'<path d="M380 330 A120 120 0 0 1 150 320" fill="none" stroke="#ffd23f" stroke-width="12" stroke-linecap="round" opacity=".7"/>')
+    skier(I, 262, 240, 150, .95, 'tuck')
+    # trampolín de salida
+    I.add(f'<path d="M-10 420 Q60 470 120 430" fill="none" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-10 420 Q60 470 120 430" fill="none" stroke="#cfe6ff" stroke-width="12" stroke-linecap="round"/>')
+    for x, y, c in ((90, 100, '#ff4fa3'), (430, 90, '#ffd23f'), (400, 380, '#38e5ff'), (120, 330, '#7af0b0')): I.add(f'<rect x="{x}" y="{y}" width="18" height="10" fill="{c}" transform="rotate(30 {x} {y})"/>')
+    sparkle(I, 450, 250, 16); sparkle(I, 70, 220, 12)
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

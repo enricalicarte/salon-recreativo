@@ -64,6 +64,38 @@
    "play": "juegos/paradon/index.html"
   },
   {
+   "id": "gransalto",
+   "slug": "el-gran-salto",
+   "kw": "juego de salto de esquí",
+   "cat": "invierno",
+   "sg": 1,
+   "name": "El Gran Salto",
+   "note": "Alta Temporada · Salto de esquí",
+   "blurb": "Juego de salto de esquí en 3D: baja por la rampa, despega justo en la zona verde, corrige el ángulo contra el viento y clava el telemark. Seis campeonatos contra siete rivales, de la Copa Nevada a la Copa del Mundo.",
+   "tags": [
+    "Salto de esquí",
+    "Viento",
+    "Campeonatos"
+   ],
+   "play": "juegos/gran-salto/index.html"
+  },
+  {
+   "id": "granpirueta",
+   "slug": "la-gran-pirueta",
+   "kw": "juego de esquí acrobático",
+   "cat": "invierno",
+   "sg": 1,
+   "name": "La Gran Pirueta",
+   "note": "Alta Temporada · Esquí acrobático",
+   "blurb": "Juego de esquí acrobático en 3D: sal del trampolín, encadena volteretas y giros en el aire y aterriza con las vueltas justas. Cada salto pide una figura, de la voltereta simple a la triple con giros.",
+   "tags": [
+    "Esquí acrobático",
+    "Volteretas",
+    "Campeonatos"
+   ],
+   "play": "juegos/gran-pirueta/index.html"
+  },
+  {
    "slug": "kings-league-mini-game",
    "id": "kings",
    "cat": "deporte",
@@ -955,6 +987,10 @@
    "n": "Cósmico",
    "c": "#9a8cff"
   },
+  "invierno": {
+   "n": "Alta Temporada",
+   "c": "#7cc8ff"
+  },
   "deporte": {
    "n": "Deporte",
    "c": "#3ddc84"
@@ -1020,6 +1056,10 @@
   "catquiz": {
    "t": "CatQuiz Minijocs",
    "d": "Minijuegos de palabras en catalán, para jugar y aprender."
+  },
+  "invierno": {
+   "t": "Alta Temporada",
+   "d": "La saga de invierno: deportes de nieve con campeonatos, rivales y medallas."
   }
  }
 }

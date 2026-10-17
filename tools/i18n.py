@@ -107,7 +107,7 @@ ES_CQ = {
  'cq_perdudes': dict(kw="juego de letras en catalán", blurb="Juego de letras en catalán: a la palabra le faltan letras y tienes que escribirlas en orden. Tres errores y se revela; veinte segundos por ronda."),
 }
 
-CA_CATS = {"cosmico": "Còsmic", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
+CA_CATS = {"cosmico": "Còsmic", "invierno": "Alta Temporada", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
 CA_CATD = {"accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
            "deporte": {"t": "Esport", "d": "Futbol 7, Kings League i unes olimpíades de granja per als més petits."},
            "ritmo": {"t": "Ritme", "d": "Notes que cauen, guitarres i cabines de DJ: música per tocar amb els dits."},

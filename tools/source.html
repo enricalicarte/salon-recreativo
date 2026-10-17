@@ -336,7 +336,7 @@ body.hasglow .glow{opacity:1}
 .vbtn .i-rows,body.v-mosaic .vbtn .i-grid{display:none}body.v-mosaic .vbtn .i-rows{display:block}
 #mzHead,#mosaic{display:none}
 body.v-mosaic #mzHead,body.v-mosaic #mosaic{display:block}
-body.v-mosaic .hero,body.v-mosaic .tick,body.v-mosaic #destacados,body.v-mosaic #trilogia,body.v-mosaic #secnav,body.v-mosaic #secs{display:none!important}
+body.v-mosaic .hero,body.v-mosaic .tick,body.v-mosaic #destacados,body.v-mosaic #trilogia,body.v-mosaic #saga-invierno,body.v-mosaic #secnav,body.v-mosaic #secs{display:none!important}
 body.v-mosaic .mine{padding-top:14px}
 #mzHead{padding-top:calc(84px + env(safe-area-inset-top,0px))}
 .mz-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -450,7 +450,7 @@ body.v-mosaic.v-game #mzHead,body.v-mosaic.v-game #tusalon,body.v-mosaic.v-game 
   <div class="in">
     <a class="brand" href="#"><i></i>ALICA GAMES STUDIO</a>
     <nav aria-label="Secciones">
-      <a href="#trilogia">Saga cósmica</a><a href="#sec-accion">Acción</a><a href="#sec-ritmo">Ritmo</a><a href="#sec-motor">Motor</a><a href="#sec-relax">Relax</a><a href="#sec-catquiz">CatQuiz</a>
+      <a href="#trilogia">Saga cósmica</a><a href="#saga-invierno">Alta Temporada</a><a href="#sec-accion">Acción</a><a href="#sec-ritmo">Ritmo</a><a href="#sec-motor">Motor</a><a href="#sec-relax">Relax</a><a href="#sec-catquiz">CatQuiz</a>
     </nav>
     <div class="acts"><!--LNG--><button class="vbtn" type="button" data-vtoggle aria-label="Cambiar de vista"><svg class="ico i-grid" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="2"/><rect x="15" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="11" width="6" height="6" rx="1.5"/><rect x="3" y="15" width="6" height="6" rx="1.5"/><rect x="11" y="19" width="10" height="2" rx="1"/></svg><svg class="ico i-rows" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg></button><button class="srch" type="button" data-find aria-label="Buscar juegos"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="l">Buscar</span><kbd>/</kbd></button>
     <button class="rnd" type="button" data-random><span class="l">Jugar a uno al azar</span><span class="s">Al azar ▶</span></button></div>
@@ -511,6 +511,19 @@ body.v-mosaic.v-game #mzHead,body.v-mosaic.v-game #tusalon,body.v-mosaic.v-game 
   </div>
 </section>
 
+<section class="band winter" id="saga-invierno">
+  <div class="in">
+    <div class="band-head">
+      <div>
+        <h2 style="--c:#7cc8ff">Alta Temporada</h2>
+        <p style="margin-top:12px">La saga de juegos de invierno: el mismo valle nevado, la misma estética de cartel alpino y una temporada de campeonatos contra siete rivales. Primero el salto de esquí; después, las piruetas en el aire.</p>
+      </div>
+      <span class="n" style="--c:#7cc8ff">2 juegos</span>
+    </div>
+    <div class="grid big" id="sagaInv"></div>
+  </div>
+</section>
+
 <div id="mosaic"><div class="in"><div class="mz-grid" id="mzGrid"></div></div><div id="mzBands"></div></div>
 
 <nav class="secnav" id="secnav" aria-label="Ir a una sección"><div class="in" id="chips" data-lenis-prevent></div></nav>
@@ -556,6 +569,7 @@ const TAU=Math.PI*2;
 /* ---------- Datos ---------- */
 const CATS={
   cosmico:{n:'Cósmico',c:'#9a8cff'},
+  invierno:{n:'Alta Temporada',c:'#7cc8ff'},
   deporte:{n:'Deporte',c:'#3ddc84'},
   ritmo:{n:'Ritmo',c:'#ff5fa8'},
   historias:{n:'Historias',c:'#ffb23e'},
@@ -565,7 +579,7 @@ const CATS={
   relax:{n:'Relax',c:'#6ef0b0'},
   catquiz:{n:'CatQuiz',c:'#ffb23e'}
 };
-const CATD={"accion": {t: "Acción", d: "Puntería, peleas, carreras y reflejos. Partidas rápidas para jugar con una mano."}, "deporte": {t: "Deporte", d: "Fútbol 7, Kings League, surf en olas gigantes y unas olimpiadas de granja para los más peques."}, "ritmo": {t: "Ritmo", d: "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."}, "motor": {t: "Motor", d: "Karts, monster trucks, carreras de neón y montañas rusas de cerditos."}, "historias": {t: "Historias", d: "Juegos narrativos con calendario, recuerdos y misterio."}, "marca": {t: "Con marca", d: "Juegos hechos a medida para marcas y clientes."}, "relax": {t: "Relax Games", d: "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."}, "catquiz": {t: "CatQuiz Minijocs", d: "Minijuegos de palabras en catalán, para jugar y aprender."}};
+const CATD={"invierno": {t: "Alta Temporada", d: "La saga de invierno: deportes de nieve con campeonatos, rivales y medallas."}, "accion": {t: "Acción", d: "Puntería, peleas, carreras y reflejos. Partidas rápidas para jugar con una mano."}, "deporte": {t: "Deporte", d: "Fútbol 7, Kings League, surf en olas gigantes y unas olimpiadas de granja para los más peques."}, "ritmo": {t: "Ritmo", d: "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."}, "motor": {t: "Motor", d: "Karts, monster trucks, carreras de neón y montañas rusas de cerditos."}, "historias": {t: "Historias", d: "Juegos narrativos con calendario, recuerdos y misterio."}, "marca": {t: "Con marca", d: "Juegos hechos a medida para marcas y clientes."}, "relax": {t: "Relax Games", d: "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."}, "catquiz": {t: "CatQuiz Minijocs", d: "Minijuegos de palabras en catalán, para jugar y aprender."}};
 /* play: ruta del juego dentro de esta web. url: enlace externo (solo si no hay archivos). */
 const GAMES=[
   {id:'rutacosmica',kw:"juego de naves espaciales",tri:1,cat:'cosmico',name:'Ruta Cósmica',note:'Antes de apuntar hay que llegar',
@@ -580,6 +594,13 @@ const GAMES=[
   {id:'paradon',kw:"juego de portero",tri:1,cat:'cosmico',name:'Paradón Cósmico',
    blurb:"Juego de portero en 3D al ritmo de la música: eres un astronauta bajo palos, con cinco calles y una lluvia de balones en un estadio cósmico. Cuantas más paradas, más dura el partido.",
    tags:["Portero", "Fútbol", "Ritmo"],play:'juegos/paradon/index.html'},
+
+  {id:'gransalto',kw:"juego de salto de esquí",sg:1,cat:'invierno',name:'El Gran Salto',note:'Alta Temporada · Salto de esquí',
+   blurb:"Juego de salto de esquí en 3D: baja por la rampa, despega justo en la zona verde, corrige el ángulo contra el viento y clava el telemark. Seis campeonatos contra siete rivales, de la Copa Nevada a la Copa del Mundo.",
+   tags:["Salto de esquí", "Viento", "Campeonatos"],play:'juegos/gran-salto/index.html'},
+  {id:'granpirueta',kw:"juego de esquí acrobático",sg:1,cat:'invierno',name:'La Gran Pirueta',note:'Alta Temporada · Esquí acrobático',
+   blurb:"Juego de esquí acrobático en 3D: sal del trampolín, encadena volteretas y giros en el aire y aterriza con las vueltas justas. Cada salto pide una figura, de la voltereta simple a la triple con giros.",
+   tags:["Esquí acrobático", "Volteretas", "Campeonatos"],play:'juegos/gran-pirueta/index.html'},
 
   {id:'kings',cat:'deporte',name:'Kings League Mini Game',
    blurb:"Fútbol 7 con las reglas de la Kings League: cartas secretas, penalti del presidente, gol doble, dado y shootouts. Doce equipos de la Kings League España, con estilo de bloques.",
@@ -682,9 +703,9 @@ const GAMES=[
 
 /* ---------- Datos de uso: edad, partidas cortas, móvil, novedades ---------- */
 const AGE={olimpiadas:3,aventura:3,towerstack:3,miramar:16};               // por defecto +7; relax +3
-const SHORT=new Set(['olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
-const MOB=new Set(['olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
-const NEW=new Set(['olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
+const SHORT=new Set(['gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
+const MOB=new Set(['gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
+const NEW=new Set(['gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
 const ageOf=g=>AGE[g.id]||(g.cat==='relax'?3:7);
 const EMAIL='';
 
@@ -1392,7 +1413,7 @@ const favs=new Set(store.get('favs',[]).filter(id=>GAMES.some(g=>g.id===id)));
 let recent=store.get('recent',[]).filter(id=>GAMES.some(g=>g.id===id&&g.play));
 /* Analítica sin cookies (GoatCounter): solo si la página la carga */
 function stat(p,t){try{if(window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:p,title:t||p,event:true});}catch(e){}}
-const MEDIA=new Set(/*MEDIA*/["anguera-superstars", "aura-battle", "aventura-porc", "cabina", "catquiz-accents", "catquiz-anagrama", "catquiz-caca-estrelles", "catquiz-com-es-diu-en-catala", "catquiz-esquiva", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-sopa-de-lletres", "constructor-cosmico", "cosmic-guitar", "cube-runner", "hotel-miramar", "l-ultim-estiu", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "neon-coast", "ola-perfecta", "olimpiadas-de-la-granja", "paradon-cosmico", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "suo-shop-rush", "supernova-guitar", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally"]/*/MEDIA*/);
+const MEDIA=new Set(/*MEDIA*/["anguera-superstars", "aura-battle", "aventura-porc", "cabina", "catquiz-accents", "catquiz-anagrama", "catquiz-caca-estrelles", "catquiz-com-es-diu-en-catala", "catquiz-esquiva", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-sopa-de-lletres", "constructor-cosmico", "cosmic-guitar", "cube-runner", "el-gran-salto", "hotel-miramar", "l-ultim-estiu", "la-gran-pirueta", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "neon-coast", "ola-perfecta", "olimpiadas-de-la-granja", "paradon-cosmico", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "suo-shop-rush", "supernova-guitar", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally"]/*/MEDIA*/);
 
 /* ---------- Muro de portadas del hero ---------- */
 (function(){
@@ -1469,10 +1490,10 @@ const secGrids={},secEls={};
 });
 GAMES.forEach((g,i)=>{
   const el=makeCard(g,i);
-  const grid=g.tri?$('#tri'):secGrids[g.cat];
+  const grid=g.tri?$('#tri'):g.sg?$('#sagaInv'):secGrids[g.cat];
   el.style.setProperty('--d',(grid.children.length%4)*.07+'s');
   grid.appendChild(el);
-  if(!g.tri)gridCards.push(el);
+  if(!g.tri&&!g.sg)gridCards.push(el);
 });
 if(!fine&&!reduce&&'IntersectionObserver' in window){      // móvil: el clip de la carta que está a la vista
   const vio=new IntersectionObserver(es=>es.forEach(e=>{e.intersectionRatio>.7?playVid(e.target):stopVid(e.target);}),{threshold:[0,.7,1]});
@@ -1519,17 +1540,17 @@ if(!reduce&&'IntersectionObserver' in window){
 /* ---------- Navegación de secciones ---------- */
 const chips=$('#chips');
 const present=['accion','deporte','ritmo','motor','historias','marca','relax','catquiz'].filter(k=>secEls[k]);
-chips.innerHTML='<button class="fchip" type="button" data-find><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'+T.search+'</button><a href="#trilogia" style="--c:#9a8cff" data-k="trilogia">'+T.saga+' <small>5</small></a>'+present.map(k=>{
+chips.innerHTML='<button class="fchip" type="button" data-find><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'+T.search+'</button><a href="#trilogia" style="--c:#9a8cff" data-k="trilogia">'+T.saga+' <small>5</small></a><a href="#saga-invierno" style="--c:#7cc8ff" data-k="saga-invierno">Alta Temporada <small>2</small></a>'+present.map(k=>{
   const n=gridCards.filter(e=>e.dataset.cat===k).length;
   return '<a href="#sec-'+k+'" data-k="'+k+'" style="--c:'+CATS[k].c+'">'+esc(CATS[k].n)+' <small>'+n+'</small></a>';
 }).join('');
 if('IntersectionObserver' in window){
   const links={};chips.querySelectorAll('a').forEach(a=>links[a.dataset.k]=a);
-  const secs=[$('#trilogia')].concat(present.map(k=>secEls[k]));
+  const secs=[$('#trilogia'),$('#saga-invierno')].concat(present.map(k=>secEls[k]));
   const io=new IntersectionObserver(es=>{
     es.forEach(e=>{if(!e.isIntersecting)return;const k=e.target.id.replace('sec-','');
       chips.querySelectorAll('a').forEach(a=>a.classList.toggle('on',a.dataset.k===k));
-      document.documentElement.style.setProperty('--cur',k==='trilogia'?'#9a8cff':CATS[k].c);
+      document.documentElement.style.setProperty('--cur',k==='trilogia'?'#9a8cff':k==='saga-invierno'?'#7cc8ff':CATS[k].c);
       const a=links[k];if(a)chips.scrollTo({left:a.offsetLeft-chips.clientWidth/2+a.offsetWidth/2,behavior:reduce?'auto':'smooth'});});
   },{rootMargin:'-40% 0px -55% 0px'});
   secs.forEach(s=>io.observe(s));
@@ -1695,7 +1716,7 @@ renderMine();
   function paintSc(cv){const g=GAMES.find(x=>x.id===cv.dataset.sc),sc=g&&sceneOf(g);if(!sc)return;const W=cv.closest('.gv-card')?600:360,H=cv.closest('.gv-card')?375:360;cv.width=W;cv.height=H;const c=cv.getContext('2d'),k=H/375;c.setTransform(k,0,0,k,(W-600*k)/2,0);try{sc(c,600,375,2.2);}catch(e){}}
   function hoverVids(root){root.querySelectorAll('.tile').forEach(t=>{const v=t.querySelector('video');if(!v)return;
     t.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!reduce)playVid(v);});t.addEventListener('pointerleave',()=>stopVid(v));});}
-  const BIG=new Set(['olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
+  const BIG=new Set(['gransalto','olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
   const tile=(g,cls)=>{const c=CATS[g.cat],m=MEDIA.has(g.slug),big=/big/.test(cls||'');
     const media=!big?'<img src="icons/games/'+g.slug+'.svg" alt="" loading="lazy" decoding="async">'+(m?'<video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':''):m?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
     const inner=media+(NEW.has(g.id)?'<span class="sp" title="'+T.nw+'" aria-hidden="true">✦</span>':'')+'<span class="tn">'+esc(g.name)+'</span>';
@@ -1710,10 +1731,10 @@ renderMine();
     small.forEach((g,i)=>{if(i%step===0&&b<big.length){out.push([big[b],b===0?'big xl':'big'+(b%2?' r':'')]);b++;}out.push([g,'']);});
     grid.innerHTML=out.map(([g,c])=>tile(g,c)).join('');
     addEventListener('resize',()=>{clearTimeout(fillGrid.t);fillGrid.t=setTimeout(fillGrid,150);});
-    const order=['cosmico'].concat(['accion','deporte','ritmo','motor','historias','marca','relax','catquiz']);
+    const order=['cosmico','invierno'].concat(['accion','deporte','ritmo','motor','historias','marca','relax','catquiz']);
     bands.innerHTML=order.map(k=>{const list=all.filter(g=>g.cat===k);if(!list.length)return '';
       const t=k==='cosmico'?T.saga:(CATD[k]?CATD[k].t:CATS[k].n);
-      return '<section class="mz-band" style="--c:'+CATS[k].c+'"><div class="in"><h2><i></i>'+esc(t)+'<small>'+list.length+'</small><button type="button" data-goto="'+(k==='cosmico'?'trilogia':'sec-'+k)+'">'+(LANG==='ca'?'Veure-ho tot':'Ver todos')+' ›</button></h2><div class="mz-row" data-lenis-prevent>'+list.map(g=>tile(g,'')).join('')+'</div></div></section>';}).join('');
+      return '<section class="mz-band" style="--c:'+CATS[k].c+'"><div class="in"><h2><i></i>'+esc(t)+'<small>'+list.length+'</small><button type="button" data-goto="'+(k==='cosmico'?'trilogia':k==='invierno'?'saga-invierno':'sec-'+k)+'">'+(LANG==='ca'?'Veure-ho tot':'Ver todos')+' ›</button></h2><div class="mz-row" data-lenis-prevent>'+list.map(g=>tile(g,'')).join('')+'</div></div></section>';}).join('');
     document.querySelectorAll('#mosaic canvas[data-sc]').forEach(paintSc);
     hoverVids($('#mosaic'));
     if(!reduce&&'IntersectionObserver' in window){        // las piezas grandes se mueven solas cuando están a la vista
@@ -1777,7 +1798,7 @@ const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLo
 const FIL=[['peques',T.fPeq,g=>ageOf(g)<=3],['cortas',T.fShort,g=>SHORT.has(g.id)||g.cat==='relax'||g.cat==='catquiz'],['catala',T.fCat,g=>g.cat==='catquiz'||g.id==='verano'],
   ['movil',T.fMob,g=>MOB.has(g.id)||g.cat==='relax'||g.cat==='catquiz'],['nuevos',T.fNew,g=>NEW.has(g.id)],['favs',T.fFav,g=>favs.has(g.id)]];
 const fOn=new Set();let fSel=0,fList=[],fFrom=null;
-GAMES.forEach(g=>{g._h=norm([g.name,g.note,g.kw,g.blurb,(g.tags||[]).join(' '),CATS[g.cat].n,g.cat==='cosmico'?'saga cosmica espacio':''].join(' '));});
+GAMES.forEach(g=>{g._h=norm([g.name,g.note,g.kw,g.blurb,(g.tags||[]).join(' '),CATS[g.cat].n,g.cat==='cosmico'?'saga cosmica espacio':g.cat==='invierno'?'saga invierno nieve esqui alta temporada':''].join(' '));});
 $('#fChips').innerHTML=FIL.map(f=>'<button type="button" data-f="'+f[0]+'" aria-pressed="false">'+esc(f[1])+'</button>').join('');
 $('#fChips').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;const k=b.dataset.f;fOn.has(k)?fOn.delete(k):fOn.add(k);syncChips();renderFinder();});
 function syncChips(){$('#fChips').querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',fOn.has(b.dataset.f)));}

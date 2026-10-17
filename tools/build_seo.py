@@ -58,8 +58,8 @@ def pwa(p):
             f'<link rel="apple-touch-icon" href="{p}icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">'
             '<meta name="apple-mobile-web-app-title" content="Salón"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">')
 
-GENRE = {'accion': 'juego de acción', 'deporte': 'juego de deporte', 'ritmo': 'juego de ritmo musical', 'motor': 'juego de motor', 'historias': 'juego narrativo', 'marca': 'juego con marca', 'relax': 'juego relajante', 'cosmico': 'juego cósmico', 'catquiz': 'juego de palabras en catalán'}
-GENRE_CA = {'accion': "joc d'acció", 'deporte': "joc d'esport", 'ritmo': 'joc de ritme musical', 'motor': 'joc de motor', 'historias': 'joc narratiu', 'marca': 'joc amb marca', 'relax': 'joc relaxant', 'cosmico': 'joc còsmic', 'catquiz': 'joc de paraules en català'}
+GENRE = {'invierno': 'juego de deportes de invierno', 'accion': 'juego de acción', 'deporte': 'juego de deporte', 'ritmo': 'juego de ritmo musical', 'motor': 'juego de motor', 'historias': 'juego narrativo', 'marca': 'juego con marca', 'relax': 'juego relajante', 'cosmico': 'juego cósmico', 'catquiz': 'juego de palabras en catalán'}
+GENRE_CA = {'invierno': "joc d'esports d'hivern", 'accion': "joc d'acció", 'deporte': "joc d'esport", 'ritmo': 'joc de ritme musical', 'motor': 'joc de motor', 'historias': 'joc narratiu', 'marca': 'joc amb marca', 'relax': 'joc relaxant', 'cosmico': 'joc còsmic', 'catquiz': 'joc de paraules en català'}
 
 # ---------- estilos de las páginas interiores ----------
 CSS = """*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#07060f;color:#f5f2ff;font:16px/1.65 'Onest',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}a{color:#ffd23f}
@@ -190,7 +190,7 @@ def landing(g0, lang):
 <style>{CSS}</style></head>
 <body>{header(p, ca)}
 <main class="w">
-<nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="{p}{'ca/' if ca else ''}">{'Inici' if ca else 'Inicio'}</a> › <a href="{p}{'ca/' if ca else ''}#sec-{g['cat']}">{e(cat)}</a> › {e(g['name'])}</nav>
+<nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="{p}{'ca/' if ca else ''}">{'Inici' if ca else 'Inicio'}</a> › <a href="{p}{'ca/' if ca else ''}#{ {'cosmico': 'trilogia', 'invierno': 'saga-invierno'}.get(g['cat'], 'sec-' + g['cat']) }">{e(cat)}</a> › {e(g['name'])}</nav>
 <h1>{e(g['name'])}</h1>
 <p class="lead">{e(g['blurb'])}</p>
 <div class="stage" id="stage">{vid}<button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(7,6,15,.25),rgba(7,6,15,.25)){'' if hm else ',url(' + p + 'img/' + g['slug'] + '.jpg)'}" aria-label="{'Juga a' if ca else 'Jugar a'} {e(g['name'])}"><span>▶ {'Juga' if ca else 'Jugar'}</span></button></div>
@@ -379,7 +379,7 @@ def home(lang):
     for g in play: bycat.setdefault(g['cat'], []).append(loc(g, lang))
     names = CA_CATS if ca else {k: v['n'] for k, v in CATS.items()}
     cols = ''
-    for k in ['cosmico'] + ORDER:
+    for k in ['cosmico', 'invierno'] + ORDER:
         if k not in bycat: continue
         cols += f'<div><h2>{e(names[k])}</h2><ul>' + ''.join(f'<li><a href="{"ca/" if ca else ""}jugar/{g["slug"]}/">{e(g["name"])}</a></li>' for g in bycat[k]) + '</ul></div>'
     hubl = ' · '.join(f'<a href="{H["slug"]}/">{e(H["h1"])}</a>' for H in HUBS)
