@@ -924,6 +924,59 @@ def _(I):
     for i in range(4): I.add(f'<line x1="{170-i*26}" y1="{318+i*20}" x2="{110-i*26}" y2="{300+i*20}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.9-i*.18}"/>')
     sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
 
+
+@icon('alas-de-acero')
+def _(I):
+    bg(I, '#8fd0ff', '#2b6fd0', '#ffffff', .14)
+    for x, y, r in ((110, 130, 60), (170, 110, 48), (400, 380, 70), (460, 360, 48), (80, 420, 50)): I.add(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#fff" opacity=".85"/>')
+    # avión enemigo a lo lejos, humeando
+    I.add('<g transform="translate(410 120) rotate(14) scale(.42)">'
+          f'<ellipse cx="0" cy="0" rx="110" ry="26" {st("#7a8087", 10)}/><path d="M-20 0 L-60 -90 L-10 -90 L30 0Z M-20 0 L-60 90 L-10 90 L30 0Z" {st("#7a8087", 10)}/>'
+          f'<path d="M-10 -12 v24 M-22 0 h24" stroke="{INK}" stroke-width="10"/></g>')
+    for i in range(5): I.add(f'<circle cx="{450+i*16}" cy="{108-i*6}" r="{10+i*4}" fill="#5b5f66" opacity="{.5-i*.08}"/>')
+    # trazadoras
+    for dy in (-18, 18): I.add(f'<path d="M300 {250+dy} L392 {150+dy*.4}" stroke="#ffd23f" stroke-width="7" stroke-linecap="round" stroke-dasharray="20 18"/>')
+    # caza aliado
+    I.add('<g transform="translate(220 300) rotate(-22)">'
+          f'<path d="M-40 -16 L-150 -40 Q-170 -30 -150 -10 L-40 10Z" {st("#55623f", 8)}/>'
+          f'<path d="M-40 16 L-150 40 Q-170 30 -150 10 L-40 -10Z" {st("#55623f", 8)}/>'
+          f'<ellipse cx="0" cy="0" rx="150" ry="36" {st(I.lg("#7a8a58", "#4a5636"), 9)}/>'
+          f'<path d="M-180 -6 L-150 -50 L-120 -6Z" {st("#55623f", 8)}/>'
+          f'<path d="M-20 -60 L60 -160 L120 -160 L70 -40Z" {st("#55623f", 9)}/>'
+          f'<path d="M-20 60 L60 160 L120 160 L70 40Z" {st("#4a5636", 9)}/>'
+          f'<circle cx="80" cy="-110" r="18" fill="#1f3f9a" stroke="#fff" stroke-width="6"/><circle cx="80" cy="-110" r="7" fill="#c81e1e"/>'
+          f'<ellipse cx="20" cy="-24" rx="40" ry="18" fill="#9fd4ff" stroke="{INK}" stroke-width="7"/><path d="M8 -34 l24 0" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>'
+          f'<ellipse cx="150" cy="0" rx="22" ry="34" fill="#d9b44a" stroke="{INK}" stroke-width="8"/>'
+          f'<ellipse cx="172" cy="0" rx="10" ry="92" fill="#e8eef2" opacity=".55" stroke="{INK}" stroke-width="4"/>'
+          '</g>')
+    for i in range(3): I.add(f'<line x1="{70-i*10}" y1="{390+i*22}" x2="{10-i*10}" y2="{420+i*22}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.85-i*.2}"/>')
+    sparkle(I, 330, 210, 16)
+
+@icon('drop-in')
+def _(I):
+    bg(I, '#ffb36b', '#ff5f8f', '#fff3c4', .14)
+    I.add(f'<circle cx="256" cy="230" r="110" fill="#ffe680" opacity=".9"/>')
+    for x, h in ((40, 150), (90, 110), (420, 140), (470, 100)): I.add(f'<rect x="{x}" y="{380-h}" width="40" height="{h}" fill="#7a5cff" opacity=".45"/>')
+    # palmeras
+    for x, y, sc in ((70, 300, 1), (450, 290, .9)):
+        I.add(f'<g transform="translate({x} {y}) scale({sc})"><path d="M0 120 C6 60 -4 20 6 -20" stroke="{INK}" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M0 120 C6 60 -4 20 6 -20" stroke="#7a5a3a" stroke-width="7" fill="none" stroke-linecap="round"/>'
+              + ''.join(f'<path d="M6 -20 q{dx} {dy} {dx*2} {dy*2+30}" stroke="{INK}" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M6 -20 q{dx} {dy} {dx*2} {dy*2+30}" stroke="#2f8a4a" stroke-width="7" fill="none" stroke-linecap="round"/>' for dx, dy in ((-30, -24), (30, -24), (-36, 0), (36, 0))) + '</g>')
+    # quarter pipe
+    I.add(f'<path d="M-10 522 V420 H260 Q420 420 440 300 H522 V522Z" fill="#b6b3ab" stroke="{INK}" stroke-width="8"/><path d="M440 300 H522" stroke="#d8dde2" stroke-width="12"/>'
+          f'<path d="M-10 470 H522" stroke="#9a978f" stroke-width="5" opacity=".6"/>')
+    # skater en el aire (kickflip)
+    I.add('<g transform="translate(256 250)">'
+          f'<path d="M-70 92 Q0 70 70 92" stroke="{INK}" stroke-width="20" fill="none" stroke-linecap="round" transform="rotate(-12)"/><path d="M-70 92 Q0 70 70 92" stroke="#ff4f3a" stroke-width="10" fill="none" stroke-linecap="round" transform="rotate(-12)"/>'
+          f'<circle cx="-48" cy="104" r="11" fill="#ffa51f" stroke="{INK}" stroke-width="5"/><circle cx="44" cy="86" r="11" fill="#ffa51f" stroke="{INK}" stroke-width="5"/>'
+          f'<path d="M-30 60 L-14 10 M30 54 L14 10" stroke="{INK}" stroke-width="26" stroke-linecap="round"/><path d="M-30 60 L-14 10 M30 54 L14 10" stroke="#2d3f5e" stroke-width="14" stroke-linecap="round"/>'
+          f'<path d="M-34 20 Q0 -10 34 20 L30 -50 Q0 -64 -30 -50Z" {st("#e8452c", 8)}/>'
+          f'<path d="M-30 -40 L-90 -70 M30 -40 L90 -20" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-30 -40 L-90 -70 M30 -40 L90 -20" stroke="#e8452c" stroke-width="11" stroke-linecap="round"/>'
+          f'<circle cx="0" cy="-92" r="34" {st(I.rg("#ffd0aa", "#dfaa82", .4, .35, .8), 8)}/><path d="M-36 -98 Q0 -140 36 -98 L50 -96 Z" {st("#15151a", 6)}/>'
+          '</g>')
+    eyes(I, 258, 160, .6, 24); smile(I, 258, 178, .6, True)
+    for i, (x, y) in enumerate(((150, 330), (130, 300), (112, 270))): I.add(f'<path d="M{x} {y} q-20 -10 -40 -4" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity="{.9-i*.25}"/>')
+    sparkle(I, 360, 120, 16); sparkle(I, 150, 110, 12)
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

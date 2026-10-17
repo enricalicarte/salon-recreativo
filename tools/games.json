@@ -369,6 +369,21 @@
    "play": "juegos/olimpiadas/index.html"
   },
   {
+   "id": "dropin",
+   "slug": "drop-in",
+   "kw": "juego de skate",
+   "cat": "deporte",
+   "name": "Drop In",
+   "note": "Skate Park Pro",
+   "blurb": "Juego de skate en 3D en un skatepark al atardecer: bowl, mini rampa, quarter pipe y raíles. Encadena ollies, kickflips, grabs, giros y grinds en un mismo combo y aterriza recto para cobrarlo. Modo fácil con impulso automático.",
+   "tags": [
+    "Skate",
+    "Trucos",
+    "Combos"
+   ],
+   "play": "juegos/drop-in/index.html"
+  },
+  {
    "slug": "ola-perfecta",
    "id": "olaperfecta",
    "kw": "juego de surf",
@@ -396,6 +411,21 @@
    ],
    "kw": "app de DJ online",
    "play": "juegos/cabina/index.html"
+  },
+  {
+   "id": "alasacero",
+   "slug": "alas-de-acero",
+   "kw": "juego de aviones de combate",
+   "cat": "accion",
+   "name": "Alas de Acero",
+   "note": "Combate aéreo · 1944",
+   "blurb": "Juego de aviones de combate de la Segunda Guerra Mundial: pilota un caza de hélice desde la cabina y derriba cinco oleadas de cazas y bombarderos. Loopings, tornillos y una mira que te ayuda a apuntar. Al amanecer, de día, al atardecer o de noche.",
+   "tags": [
+    "Aviones",
+    "Combate aéreo",
+    "1944"
+   ],
+   "play": "juegos/alas-de-acero/index.html"
   },
   {
    "slug": "cube-runner",
@@ -1043,11 +1073,11 @@
  "CATD": {
   "accion": {
    "t": "Acción",
-   "d": "Puntería, peleas, carreras y reflejos. Partidas rápidas para jugar con una mano."
+   "d": "Puntería, peleas, combates aéreos y reflejos. Partidas rápidas para jugar con una mano."
   },
   "deporte": {
    "t": "Deporte",
-   "d": "Fútbol 7, Kings League, surf en olas gigantes y unas olimpiadas de granja para los más peques."
+   "d": "Fútbol 7, Kings League, surf en olas gigantes, skate y unas olimpiadas de granja para los más peques."
   },
   "ritmo": {
    "t": "Ritmo",

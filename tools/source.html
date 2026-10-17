@@ -579,7 +579,7 @@ const CATS={
   relax:{n:'Relax',c:'#6ef0b0'},
   catquiz:{n:'CatQuiz',c:'#ffb23e'}
 };
-const CATD={"invierno": {t: "Alta Temporada", d: "La saga de invierno: deportes de nieve con campeonatos, rivales y medallas."}, "accion": {t: "Acción", d: "Puntería, peleas, carreras y reflejos. Partidas rápidas para jugar con una mano."}, "deporte": {t: "Deporte", d: "Fútbol 7, Kings League, surf en olas gigantes y unas olimpiadas de granja para los más peques."}, "ritmo": {t: "Ritmo", d: "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."}, "motor": {t: "Motor", d: "Karts, monster trucks, carreras de neón y montañas rusas de cerditos."}, "historias": {t: "Historias", d: "Juegos narrativos con calendario, recuerdos y misterio."}, "marca": {t: "Con marca", d: "Juegos hechos a medida para marcas y clientes."}, "relax": {t: "Relax Games", d: "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."}, "catquiz": {t: "CatQuiz Minijocs", d: "Minijuegos de palabras en catalán, para jugar y aprender."}};
+const CATD={"invierno": {t: "Alta Temporada", d: "La saga de invierno: deportes de nieve con campeonatos, rivales y medallas."}, "accion": {t: "Acción", d: "Puntería, peleas, combates aéreos y reflejos. Partidas rápidas para jugar con una mano."}, "deporte": {t: "Deporte", d: "Fútbol 7, Kings League, surf en olas gigantes, skate y unas olimpiadas de granja para los más peques."}, "ritmo": {t: "Ritmo", d: "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."}, "motor": {t: "Motor", d: "Karts, monster trucks, carreras de neón y montañas rusas de cerditos."}, "historias": {t: "Historias", d: "Juegos narrativos con calendario, recuerdos y misterio."}, "marca": {t: "Con marca", d: "Juegos hechos a medida para marcas y clientes."}, "relax": {t: "Relax Games", d: "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."}, "catquiz": {t: "CatQuiz Minijocs", d: "Minijuegos de palabras en catalán, para jugar y aprender."}};
 /* play: ruta del juego dentro de esta web. url: enlace externo (solo si no hay archivos). */
 const GAMES=[
   {id:'rutacosmica',kw:"juego de naves espaciales",tri:1,cat:'cosmico',name:'Ruta Cósmica',note:'Antes de apuntar hay que llegar',
@@ -659,12 +659,18 @@ const GAMES=[
   {id:'olimpiadas',kw:"juegos de olimpiadas para niños",cat:'deporte',name:'Olimpiadas de la Granja',
    blurb:"Juegos de olimpiadas para niños pequeños: diez pruebas de verano e invierno con cuatro campeones de granja. Solo hay que tocar la pantalla, ideal a partir de 3 años.",
    tags:["Para peques", "Olimpiadas", "Un toque"],play:'juegos/olimpiadas/index.html'},
+  {id:'dropin',kw:"juego de skate",cat:'deporte',name:'Drop In',note:'Skate Park Pro',
+   blurb:"Juego de skate en 3D en un skatepark al atardecer: bowl, mini rampa, quarter pipe y raíles. Encadena ollies, kickflips, grabs, giros y grinds en un mismo combo y aterriza recto para cobrarlo. Modo fácil con impulso automático.",
+   tags:["Skate", "Trucos", "Combos"],play:'juegos/drop-in/index.html'},
   {id:'olaperfecta',kw:"juego de surf",cat:'deporte',name:'Ola Perfecta',note:'Campeonato mundial de surf',
    blurb:"Juego de surf en 3D: rema, levántate justo cuando llega la ola y surfea dentro del tubo. Salta, gira y haz flips en una gira mundial de ocho olas, de Waikiki a los más de 20 metros de Nazaré.",
    tags:["Surf", "Trucos", "Gira mundial"],play:'juegos/ola-perfecta/index.html'},
   {id:'cabina',kw:"app de DJ online",cat:'ritmo',name:'Cabina',
    blurb:"App de DJ para niños y principiantes: profesional por dentro y fácil por fuera, casi un juego. Mezcla canciones en el móvil, en horizontal y a pantalla completa.",
    tags:["DJ", "Música", "Para niños"],play:'juegos/cabina/index.html'},
+  {id:'alasacero',kw:"juego de aviones de combate",cat:'accion',name:'Alas de Acero',note:'Combate aéreo · 1944',
+   blurb:"Juego de aviones de combate de la Segunda Guerra Mundial: pilota un caza de hélice desde la cabina y derriba cinco oleadas de cazas y bombarderos. Loopings, tornillos y una mira que te ayuda a apuntar. Al amanecer, de día, al atardecer o de noche.",
+   tags:["Aviones", "Combate aéreo", "1944"],play:'juegos/alas-de-acero/index.html'},
   {id:'cuberunner',kw:"juego runner 3D",cat:'accion',name:'Cube Runner',
    blurb:"Juego runner en 3D: corre por un pasillo que acelera sin parar y esquiva los bloques que se te vienen encima. Muévete con las flechas o deslizando el dedo y bate tu récord de metros.",
    tags:["Runner", "Reflejos", "Récord"],play:'juegos/cube-runner/index.html'},
@@ -706,9 +712,9 @@ const GAMES=[
 
 /* ---------- Datos de uso: edad, partidas cortas, móvil, novedades ---------- */
 const AGE={olimpiadas:3,aventura:3,towerstack:3,miramar:16};               // por defecto +7; relax +3
-const SHORT=new Set(['grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
-const MOB=new Set(['grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
-const NEW=new Set(['grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
+const SHORT=new Set(['alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
+const MOB=new Set(['alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
+const NEW=new Set(['alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
 const ageOf=g=>AGE[g.id]||(g.cat==='relax'?3:7);
 const EMAIL='';
 
@@ -1416,7 +1422,7 @@ const favs=new Set(store.get('favs',[]).filter(id=>GAMES.some(g=>g.id===id)));
 let recent=store.get('recent',[]).filter(id=>GAMES.some(g=>g.id===id&&g.play));
 /* Analítica sin cookies (GoatCounter): solo si la página la carga */
 function stat(p,t){try{if(window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:p,title:t||p,event:true});}catch(e){}}
-const MEDIA=new Set(/*MEDIA*/["anguera-superstars", "aura-battle", "aventura-porc", "cabina", "catquiz-accents", "catquiz-anagrama", "catquiz-caca-estrelles", "catquiz-com-es-diu-en-catala", "catquiz-esquiva", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-sopa-de-lletres", "constructor-cosmico", "cosmic-guitar", "cube-runner", "el-gran-descenso", "el-gran-salto", "hotel-miramar", "l-ultim-estiu", "la-gran-pirueta", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "neon-coast", "ola-perfecta", "olimpiadas-de-la-granja", "paradon-cosmico", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "suo-shop-rush", "supernova-guitar", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally"]/*/MEDIA*/);
+const MEDIA=new Set(/*MEDIA*/["alas-de-acero", "anguera-superstars", "aura-battle", "aventura-porc", "cabina", "catquiz-accents", "catquiz-anagrama", "catquiz-caca-estrelles", "catquiz-com-es-diu-en-catala", "catquiz-esquiva", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-sopa-de-lletres", "constructor-cosmico", "cosmic-guitar", "cube-runner", "drop-in", "el-gran-descenso", "el-gran-salto", "hotel-miramar", "l-ultim-estiu", "la-gran-pirueta", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "neon-coast", "ola-perfecta", "olimpiadas-de-la-granja", "paradon-cosmico", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "suo-shop-rush", "supernova-guitar", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally"]/*/MEDIA*/);
 
 /* ---------- Muro de portadas del hero ---------- */
 (function(){
@@ -1719,7 +1725,7 @@ renderMine();
   function paintSc(cv){const g=GAMES.find(x=>x.id===cv.dataset.sc),sc=g&&sceneOf(g);if(!sc)return;const W=cv.closest('.gv-card')?600:360,H=cv.closest('.gv-card')?375:360;cv.width=W;cv.height=H;const c=cv.getContext('2d'),k=H/375;c.setTransform(k,0,0,k,(W-600*k)/2,0);try{sc(c,600,375,2.2);}catch(e){}}
   function hoverVids(root){root.querySelectorAll('.tile').forEach(t=>{const v=t.querySelector('video');if(!v)return;
     t.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!reduce)playVid(v);});t.addEventListener('pointerleave',()=>stopVid(v));});}
-  const BIG=new Set(['grandescenso','gransalto','olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
+  const BIG=new Set(['alasacero','dropin','grandescenso','gransalto','olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
   const tile=(g,cls)=>{const c=CATS[g.cat],m=MEDIA.has(g.slug),big=/big/.test(cls||'');
     const media=!big?'<img src="icons/games/'+g.slug+'.svg" alt="" loading="lazy" decoding="async">'+(m?'<video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':''):m?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
     const inner=media+(NEW.has(g.id)?'<span class="sp" title="'+T.nw+'" aria-hidden="true">✦</span>':'')+'<span class="tn">'+esc(g.name)+'</span>';
