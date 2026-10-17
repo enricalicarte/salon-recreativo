@@ -1631,6 +1631,7 @@ let curG=null,stagePushed=false;
 /* cargar el juego sin añadir entradas al historial (así «atrás» vuelve a la ficha) */
 function setFr(u){try{fr.contentWindow.location.replace(u);}catch(e){fr.src=u;}}
 function requestClose(){if(stagePushed){stagePushed=false;history.back();}else closeGame();}
+addEventListener('message',e=>{if(e.data==='salon:close'&&e.source===fr.contentWindow&&!st.hidden)requestClose();});
 function openGame(src,title,from){
   lastFocus=document.activeElement;
   curG=GAMES.find(g=>g.play===src)||null;
