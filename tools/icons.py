@@ -903,6 +903,27 @@ def _(I):
     for x, y, c in ((90, 100, '#ff4fa3'), (430, 90, '#ffd23f'), (400, 380, '#38e5ff'), (120, 330, '#7af0b0')): I.add(f'<rect x="{x}" y="{y}" width="18" height="10" fill="{c}" transform="rotate(30 {x} {y})"/>')
     sparkle(I, 450, 250, 16); sparkle(I, 70, 220, 12)
 
+
+@icon('el-gran-descenso')
+def _(I):
+    alpine(I)
+    # canal de hielo en curva peraltada
+    I.add(f'<path d="M-20 300 C120 280 200 330 260 390 C320 450 420 470 540 440 V560 H-20Z" fill="#cfe6ff" stroke="{INK}" stroke-width="8"/>'
+          f'<path d="M-20 340 C110 322 190 372 250 432 C310 492 420 506 540 478" fill="none" stroke="#7cc8ff" stroke-width="10" opacity=".7"/>'
+          f'<path d="M-20 300 C120 280 200 330 260 390 C320 450 420 470 540 440" fill="none" stroke="#13795b" stroke-width="10"/>')
+    for x, y in ((150, 330), (225, 375), (300, 440)): I.add(f'<path d="M{x-14} {y+10} l14 -16 l14 16" fill="none" stroke="#e7c768" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>')
+    # trineo
+    I.add('<g transform="translate(296 372) rotate(16)">'
+          f'<path d="M-120 22 Q-124 -26 -60 -34 L70 -34 Q122 -30 130 6 Q118 34 76 34 L-80 34 Q-120 34 -120 22Z" {st(I.lg("#1d3d6b", "#0b2545"), 8)}/>'
+          f'<path d="M-104 6 L118 6" stroke="#13795b" stroke-width="12" stroke-linecap="round"/>'
+          f'<path d="M-112 46 H140" stroke="{INK}" stroke-width="12" stroke-linecap="round"/><path d="M-112 46 H140" stroke="#c9d3df" stroke-width="5" stroke-linecap="round"/>'
+          f'<circle cx="-30" cy="-50" r="26" {st(I.rg("#ffffff", "#e8e1cf", .4, .35, .8), 7)}/><path d="M-12 -56 h22 a8 8 0 0 1 0 16 h-22Z" {st("#1b2a4a", 5)}/>'
+          f'<circle cx="34" cy="-48" r="26" {st(I.rg("#f3dc92", "#c9ab62", .4, .35, .8), 7)}/><path d="M52 -54 h22 a8 8 0 0 1 0 16 h-22Z" {st("#1b2a4a", 5)}/>'
+          f'<ellipse cx="128" cy="2" rx="16" ry="18" fill="#f7f2e4" stroke="{INK}" stroke-width="6"/>'
+          '</g>')
+    for i in range(4): I.add(f'<line x1="{170-i*26}" y1="{318+i*20}" x2="{110-i*26}" y2="{300+i*20}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.9-i*.18}"/>')
+    sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

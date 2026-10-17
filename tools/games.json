@@ -96,6 +96,22 @@
    "play": "juegos/gran-pirueta/index.html"
   },
   {
+   "id": "grandescenso",
+   "slug": "el-gran-descenso",
+   "kw": "juego de bobsleigh",
+   "cat": "invierno",
+   "sg": 1,
+   "name": "El Gran Descenso",
+   "note": "Alta Temporada · Bobsleigh",
+   "blurb": "Juego de bobsleigh en 3D: empuja el trineo alternando izquierda y derecha, coge la línea por dentro en las curvas peraltadas y pasa por las franjas doradas para ganar impulso sin tocar los bordes. Gana quien suma menos tiempo.",
+   "tags": [
+    "Bobsleigh",
+    "Velocidad",
+    "Campeonatos"
+   ],
+   "play": "juegos/gran-descenso/index.html"
+  },
+  {
    "slug": "kings-league-mini-game",
    "id": "kings",
    "cat": "deporte",
