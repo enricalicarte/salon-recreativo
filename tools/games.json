@@ -369,6 +369,21 @@
    "play": "juegos/olimpiadas/index.html"
   },
   {
+   "id": "halfpipe",
+   "slug": "halfpipe",
+   "kw": "juego de halfpipe",
+   "cat": "deporte",
+   "name": "Halfpipe",
+   "note": "Rampa Extrema",
+   "blurb": "Juego de skate en halfpipe en 3D: bombea de pared a pared, despega en el borde y encadena kickflips, grabs y giros antes de volver a entrar. Ocho rampas, del garaje de casa a los Extreme Games, con tres estrellas por nivel.",
+   "tags": [
+    "Skate",
+    "Vert",
+    "8 rampas"
+   ],
+   "play": "juegos/halfpipe/index.html"
+  },
+  {
    "id": "dropin",
    "slug": "drop-in",
    "kw": "juego de skate",
@@ -1077,7 +1092,7 @@
   },
   "deporte": {
    "t": "Deporte",
-   "d": "Fútbol 7, Kings League, surf en olas gigantes, skate y unas olimpiadas de granja para los más peques."
+   "d": "Fútbol 7, Kings League, surf en olas gigantes, skate en el parque y en el halfpipe, y unas olimpiadas de granja para los más peques."
   },
   "ritmo": {
    "t": "Ritmo",

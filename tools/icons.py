@@ -952,6 +952,33 @@ def _(I):
     for i in range(3): I.add(f'<line x1="{70-i*10}" y1="{390+i*22}" x2="{10-i*10}" y2="{420+i*22}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.85-i*.2}"/>')
     sparkle(I, 330, 210, 16)
 
+@icon('halfpipe')
+def _(I):
+    bg(I, '#1a2a6c', '#0b1020', '#ffe14d', .10)
+    # focos del estadio
+    for x in (70, 442):
+        I.add(f'<path d="M{x} 40 L{256 if x<256 else 256} 300" stroke="#ffe14d" stroke-width="70" opacity=".08"/><circle cx="{x}" cy="40" r="22" fill="#fff6c0" stroke="{INK}" stroke-width="6"/>')
+    stars_bg(I, 14, seed=8)
+    # halfpipe en U
+    I.add(f'<path d="M-10 522 V250 H40 Q40 450 256 450 Q472 450 472 250 H522 V522Z" fill="#7aa0ff" stroke="{INK}" stroke-width="9"/>'
+          f'<path d="M40 250 Q40 450 256 450 Q472 450 472 250" fill="none" stroke="#c9d8ff" stroke-width="10" opacity=".7"/>'
+          f'<path d="M-10 250 H44 M468 250 H522" stroke="#ffe14d" stroke-width="12"/>'
+          f'<path d="M110 380 Q256 470 402 380" fill="none" stroke="#5a7fe0" stroke-width="5" opacity=".7"/>')
+    # estela de vuelo
+    I.add('<path d="M460 250 Q420 90 300 120" fill="none" stroke="#ffe14d" stroke-width="8" stroke-dasharray="4 18" stroke-linecap="round" opacity=".9"/>')
+    # skater agarrando la tabla en el aire
+    I.add('<g transform="translate(250 150) rotate(-18)">'
+          f'<path d="M-62 70 Q0 52 62 70" stroke="{INK}" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M-62 70 Q0 52 62 70" stroke="#ff9d1c" stroke-width="10" fill="none" stroke-linecap="round"/>'
+          f'<circle cx="-42" cy="82" r="10" fill="#ffe14d" stroke="{INK}" stroke-width="5"/><circle cx="40" cy="80" r="10" fill="#ffe14d" stroke="{INK}" stroke-width="5"/>'
+          f'<path d="M-26 52 L-12 6 M26 50 L12 6" stroke="{INK}" stroke-width="26" stroke-linecap="round"/><path d="M-26 52 L-12 6 M26 50 L12 6" stroke="#2d3f5e" stroke-width="14" stroke-linecap="round"/>'
+          f'<rect x="-30" y="-56" width="60" height="66" rx="22" fill="#ff4f6d" stroke="{INK}" stroke-width="8"/>'
+          f'<path d="M-24 -30 Q-56 10 -40 56" stroke="{INK}" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M-24 -30 Q-56 10 -40 56" stroke="#ffcf9e" stroke-width="10" fill="none" stroke-linecap="round"/>'
+          f'<path d="M24 -36 Q60 -60 70 -86" stroke="{INK}" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M24 -36 Q60 -60 70 -86" stroke="#ffcf9e" stroke-width="10" fill="none" stroke-linecap="round"/>'
+          f'<circle cx="0" cy="-86" r="34" fill="#ffcf9e" stroke="{INK}" stroke-width="8"/><path d="M-36 -92 A36 36 0 0 1 36 -92 Z" fill="#ffe14d" stroke="{INK}" stroke-width="7"/>'
+          '</g>')
+    eyes(I, 226, 72, .7, 20); smile(I, 228, 90, .6, True)
+    sparkle(I, 110, 170, 18, '#ffe14d'); sparkle(I, 410, 140, 14)
+
 @icon('drop-in')
 def _(I):
     bg(I, '#ffb36b', '#ff5f8f', '#fff3c4', .14)

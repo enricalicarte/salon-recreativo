@@ -38,9 +38,12 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block}
 body.touch #touch{display:block}
 body.touch #help{display:none}
 #joyZone{position:absolute;left:0;top:25%;width:48%;bottom:0;pointer-events:auto}
-#joyBase{position:absolute;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:3px solid rgba(255,255,255,.55);background:rgba(255,255,255,.12);display:none}
-#joyKnob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(255,255,255,.65)}
-.tb{position:absolute;border-radius:50%;border:3px solid rgba(255,255,255,.85);background:rgba(20,20,20,.38);color:#fff;font:900 14px "Arial Black",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;pointer-events:auto;letter-spacing:.05em}
+#joyBase{position:absolute;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;border:2px solid rgba(255,255,255,.3);background:radial-gradient(circle,rgba(255,255,255,.05),rgba(255,255,255,.11));box-shadow:inset 0 0 22px rgba(0,0,0,.18);display:none}
+#joyBase .ar{position:absolute;width:12px;height:12px;border:solid rgba(255,255,255,.55);border-width:0 3px 3px 0;border-radius:1px}
+#joyBase .u{left:calc(50% - 6px);top:13px;transform:rotate(-135deg)}#joyBase .d{left:calc(50% - 6px);bottom:13px;transform:rotate(45deg)}
+#joyBase .l{top:calc(50% - 6px);left:15px;transform:rotate(135deg)}#joyBase .r{top:calc(50% - 6px);right:15px;transform:rotate(-45deg)}
+#joyKnob{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border-radius:50%;background:radial-gradient(circle at 38% 32%,rgba(255,255,255,.55),rgba(255,255,255,.2));border:2px solid rgba(255,255,255,.6);box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.tb{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.45);background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);font:900 14px "Arial Black",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;pointer-events:auto;letter-spacing:.05em}
 .tb.on{background:rgba(255,225,77,.6);color:#000}
 #tbJump{right:max(22px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));width:100px;height:100px;font-size:16px}
 #tbFlip{right:calc(max(22px,env(safe-area-inset-right)) + 112px);bottom:max(30px,env(safe-area-inset-bottom));width:78px;height:78px}
@@ -91,8 +94,9 @@ body.touch .tcPanel{display:block}
 body.touch #coach{white-space:normal;text-align:center;max-width:42vw;font-size:12px;line-height:1.3}
 body:not(.playing) #hud,body:not(.playing) #touch,body:not(.playing) #vig{visibility:hidden}
 .tcPanel .row{grid-template-columns:34px 1fr}
-#joyBase{display:block!important;left:96px;top:calc(100% - 122px);opacity:.4}
+#joyBase{display:block!important;left:100px;top:calc(100% - 118px);opacity:.75}
 #joyBase.act{opacity:1}
+body.touch #speed{left:190px;bottom:24px}
 #tbJump{width:110px;height:110px;font-size:17px}
 #tbFlip{width:88px;height:88px;right:calc(max(22px,env(safe-area-inset-right)) + 124px);bottom:max(30px,env(safe-area-inset-bottom));flex-direction:column;gap:2px}
 #tbFlip small{font:600 8px system-ui,sans-serif;letter-spacing:0;opacity:.9;line-height:1.15;text-align:center}
@@ -121,7 +125,7 @@ body:not(.playing) #hud,body:not(.playing) #touch,body:not(.playing) #vig{visibi
   <div id="coach"></div>
 </div>
 <div id="touch">
-  <div id="joyZone"><div id="joyBase"><div id="joyKnob"></div></div></div>
+  <div id="joyZone"><div id="joyBase"><i class="ar u"></i><i class="ar d"></i><i class="ar l"></i><i class="ar r"></i><div id="joyKnob"></div></div></div>
   <div class="tb" id="tbGrab">GRAB</div>
   <div class="tb" id="tbFlip">TRUCO<small>◀ heelflip<br>▲ shove-it</small></div>
   <div class="tb" id="tbJump">SALTO</div>
@@ -297,7 +301,15 @@ const COLS={ground:[1,1,1],bowl:[.66,.86,.92],bowlF:[.52,.76,.88],mini:[.74,.8,1
  m.receiveShadow=true;m.castShadow=true;scene.add(m);
 })();
 // suelo exterior
-(function(){const m=new T.Mesh(new T.PlaneGeometry(1400,1400),new T.MeshStandardMaterial({map:asphaltTex,roughness:1}));m.rotation.x=-Math.PI/2;m.position.y=-0.02;m.receiveShadow=true;scene.add(m);})();
+(function(){
+ // suelo exterior con un hueco del tamaño del parque (si no, tapa el bowl)
+ const sh=new T.Shape();sh.moveTo(-700,-700);sh.lineTo(700,-700);sh.lineTo(700,700);sh.lineTo(-700,700);sh.lineTo(-700,-700);
+ const hole=new T.Path();const hw=TERR.w/2-0.01,hd=TERR.d/2-0.01;hole.moveTo(-hw,-hd);hole.lineTo(-hw,hd);hole.lineTo(hw,hd);hole.lineTo(hw,-hd);hole.lineTo(-hw,-hd);
+ sh.holes.push(hole);
+ const g=new T.ShapeGeometry(sh);g.rotateX(-Math.PI/2);
+ asphaltTex.repeat.set(1/23,1/23);
+ const m=new T.Mesh(g,new T.MeshStandardMaterial({map:asphaltTex,roughness:1}));m.position.y=-0.02;m.receiveShadow=true;scene.add(m);
+})();
 
 // coping metálico
 const steel=new T.MeshStandardMaterial({color:0xd8dde2,metalness:.85,roughness:.3});
@@ -558,6 +570,7 @@ function land(){
  const ah=S.maxY-S.y;if(ah>2.2)addItem('Big Air',Math.round(180*(ah-1.8)));
  if(S.flip){if(S.flip.t>S.flip.dur*0.55)finishFlip();else S.flip=null;}
  if(S.combo.length)S.comboT=1.0;
+ if((S.jbuf||0)>0){IN.pJump=true;IN.jumpHeld=false;S.jbuf=0;}
  S.landAbs=clamp(impact/10,.2,1);S.shake=Math.max(S.shake,clamp(impact/14,0,.6));
  AU.land(impact);
  for(let i=0;i<8;i++)emit(S.x,S.y+.05,S.z,rnd(-1.5,1.5),rnd(.3,1.5),rnd(-1.5,1.5),.5,.82,.78,.7);
@@ -610,7 +623,8 @@ function stepGround(dt,pj,tq){
  let gg=G;if(speed>0.5){const ux=S.vx/speed,uz=S.vz/speed,e=0.12;const hdd=(H(S.x+ux*e,S.z+uz*e)+H(S.x-ux*e,S.z-uz*e)-2*H(S.x,S.z))/(e*e);gg=Math.max(0,G+hdd*speed*speed);}
  S.vx+=-gg*_g.x/s2*dt;S.vz+=-gg*_g.z/s2*dt;
  speed=Math.hypot(S.vx,S.vz);
- const turn=IN.steer*((S.mode==='easy'?4.4:3.4)/(1+speed*0.1))*(0.35+0.65*Math.min(1,speed/2.5))*(S.charging?0.5:1);
+ S.ss=(S.ss||0)+(IN.steer-(S.ss||0))*(1-Math.exp(-14*dt));
+ const turn=S.ss*((S.mode==='easy'?4.4:3.4)/(1+speed*0.1))*(0.35+0.65*Math.min(1,speed/2.5))*(S.charging?0.5:1);
  S.psi-=turn*dt;
  const fx=Math.sin(S.psi),fz=Math.cos(S.psi),rx=-Math.cos(S.psi),rz=Math.sin(S.psi);
  let fv=S.vx*fx+S.vz*fz,lv=S.vx*rx+S.vz*rz;
@@ -634,13 +648,15 @@ function stepGround(dt,pj,tq){
  }
  S.x=nx;S.z=nz;
  const yb=S.y+S.vyG*dt-0.5*G*dt*dt;
- if(hn<yb-0.004){S.state='air';S.vy=S.vyG-G*dt;S.y=yb;S.airT=0;S.spinAcc=0;S.spinRate=0;S.grabT=0;S.popT=1;S.maxY=S.y;S.takeY=S.y;}
+ if(hn<yb-0.004){S.state='air';S.vy=S.vyG-G*dt;S.y=yb;S.airT=0;S.spinAcc=0;S.spinRate=0;S.grabT=0;S.popT=1;S.coy=0.12;S.maxY=S.y;S.takeY=S.y;}
  else{S.vyG=(hn-S.y)/dt;S.y=hn;}
  // posición segura
  S.safeT+=dt;if(S.safeT>0.4){S.safeT=0;if(Math.hypot(_g.x,_g.z)<0.05&&speed>1&&S.y>-0.5){S.safe.x=S.x;S.safe.z=S.z;S.safe.psi=S.psi;}}
 }
 function stepAir(dt,tq,pj){
- S.airT+=dt;S.popT+=dt;
+ S.airT+=dt;S.popT+=dt;S.coy=(S.coy||0)-dt;S.jbuf=Math.max(0,(S.jbuf||0)-dt);
+ if(pj&&S.coy>0){S.vy+=4.6;S.coy=0;S.popT=0;S.spinAcc=0;AU.pop();pj=false;}
+ else if(pj&&S.vy<0&&S.airT>0.15&&S.y-H(S.x,S.z)<0.7){S.jbuf=0.2;pj=false;}
  if(S.grindCd>0)S.grindCd-=dt;
  S.spinRate=lerp(S.spinRate,-IN.steer*7.2,1-Math.exp(-10*dt));S.psi+=S.spinRate*dt;S.spinAcc+=S.spinRate*dt;
  if(IN.grab){if(S.grabT===0)S.grabName=IN.steer>0.3?'Melon':IN.steer<-0.3?'Method':'Indy';S.grabT+=dt;}
@@ -669,8 +685,8 @@ function stepGrind(dt,pj,tq){
  if(Math.random()<.9)emit(S.x,S.y,S.z,rnd(-1.5,1.5)-r.dx*g.dir*2,rnd(.8,2.5),rnd(-1.5,1.5)-r.dz*g.dir*2,.35,1,.7,.25);
  if(pj){exitGrind(true);}
 }
-function stepBail(dt){
- S.bailT+=dt;
+function stepBail(dt,pj){
+ S.bailT+=dt;if(pj&&S.bailT>0.7){respawn();return;}
  S.vy-=G*dt;
  let nx=S.x+S.vx*dt,nz=S.z+S.vz*dt;
  if(nx>BX||nx<-BX){nx=clamp(nx,-BX,BX);S.vx*=-0.2;}
@@ -695,7 +711,7 @@ function step(dt){
  if(S.state==='ground')stepGround(dt,pj,tq);
  else if(S.state==='air')stepAir(dt,tq,pj);
  else if(S.state==='grind')stepGrind(dt,pj,tq);
- else stepBail(dt);
+ else stepBail(dt,pj);
 }
 
 /* ===================== INPUT ===================== */
@@ -857,15 +873,17 @@ function render(dt){
  // cámara
  if(sp>2.5&&S.state!=='bail'){const va=Math.atan2(S.vx,S.vz);const tgt=(S.state==='air')?va:S.psi;S.camYaw+=wrap(tgt-S.camYaw)*(1-Math.exp(-(S.state==='air'?2.2:5.5)*dt));}
  else if(sp<=2.5&&S.state==='ground'){S.camYaw+=wrap(S.psi-S.camYaw)*(1-Math.exp(-1.5*dt));}
- const dist=6.2+sp*0.1,cx=S.x-Math.sin(S.camYaw)*dist,cz=S.z-Math.cos(S.camYaw)*dist;
+ const dist=(S.y<-0.6?5.0:6.2)+sp*0.1,cx=S.x-Math.sin(S.camYaw)*dist,cz=S.z-Math.cos(S.camYaw)*dist;
  let cy=S.y+2.5+Math.min(sp*0.04,.6);
  const gh=H(clamp(cx,-BX,BX),clamp(cz,-BZ,BZ));cy=Math.max(cy,gh+0.9);
+ {const hy=S.y+1.1;for(let k=1;k<=10;k++){const t=k/10;const px=clamp(lerp(S.x,cx,t),-BX,BX),pz=clamp(lerp(S.z,cz,t),-BZ,BZ);const need=(H(px,pz)+0.8-(1-t)*hy)/t;if(need>cy)cy=need;}}
+ const inPit=S.y<-0.6;
  S.shake=Math.max(0,S.shake-dt*2.2);
  const sh=S.shake*0.12;
  camera.position.x=lerp(camera.position.x,cx,1-Math.exp(-9*dt))+rnd(-sh,sh);
- camera.position.y=lerp(camera.position.y,cy,1-Math.exp(-6*dt))+rnd(-sh,sh);
+ camera.position.y=lerp(camera.position.y,cy,1-Math.exp(-(cy>camera.position.y?12:5)*dt))+rnd(-sh,sh);
  camera.position.z=lerp(camera.position.z,cz,1-Math.exp(-9*dt))+rnd(-sh,sh);
- camera.lookAt(S.x+Math.sin(S.camYaw)*1.2,S.y+1.0,S.z+Math.cos(S.camYaw)*1.2);
+ camera.lookAt(S.x+Math.sin(S.camYaw)*1.2,S.y+(S.y<-0.6?0.7:1.0),S.z+Math.cos(S.camYaw)*1.2);
  const fov=62+Math.min(sp,22)*0.8;if(Math.abs(camera.fov-fov)>0.05){camera.fov=lerp(camera.fov,fov,1-Math.exp(-4*dt));camera.updateProjectionMatrix();}
  sky.position.copy(camera.position);
  sun.position.set(S.x+sunDir.x*70,sunDir.y*70,S.z+sunDir.z*70);sun.target.position.set(S.x,0,S.z);sun.target.updateMatrixWorld();
@@ -907,7 +925,7 @@ poseRider({crouch:.2,lean:.2,tuck:0,grab:0,flail:0,t:0,twist:0,armUp:.2});
 orient(skater,S.psi,S.n);boardRoot.position.copy(skater.position);boardRoot.quaternion.copy(skater.quaternion);
 camera.position.set(S.x-6,3,S.z);
 requestAnimationFrame(loop);
-window.__skate={S:S,H:H,step:step,IN:IN,respawn:respawn,RAILS:RAILS};
+window.__skate={S:S,H:H,step:step,IN:IN,respawn:respawn,RAILS:RAILS,camera:camera};
 })();
 </script>
 </body>
