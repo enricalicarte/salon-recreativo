@@ -428,6 +428,21 @@
    "play": "juegos/cabina/index.html"
   },
   {
+   "id": "ciudadela",
+   "slug": "ciudadela-de-arena",
+   "kw": "juego de plataformas",
+   "cat": "accion",
+   "name": "Ciudadela de Arena",
+   "note": "Escapa del palacio",
+   "blurb": "Juego de plataformas y espadas en 3D al estilo clásico: escapa del palacio corriendo, saltando y trepando por cornisas entre espinas, cuchillas y péndulos. Ocho escenarios, de las mazmorras a la torre del reloj, y duelos a espada hasta el Sultán Oscuro.",
+   "tags": [
+    "Plataformas",
+    "Espadas",
+    "Aventura"
+   ],
+   "play": "juegos/ciudadela-de-arena/index.html"
+  },
+  {
    "id": "alasacero",
    "slug": "alas-de-acero",
    "kw": "juego de aviones de combate",
@@ -1088,7 +1103,7 @@
  "CATD": {
   "accion": {
    "t": "Acción",
-   "d": "Puntería, peleas, combates aéreos y reflejos. Partidas rápidas para jugar con una mano."
+   "d": "Puntería, peleas, combates aéreos y plataformas con espada: partidas para poner a prueba tus reflejos."
   },
   "deporte": {
    "t": "Deporte",

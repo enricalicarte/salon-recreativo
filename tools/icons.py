@@ -952,6 +952,32 @@ def _(I):
     for i in range(3): I.add(f'<line x1="{70-i*10}" y1="{390+i*22}" x2="{10-i*10}" y2="{420+i*22}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.85-i*.2}"/>')
     sparkle(I, 330, 210, 16)
 
+@icon('ciudadela-de-arena')
+def _(I):
+    bg(I, '#ffb35c', '#7a2e3a', '#ffe7a8', .12)
+    # luna y cúpulas del palacio
+    I.add('<circle cx="390" cy="110" r="46" fill="#fff1c9" opacity=".9"/>')
+    for x, r, h in ((90, 46, 230), (250, 70, 190), (420, 40, 250)):
+        I.add(f'<path d="M{x-r} {h+60} V{h} Q{x-r} {h-r*1.2} {x} {h-r*1.6} Q{x+r} {h-r*1.2} {x+r} {h} V{h+60}Z" fill="#5a2a45" opacity=".55"/>')
+    # muro de piedra y cornisa
+    I.add(f'<path d="M-10 522 V330 H340 V522Z" fill="#c98b4e" stroke="{INK}" stroke-width="8"/>'
+          + ''.join(f'<path d="M-10 {y} H340" stroke="#9c6534" stroke-width="5"/>' for y in (380, 430, 480))
+          + ''.join(f'<path d="M{x} {y} v50" stroke="#9c6534" stroke-width="5"/>' for x, y in ((60, 330), (170, 330), (280, 330), (110, 380), (230, 380), (60, 430), (190, 430), (300, 430)))
+          + f'<rect x="-10" y="318" width="360" height="22" rx="6" fill="#e8b170" stroke="{INK}" stroke-width="7"/>')
+    # espinas del foso
+    I.add(''.join(f'<path d="M{x} 522 l16 -46 l16 46Z" fill="#d9dcef" stroke="{INK}" stroke-width="5"/>' for x in range(350, 522, 34)))
+    # prisionero saltando con espada
+    I.add('<g transform="translate(380 250) rotate(12)">'
+          f'<path d="M-14 40 L-46 86 M14 40 L40 92" stroke="{INK}" stroke-width="26" stroke-linecap="round"/><path d="M-14 40 L-46 86 M14 40 L40 92" stroke="#f3ead6" stroke-width="14" stroke-linecap="round"/>'
+          f'<rect x="-28" y="-30" width="56" height="74" rx="20" fill="#2f6fd6" stroke="{INK}" stroke-width="8"/><path d="M-28 22 H28" stroke="#ffd23f" stroke-width="9"/>'
+          f'<path d="M-22 -14 Q-60 -30 -74 -64" stroke="{INK}" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M-22 -14 Q-60 -30 -74 -64" stroke="#c98a5e" stroke-width="10" fill="none" stroke-linecap="round"/>'
+          f'<path d="M22 -12 Q56 -2 76 -26" stroke="{INK}" stroke-width="20" fill="none" stroke-linecap="round"/><path d="M22 -12 Q56 -2 76 -26" stroke="#c98a5e" stroke-width="10" fill="none" stroke-linecap="round"/>'
+          f'<path d="M76 -26 L130 -110" stroke="{INK}" stroke-width="16" stroke-linecap="round"/><path d="M76 -26 L130 -110" stroke="#eef3ff" stroke-width="8" stroke-linecap="round"/><path d="M62 -40 L92 -16" stroke="{INK}" stroke-width="12" stroke-linecap="round"/>'
+          f'<circle cx="0" cy="-62" r="32" fill="#c98a5e" stroke="{INK}" stroke-width="8"/><path d="M-34 -70 Q0 -110 34 -70 Q20 -84 0 -84 Q-20 -84 -34 -70Z" fill="#f3ead6" stroke="{INK}" stroke-width="6"/>'
+          '</g>')
+    eyes(I, 396, 192, .6, 18); smile(I, 394, 208, .5)
+    sparkle(I, 220, 120, 16, '#ffe7a8'); sparkle(I, 470, 300, 12)
+
 @icon('halfpipe')
 def _(I):
     bg(I, '#1a2a6c', '#0b1020', '#ffe14d', .10)
