@@ -1004,6 +1004,28 @@ def _(I):
     I.add('<path d="M120 220 v-60 M100 180 l20 -20 l20 20 M392 220 v-60 M372 180 l20 -20 l20 20" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>')
     sparkle(I, 90, 100, 18); sparkle(I, 430, 90, 14, '#fff6c0')
 
+@icon('stu-el-especialista')
+def _(I):
+    bg(I, '#7fd6ff', '#2f8fe0', '#ffffff', .16)
+    ground(I, 420, '#7ed957', '#3b9a2c')
+    # rampa
+    I.add(f'<path d="M20 430 L190 430 L190 350 Z" fill="#ffb11f" stroke="{INK}" stroke-width="8" stroke-linejoin="round"/><path d="M60 425 L170 365" stroke="#fff" stroke-width="8" stroke-dasharray="14 12"/>')
+    # muro de cajas reventando
+    for x, y, r in ((330, 330, -18), (395, 300, 22), (430, 370, -8), (360, 395, 12), (300, 260, 30), (450, 250, -26)):
+        I.add(f'<g transform="translate({x} {y}) rotate({r})"><rect x="-26" y="-26" width="52" height="52" rx="4" fill="#d98b3a" stroke="{INK}" stroke-width="6"/><path d="M-22 -22 L22 22 M22 -22 L-22 22" stroke="#9c5a20" stroke-width="5"/></g>')
+    I.add(f'<g transform="translate(395 300) rotate(22)"><rect x="-26" y="-26" width="52" height="52" rx="4" fill="#e8384f" stroke="{INK}" stroke-width="6"/><text x="0" y="8" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="20" fill="#fff">TNT</text></g>')
+    I.add('<path d="M380 300 l-40 -60 l50 30 l10 -60 l25 55 l50 -30 l-30 55" fill="#ffe14d" stroke="#ff8a1c" stroke-width="6" stroke-linejoin="round" opacity=".9"/>')
+    # Stu volando con los brazos abiertos
+    I.add('<g transform="translate(220 170) rotate(-20)">'
+          f'<path d="M-18 30 L-46 70 M18 30 L40 74" stroke="{INK}" stroke-width="24" stroke-linecap="round"/><path d="M-18 30 L-46 70 M18 30 L40 74" stroke="#2f6fe0" stroke-width="12" stroke-linecap="round"/>'
+          f'<path d="M-28 -24 L-86 -40 M28 -24 L86 -44" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M-28 -24 L-86 -40 M28 -24 L86 -44" stroke="#2f6fe0" stroke-width="11" stroke-linecap="round"/>'
+          f'<circle cx="-90" cy="-41" r="14" fill="#fff" stroke="{INK}" stroke-width="6"/><circle cx="90" cy="-45" r="14" fill="#fff" stroke="{INK}" stroke-width="6"/>'
+          f'<rect x="-32" y="-44" width="64" height="80" rx="22" fill="#2f6fe0" stroke="{INK}" stroke-width="8"/><path d="M-32 -6 H32" stroke="#ffd23f" stroke-width="8"/>'
+          f'<circle cx="0" cy="-80" r="36" fill="#fff" stroke="{INK}" stroke-width="8"/><path d="M-36 -86 A36 36 0 0 1 36 -86 Z" fill="#e8384f" stroke="{INK}" stroke-width="7"/><rect x="-26" y="-82" width="52" height="16" rx="8" fill="#9fdcff" stroke="{INK}" stroke-width="5"/>'
+          '</g>')
+    I.add('<path d="M120 250 q30 -10 50 -40 M90 210 q30 -10 50 -40" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>')
+    sparkle(I, 90, 90, 18, '#ffe14d'); sparkle(I, 420, 110, 14)
+
 @icon('car-revamp')
 def _(I):
     bg(I, '#2b3142', '#0b0d14', '#6fe3ff', .10)

@@ -202,6 +202,21 @@
    "play": "juegos/verano/index.html"
   },
   {
+   "id": "stu",
+   "slug": "stu-el-especialista",
+   "kw": "juego de especialistas",
+   "cat": "motor",
+   "name": "Stu el Especialista",
+   "note": "Salta, revienta y vuela",
+   "blurb": "Juego de especialistas: acelera con el coche o la moto, salta la rampa y revienta el muro de cajas. El vehículo se desmonta y Stu sale volando: planea, recoge estrellas, da volteretas y aterriza en las dianas. Con turbo, cajas TNT y dos especialistas, Stu y El Vendado.",
+   "tags": [
+    "Especialistas",
+    "Saltos",
+    "Coche y moto"
+   ],
+   "play": "juegos/stu-el-especialista/index.html"
+  },
+  {
    "id": "carrevamp",
    "slug": "car-revamp",
    "kw": "juego de lavar coches",
@@ -1197,7 +1212,7 @@
   },
   "motor": {
    "t": "Motor",
-   "d": "Karts, monster trucks, carreras de neón, montañas rusas de cerditos y un taller para lavar y repintar coches."
+   "d": "Karts, monster trucks, carreras de neón, especialistas que salen volando, montañas rusas de cerditos y un taller para lavar y repintar coches."
   },
   "historias": {
    "t": "Historias",
