@@ -1580,14 +1580,21 @@ if(!reduce&&'IntersectionObserver' in window){
 
 /* ---------- Destacados ---------- */
 (function(){
-  const FEAT=['rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas'];
-  const list=FEAT.map(id=>GAMES.find(g=>g.id===id)).filter(g=>g&&g.play&&MEDIA.has(g.slug));
+  /* diapositivas que llevan fuera del salón (webs propias) */
+  const EXT={catquiz:{ext:'https://catquiz.cat/',cat:'catquiz',slug:'catquiz-com-es-diu-en-catala',name:'CatQuiz Minijocs',
+    chip:LANG==='ca'?'Web exclusiva · catquiz.cat':'Web exclusiva · catquiz.cat',
+    blurb:LANG==='ca'?'catquiz.cat és la nostra web exclusiva de minijocs en català: Motle, Penjat, Anagrama, Sopa de lletres, Barbarismes i un quiz de futbol, per jugar i aprendre.':'catquiz.cat es nuestra web exclusiva de minijuegos en catalán: Motle (el Wordle en catalán), Penjat, Anagrama, Sopa de lletres, Barbarismes y un quiz de fútbol, para jugar y aprender.',
+    go:LANG==='ca'?'Ves a catquiz.cat':'Ir a catquiz.cat',more:LANG==='ca'?'Juga-hi aquí':'Jugar aquí'}};
+  const FEAT=['rutacosmica','motofury','catquiz','paradon','aura','aventura','porrazo','towerstack','rx_linternas'];
+  const list=FEAT.map(id=>EXT[id]||GAMES.find(g=>g.id===id)).filter(g=>g&&(g.ext||g.play)&&MEDIA.has(g.slug));
   const track=$('#fTrack'),dots=$('#fDots');if(!track||!list.length){const f=$('#destacados');if(f)f.hidden=true;return;}
   track.innerHTML=list.map((g,i)=>{const sl=g.slug,cat=CATS[g.cat];return '<article class="slide" style="--c:'+cat.c+'" aria-roledescription="diapositiva" aria-label="'+(i+1)+T.of+list.length+'">'+
     '<img src="media/'+sl+'.jpg" alt="" '+(i?'loading="lazy" ':'')+'decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" poster="media/'+sl+'.jpg" data-src="media/'+sl+'"></video>'+
-    '<div class="slide-c"><span class="chip">'+esc(cat.n)+'</span><h3>'+esc(g.name)+'</h3><p>'+esc(g.blurb)+'</p><div class="acts">'+
-    '<button class="play" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">'+T.now+' <span aria-hidden="true">▶</span></button>'+
-    (window.claude?'':'<a class="more" href="'+LP(g)+'">'+T.sheet+'</a>')+'</div></div></article>';}).join('');
+    '<div class="slide-c"><span class="chip">'+esc(g.chip||cat.n)+'</span><h3>'+esc(g.name)+'</h3><p>'+esc(g.blurb)+'</p><div class="acts">'+
+    (g.ext?'<a class="play" href="'+g.ext+'" target="_blank" rel="noopener" data-ext>'+esc(g.go)+' <span aria-hidden="true">↗</span></a><a class="more" href="#sec-catquiz">'+esc(g.more)+'</a>'
+    :'<button class="play" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">'+T.now+' <span aria-hidden="true">▶</span></button>'+
+    (window.claude?'':'<a class="more" href="'+LP(g)+'">'+T.sheet+'</a>'))+'</div></div></article>';}).join('');
+  track.querySelectorAll('[data-ext]').forEach(a=>a.addEventListener('click',()=>stat('salida/catquiz.cat','catquiz.cat')));
   dots.innerHTML=list.map((g,i)=>'<button type="button" aria-label="'+T.goTo+esc(g.name)+'"><i></i></button>').join('');
   const slides=[...track.children],db=[...dots.children];let cur=0,timer=0,hover=false;
   const DUR=7000;dots.style.setProperty('--dur',DUR/1000+'s');
