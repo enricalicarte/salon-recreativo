@@ -951,6 +951,46 @@
    "play": "juegos/relax/index.html#rana"
   },
   {
+   "id": "cq_barbarismes",
+   "slug": "catquiz-barbarismes",
+   "kw": "joc de barbarismes en català",
+   "cat": "catquiz",
+   "name": "Barbarismes",
+   "blurb": "Joc de barbarismes en català: dues frases, una amb una expressió incorrecta. Tria la ben dita. Deu nivells de dificultat creixent i punts dobles a partir de tres encerts seguits.",
+   "tags": [
+    "Barbarismes",
+    "Frases",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ff6b6b",
+    "🚫"
+   ],
+   "play": "juegos/catquiz/jocs/barbarismes.html"
+  },
+  {
+   "id": "cq_futbol",
+   "slug": "catquiz-quiz-de-futbol",
+   "kw": "quiz de futbol en català",
+   "cat": "catquiz",
+   "name": "Quiz de futbol",
+   "blurb": "Quant saps de futbol català? Cent preguntes en deu nivells sobre el Barça, l'Espanyol, el Girona i la selecció: trivia, «qui és?» per pistes, vertader o fals i «qui és més gran?».",
+   "tags": [
+    "Futbol",
+    "Trivia",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#3ddc84",
+    "⚽"
+   ],
+   "play": "juegos/catquiz/jocs/futbol.html"
+  },
+  {
    "slug": "catquiz-com-es-diu-en-catala",
    "id": "cq_catala",
    "kw": "joc de castellanismes",
@@ -1228,7 +1268,7 @@
   },
   "catquiz": {
    "t": "CatQuiz Minijocs",
-   "d": "Minijuegos de palabras en catalán, para jugar y aprender."
+   "d": "Minijuegos de palabras en catalán y un quiz de fútbol, para jugar y aprender."
   },
   "invierno": {
    "t": "Alta Temporada",

@@ -2,9 +2,23 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SDE8LXDNP9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SDE8LXDNP9');
+  // Esdeveniments: inici de partida, tornar a jugar i clic a cada joc des de la portada
+  document.addEventListener('click', function(e){ var b = e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, a.carta'); if (!b) return;
+    var joc = location.pathname.split('/').pop().replace('.html','') || 'index';
+    if (b.matches('a.carta')) gtag('event', 'obrir_joc', { joc: (b.getAttribute('href') || '').split('/').pop().replace('.html','') });
+    else gtag('event', b.id === 'btn-reinici' ? 'tornar_a_jugar' : 'inici_partida', { joc: joc }); });
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Lletres perdudes · CatQuiz Minijocs</title>
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
   /* Estil Stumble Guys: cel blau, colors saturats, contorns gruixuts i botons amb aresta 3D */
@@ -66,10 +80,73 @@
   @keyframes titol{0%,100%{transform:rotate(-3deg) scale(1)}50%{transform:rotate(-1deg) scale(1.04)}}
 .barra{position:fixed;top:66px;left:50%;transform:translateX(-50%);width:min(420px,70%);height:14px;border:3px solid var(--marí);border-radius:999px;background:rgba(255,255,255,.4);overflow:hidden;z-index:3}
   .barra i{display:block;height:100%;background:var(--llima);transform-origin:left}
-  .pregunta{position:fixed;top:92px;left:50%;transform:translateX(-50%) rotate(-1.5deg);width:max-content;max-width:92vw;text-align:center;font-family:'Lilita One',sans-serif;font-style:italic;font-size:clamp(22px,6vw,34px);color:#fff;-webkit-text-stroke:2px var(--marí);paint-order:stroke fill;text-shadow:0 5px 0 var(--marí);background:linear-gradient(180deg,#C79BFF,var(--lila));border:3px solid var(--marí);border-radius:22px;padding:10px 22px;box-shadow:0 7px 0 var(--marí);z-index:3;pointer-events:none;line-height:1.1}
+  .pregunta{position:fixed;top:92px;left:50%;transform:translateX(-50%) rotate(-1.5deg);width:max-content;max-width:92vw;text-align:center;font-family:'Lilita One',sans-serif;font-style:italic;font-size:clamp(22px,6vw,34px);color:#fff;-webkit-text-stroke:2px var(--marí);paint-order:stroke fill;background:linear-gradient(180deg,#C79BFF,var(--lila));border:3px solid var(--marí);border-radius:22px;padding:10px 22px;box-shadow:0 7px 0 var(--marí);z-index:3;pointer-events:none;line-height:1.1}
   .pregunta:empty{display:none}
-  .missatge{top:auto;bottom:auto;top:215px;background:var(--rosa)}
-  .pregunta small{display:block;font-size:.55em;-webkit-text-stroke:1px var(--marí);margin-top:4px}
+  .missatge{top:auto;bottom:auto;top:200px;background:var(--rosa);font-size:18px}
+  .pregunta small{display:block;font-size:.55em;-webkit-text-stroke:1px var(--marí);margin-top:4px}  /* Canvi de nivell: pantalla gran amb pausa */
+  .nivell-capa{position:fixed;inset:0;z-index:30;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.35),rgba(29,43,100,.72));pointer-events:none;animation:nivfons .3s}
+  .nivell-capa .num{font-family:'Lilita One',sans-serif;font-style:italic;font-size:min(26vh,34vw);line-height:.9;color:var(--groc);-webkit-text-stroke:5px var(--marí);paint-order:stroke fill;text-shadow:0 12px 0 var(--marí),0 22px 0 rgba(0,0,0,.25);animation:nivpop .7s cubic-bezier(.2,1.6,.4,1) both}
+  .nivell-capa .eti{font-family:'Lilita One',sans-serif;font-style:italic;font-size:min(5vh,7.5vw);color:#fff;-webkit-text-stroke:2px var(--marí);paint-order:stroke fill;letter-spacing:.08em;animation:nivpop .5s .1s cubic-bezier(.2,1.6,.4,1) both}
+  .nivell-capa .nom{margin-top:2vh;font-family:'Lilita One',sans-serif;font-size:min(3.6vh,5.4vw);background:var(--lila);color:#fff;-webkit-text-stroke:1px var(--marí);border:3px solid var(--marí);border-radius:999px;padding:.4em 1.2em;box-shadow:0 6px 0 var(--marí);animation:nivpop .5s .25s cubic-bezier(.2,1.6,.4,1) both}
+  .nivell-capa .resum{margin-top:2.4vh;font-family:'Fredoka',sans-serif;font-weight:700;font-size:min(3vh,4.6vw);color:var(--marí);background:#fff;border:3px solid var(--marí);border-radius:18px;padding:.6em 1.2em;box-shadow:0 6px 0 var(--marí);animation:nivpop .5s .4s cubic-bezier(.2,1.6,.4,1) both;line-height:1.35}
+  .nivell-capa .estrelles{font-size:min(6vh,9vw);letter-spacing:.1em;margin-top:1vh;animation:nivpop .5s .5s cubic-bezier(.2,1.6,.4,1) both}
+  @keyframes nivpop{from{transform:scale(.2) rotate(-8deg);opacity:0}60%{transform:scale(1.1) rotate(2deg)}to{transform:scale(1) rotate(0);opacity:1}}
+  @keyframes nivfons{from{opacity:0}}
+  .nivell-capa.surt{animation:nivsurt .35s ease-in forwards}
+  @keyframes nivsurt{to{opacity:0;transform:scale(1.15)}}  /* Mode espectador */
+  #espect{position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;gap:8px;align-items:center;background:#1B1B3A;color:#fff;border:3px solid #fff;border-radius:999px;padding:6px 8px 6px 16px;font-family:'Fredoka',system-ui,sans-serif;font-weight:700;font-size:15px;box-shadow:0 6px 0 rgba(0,0,0,.35);white-space:nowrap;max-width:96vw}
+  #espect .punt{width:10px;height:10px;border-radius:50%;background:#F0284A;animation:espbat 1s infinite}
+  #espect a{background:#22C55E;color:#fff;text-decoration:none;border-radius:999px;padding:6px 14px;font-weight:800}
+  #espect .pensa{opacity:.85;font-weight:600;font-size:13px}
+  @keyframes espbat{50%{opacity:.3}}
+  /* ===== TEMA NEÓ (estil «Bloques Neón»): fons indi/violeta, vidre, resplendors, Roboto ===== */
+  :root{--cel:#4A2FB5;--cel2:#1A1650;--marí:#1E1850;--rosa:#FF4FD8;--taronja:#FF9A2E;--groc:#FFD24A;--llima:#4EE06A;--lila:#A06BFF;--neu:#FFFFFF;--tinta:#FFFFFF;--cian:#38E8FF;--vidre:rgba(24,20,70,.55);--vora:rgba(150,170,255,.45);--glow:0 0 18px rgba(120,160,255,.45)}
+  html,body{font-family:'Roboto','Fredoka',system-ui,sans-serif!important;background:linear-gradient(170deg,#4A2FB5 0%,#2E2080 45%,#1A1650 100%)!important;color:#fff}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0 1.5px,transparent 2px),radial-gradient(circle at 72% 12%,rgba(255,255,255,.8) 0 1.2px,transparent 2px),radial-gradient(circle at 88% 64%,rgba(255,255,255,.7) 0 1.6px,transparent 2.2px),radial-gradient(circle at 34% 78%,rgba(255,255,255,.75) 0 1.2px,transparent 2px),radial-gradient(circle at 58% 46%,rgba(255,255,255,.5) 0 1px,transparent 1.6px),radial-gradient(circle at 8% 60%,rgba(255,255,255,.6) 0 1.3px,transparent 2px),radial-gradient(circle at 48% 92%,rgba(255,255,255,.6) 0 1.1px,transparent 1.8px),radial-gradient(circle at 92% 30%,rgba(255,255,255,.5) 0 1px,transparent 1.6px)}
+  .titol,h1,.gran,.compte,.pill,button,.gros,.missatge,.pista,.pregunta,.tecla,.fr,.op,.ll,.frase,.pista-item,.nivell-capa .num,.nivell-capa .eti,.nivell-capa .nom,.nivell-capa .resum,.pill.cat,h2,h3,.sub,.baixa,.logo{font-family:'Roboto','Fredoka',system-ui,sans-serif!important;font-style:normal!important;-webkit-text-stroke:0!important;transform:none}
+  .titol,h1{font-weight:900!important;letter-spacing:.04em;text-transform:uppercase;color:#fff!important;text-shadow:0 0 14px rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35)!important;animation:none!important;transform:none!important}
+  .pill{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow),inset 0 1px 0 rgba(255,255,255,.18)!important;font-weight:700!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transform:none!important;letter-spacing:.01em}
+  .pill.acc{color:#FFD24A!important} .pill.temps,.pill.cat{color:#5CF0FF!important} .pill.err{color:#FF6B8A!important}
+  .pill.pop{animation:neopop .35s cubic-bezier(.2,1.8,.4,1)!important}
+  @keyframes neopop{50%{transform:scale(1.25)!important;box-shadow:0 0 26px rgba(255,210,74,.8)}}
+  .hud .pill{font-size:17px}
+  .capa{background:radial-gradient(circle at 50% 30%,rgba(120,90,255,.35),rgba(20,16,60,.88))!important}
+  .capa::before{background:none!important;animation:none!important}
+  .caixa{background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.96))!important;color:#fff!important;border:1.5px solid var(--vora)!important;border-radius:28px!important;box-shadow:0 0 40px rgba(110,140,255,.35),0 20px 40px rgba(0,0,0,.45)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .caixa::before{border:0!important} .caixa::after{display:none!important}
+  .caixa p,p{color:#D9D6FF!important;font-weight:500}
+  h1{font-size:46px;color:#fff!important}
+  .gran{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 18px rgba(255,210,74,.65),0 3px 0 rgba(0,0,0,.35)!important}
+  button,.gros{font-weight:700!important;letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;color:#fff!important;border:3px solid rgba(255,255,255,.55)!important;box-shadow:0 6px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+  button:active,.gros:active{transform:translateY(5px)!important;box-shadow:0 1px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important}
+  button::after,.gros::after{display:none!important}
+  button.acc,.gros.acc,.botons button,.cats .gros{background:linear-gradient(180deg,#FFB24A,#F0781A)!important;box-shadow:0 6px 0 #A64E0E,0 0 22px rgba(255,160,60,.5)!important}
+  .cats .gros{text-transform:none;letter-spacing:0;font-size:14px!important}
+  .missatge,.pista{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:700!important;transform:translateX(-50%)!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .pista{color:#C9B6FF!important}
+  .pregunta{background:linear-gradient(180deg,rgba(110,70,255,.9),rgba(70,40,190,.9))!important;color:#fff!important;border:1.5px solid rgba(190,170,255,.6)!important;box-shadow:0 0 28px rgba(140,110,255,.55),0 10px 24px rgba(0,0,0,.35)!important;font-weight:900!important;text-shadow:0 2px 0 rgba(0,0,0,.3)!important;transform:translateX(-50%)!important;letter-spacing:.02em}
+  .pregunta small{font-weight:500!important;color:#E6DEFF!important}
+  .tecla{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.07))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.2)!important;font-weight:700!important;border-radius:12px!important}
+  .tecla.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 3px 0 #1E7F2C,0 0 14px rgba(92,230,100,.6)!important}
+  .tecla.quasi{background:linear-gradient(180deg,#FFD866,#F0A81A)!important;color:#2A1B00!important;box-shadow:0 3px 0 #9A6A00,0 0 14px rgba(255,200,60,.5)!important}
+  .tecla.no,.tecla:disabled{background:rgba(255,255,255,.05)!important;color:rgba(255,255,255,.3)!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important}
+  .fr,.op{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 4px 0 rgba(0,0,0,.35),var(--glow)!important;font-weight:700!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .fr.be,.op.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 4px 0 #1E7F2C,0 0 18px rgba(92,230,100,.65)!important}
+  .fr.malament,.op.ko{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;box-shadow:0 4px 0 #8A1030,0 0 18px rgba(255,80,120,.6)!important}
+  .frase,.pista-item{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:600!important}
+  .frase .forat{border-bottom-color:#38E8FF!important} .frase .ok{color:#6CEB5A!important}
+  .pista-item b{background:#FFD24A!important;color:#2A1B00!important}
+  .nivell-capa{background:radial-gradient(circle at 50% 40%,rgba(120,90,255,.45),rgba(20,16,60,.9))!important}
+  .nivell-capa .num{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 30px rgba(255,210,74,.75),0 8px 0 rgba(0,0,0,.4)!important}
+  .nivell-capa .eti{font-weight:700!important;letter-spacing:.2em!important;text-shadow:0 0 12px rgba(255,255,255,.5)!important}
+  .nivell-capa .nom{background:linear-gradient(180deg,#A06BFF,#6A3FD8)!important;border:1.5px solid rgba(255,255,255,.5)!important;box-shadow:0 0 22px rgba(160,107,255,.6)!important;font-weight:700!important}
+  .nivell-capa .resum{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important}
+  .compte{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 40px rgba(255,210,74,.8),0 10px 0 rgba(0,0,0,.4)!important}
+  .llista span{font-family:'Roboto',sans-serif!important;background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:700!important}
+  .llista span.trobada{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;text-decoration:line-through}
+  .ll{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 4px 0 rgba(0,0,0,.35),var(--glow)!important}
+  .ll.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important}
+  .cap .tipus,.tipus{font-family:'Roboto',sans-serif!important}
 </style>
 </head>
 <body>
@@ -137,7 +214,15 @@ function musicaAtura(){ if (!SEQ.timer) return; clearInterval(SEQ.timer); SEQ.ti
 Object.assign(window, { AUDIO, SEQ, so, musicaCommuta: () => musicaCommuta() }); // accessibles des de la consola
 function musicaCommuta(){ AUDIO.actiu = !AUDIO.actiu; localStorage.setItem('catquiz-musica', AUDIO.actiu ? '1' : '0'); if (AUDIO.actiu) musicaInici(); else musicaAtura(); return AUDIO.actiu; }
 
-const DEMO = new URLSearchParams(location.search).has('demo'); // ?demo → juga sol (reels)
+const DEMO = (new URLSearchParams(location.search).has('demo') || new URLSearchParams(location.search).has('espectador')); // ?demo → juga sol (reels)
+
+// ===== Mode espectador: un bot amb nom que dubta i falla de tant en tant; toca «Vull jugar jo» per agafar el control =====
+const ESPECT = new URLSearchParams(location.search).has('espectador');
+const BOT_NOM = ESPECT ? ["Bot Culer", "Bot Perica", "Bot Gironí", "Bot de Mataró", "Bot Terrassenc", "Bot Empordanès", "Bot Lleidatà", "Bot Ebrenc"][Math.floor(Math.random() * 8)] : '';
+const botFalla = (p = .22) => ESPECT && Math.random() < p; // probabilitat d'error del bot en mode espectador
+const botPausa = () => ESPECT ? 600 + Math.random() * 1400 : 0; // temps de «pensar»
+window.espectPensa = () => {}; // mode espectador: sense cap avís ni botó; només es mira
+if (ESPECT) for (const ev of ['pointerdown','click','keydown']) document.addEventListener(ev, e => { if (e.isTrusted && !e.target.closest('#btn-musica, #musica, #tornar, a.tornar, a.pill')) { e.stopPropagation(); e.preventDefault(); } }, true); // bloqueja el jugador (els clics del bot no són «trusted» i passen)
 const QUIZ = new URLSearchParams(location.search).has('quiz'); // ?demo&quiz → pausa "Quina és?"
 const avisa = tipus => { try { parent.postMessage({ catquiz: tipus }, '*'); } catch (e) {} };
 const espera = ms => new Promise(r => setTimeout(r, ms));
@@ -182,6 +267,39 @@ function illa(x, y, z, s = 1){ const g = new THREE.Group();
     const cop = contorn(new THREE.Mesh(new THREE.SphereGeometry(.7 + Math.random()*.3, 12, 10), toon({ color: [0x4CD100, 0xFF3E9A, 0xFFD600][Math.floor(Math.random()*3)] })), .06); cop.position.set(tr.position.x, 1.6, tr.position.z); g.add(cop); }
   g.position.set(x, y, z); g.scale.setScalar(s); g.userData = { y0: y, f: Math.random()*6 }; scene.add(g); illes.push(g); return g; }
 let tKit = 0; function mouIlles(dt){ tKit += dt; for (const g of illes) { g.position.y = g.userData.y0 + Math.sin(tKit * .8 + g.userData.f) * .35; g.rotation.y += dt * .05; } }
+const TEMES = [{nom:'Prat matinal',cel:[0x1E7BE0,0xBDF0FF],gespa:0x7CE800,sol:0xFFF4A0,terra:0xA8683A},{nom:'Migdia estiuenc',cel:[0x1CA6E0,0xCFF3FF],gespa:0x5CD000,sol:0xFFF8B0,terra:0xB07A3A},{nom:'Camps de blat',cel:[0x2E9BD8,0xE8F0C0],gespa:0xE0C040,sol:0xFFF0A0,terra:0xC08840},{nom:'Tarda daurada',cel:[0xE8963A,0xFFD98A],gespa:0x8CC020,sol:0xFFD060,terra:0x9A6030},{nom:'Posta de sol',cel:[0xC0407A,0xFFB07A],gespa:0x6AA030,sol:0xFF9040,terra:0x804060},{nom:'Bosc fresc',cel:[0x1E6E5A,0xA8E0C0],gespa:0x2E9040,sol:0xE0F0A0,terra:0x6A5030},{nom:'Nit estelada',cel:[0x141B4A,0x3A4A8C],gespa:0x2A6A5A,sol:0xE8E8FF,terra:0x2A2A50},{nom:'Aurora polar',cel:[0x0E2A4A,0x1AA0C0],gespa:0x40E0A0,sol:0xC0FFE0,terra:0x203050},{nom:'Desert vermell',cel:[0xD0602A,0xF0B070],gespa:0xC08040,sol:0xFFE080,terra:0x904020},{nom:'Món de gel',cel:[0x2AA0D0,0xDFF6FF],gespa:0x9AE0F0,sol:0xFFFFFF,terra:0x7090B0}];
+let celMesh = null, elemsTema = [];
+function aplicaTema(n){ const T = TEMES[Math.min(9, Math.max(0, n))];
+  scene.background = new THREE.Color(T.cel[0]);
+  if (scene.fog) scene.fog.color.setHex(T.cel[0]);
+  // refà la cúpula de cel amb el degradat del tema
+  if (celMesh) scene.remove(celMesh);
+  const g = new THREE.SphereGeometry(180, 24, 16), col = [], p = g.attributes.position, dalt = new THREE.Color(T.cel[0]), baix = new THREE.Color(T.cel[1]);
+  for (let i = 0; i < p.count; i++) { const k = THREE.MathUtils.clamp(p.getY(i) / 180 * .5 + .5, 0, 1); const c = baix.clone().lerp(dalt, Math.pow(k, .7)); col.push(c.r, c.g, c.b); }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  celMesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false })); scene.add(celMesh);
+  if (solMesh) { solMesh.material.color.setHex(T.sol); if (solMesh.children[0]) solMesh.children[0].material.color.setHex(T.sol); }
+  for (const g2 of illes) { const top = g2.children[0]; if (top && top.material.color) top.material.color.setHex(T.gespa); const base = g2.children[1]; if (base && base.material.color) base.material.color.setHex(T.terra); }
+  for (const e of elemsTema) { if (e.tipus === 'gespa') e.mesh.material.color.setHex(T.gespa); if (e.tipus === 'terra') e.mesh.material.color.setHex(T.terra); }
+  if (!estelsGrup) { estelsGrup = new THREE.Group(); for (let i = 0; i < 40; i++) { const s2 = new THREE.Mesh(new THREE.SphereGeometry(.3, 6, 5), new THREE.MeshBasicMaterial({ color: 0xFFFFFF, fog: false })); s2.position.set((Math.random()-.5)*120, 10 + Math.random()*40, -60 - Math.random()*40); estelsGrup.add(s2); } scene.add(estelsGrup); }
+  estelsGrup.visible = true;
+}
+// estels per als ambients foscos (es creen mandrosament al primer aplicaTema)
+let estelsGrup = null;
+
+
+// Canvi de nivell: pantalla gran amb pausa (torna una promesa; el joc es bloqueja mentre dura)
+function pantallaNivell(n, nom, resum = '', estrelles = -1, ms = 2600){
+  return new Promise(res => {
+    const d = document.createElement('div'); d.className = 'nivell-capa';
+    d.innerHTML = `<div><div class="eti">${resum ? 'NIVELL SUPERAT' : 'NIVELL'}</div><div class="num">${n}</div>` +
+      (estrelles >= 0 ? `<div class="estrelles">${'⭐'.repeat(estrelles)}${'☆'.repeat(3 - estrelles)}</div>` : '') +
+      (resum ? `<div class="resum">${resum}</div>` : '') + `<div class="nom">${nom}</div></div>`;
+    document.body.appendChild(d); so('win'); setTimeout(() => so('bonus'), 350);
+    if (typeof confeti === 'function' && typeof camera !== 'undefined') { try { const p = new THREE.Vector3(0, 0, 0); confeti(p, 40, 9); } catch (e) {} }
+    setTimeout(() => { d.classList.add('surt'); setTimeout(() => { d.remove(); res(); }, 350); }, ms);
+  });
+}
 function compte(fi){ const el = document.createElement('div'); el.className = 'compte'; document.body.appendChild(el); let n = 3;
   const tic = () => { el.textContent = n > 0 ? n : 'JA!'; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); so(n > 0 ? 'clic' : 'win'); if (n-- > 0) setTimeout(tic, 650); else { setTimeout(() => el.remove(), 600); fi(); } }; tic(); }
 function popPill(id){ const e = document.getElementById(id); if (!e) return; e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); }
@@ -192,7 +310,7 @@ const matNuvol = toon({ color: 0xFFFFFF });
 function nuvol(x, y, z, s = 1){ const n = new THREE.Group();
   for (const [dx, dy, r] of [[0,0,1],[1.1,.2,.8],[-1.1,.1,.75],[.4,.55,.7],[-.5,.5,.65]]) { const b = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), matNuvol); b.position.set(dx, dy, 0); contorn(b, .05); n.add(b); }
   n.position.set(x, y, z); n.scale.setScalar(s); n.userData.v = .2 + Math.random() * .3; scene.add(n); return n; }
-const nuvols = []; function mouNuvols(dt){ for (const n of nuvols) { n.position.x += n.userData.v * dt; if (n.position.x > 40) n.position.x = -40; } }
+const nuvols = []; let mouNuvols = function(dt){ for (const n of nuvols) { n.position.x += n.userData.v * dt; if (n.position.x > 40) n.position.x = -40; } }
 
 const solMesh = celISol(); illa(-17, -8, -34, 1.5); illa(18, -5, -38, 1.3); illa(-15, 12, -48, 1);
 for (let i = 0; i < 6; i++) nuvols.push(nuvol(-25 + i*10, 3 + Math.random()*8, -16 - Math.random()*8, 1.2 + Math.random()));
@@ -224,30 +342,30 @@ function mida(){
 addEventListener('resize', mida); addEventListener('load', mida); mida();
 const raig = new THREE.Raycaster(), punter = new THREE.Vector2();
 function sota(e, llista){ punter.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); raig.setFromCamera(punter, camera); const h = raig.intersectObjects(llista, false)[0]; return h ? h.object : null; }
-function mostra(txt, ms = 1500){ const e = document.getElementById('missatge'); e.textContent = txt; e.classList.add('on'); clearTimeout(e.t); e.t = setTimeout(() => e.classList.remove('on'), ms); }
+function mostra(txt, ms = 1500){ const e = document.getElementById('missatge'); if(!e) return; e.textContent = ''; void e.offsetWidth; e.textContent = txt; e.classList.add('on'); clearTimeout(e.t); e.t = setTimeout(() => e.classList.remove('on'), ms); }
 function popPunts(id, v){ const e = document.getElementById(id); e.textContent = v; popPill(id); }
 const rellotge = new THREE.Clock();
 let tick = () => {};
 
 const CATEGORIES = {
-  'Animals': ['ELEFANT','GIRAFA','CONILL','ESQUIROL','TORTUGA','PAPALLONA','LLANGARDAIX','GRANOTA','CARGOL','BALENA','DOFI','GUINEU','SENGLAR','MUSSOL','ORENETA','LLEO','TIGRE','CAVALL','OVELLA','CABRA','GALLINA','ANEC','CIGNE','PINGUI','FOCA','TAURO','POLP','MEDUSA','ARANYA','ABELLA','VESPA','MOSQUIT','FORMIGA','CUC','RATOLI','ERICO','TEIXO','LLOP','OS','CERVOL','CAMELL','ZEBRA','HIPOPOTAM','RINOCERONT','MICO','GORILA','COCODRIL','SERP','CANGUR','KOALA','LLEOPARD','PANTERA','GUEPARD','LLINX','GAT','GOS','VACA','BOU','TORO','XAI','GALL','POLLET','OCA','PAO','COLOM','PARDAL','MERLA','GAVINA','PELICA','FLAMENC','ESTRUC','LLANGOSTA','CRANC','MUSCLO','CLOISSA','SARDINA','TONYINA','ANGUILA','SALAMANDRA','CAMALEO','IGUANA','LLIMAC','CADERNERA','CUCUT','PUCA','PAPARRA'],
-  'Menjar': ['ESCALIVADA','CALCOTS','BOTIFARRA','PANELLETS','CREMA','ESQUEIXADA','SAMFAINA','FIDEUA','COCA','TORRO','ALBERGINIA','CARXOFA','MANDARINA','PRESSEC','ESPINACS','PA','TOMAQUET','FORMATGE','PERNIL','TRUITA','ARROS','PAELLA','CANELONS','ESCUDELLA','MONGETES','CIGRONS','LLENTIES','ENSALADA','MADUIXA','CIRERA','SINDRIA','MELO','PLATAN','POMA','PERA','RAIM','TARONJA','LLIMONA','KIWI','PINYA','XOCOLATA','GALETA','PASTIS','GELAT','MEL','IOGURT','LLET','SUC','CAFE','ENTREPA','CROQUETES','SOPA','MACARRONS','PEBROT','CEBA','ALL','PATATA','PASTANAGA','CARBASSO','ENCIAM','ESCAMARLA','GAMBA','CALAMARS','SEPIA','POP','BACALLA','LLUC','RAP','SALMO','FUET','LLONGANISSA','XORIC','MATO','RECUIT','XUIXO','ENSAIMADA','BRUNYOL','TORTELL','CARQUINYOLI','CATANIES','NEULES','MASSAPA','FLAM','NATILLES','MELINDRO','XURRO','OLI','VINAGRE','FARINA','LLEVAT','OUS','PASTA','FIDEUS','NYOQUIS','PIZZA','BROU','PURE','AMANIDA','BUNYOL'],
-  'Ciutats': ['BARCELONA','GIRONA','LLEIDA','TARRAGONA','FIGUERES','MANRESA','VIC','REUS','TORTOSA','SABADELL','TERRASSA','MATARO','BADALONA','OLOT','SITGES','IGUALADA','VILANOVA','GRANOLLERS','BLANES','ROSES','CADAQUES','BANYOLES','RIPOLL','BERGA','SOLSONA','CERVERA','TARREGA','BALAGUER','VALLS','CAMBRILS','SALOU','AMPOSTA','PALAMOS','LLORET','CALELLA','VILAFRANCA','MARTORELL','CASTELLDEFELS','VILADECANS','RUBI','SANT','CUGAT','MOLLERUSSA','PUIGCERDA','TREMP','VIELHA'],
-  'Esports': ['NATACIO','ATLETISME','ESCALADA','CICLISME','HANDBOL','BASQUET','VOLEIBOL','ESGRIMA','PATINATGE','GIMNASTICA','PIRAGUISME','HOQUEI','TENNIS','SURF','JUDO','FUTBOL','RUGBI','GOLF','BOXA','KARATE','TAEKWONDO','ESQUI','SNOWBOARD','SENDERISME','REM','VELA','WATERPOLO','SALTS','MARATO','TRIATLO','CURSA','BADMINTON','PADEL','SQUASH','ESCACS','DARDS','BILLAR','BITLLES','PETANCA','SKATE','PARKOUR','IOGA','ARQUERIA','HIPICA','POLO'],
-  'Escola': ['PISSARRA','MOTXILLA','ESTOIG','LLAPIS','GOMA','REGLE','LLIBRETA','CARPETA','TISORES','ESBARJO','MESTRE','EXAMEN','DICTAT','BIBLIOTECA','MENJADOR','CADIRA','PUPITRE','GUIX','RETOLADOR','BOLIGRAF','COLA','CALCULADORA','COMPAS','AGENDA','DEURES','MATEMATIQUES','CIENCIES','HISTORIA','GEOGRAFIA','ANGLES','MUSICA','PLASTICA','GIMNAS','PATI','CLASSE','ALUMNE','DIRECTOR','TIMBRE','VACANCES','PROJECTE','MAPA','GLOBUS','DICCIONARI','ATLES'],
-  'Natura': ['MUNTANYA','RIU','LLAC','MAR','BOSC','PRAT','DESERT','VOLCA','GLACERA','CASCADA','COVA','PENYASEGAT','ILLA','PLATJA','DUNA','ROCA','SORRA','PEDRA','ARBRE','FLOR','FULLA','ARREL','BRANCA','MOLSA','BOLET','FALGUERA','PI','ROURE','ALZINA','FAIG','AVET','OLIVERA','XIPRER','LLUNA','SOL','ESTEL','NUVOL','PLUJA','NEU','BOIRA','VENT','LLAMP','TRO','TEMPESTA','ARC','DE','SANT','MARTI','ALBA','CAPVESPRE','MAREA','ONA'],
-  'Casa': ['CUINA','MENJADOR','DORMITORI','LAVABO','BALCO','TERRAT','GARATGE','ESCALA','PORTA','FINESTRA','PARET','SOSTRE','TERRA','SOFA','TAULA','CADIRA','LLIT','ARMARI','PRESTATGE','COIXI','MANTA','LLENCOL','CORTINA','CATIFA','LAMPADA','ESPELMA','NEVERA','FORN','MICROONES','RENTADORA','ASPIRADORA','ESCOMBRA','GALLEDA','FREGONA','PLAT','GOT','FORQUILLA','CULLERA','GANIVET','OLLA','PAELLA','TETERA','AIXETA','DUTXA','BANYERA','MIRALL','TOVALLOLA','CLAU'],
-  'Cos': ['CAP','CARA','FRONT','ULL','CELLA','PESTANYA','NAS','BOCA','LLAVI','DENT','LLENGUA','ORELLA','GALTA','BARBETA','COLL','ESPATLLA','BRAC','COLZE','CANELL','MA','DIT','UNGLA','PIT','ESQUENA','CINTURA','MALUC','CAMA','GENOLL','TURMELL','PEU','TALO','COR','PULMO','ESTOMAC','FETGE','RONYO','CERVELL','OS','MUSCUL','SANG','PELL','CABELL','VENA','NERVI','COSTELLA','COLUMNA','PANXA','MELIC'],
-  'Professions': ['METGE','INFERMERA','MESTRE','BOMBER','POLICIA','CUINER','CAMBRER','FUSTER','PALETA','LAMPISTA','ELECTRICISTA','MECANIC','PILOT','ASTRONAUTA','CIENTIFIC','ENGINYER','ARQUITECTE','ADVOCAT','JUTGE','PERIODISTA','ESCRIPTOR','PINTOR','ESCULTOR','MUSIC','CANTANT','ACTOR','BALLARI','FOTOGRAF','DISSENYADOR','PROGRAMADOR','PAGES','PESCADOR','RAMADER','FORNER','CARNISSER','PEIXATER','FLORISTA','PERRUQUER','DENTISTA','VETERINARI','FARMACEUTIC','TAXISTA','CONDUCTOR','CARTER','JARDINER'],
-  'Música': ['GUITARRA','PIANO','VIOLI','VIOLONCEL','CONTRABAIX','FLAUTA','CLARINET','SAXOFON','TROMPETA','TROMBO','TUBA','BATERIA','TIMBAL','TAMBOR','PANDERETA','MARAQUES','XILOFON','ARPA','ACORDIO','HARMONICA','GRALLA','TENORA','FLABIOL','SARDANA','HAVANERA','CANCO','CONCERT','ORQUESTRA','COR','DIRECTOR','SOLISTA','NOTA','PENTAGRAMA','CLAU','RITME','MELODIA','HARMONIA','COMPAS','PARTITURA','MICROFON','ALTAVEU'],
-  'Transports': ['COTXE','MOTO','BICICLETA','PATINET','AUTOBUS','TRAMVIA','METRO','TREN','AVE','TAXI','CAMIO','FURGONETA','TRACTOR','AMBULANCIA','AVIO','HELICOPTER','GLOBUS','COET','VAIXELL','BARCA','VELER','CANOA','SUBMARI','FERRI','TELEFERIC','FUNICULAR','CREMALLERA','MONOPATI','CAVALL','CARRO','TRINEU'],
-  'Festes': ['NADAL','CAP','DANY','REIS','CARNESTOLTES','PASQUA','SANT','JORDI','JOAN','DIADA','MERCE','TOTS','SANTS','CASTANYADA','TIO','CAGANER','PESSEBRE','CAVALCADA','CASTELLERS','GEGANTS','CAPGROSSOS','CORREFOC','DIABLES','DRAC','SARDANA','HAVANERES','REVETLLA','PETARDS','FOGUERA','COCA','MONA','PANELLETS','TORRONS','NEULES','ROSA','LLIBRE','FANALET','CERCAVILA'],
-  'Roba': ['SAMARRETA','PANTALONS','FALDILLA','VESTIT','JAQUETA','ABRIC','JERSEI','DESSUADORA','CAMISA','BRUSA','MITJONS','SABATES','BOTES','SANDALIES','XANCLETES','BUFANDA','GUANTS','GORRA','BARRET','CINTURO','CORBATA','PIJAMA','BANYADOR','BIQUINI','ANELL','COLLARET','POLSERA','ARRACADES','MOTXILLA','CREMALLERA','BOTO','BUTXACA','MANIGA','COLL','CAPUTXA','TEXANS','XANDALL','DAVANTAL','BATA'],
-  'Eines': ['MARTELL','TORNAVIS','CLAU','ALICATES','SERRA','TREPANT','CARGOL','FEMELLA','LLIMA','ESCARPRA','NIVELL','METRE','PINZELL','RODET','ESCALA','CARRETO','PALA','RASCLE','AIXADA','DESTRAL','GANIVET','TISORES','AGULLA','FIL','DIDAL','GRAPADORA','CLIP','REGLE','ESCAIRE','COMPAS','CUTER','COLA','CINTA','LLAPIS','RETOLADOR'],
-  'Emocions': ['ALEGRIA','TRISTESA','POR','RABIA','SORPRESA','FASTIC','AMOR','ODI','ENVEJA','GELOSIA','VERGONYA','ORGULL','CALMA','NERVIS','ANSIETAT','ILLUSIO','ESPERANCA','TENDRESA','NOSTALGIA','AVORRIMENT','CURIOSITAT','CONFIANCA','PANIC','EUFORIA','MALENCONIA','SERENOR','PACIENCIA','SOLITUD','FELICITAT','ANGOIXA'],
-  'Verbs': ['CORRER','SALTAR','MENJAR','BEURE','DORMIR','LLEGIR','ESCRIURE','CANTAR','BALLAR','RIURE','PLORAR','PENSAR','PARLAR','ESCOLTAR','MIRAR','TOCAR','OLORAR','CAMINAR','NEDAR','VOLAR','JUGAR','TREBALLAR','ESTUDIAR','CUINAR','NETEJAR','COMPRAR','VENDRE','OBRIR','TANCAR','PUJAR','BAIXAR','ENTRAR','SORTIR','DIBUIXAR','PINTAR','CONSTRUIR','TRENCAR','ARREGLAR','APRENDRE','ENSENYAR'],
-  'Espai': ['SOL','LLUNA','ESTEL','PLANETA','TERRA','MART','VENUS','JUPITER','SATURN','MERCURI','NEPTU','COMETA','ASTEROIDE','GALAXIA','COET','SATELLIT','ASTRONAUTA','TELESCOPI','ORBITA','ECLIPSI','METEORIT','NEBULOSA','UNIVERS','GRAVETAT','ATMOSFERA','CRATER','ESTACIO','LLANCAMENT','ALIENIGENA'],
-  'Colors': ['VERMELL','BLAU','GROC','VERD','TARONJA','LILA','ROSA','MARRO','NEGRE','BLANC','GRIS','BEIX','TURQUESA','MORAT','DAURAT','PLATEJAT','VIOLETA','MAGENTA','CARBASSA','OCRE','MARAGDA','BORDEUS'],
+  'Animals': ['ELEFANT','GIRAFA','CONILL','ESQUIROL','TORTUGA','PAPALLONA','LLANGARDAIX','GRANOTA','CARGOL','BALENA','DOFI','GUINEU','SENGLAR','MUSSOL','ORENETA','LLEO','TIGRE','CAVALL','OVELLA','CABRA','GALLINA','ANEC','CIGNE','PINGUI','FOCA','TAURO','POLP','MEDUSA','ARANYA','ABELLA','VESPA','MOSQUIT','FORMIGA','CUC','RATOLI','ERICO','TEIXO','LLOP','OS','CERVOL','CAMELL','ZEBRA','HIPOPOTAM','RINOCERONT','MICO','GORILA','COCODRIL','SERP','CANGUR','KOALA','LLEOPARD','PANTERA','GUEPARD','LLINX','GAT','GOS','VACA','BOU','TORO','XAI','GALL','POLLET','OCA','PAO','COLOM','PARDAL','MERLA','GAVINA','PELICA','FLAMENC','ESTRUC','LLANGOSTA','CRANC','MUSCLO','CLOISSA','SARDINA','TONYINA','ANGUILA','SALAMANDRA','CAMALEO','IGUANA','LLIMAC','CADERNERA','CUCUT','PUCA','PAPARRA','RATA','TALP','MARMOTA','CASTOR','LLUDRIA','MORSA','NARVAL','ORCA','ESTRELLA','GARSA','CORB','VOLTOR','FALCO','AGUILA','XORIGUER','TORD','CIGONYA','MOSCA','MOSCARDA','GRILL','LLAGOSTA','ESCARABAT','LLUERNA','CENTPEUS','ARNA','CUCA'],
+  'Menjar': ['ESCALIVADA','CALCOTS','BOTIFARRA','PANELLETS','CREMA','ESQUEIXADA','SAMFAINA','FIDEUA','COCA','TORRO','ALBERGINIA','CARXOFA','MANDARINA','PRESSEC','ESPINACS','PA','TOMAQUET','FORMATGE','PERNIL','TRUITA','ARROS','PAELLA','CANELONS','ESCUDELLA','MONGETES','CIGRONS','LLENTIES','MADUIXA','CIRERA','SINDRIA','MELO','PLATAN','POMA','PERA','RAIM','TARONJA','LLIMONA','KIWI','PINYA','XOCOLATA','GALETA','PASTIS','GELAT','MEL','IOGURT','LLET','SUC','CAFE','ENTREPA','CROQUETES','SOPA','MACARRONS','PEBROT','CEBA','ALL','PATATA','PASTANAGA','CARBASSO','ENCIAM','ESCAMARLA','GAMBA','CALAMARS','SEPIA','POP','BACALLA','LLUC','RAP','SALMO','FUET','LLONGANISSA','XORIC','MATO','RECUIT','XUIXO','ENSAIMADA','BRUNYOL','TORTELL','CARQUINYOLI','CATANIES','NEULES','MASSAPA','FLAM','NATILLES','MELINDRO','XURRO','OLI','VINAGRE','FARINA','LLEVAT','OUS','PASTA','FIDEUS','NYOQUIS','PIZZA','BROU','PURE','AMANIDA','BUNYOL','BOLETS','ROVELLO','CEP','MELMELADA','CODONYAT','CONFITURA','ROMESCO','ALLIOLI','SOFREGIT','TRINXAT','SUQUET','ARROSSEJAT','GASPATXO','PANOLI','LLESCA','TORRADA','CRESPELL','CARAMEL','GOMINOLA','XICLET','CACAU','AMETLLA','AVELLANA','NOU','PANSA','FIGA','MAGRANA','NESPRA','CODONY','CAQUI','ALVOCAT','MANGO','PAPAIA'],
+  'Ciutats': ['BARCELONA','GIRONA','LLEIDA','TARRAGONA','FIGUERES','MANRESA','VIC','REUS','TORTOSA','SABADELL','TERRASSA','MATARO','BADALONA','OLOT','SITGES','IGUALADA','VILANOVA','GRANOLLERS','BLANES','ROSES','CADAQUES','BANYOLES','RIPOLL','BERGA','SOLSONA','CERVERA','TARREGA','BALAGUER','VALLS','CAMBRILS','SALOU','AMPOSTA','PALAMOS','LLORET','CALELLA','VILAFRANCA','MARTORELL','CASTELLDEFELS','VILADECANS','RUBI','MOLLERUSSA','PUIGCERDA','TREMP','VIELHA','SANTCUGAT','MANLLEU','TORROELLA','MOLINS','ESPLUGUES','CORNELLA','HOSPITALET','GAVA','CALAFELL','TORREDEMBARRA','FALSET','MORA','GANDESA','BELLPUIG','GUISSONA','AGRAMUNT','ARTESA','PONTS','OLIANA','SORT','ESTERRI','BOI','BOSSOST','ARTIES'],
+  'Esports': ['NATACIO','ATLETISME','ESCALADA','CICLISME','HANDBOL','BASQUET','VOLEIBOL','ESGRIMA','PATINATGE','GIMNASTICA','PIRAGUISME','HOQUEI','TENNIS','SURF','JUDO','FUTBOL','RUGBI','GOLF','BOXA','KARATE','TAEKWONDO','ESQUI','SNOWBOARD','SENDERISME','REM','VELA','WATERPOLO','SALTS','MARATO','TRIATLO','CURSA','BADMINTON','PADEL','SQUASH','ESCACS','DARDS','BILLAR','BITLLES','PETANCA','SKATE','PARKOUR','IOGA','ARQUERIA','HIPICA','POLO','BEISBOL','SOFTBOL','CRIQUET','FRONTO','PILOTA','ESQUAIX','BARRANQUISME','ORIENTACIO','CAIAC','RAFTING','WINDSURF','KITESURF','BUSSEIG','APNEA','ESPELEOLOGIA','HALTEROFILIA','ZUMBA','PILATES','AEROBIC','BALLET','DANSA'],
+  'Escola': ['PISSARRA','MOTXILLA','ESTOIG','LLAPIS','GOMA','REGLE','LLIBRETA','CARPETA','TISORES','ESBARJO','MESTRE','EXAMEN','DICTAT','BIBLIOTECA','MENJADOR','CADIRA','PUPITRE','GUIX','RETOLADOR','BOLIGRAF','COLA','CALCULADORA','COMPAS','AGENDA','DEURES','MATEMATIQUES','CIENCIES','HISTORIA','GEOGRAFIA','ANGLES','MUSICA','PLASTICA','GIMNAS','PATI','CLASSE','ALUMNE','DIRECTOR','TIMBRE','VACANCES','PROJECTE','MAPA','GLOBUS','DICCIONARI','ATLES','QUADERN','FULL','FOLI','CARTOLINA','TEMPERA','AQUARELLA','PLASTILINA','ARGILA','TRANSPORTADOR','ORDINADOR','TAULETA','PROJECTOR','CAMPANA','PENJADOR'],
+  'Natura': ['MUNTANYA','RIU','LLAC','MAR','BOSC','PRAT','DESERT','VOLCA','GLACERA','CASCADA','COVA','PENYASEGAT','ILLA','PLATJA','DUNA','ROCA','SORRA','PEDRA','ARBRE','FLOR','FULLA','ARREL','BRANCA','MOLSA','BOLET','FALGUERA','PI','ROURE','ALZINA','FAIG','AVET','OLIVERA','XIPRER','LLUNA','SOL','ESTEL','NUVOL','PLUJA','NEU','BOIRA','VENT','LLAMP','TRO','TEMPESTA','ALBA','CAPVESPRE','MAREA','ONA','ARCDESANTMARTI','ESTANY','RIEROL','SERRALADA','CIM','PIC','VALL','BARRANC','TORRENT','GORG','SALT','AIGUAMOLL','LLACUNA','DELTA','CALA','BADIA','PENINSULA','ILLOT','ESCULL','ROQUER','SORRAL','PINEDA','ALZINAR','ROUREDA','FAGEDA','MATOLL','GARRIGA','BRUGUERA','LIQUEN'],
+  'Casa': ['CUINA','MENJADOR','DORMITORI','LAVABO','BALCO','TERRAT','GARATGE','ESCALA','PORTA','FINESTRA','PARET','SOSTRE','TERRA','SOFA','TAULA','CADIRA','LLIT','ARMARI','PRESTATGE','COIXI','MANTA','LLENCOL','CORTINA','CATIFA','LAMPADA','ESPELMA','NEVERA','FORN','MICROONES','RENTADORA','ASPIRADORA','ESCOMBRA','GALLEDA','FREGONA','PLAT','GOT','FORQUILLA','CULLERA','GANIVET','OLLA','PAELLA','TETERA','AIXETA','DUTXA','BANYERA','MIRALL','TOVALLOLA','CLAU','REBEDOR','PASSADIS','RACO','PORXO','JARDI','HORT','GRANER','CELLER','GOLFES','SOTERRANI','TRASTER','CALDERA','RADIADOR','ESTUFA','XEMENEIA','LLAR','EXTRACTOR','RENTAPLATS','ASSECADORA','PLANXA','BATEDORA','TORRADORA','CAFETERA','BULLIDOR','CASSOLA'],
+  'Cos': ['CAP','CARA','FRONT','ULL','CELLA','PESTANYA','NAS','BOCA','LLAVI','DENT','LLENGUA','ORELLA','GALTA','BARBETA','COLL','ESPATLLA','BRAC','COLZE','CANELL','MA','DIT','UNGLA','PIT','ESQUENA','CINTURA','MALUC','CAMA','GENOLL','TURMELL','PEU','TALO','COR','PULMO','ESTOMAC','FETGE','RONYO','CERVELL','OS','MUSCUL','SANG','PELL','CABELL','VENA','NERVI','COSTELLA','COLUMNA','PANXA','MELIC','CRANI','TEMPLA','POMUL','MANDIBULA','GENIVA','PALADAR','GOLA','LARINGE','TRAQUEA','ESOFAG','DIAFRAGMA','BUDELL','PANCREES','MELSA','BUFETA','UTER','OVARI','TESTICLE','PROSTATA','ARTERIA','CAPILLAR','LIMFA','HORMONA','ENZIM','NEURONA'],
+  'Professions': ['METGE','INFERMERA','MESTRE','BOMBER','POLICIA','CUINER','CAMBRER','FUSTER','PALETA','LAMPISTA','ELECTRICISTA','MECANIC','PILOT','ASTRONAUTA','CIENTIFIC','ENGINYER','ARQUITECTE','ADVOCAT','JUTGE','PERIODISTA','ESCRIPTOR','PINTOR','ESCULTOR','MUSIC','CANTANT','ACTOR','BALLARI','FOTOGRAF','DISSENYADOR','PROGRAMADOR','PAGES','PESCADOR','RAMADER','FORNER','CARNISSER','PEIXATER','FLORISTA','PERRUQUER','DENTISTA','VETERINARI','FARMACEUTIC','TAXISTA','CONDUCTOR','CARTER','JARDINER','NOTARI','PROCURADOR','ECONOMISTA','COMPTABLE','AUDITOR','BANQUER','CORREDOR','AGENT','VENEDOR','DEPENDENT','CAIXER','REPARTIDOR','MISSATGER','TRANSPORTISTA','MARINER','CAPITA','SOLDAT','GUARDIA','VIGILANT','DETECTIU','ESPIA','TRADUCTOR','INTERPRET','BIBLIOTECARI','ARXIVER','HISTORIADOR','ARQUEOLEG','GEOLEG','BIOLEG','QUIMIC','FISIC','MATEMATIC','ASTRONOM'],
+  'Música': ['GUITARRA','PIANO','VIOLI','VIOLONCEL','CONTRABAIX','FLAUTA','CLARINET','SAXOFON','TROMPETA','TROMBO','TUBA','BATERIA','TIMBAL','TAMBOR','PANDERETA','MARAQUES','XILOFON','ARPA','ACORDIO','HARMONICA','GRALLA','TENORA','FLABIOL','SARDANA','HAVANERA','CANCO','CONCERT','ORQUESTRA','COR','DIRECTOR','SOLISTA','NOTA','PENTAGRAMA','CLAU','RITME','MELODIA','HARMONIA','COMPAS','PARTITURA','MICROFON','ALTAVEU','CASTANYOLES','TRIANGLE','GONG','PLATERETS','CAIXA','BOMBO','TIMBALA','OBOE','FAGOT','CORN','TROMPA','CORNETA','UKELELE','BANJO','MANDOLINA','LLAUT','CITARA','BALALAICA','TECLAT','SINTETITZADOR','ORGUE','CLAVICEMBAL','ESPINETA','VEU','SOPRANO','TENOR','BARITON','BAIX','CONTRALT'],
+  'Transports': ['COTXE','MOTO','BICICLETA','PATINET','AUTOBUS','TRAMVIA','METRO','TREN','AVE','TAXI','CAMIO','FURGONETA','TRACTOR','AMBULANCIA','AVIO','HELICOPTER','GLOBUS','COET','VAIXELL','BARCA','VELER','CANOA','SUBMARI','FERRI','TELEFERIC','FUNICULAR','CREMALLERA','MONOPATI','CAVALL','CARRO','TRINEU','CAMIONETA','TOTTERRENY','MONOVOLUM','LIMUSINA','CARAVANA','AUTOCARAVANA','GRUA','BULLDOZER','EXCAVADORA','LOCOMOTORA','VAGO','MONORAIL','GONDOLA','PIRAGUA','CATAMARA','IOT','CREUER','TRANSATLANTIC','PETROLIER','REMOLCADOR','DIRIGIBLE','PLANADOR','ULTRALLEUGER','DRON'],
+  'Festes': ['NADAL','REIS','CARNESTOLTES','PASQUA','DIADA','MERCE','CASTANYADA','TIO','CAGANER','PESSEBRE','CAVALCADA','CASTELLERS','GEGANTS','CAPGROSSOS','CORREFOC','DIABLES','DRAC','SARDANA','HAVANERES','REVETLLA','PETARDS','FOGUERA','COCA','MONA','PANELLETS','TORRONS','NEULES','ROSA','LLIBRE','FANALET','CERCAVILA','CAPDANY','SANTJORDI','SANTJOAN','TOTSSANTS','SANTANTONI','TRESTOMBS','CANDELERA','CARNAVAL','DIJOUSGRAS','RAMS','SETMANASANTA','PROCESSO','PASQUETES','CORPUS','OUCOMBALLA','SANTPERE','ASSUMPCIO','FESTAMAJOR','ENVELAT','BALLDEGEGANTS','DIABLE','BESTIARI','MULASSA','VIBRIA','CUCAFERA','PATUM'],
+  'Roba': ['SAMARRETA','PANTALONS','FALDILLA','VESTIT','JAQUETA','ABRIC','JERSEI','DESSUADORA','CAMISA','BRUSA','MITJONS','SABATES','BOTES','SANDALIES','XANCLETES','BUFANDA','GUANTS','GORRA','BARRET','CINTURO','CORBATA','PIJAMA','BANYADOR','BIQUINI','ANELL','COLLARET','POLSERA','ARRACADES','MOTXILLA','CREMALLERA','BOTO','BUTXACA','MANIGA','COLL','CAPUTXA','TEXANS','XANDALL','DAVANTAL','BATA','CALCA','CALCOTETS','SOSTENIDOR','MITGES','LEOTARDS','ESPARDENYES','SABATILLES','BOTINS','TALONS','PLATAFORMES','CAMISOLA','ARMILLA','GAVARDINA','PARCA','ANORAC','IMPERMEABLE','CAPA','XAL','MOCADOR'],
+  'Eines': ['MARTELL','TORNAVIS','CLAU','ALICATES','SERRA','TREPANT','CARGOL','FEMELLA','LLIMA','ESCARPRA','NIVELL','METRE','PINZELL','RODET','ESCALA','CARRETO','PALA','RASCLE','AIXADA','DESTRAL','GANIVET','TISORES','AGULLA','FIL','DIDAL','GRAPADORA','CLIP','REGLE','ESCAIRE','COMPAS','CUTER','COLA','CINTA','LLAPIS','RETOLADOR','MALL','MACETA','TENALLES','FILFERRO','CABLE','ENDOLL','INTERRUPTOR','FUSIBLE','BOMBETA','LLANTERNA','PILA','CARREGADOR','SOLDADOR','POLIDORA','LLIMADORA','FRESADORA','TORN','PREMSA','SERJANT','CARGOLADORA'],
+  'Emocions': ['ALEGRIA','TRISTESA','POR','RABIA','SORPRESA','FASTIC','AMOR','ODI','ENVEJA','GELOSIA','VERGONYA','ORGULL','CALMA','NERVIS','ANSIETAT','ILLUSIO','ESPERANCA','TENDRESA','NOSTALGIA','AVORRIMENT','CURIOSITAT','CONFIANCA','PANIC','EUFORIA','MALENCONIA','SERENOR','PACIENCIA','SOLITUD','FELICITAT','ANGOIXA','SATISFACCIO','PLAER','GOIG','DELIT','EXTASI','ALLEUJAMENT','TRANQUILLITAT','DESCANS','RECEL','DESCONFIANCA','SOSPITA','INCERTESA','DUBTE','NEGUIT','INQUIETUD','FRUSTRACIO','DECEPCIO','DESENGANY','AMARGOR','RANCOR','RESSENTIMENT','INDIGNACIO','ESGLAI','TERROR','PAVOR'],
+  'Verbs': ['CORRER','SALTAR','MENJAR','BEURE','DORMIR','LLEGIR','ESCRIURE','CANTAR','BALLAR','RIURE','PLORAR','PENSAR','PARLAR','ESCOLTAR','MIRAR','TOCAR','OLORAR','CAMINAR','NEDAR','VOLAR','JUGAR','TREBALLAR','ESTUDIAR','CUINAR','NETEJAR','COMPRAR','VENDRE','OBRIR','TANCAR','PUJAR','BAIXAR','ENTRAR','SORTIR','DIBUIXAR','PINTAR','CONSTRUIR','TRENCAR','ARREGLAR','APRENDRE','ENSENYAR','CAURE','SEURE','AIXECAR','ESTIRAR','EMPENYER','TIBAR','LLANCAR','AGAFAR','DEIXAR','DONAR','PRENDRE','PORTAR','DUR','POSAR','TREURE','OMPLIR','BUIDAR','TALLAR','ENGANXAR','LLIGAR','DESLLIGAR','ENCENDRE','APAGAR','ESCALFAR','REFREDAR','BULLIR','FREGIR','COURE','ROSTIR'],
+  'Espai': ['SOL','LLUNA','ESTEL','PLANETA','TERRA','MART','VENUS','JUPITER','SATURN','MERCURI','NEPTU','COMETA','ASTEROIDE','GALAXIA','COET','SATELLIT','ASTRONAUTA','TELESCOPI','ORBITA','ECLIPSI','METEORIT','NEBULOSA','UNIVERS','GRAVETAT','ATMOSFERA','CRATER','ESTACIO','LLANCAMENT','ALIENIGENA','PLUTO','CERES','EUROPA','GANIMEDES','TITA','CALLISTO','FOBOS','DEIMOS','ANDROMEDA','VIALACTIA','PULSAR','QUASAR','SUPERNOVA','FORATNEGRE','METEOR','BOLID','ORIO','CASSIOPEA','POLAR','SIRIUS'],
+  'Colors': ['VERMELL','BLAU','GROC','VERD','TARONJA','LILA','ROSA','MARRO','NEGRE','BLANC','GRIS','BEIX','TURQUESA','MORAT','DAURAT','PLATEJAT','VIOLETA','MAGENTA','CARBASSA','OCRE','MARAGDA','BORDEUS','ESCARLATA','CARMESI','GRANAT','CORALL','AMBRE','MOSTASSA','OLIVA','MENTA','CEL','MARI','INDI','MALVA','FUCSIA','IVORI','CASTANY','CENDRA','PLOM','CARBO'],
 };
 const JOC = 'perdudes';
 const NOMS = Object.keys(CATEGORIES);
@@ -258,8 +376,10 @@ const tecles = {};
 AMPLE = 8; ALT = 3.5; CY = 0; mida();
 function prepara(){
   for (const d of daus) scene.remove(d); daus = []; errors = 0; seguent = 0;
-  const cat = tria(NOMS); paraula = tria(CATEGORIES[cat].filter(w => w.length >= 4 && w.length <= 9));
-  const n = paraula.length, k = Math.max(1, Math.round(n * .4)), idx = barreja([...Array(n).keys()]).slice(0, k).sort((a, b) => a - b);
+  const minL = Math.min(9, 4 + Math.floor(nivell * .7)), maxL = Math.min(12, 5 + nivell); // N1: 4-5 lletres · N10: 9-12
+  const cat = tria(NOMS); const bossa = CATEGORIES[cat].filter(w => w.length >= minL && w.length <= maxL); paraula = noRepetida(bossa.length ? bossa : CATEGORIES[cat].filter(w => w.length >= 4), w => w);
+  const frac = .3 + nivell * .04; // N1: 30% de forats · N10: 66%
+  const n = paraula.length, k = Math.max(1, Math.round(n * frac)), idx = barreja([...Array(n).keys()]).slice(0, k).sort((a, b) => a - b);
   amagades = idx;
   document.getElementById('pregunta').innerHTML = `Quines lletres falten?<small>Categoria: ${cat} · escriu-les d'esquerra a dreta</small>`;
   cols = innerWidth / innerHeight < 1 ? Math.min(n, 5) : n; files = Math.ceil(n / cols);
@@ -278,7 +398,7 @@ function lletra(ch){
 }
 function revela(){ daus.forEach((d, i) => { if (d.userData.oculta && !d.userData.feta) d.material = matsDau(paraula[i], '#FF3E9A', '#fff'); }); }
 function fallaTemps(){ bloquejat = true; revela(); mostra(`Era ${paraula}`, 1800); ratxa = 0; so('mal'); setTimeout(novaRonda, 1800); }
-function respostaBot(){ let k = 0; const it = setInterval(() => { if (!viu || bloquejat || seguent >= amagades.length) return clearInterval(it); lletra(paraula[amagades[seguent]]); if (++k > 12) clearInterval(it); }, 380); }
+function respostaBot(){ let k = 0; const it = setInterval(() => { if (!viu || bloquejat || seguent >= amagades.length) return clearInterval(it); lletra(botFalla(.15) ? 'QWERTYUIOPASDFGHJKLZXCVBNM'[Math.floor(Math.random()*26)] : paraula[amagades[seguent]]); if (++k > 14) clearInterval(it); }, ESPECT ? 650 : 380); }
 const teclat = document.getElementById('teclat');
 for (const f of FILES) { const d = document.createElement('div'); d.className = 'fila'; for (const k of f) { const b = document.createElement('button'); b.className = 'tecla'; b.textContent = k; b.onclick = () => lletra(k); d.appendChild(b); tecles[k] = b; } teclat.appendChild(d); }
 addEventListener('keydown', e => { if (e.key === 'Enter' && !viu) return comenca(); const ch = norm(e.key); if (/^[A-ZÇ]$/.test(ch)) lletra(ch); });
@@ -287,29 +407,44 @@ tick = dt => { tickRondes(dt); daus.forEach((d, i) => { d.scale.lerp(new THREE.V
   if (d.userData.sacseig > 0) { d.userData.sacseig -= dt; d.position.x = x0 + Math.sin(d.userData.sacseig * 60) * .15; } else d.position.x = x0; }); };
 
 let ronda = 0, punts = 0, viu = false, bloquejat = false, ratxa = 0, tempsRonda = 0, tempsMax = 20;
-const N_RONDES = 10;
+const N_RONDES = 100, PER_NIVELL = 10; // 10 preguntes per nivell × 10 nivells
+let quizAcabat = false, nivell = 0, encertsNivell = 0, puntsNivell = 0, millorNivell = Number(localStorage.getItem('catquiz-' + JOC + '-niv') || 0);
+const usades = new Set(); // cap pregunta repetida dins d'una partida
+function noRepetida(llista, clau){ const lliures = llista.filter(x => !usades.has(clau(x))); const b = lliures.length ? lliures : llista; const x = tria(b); usades.add(clau(x)); return x; }
 const barra = document.getElementById('barra');
-function comenca(){ ronda = 0; punts = 0; ratxa = 0; encerts = 0; document.getElementById('punts').textContent = 0;
+function comenca(){ ronda = 0; punts = 0; ratxa = 0; encerts = 0; encertsNivell = 0; puntsNivell = 0; usades.clear(); document.getElementById('punts').textContent = 0; aplicaTema(0);
   document.getElementById('inici').hidden = true; document.getElementById('final').hidden = true; so('clic'); viu = true; novaRonda(); }
 function acaba(){ viu = false; so('win'); avisa('fi');
   const clau = 'catquiz-' + JOC, millor = Math.max(Number(localStorage.getItem(clau) || 0), punts); localStorage.setItem(clau, millor);
   document.getElementById('punts-final').textContent = punts;
-  document.getElementById('text-final').textContent = (punts >= millor && punts > 0 ? 'Nou rècord! ' : `El teu rècord és ${millor}. `) + `${encerts} de ${N_RONDES} encertades.`;
+  document.getElementById('text-final').textContent = (punts >= millor && punts > 0 ? 'Nou rècord! ' : `El teu rècord és ${millor}. `) + `Has completat els ${Math.floor(ronda/PER_NIVELL)} nivells · ${encerts} de ${ronda} encertades.`;
   document.getElementById('titol-final').textContent = encerts === N_RONDES ? 'Perfecte!' : encerts >= 7 ? 'Molt bé!' : encerts >= 4 ? 'No està malament' : 'A practicar!';
   document.getElementById('final').hidden = QUIZ && DEMO; if (DEMO) setTimeout(comenca, QUIZ ? 6000 : 2500); }
 let encerts = 0;
-function novaRonda(){ if (ronda >= N_RONDES) return acaba(); ronda++; bloquejat = false; tempsRonda = tempsMax;
-  document.getElementById('ronda').textContent = `${ronda} / ${N_RONDES}`; popPill('ronda'); prepara();
+async function novaRonda(){ if (quizAcabat) return; if (ronda >= N_RONDES) return acaba(); ronda++; bloquejat = true; tempsRonda = tempsMax;
+  const nou = Math.floor((ronda - 1) / PER_NIVELL); // 0..9
+  if (nou !== nivell || ronda === 1) {
+    if (ronda > 1) { // resum del nivell acabat: estrelles + bonus per nivell perfecte
+      const estr = encertsNivell >= 10 ? 3 : encertsNivell >= 7 ? 2 : encertsNivell >= 4 ? 1 : 0, bonus = encertsNivell >= 10 ? 100 : encertsNivell >= 8 ? 40 : 0;
+      if (bonus) { punts += bonus; popPunts('punts', punts); }
+      if (nivell + 1 > millorNivell) { millorNivell = nivell + 1; localStorage.setItem('catquiz-' + JOC + '-niv', millorNivell); }
+      await pantallaNivell(nou + 1, TEMES[nou].nom, `${encertsNivell}/10 encerts · +${puntsNivell + bonus} punts` + (bonus ? ` (${bonus} de bonus!)` : ''), estr, 3000);
+    } else await pantallaNivell(1, TEMES[0].nom, '', -1, 1800);
+    nivell = nou; encertsNivell = 0; puntsNivell = 0; aplicaTema(nivell);
+  }
+  bloquejat = false; tempsRonda = tempsMax;
+  document.getElementById('ronda').textContent = `N${nivell+1} · ${((ronda-1)%PER_NIVELL)+1}/${PER_NIVELL}`; popPill('ronda'); prepara();
   if (DEMO) setTimeout(bot, 1300); }
 function resultat(ok, punt = 10){ bloquejat = true;
-  if (ok) { encerts++; ratxa++; const b = ratxa >= 3 ? 2 : 1; punts += punt * b + Math.ceil(tempsRonda); popPunts('punts', punts); so(b > 1 ? 'bonus' : 'ok'); if (b > 1) mostra(`Ratxa ×${ratxa}! 🔥`, 900); }
+  if (ok) { encerts++; encertsNivell++; ratxa++; const b = ratxa >= 6 ? 3 : ratxa >= 3 ? 2 : 1, guany = punt * b + Math.ceil(tempsRonda); punts += guany; puntsNivell += guany; popPunts('punts', punts); so(b > 1 ? 'bonus' : 'ok'); if (b > 1) mostra(`Ratxa ×${ratxa}! 🔥 (punts ×${b})`, 900); }
   else { ratxa = 0; so('mal'); }
   setTimeout(novaRonda, ok ? 1100 : 2000); }
 document.getElementById('btn-inici').onclick = comenca; document.getElementById('btn-reinici').onclick = comenca;
 if (DEMO) { document.getElementById('inici').hidden = true; setTimeout(comenca, 500); }
-async function bot(){ if (!viu || bloquejat) return;
+async function bot(){ if (!viu) return; if (bloquejat) { setTimeout(bot, 700); return; }
   if (QUIZ && ronda === 2 && !bot.fet) { bot.fet = true; avisa('quiz'); await espera(5200); }
-  if (ronda === 1) bot.fet = false; respostaBot(); }
+  if (ronda === 1) bot.fet = false; respostaBot();
+  if (QUIZ && bot.fet && ronda === 2) setTimeout(() => { avisa('fi'); quizAcabat = true; }, 1400); } // en mode quiz, el reel acaba després de la revelació
 function tickRondes(dt){ if (!viu || bloquejat) return; tempsRonda -= dt; if (barra) barra.style.transform = `scaleX(${Math.max(0, tempsRonda / tempsMax)})`;
   if (tempsRonda <= 0) { mostra('Temps!'); fallaTemps(); } }
 
@@ -324,6 +459,29 @@ function anima(){
   renderer.render(scene, camera);
 }
 anima();
+
+// ===== TEMA NEÓ (3D): ambients foscos amb estels, núvols translúcids, cubs flotants i sense contorns =====
+TEMES.splice(0, TEMES.length,
+ {nom:'Nebulosa violeta',cel:[0x1A1650,0x4A2FB5],gespa:0x4EE06A,sol:0xFFD24A,terra:0x2A2070},
+ {nom:'Cel índic',cel:[0x141A5A,0x3A3FB0],gespa:0x38E8FF,sol:0xFFFFFF,terra:0x1E2466},
+ {nom:'Aurora neó',cel:[0x0E2A4A,0x1AA0C0],gespa:0x5CF0A0,sol:0xC0FFE0,terra:0x1A3050},
+ {nom:'Magenta fosc',cel:[0x2A1048,0x8A2FB5],gespa:0xFF4FD8,sol:0xFFC0F0,terra:0x3A1A5A},
+ {nom:'Blau elèctric',cel:[0x0A1E5A,0x2060E0],gespa:0x38E8FF,sol:0xFFFFFF,terra:0x16306A},
+ {nom:'Posta còsmica',cel:[0x3A1058,0xE0507A],gespa:0xFF9A2E,sol:0xFFD060,terra:0x4A2050},
+ {nom:'Nit estelada',cel:[0x0C1038,0x2A3A8C],gespa:0xA06BFF,sol:0xE8E8FF,terra:0x1A1A50},
+ {nom:'Verd làser',cel:[0x0A2A30,0x0E7A6A],gespa:0x4EE06A,sol:0xE0FFE0,terra:0x12403A},
+ {nom:'Foc de neó',cel:[0x3A0A2A,0xD04040],gespa:0xFFD24A,sol:0xFFE080,terra:0x4A1A2A},
+ {nom:'Gel polar',cel:[0x102A5A,0x3AA0E0],gespa:0x9AE0FF,sol:0xFFFFFF,terra:0x20406A});
+matNuvol.color.setHex(0x9A8CFF); matNuvol.transparent = true; matNuvol.opacity = .22; matNuvol.depthWrite = false;
+matContorn.visible = false; // sense contorns negres: look net i lluminós
+const CUBS_NEO = [], colsNeo = [0xFF4F6D, 0xFF9A2E, 0xFFD24A, 0x4EE06A, 0x38E8FF, 0x4F7CFF, 0xA06BFF, 0xFF4FD8];
+for (let i = 0; i < 16; i++) { const s = .6 + Math.random() * 1.6; const c = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), new THREE.MeshBasicMaterial({ color: colsNeo[i % colsNeo.length], transparent: true, opacity: .16 + Math.random() * .14, fog: false, depthWrite: false }));
+  c.position.set((Math.random() - .5) * 34, (Math.random() - .5) * 22, -16 - Math.random() * 26); c.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3); c.userData = { vy: .15 + Math.random() * .35, vr: (Math.random() - .5) * .4 }; scene.add(c); CUBS_NEO.push(c); }
+const mouNuvolsOrig = mouNuvols; mouNuvols = function(dt){ mouNuvolsOrig(dt); for (const c of CUBS_NEO) { c.position.y += c.userData.vy * dt; c.rotation.x += c.userData.vr * dt; c.rotation.z += c.userData.vr * .7 * dt; if (c.position.y > 14) c.position.y = -14; } };
+
+// Neó: estels sempre visibles i recolor de la plataforma/gespa inicial
+aplicaTema(0); // Neó: pinta l'ambient fosc ja a la pantalla d'inici
+scene.traverse(o => { if (o.material && o.material.color && !o.material.map && o.material.color.getHex() === 0x7CE800) o.material.color.setHex(TEMES[0].gespa); if (o.material && o.material.color && !o.material.map && o.material.color.getHex() === 0xA8683A) o.material.color.setHex(TEMES[0].terra); });
 </script>
 </body>
 </html>

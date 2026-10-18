@@ -1153,8 +1153,31 @@ def _(I):
     for i, (x, y) in enumerate(((150, 330), (130, 300), (112, 270))): I.add(f'<path d="M{x} {y} q-20 -10 -40 -4" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity="{.9-i*.25}"/>')
     sparkle(I, 360, 120, 16); sparkle(I, 150, 110, 12)
 
+@icon('catquiz-barbarismes')
+def _(I):
+    cq_bg(I, '#ff9a9a', '#d63a5a')
+    # dues targetes de frase: una ratllada, l'altra correcta
+    I.add(f'<g transform="rotate(-6 256 180)"><rect x="70" y="120" width="372" height="110" rx="22" {st("#fff")}/>'
+          f'<rect x="100" y="150" width="200" height="18" rx="9" fill="#c9c3e6"/><rect x="100" y="184" width="150" height="18" rx="9" fill="#c9c3e6"/>'
+          f'<path d="M90 140 L420 210" stroke="#e8384f" stroke-width="16" stroke-linecap="round"/></g>')
+    I.add(f'<circle cx="420" cy="132" r="34" {st("#e8384f", 7)}/><path d="M404 116 l32 32 M436 116 l-32 32" stroke="#fff" stroke-width="9" stroke-linecap="round"/>')
+    I.add(f'<g transform="rotate(4 256 330)"><rect x="70" y="280" width="372" height="110" rx="22" {st("#fff")}/>'
+          f'<rect x="100" y="310" width="230" height="18" rx="9" fill="#c9c3e6"/><rect x="100" y="344" width="170" height="18" rx="9" fill="#c9c3e6"/></g>')
+    I.add(f'<circle cx="420" cy="300" r="34" {st("#4fc35a", 7)}/><path d="M404 300 l11 12 l22 -24" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>')
+    sparkle(I, 460, 430, 16)
+
+@icon('catquiz-quiz-de-futbol')
+def _(I):
+    cq_bg(I, '#7fd0ff', '#2f6fe0')
+    I.add('<path d="M-10 400 H522" stroke="#fff" stroke-width="8" opacity=".5"/><circle cx="256" cy="400" r="120" fill="none" stroke="#fff" stroke-width="8" opacity=".5"/>')
+    I.add(f'<circle cx="256" cy="240" r="118" {st("#fff")}/><path d="M256 182 L311 222 L290 286 L222 286 L201 222Z" fill="{INK}"/>'
+          + ''.join(f'<path d="M{x1} {y1} L{x2} {y2}" stroke="{INK}" stroke-width="7"/>' for x1, y1, x2, y2 in ((256, 182, 256, 124), (311, 222, 366, 204), (290, 286, 324, 334), (222, 286, 188, 334), (201, 222, 146, 204))))
+    shine(I, 215, 180, 30, 16, -30, .5)
+    I.add(f'<circle cx="400" cy="120" r="54" {st("#ffd23f")}/><text x="400" y="150" text-anchor="middle" font-size="84" {FONT} fill="{INK}">?</text>')
+    sparkle(I, 110, 110, 18)
+
 # CatQuiz: la mascota gata asoma en la esquina
-for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles']:
+for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles','catquiz-barbarismes','catquiz-quiz-de-futbol']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
 
 

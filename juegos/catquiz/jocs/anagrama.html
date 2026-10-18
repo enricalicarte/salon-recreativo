@@ -2,9 +2,23 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SDE8LXDNP9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SDE8LXDNP9');
+  // Esdeveniments: inici de partida, tornar a jugar i clic a cada joc des de la portada
+  document.addEventListener('click', function(e){ var b = e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, a.carta'); if (!b) return;
+    var joc = location.pathname.split('/').pop().replace('.html','') || 'index';
+    if (b.matches('a.carta')) gtag('event', 'obrir_joc', { joc: (b.getAttribute('href') || '').split('/').pop().replace('.html','') });
+    else gtag('event', b.id === 'btn-reinici' ? 'tornar_a_jugar' : 'inici_partida', { joc: joc }); });
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Anagrama · CatQuiz Minijocs</title>
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
   /* Estil Stumble Guys: cel blau, colors saturats, contorns gruixuts i botons amb aresta 3D */
@@ -63,7 +77,70 @@
   .pill.pop{animation:pillpop .35s cubic-bezier(.2,1.8,.4,1)}
   @keyframes pillpop{50%{transform:rotate(-2deg) scale(1.3);background:var(--groc)}}
   h1{animation:titol 2.2s ease-in-out infinite}
-  @keyframes titol{0%,100%{transform:rotate(-3deg) scale(1)}50%{transform:rotate(-1deg) scale(1.04)}}
+  @keyframes titol{0%,100%{transform:rotate(-3deg) scale(1)}50%{transform:rotate(-1deg) scale(1.04)}}  /* Canvi de nivell: pantalla gran amb pausa */
+  .nivell-capa{position:fixed;inset:0;z-index:30;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.35),rgba(29,43,100,.72));pointer-events:none;animation:nivfons .3s}
+  .nivell-capa .num{font-family:'Lilita One',sans-serif;font-style:italic;font-size:min(26vh,34vw);line-height:.9;color:var(--groc);-webkit-text-stroke:5px var(--marí);paint-order:stroke fill;text-shadow:0 12px 0 var(--marí),0 22px 0 rgba(0,0,0,.25);animation:nivpop .7s cubic-bezier(.2,1.6,.4,1) both}
+  .nivell-capa .eti{font-family:'Lilita One',sans-serif;font-style:italic;font-size:min(5vh,7.5vw);color:#fff;-webkit-text-stroke:2px var(--marí);paint-order:stroke fill;letter-spacing:.08em;animation:nivpop .5s .1s cubic-bezier(.2,1.6,.4,1) both}
+  .nivell-capa .nom{margin-top:2vh;font-family:'Lilita One',sans-serif;font-size:min(3.6vh,5.4vw);background:var(--lila);color:#fff;-webkit-text-stroke:1px var(--marí);border:3px solid var(--marí);border-radius:999px;padding:.4em 1.2em;box-shadow:0 6px 0 var(--marí);animation:nivpop .5s .25s cubic-bezier(.2,1.6,.4,1) both}
+  .nivell-capa .resum{margin-top:2.4vh;font-family:'Fredoka',sans-serif;font-weight:700;font-size:min(3vh,4.6vw);color:var(--marí);background:#fff;border:3px solid var(--marí);border-radius:18px;padding:.6em 1.2em;box-shadow:0 6px 0 var(--marí);animation:nivpop .5s .4s cubic-bezier(.2,1.6,.4,1) both;line-height:1.35}
+  .nivell-capa .estrelles{font-size:min(6vh,9vw);letter-spacing:.1em;margin-top:1vh;animation:nivpop .5s .5s cubic-bezier(.2,1.6,.4,1) both}
+  @keyframes nivpop{from{transform:scale(.2) rotate(-8deg);opacity:0}60%{transform:scale(1.1) rotate(2deg)}to{transform:scale(1) rotate(0);opacity:1}}
+  @keyframes nivfons{from{opacity:0}}
+  .nivell-capa.surt{animation:nivsurt .35s ease-in forwards}
+  @keyframes nivsurt{to{opacity:0;transform:scale(1.15)}}  /* Mode espectador */
+  #espect{position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;gap:8px;align-items:center;background:#1B1B3A;color:#fff;border:3px solid #fff;border-radius:999px;padding:6px 8px 6px 16px;font-family:'Fredoka',system-ui,sans-serif;font-weight:700;font-size:15px;box-shadow:0 6px 0 rgba(0,0,0,.35);white-space:nowrap;max-width:96vw}
+  #espect .punt{width:10px;height:10px;border-radius:50%;background:#F0284A;animation:espbat 1s infinite}
+  #espect a{background:#22C55E;color:#fff;text-decoration:none;border-radius:999px;padding:6px 14px;font-weight:800}
+  #espect .pensa{opacity:.85;font-weight:600;font-size:13px}
+  @keyframes espbat{50%{opacity:.3}}
+  /* ===== TEMA NEÓ (estil «Bloques Neón»): fons indi/violeta, vidre, resplendors, Roboto ===== */
+  :root{--cel:#4A2FB5;--cel2:#1A1650;--marí:#1E1850;--rosa:#FF4FD8;--taronja:#FF9A2E;--groc:#FFD24A;--llima:#4EE06A;--lila:#A06BFF;--neu:#FFFFFF;--tinta:#FFFFFF;--cian:#38E8FF;--vidre:rgba(24,20,70,.55);--vora:rgba(150,170,255,.45);--glow:0 0 18px rgba(120,160,255,.45)}
+  html,body{font-family:'Roboto','Fredoka',system-ui,sans-serif!important;background:linear-gradient(170deg,#4A2FB5 0%,#2E2080 45%,#1A1650 100%)!important;color:#fff}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0 1.5px,transparent 2px),radial-gradient(circle at 72% 12%,rgba(255,255,255,.8) 0 1.2px,transparent 2px),radial-gradient(circle at 88% 64%,rgba(255,255,255,.7) 0 1.6px,transparent 2.2px),radial-gradient(circle at 34% 78%,rgba(255,255,255,.75) 0 1.2px,transparent 2px),radial-gradient(circle at 58% 46%,rgba(255,255,255,.5) 0 1px,transparent 1.6px),radial-gradient(circle at 8% 60%,rgba(255,255,255,.6) 0 1.3px,transparent 2px),radial-gradient(circle at 48% 92%,rgba(255,255,255,.6) 0 1.1px,transparent 1.8px),radial-gradient(circle at 92% 30%,rgba(255,255,255,.5) 0 1px,transparent 1.6px)}
+  .titol,h1,.gran,.compte,.pill,button,.gros,.missatge,.pista,.pregunta,.tecla,.fr,.op,.ll,.frase,.pista-item,.nivell-capa .num,.nivell-capa .eti,.nivell-capa .nom,.nivell-capa .resum,.pill.cat,h2,h3,.sub,.baixa,.logo{font-family:'Roboto','Fredoka',system-ui,sans-serif!important;font-style:normal!important;-webkit-text-stroke:0!important;transform:none}
+  .titol,h1{font-weight:900!important;letter-spacing:.04em;text-transform:uppercase;color:#fff!important;text-shadow:0 0 14px rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35)!important;animation:none!important;transform:none!important}
+  .pill{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow),inset 0 1px 0 rgba(255,255,255,.18)!important;font-weight:700!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transform:none!important;letter-spacing:.01em}
+  .pill.acc{color:#FFD24A!important} .pill.temps,.pill.cat{color:#5CF0FF!important} .pill.err{color:#FF6B8A!important}
+  .pill.pop{animation:neopop .35s cubic-bezier(.2,1.8,.4,1)!important}
+  @keyframes neopop{50%{transform:scale(1.25)!important;box-shadow:0 0 26px rgba(255,210,74,.8)}}
+  .hud .pill{font-size:17px}
+  .capa{background:radial-gradient(circle at 50% 30%,rgba(120,90,255,.35),rgba(20,16,60,.88))!important}
+  .capa::before{background:none!important;animation:none!important}
+  .caixa{background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.96))!important;color:#fff!important;border:1.5px solid var(--vora)!important;border-radius:28px!important;box-shadow:0 0 40px rgba(110,140,255,.35),0 20px 40px rgba(0,0,0,.45)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .caixa::before{border:0!important} .caixa::after{display:none!important}
+  .caixa p,p{color:#D9D6FF!important;font-weight:500}
+  h1{font-size:46px;color:#fff!important}
+  .gran{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 18px rgba(255,210,74,.65),0 3px 0 rgba(0,0,0,.35)!important}
+  button,.gros{font-weight:700!important;letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;color:#fff!important;border:3px solid rgba(255,255,255,.55)!important;box-shadow:0 6px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+  button:active,.gros:active{transform:translateY(5px)!important;box-shadow:0 1px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important}
+  button::after,.gros::after{display:none!important}
+  button.acc,.gros.acc,.botons button,.cats .gros{background:linear-gradient(180deg,#FFB24A,#F0781A)!important;box-shadow:0 6px 0 #A64E0E,0 0 22px rgba(255,160,60,.5)!important}
+  .cats .gros{text-transform:none;letter-spacing:0;font-size:14px!important}
+  .missatge,.pista{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:700!important;transform:translateX(-50%)!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .pista{color:#C9B6FF!important}
+  .pregunta{background:linear-gradient(180deg,rgba(110,70,255,.9),rgba(70,40,190,.9))!important;color:#fff!important;border:1.5px solid rgba(190,170,255,.6)!important;box-shadow:0 0 28px rgba(140,110,255,.55),0 10px 24px rgba(0,0,0,.35)!important;font-weight:900!important;text-shadow:0 2px 0 rgba(0,0,0,.3)!important;transform:translateX(-50%)!important;letter-spacing:.02em}
+  .pregunta small{font-weight:500!important;color:#E6DEFF!important}
+  .tecla{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.07))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.2)!important;font-weight:700!important;border-radius:12px!important}
+  .tecla.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 3px 0 #1E7F2C,0 0 14px rgba(92,230,100,.6)!important}
+  .tecla.quasi{background:linear-gradient(180deg,#FFD866,#F0A81A)!important;color:#2A1B00!important;box-shadow:0 3px 0 #9A6A00,0 0 14px rgba(255,200,60,.5)!important}
+  .tecla.no,.tecla:disabled{background:rgba(255,255,255,.05)!important;color:rgba(255,255,255,.3)!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important}
+  .fr,.op{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 4px 0 rgba(0,0,0,.35),var(--glow)!important;font-weight:700!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .fr.be,.op.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 4px 0 #1E7F2C,0 0 18px rgba(92,230,100,.65)!important}
+  .fr.malament,.op.ko{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;box-shadow:0 4px 0 #8A1030,0 0 18px rgba(255,80,120,.6)!important}
+  .frase,.pista-item{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:600!important}
+  .frase .forat{border-bottom-color:#38E8FF!important} .frase .ok{color:#6CEB5A!important}
+  .pista-item b{background:#FFD24A!important;color:#2A1B00!important}
+  .nivell-capa{background:radial-gradient(circle at 50% 40%,rgba(120,90,255,.45),rgba(20,16,60,.9))!important}
+  .nivell-capa .num{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 30px rgba(255,210,74,.75),0 8px 0 rgba(0,0,0,.4)!important}
+  .nivell-capa .eti{font-weight:700!important;letter-spacing:.2em!important;text-shadow:0 0 12px rgba(255,255,255,.5)!important}
+  .nivell-capa .nom{background:linear-gradient(180deg,#A06BFF,#6A3FD8)!important;border:1.5px solid rgba(255,255,255,.5)!important;box-shadow:0 0 22px rgba(160,107,255,.6)!important;font-weight:700!important}
+  .nivell-capa .resum{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important}
+  .compte{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 40px rgba(255,210,74,.8),0 10px 0 rgba(0,0,0,.4)!important}
+  .llista span{font-family:'Roboto',sans-serif!important;background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:700!important}
+  .llista span.trobada{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;text-decoration:line-through}
+  .ll{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 4px 0 rgba(0,0,0,.35),var(--glow)!important}
+  .ll.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important}
+  .cap .tipus,.tipus{font-family:'Roboto',sans-serif!important}
 </style>
 </head>
 <body>
@@ -118,6 +195,39 @@ function illa(x, y, z, s = 1){ const g = new THREE.Group();
     const cop = contorn(new THREE.Mesh(new THREE.SphereGeometry(.7 + Math.random()*.3, 12, 10), toon({ color: [0x4CD100, 0xFF3E9A, 0xFFD600][Math.floor(Math.random()*3)] })), .06); cop.position.set(tr.position.x, 1.6, tr.position.z); g.add(cop); }
   g.position.set(x, y, z); g.scale.setScalar(s); g.userData = { y0: y, f: Math.random()*6 }; scene.add(g); illes.push(g); return g; }
 let tKit = 0; function mouIlles(dt){ tKit += dt; for (const g of illes) { g.position.y = g.userData.y0 + Math.sin(tKit * .8 + g.userData.f) * .35; g.rotation.y += dt * .05; } }
+const TEMES = [{nom:'Prat matinal',cel:[0x1E7BE0,0xBDF0FF],gespa:0x7CE800,sol:0xFFF4A0,terra:0xA8683A},{nom:'Migdia estiuenc',cel:[0x1CA6E0,0xCFF3FF],gespa:0x5CD000,sol:0xFFF8B0,terra:0xB07A3A},{nom:'Camps de blat',cel:[0x2E9BD8,0xE8F0C0],gespa:0xE0C040,sol:0xFFF0A0,terra:0xC08840},{nom:'Tarda daurada',cel:[0xE8963A,0xFFD98A],gespa:0x8CC020,sol:0xFFD060,terra:0x9A6030},{nom:'Posta de sol',cel:[0xC0407A,0xFFB07A],gespa:0x6AA030,sol:0xFF9040,terra:0x804060},{nom:'Bosc fresc',cel:[0x1E6E5A,0xA8E0C0],gespa:0x2E9040,sol:0xE0F0A0,terra:0x6A5030},{nom:'Nit estelada',cel:[0x141B4A,0x3A4A8C],gespa:0x2A6A5A,sol:0xE8E8FF,terra:0x2A2A50},{nom:'Aurora polar',cel:[0x0E2A4A,0x1AA0C0],gespa:0x40E0A0,sol:0xC0FFE0,terra:0x203050},{nom:'Desert vermell',cel:[0xD0602A,0xF0B070],gespa:0xC08040,sol:0xFFE080,terra:0x904020},{nom:'Món de gel',cel:[0x2AA0D0,0xDFF6FF],gespa:0x9AE0F0,sol:0xFFFFFF,terra:0x7090B0}];
+let celMesh = null, elemsTema = [];
+function aplicaTema(n){ const T = TEMES[Math.min(9, Math.max(0, n))];
+  scene.background = new THREE.Color(T.cel[0]);
+  if (scene.fog) scene.fog.color.setHex(T.cel[0]);
+  // refà la cúpula de cel amb el degradat del tema
+  if (celMesh) scene.remove(celMesh);
+  const g = new THREE.SphereGeometry(180, 24, 16), col = [], p = g.attributes.position, dalt = new THREE.Color(T.cel[0]), baix = new THREE.Color(T.cel[1]);
+  for (let i = 0; i < p.count; i++) { const k = THREE.MathUtils.clamp(p.getY(i) / 180 * .5 + .5, 0, 1); const c = baix.clone().lerp(dalt, Math.pow(k, .7)); col.push(c.r, c.g, c.b); }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  celMesh = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false })); scene.add(celMesh);
+  if (solMesh) { solMesh.material.color.setHex(T.sol); if (solMesh.children[0]) solMesh.children[0].material.color.setHex(T.sol); }
+  for (const g2 of illes) { const top = g2.children[0]; if (top && top.material.color) top.material.color.setHex(T.gespa); const base = g2.children[1]; if (base && base.material.color) base.material.color.setHex(T.terra); }
+  for (const e of elemsTema) { if (e.tipus === 'gespa') e.mesh.material.color.setHex(T.gespa); if (e.tipus === 'terra') e.mesh.material.color.setHex(T.terra); }
+  if (!estelsGrup) { estelsGrup = new THREE.Group(); for (let i = 0; i < 40; i++) { const s2 = new THREE.Mesh(new THREE.SphereGeometry(.3, 6, 5), new THREE.MeshBasicMaterial({ color: 0xFFFFFF, fog: false })); s2.position.set((Math.random()-.5)*120, 10 + Math.random()*40, -60 - Math.random()*40); estelsGrup.add(s2); } scene.add(estelsGrup); }
+  estelsGrup.visible = true;
+}
+// estels per als ambients foscos (es creen mandrosament al primer aplicaTema)
+let estelsGrup = null;
+
+
+// Canvi de nivell: pantalla gran amb pausa (torna una promesa; el joc es bloqueja mentre dura)
+function pantallaNivell(n, nom, resum = '', estrelles = -1, ms = 2600){
+  return new Promise(res => {
+    const d = document.createElement('div'); d.className = 'nivell-capa';
+    d.innerHTML = `<div><div class="eti">${resum ? 'NIVELL SUPERAT' : 'NIVELL'}</div><div class="num">${n}</div>` +
+      (estrelles >= 0 ? `<div class="estrelles">${'⭐'.repeat(estrelles)}${'☆'.repeat(3 - estrelles)}</div>` : '') +
+      (resum ? `<div class="resum">${resum}</div>` : '') + `<div class="nom">${nom}</div></div>`;
+    document.body.appendChild(d); so('win'); setTimeout(() => so('bonus'), 350);
+    if (typeof confeti === 'function' && typeof camera !== 'undefined') { try { const p = new THREE.Vector3(0, 0, 0); confeti(p, 40, 9); } catch (e) {} }
+    setTimeout(() => { d.classList.add('surt'); setTimeout(() => { d.remove(); res(); }, 350); }, ms);
+  });
+}
 function compte(fi){ const el = document.createElement('div'); el.className = 'compte'; document.body.appendChild(el); let n = 3;
   const tic = () => { el.textContent = n > 0 ? n : 'JA!'; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); so(n > 0 ? 'clic' : 'win'); if (n-- > 0) setTimeout(tic, 650); else { setTimeout(() => el.remove(), 600); fi(); } }; tic(); }
 function popPill(id){ const e = document.getElementById(id); if (!e) return; e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); }
@@ -128,7 +238,7 @@ const matNuvol = toon({ color: 0xFFFFFF });
 function nuvol(x, y, z, s = 1){ const n = new THREE.Group();
   for (const [dx, dy, r] of [[0,0,1],[1.1,.2,.8],[-1.1,.1,.75],[.4,.55,.7],[-.5,.5,.65]]) { const b = new THREE.Mesh(new THREE.SphereGeometry(r, 12, 10), matNuvol); b.position.set(dx, dy, 0); contorn(b, .05); n.add(b); }
   n.position.set(x, y, z); n.scale.setScalar(s); n.userData.v = .2 + Math.random() * .3; scene.add(n); return n; }
-const nuvols = []; function mouNuvols(dt){ for (const n of nuvols) { n.position.x += n.userData.v * dt; if (n.position.x > 40) n.position.x = -40; } }
+const nuvols = []; let mouNuvols = function(dt){ for (const n of nuvols) { n.position.x += n.userData.v * dt; if (n.position.x > 40) n.position.x = -40; } }
 
 // ===== Motor d'àudio 100% procedural (Web Audio) =====
 // Bus mestre amb guany i compressor → SFX per oscil·ladors amb variació aleatòria de to → música per seqüenciador amb lookahead
@@ -406,7 +516,6 @@ const PARAULES = [
   ['MONGETES','Categoria: Menjar'],
   ['CIGRONS','Categoria: Menjar'],
   ['LLENTIES','Categoria: Menjar'],
-  ['ENSALADA','Categoria: Menjar'],
   ['CIRERA','Categoria: Menjar'],
   ['MELO','Categoria: Menjar'],
   ['PERA','Categoria: Menjar'],
@@ -468,8 +577,6 @@ const PARAULES = [
   ['MARTORELL','Categoria: Ciutats'],
   ['VILADECANS','Categoria: Ciutats'],
   ['RUBI','Categoria: Ciutats'],
-  ['SANT','Categoria: Ciutats'],
-  ['CUGAT','Categoria: Ciutats'],
   ['MOLLERUSSA','Categoria: Ciutats'],
   ['PUIGCERDA','Categoria: Ciutats'],
   ['TREMP','Categoria: Ciutats'],
@@ -571,8 +678,6 @@ const PARAULES = [
   ['XIPRER','Categoria: Natura'],
   ['TRO','Categoria: Natura'],
   ['TEMPESTA','Categoria: Natura'],
-  ['ARC','Categoria: Natura'],
-  ['MARTI','Categoria: Natura'],
   ['ALBA','Categoria: Natura'],
   ['CAPVESPRE','Categoria: Natura'],
   ['MAREA','Categoria: Natura'],
@@ -609,7 +714,6 @@ const PARAULES = [
   ['DUTXA','Categoria: Casa'],
   ['BANYERA','Categoria: Casa'],
   ['TOVALLOLA','Categoria: Casa'],
-  ['CAP','Categoria: Cos'],
   ['CARA','Categoria: Cos'],
   ['FRONT','Categoria: Cos'],
   ['ULL','Categoria: Cos'],
@@ -741,14 +845,9 @@ const PARAULES = [
   ['MONOPATI','Categoria: Transports'],
   ['CARRO','Categoria: Transports'],
   ['TRINEU','Categoria: Transports'],
-  ['DANY','Categoria: Festes'],
   ['REIS','Categoria: Festes'],
   ['PASQUA','Categoria: Festes'],
-  ['JORDI','Categoria: Festes'],
-  ['JOAN','Categoria: Festes'],
   ['MERCE','Categoria: Festes'],
-  ['TOTS','Categoria: Festes'],
-  ['SANTS','Categoria: Festes'],
   ['CASTANYADA','Categoria: Festes'],
   ['TIO','Categoria: Festes'],
   ['CASTELLERS','Categoria: Festes'],
@@ -1006,6 +1105,446 @@ const PARAULES = [
   ['OCRE','Categoria: Colors'],
   ['MARAGDA','Categoria: Colors'],
   ['BORDEUS','Categoria: Colors'],
+  ['CASTELLDEFELS','Categoria: Ciutats'],
+  ['SANTCUGAT','Categoria: Ciutats'],
+  ['MANLLEU','Categoria: Ciutats'],
+  ['TORROELLA','Categoria: Ciutats'],
+  ['ARCDESANTMARTI','Categoria: Natura'],
+  ['ESTANY','Categoria: Natura'],
+  ['RIEROL','Categoria: Natura'],
+  ['CAP','Categoria: Cos'],
+  ['CAPDANY','Categoria: Festes'],
+  ['SANTJORDI','Categoria: Festes'],
+  ['SANTJOAN','Categoria: Festes'],
+  ['TOTSSANTS','Categoria: Festes'],
+  ['RATA','Categoria: Animals'],
+  ['TALP','Categoria: Animals'],
+  ['MARMOTA','Categoria: Animals'],
+  ['CASTOR','Categoria: Animals'],
+  ['LLUDRIA','Categoria: Animals'],
+  ['MORSA','Categoria: Animals'],
+  ['NARVAL','Categoria: Animals'],
+  ['ORCA','Categoria: Animals'],
+  ['ESTRELLA','Categoria: Animals'],
+  ['GARSA','Categoria: Animals'],
+  ['CORB','Categoria: Animals'],
+  ['VOLTOR','Categoria: Animals'],
+  ['FALCO','Categoria: Animals'],
+  ['AGUILA','Categoria: Animals'],
+  ['XORIGUER','Categoria: Animals'],
+  ['TORD','Categoria: Animals'],
+  ['CIGONYA','Categoria: Animals'],
+  ['MOSCA','Categoria: Animals'],
+  ['MOSCARDA','Categoria: Animals'],
+  ['GRILL','Categoria: Animals'],
+  ['LLAGOSTA','Categoria: Animals'],
+  ['ESCARABAT','Categoria: Animals'],
+  ['LLUERNA','Categoria: Animals'],
+  ['CENTPEUS','Categoria: Animals'],
+  ['ARNA','Categoria: Animals'],
+  ['CUCA','Categoria: Animals'],
+  ['BOLETS','Categoria: Menjar'],
+  ['ROVELLO','Categoria: Menjar'],
+  ['CEP','Categoria: Menjar'],
+  ['MELMELADA','Categoria: Menjar'],
+  ['CODONYAT','Categoria: Menjar'],
+  ['CONFITURA','Categoria: Menjar'],
+  ['ROMESCO','Categoria: Menjar'],
+  ['ALLIOLI','Categoria: Menjar'],
+  ['SOFREGIT','Categoria: Menjar'],
+  ['TRINXAT','Categoria: Menjar'],
+  ['SUQUET','Categoria: Menjar'],
+  ['ARROSSEJAT','Categoria: Menjar'],
+  ['GASPATXO','Categoria: Menjar'],
+  ['PANOLI','Categoria: Menjar'],
+  ['LLESCA','Categoria: Menjar'],
+  ['TORRADA','Categoria: Menjar'],
+  ['CRESPELL','Categoria: Menjar'],
+  ['CARAMEL','Categoria: Menjar'],
+  ['GOMINOLA','Categoria: Menjar'],
+  ['XICLET','Categoria: Menjar'],
+  ['CACAU','Categoria: Menjar'],
+  ['AMETLLA','Categoria: Menjar'],
+  ['AVELLANA','Categoria: Menjar'],
+  ['NOU','Categoria: Menjar'],
+  ['PANSA','Categoria: Menjar'],
+  ['FIGA','Categoria: Menjar'],
+  ['MAGRANA','Categoria: Menjar'],
+  ['NESPRA','Categoria: Menjar'],
+  ['CODONY','Categoria: Menjar'],
+  ['CAQUI','Categoria: Menjar'],
+  ['ALVOCAT','Categoria: Menjar'],
+  ['MANGO','Categoria: Menjar'],
+  ['PAPAIA','Categoria: Menjar'],
+  ['MOLINS','Categoria: Ciutats'],
+  ['ESPLUGUES','Categoria: Ciutats'],
+  ['CORNELLA','Categoria: Ciutats'],
+  ['HOSPITALET','Categoria: Ciutats'],
+  ['GAVA','Categoria: Ciutats'],
+  ['CALAFELL','Categoria: Ciutats'],
+  ['TORREDEMBARRA','Categoria: Ciutats'],
+  ['FALSET','Categoria: Ciutats'],
+  ['MORA','Categoria: Ciutats'],
+  ['GANDESA','Categoria: Ciutats'],
+  ['BELLPUIG','Categoria: Ciutats'],
+  ['GUISSONA','Categoria: Ciutats'],
+  ['AGRAMUNT','Categoria: Ciutats'],
+  ['ARTESA','Categoria: Ciutats'],
+  ['PONTS','Categoria: Ciutats'],
+  ['OLIANA','Categoria: Ciutats'],
+  ['SORT','Categoria: Ciutats'],
+  ['ESTERRI','Categoria: Ciutats'],
+  ['BOI','Categoria: Ciutats'],
+  ['BOSSOST','Categoria: Ciutats'],
+  ['ARTIES','Categoria: Ciutats'],
+  ['BEISBOL','Categoria: Esports'],
+  ['SOFTBOL','Categoria: Esports'],
+  ['CRIQUET','Categoria: Esports'],
+  ['FRONTO','Categoria: Esports'],
+  ['ESQUAIX','Categoria: Esports'],
+  ['BARRANQUISME','Categoria: Esports'],
+  ['ORIENTACIO','Categoria: Esports'],
+  ['CAIAC','Categoria: Esports'],
+  ['RAFTING','Categoria: Esports'],
+  ['WINDSURF','Categoria: Esports'],
+  ['KITESURF','Categoria: Esports'],
+  ['BUSSEIG','Categoria: Esports'],
+  ['APNEA','Categoria: Esports'],
+  ['ESPELEOLOGIA','Categoria: Esports'],
+  ['HALTEROFILIA','Categoria: Esports'],
+  ['ZUMBA','Categoria: Esports'],
+  ['PILATES','Categoria: Esports'],
+  ['AEROBIC','Categoria: Esports'],
+  ['BALLET','Categoria: Esports'],
+  ['DANSA','Categoria: Esports'],
+  ['QUADERN','Categoria: Escola'],
+  ['FULL','Categoria: Escola'],
+  ['FOLI','Categoria: Escola'],
+  ['CARTOLINA','Categoria: Escola'],
+  ['TEMPERA','Categoria: Escola'],
+  ['AQUARELLA','Categoria: Escola'],
+  ['PLASTILINA','Categoria: Escola'],
+  ['ARGILA','Categoria: Escola'],
+  ['TRANSPORTADOR','Categoria: Escola'],
+  ['TAULETA','Categoria: Escola'],
+  ['PROJECTOR','Categoria: Escola'],
+  ['CAMPANA','Categoria: Escola'],
+  ['PENJADOR','Categoria: Escola'],
+  ['SERRALADA','Categoria: Natura'],
+  ['CIM','Categoria: Natura'],
+  ['PIC','Categoria: Natura'],
+  ['VALL','Categoria: Natura'],
+  ['BARRANC','Categoria: Natura'],
+  ['TORRENT','Categoria: Natura'],
+  ['GORG','Categoria: Natura'],
+  ['SALT','Categoria: Natura'],
+  ['AIGUAMOLL','Categoria: Natura'],
+  ['LLACUNA','Categoria: Natura'],
+  ['DELTA','Categoria: Natura'],
+  ['CALA','Categoria: Natura'],
+  ['BADIA','Categoria: Natura'],
+  ['PENINSULA','Categoria: Natura'],
+  ['ILLOT','Categoria: Natura'],
+  ['ESCULL','Categoria: Natura'],
+  ['ROQUER','Categoria: Natura'],
+  ['SORRAL','Categoria: Natura'],
+  ['PINEDA','Categoria: Natura'],
+  ['ALZINAR','Categoria: Natura'],
+  ['ROUREDA','Categoria: Natura'],
+  ['FAGEDA','Categoria: Natura'],
+  ['MATOLL','Categoria: Natura'],
+  ['GARRIGA','Categoria: Natura'],
+  ['BRUGUERA','Categoria: Natura'],
+  ['LIQUEN','Categoria: Natura'],
+  ['REBEDOR','Categoria: Casa'],
+  ['PASSADIS','Categoria: Casa'],
+  ['RACO','Categoria: Casa'],
+  ['PORXO','Categoria: Casa'],
+  ['JARDI','Categoria: Casa'],
+  ['HORT','Categoria: Casa'],
+  ['GRANER','Categoria: Casa'],
+  ['CELLER','Categoria: Casa'],
+  ['GOLFES','Categoria: Casa'],
+  ['SOTERRANI','Categoria: Casa'],
+  ['TRASTER','Categoria: Casa'],
+  ['CALDERA','Categoria: Casa'],
+  ['RADIADOR','Categoria: Casa'],
+  ['ESTUFA','Categoria: Casa'],
+  ['XEMENEIA','Categoria: Casa'],
+  ['LLAR','Categoria: Casa'],
+  ['EXTRACTOR','Categoria: Casa'],
+  ['RENTAPLATS','Categoria: Casa'],
+  ['ASSECADORA','Categoria: Casa'],
+  ['PLANXA','Categoria: Casa'],
+  ['BATEDORA','Categoria: Casa'],
+  ['TORRADORA','Categoria: Casa'],
+  ['CAFETERA','Categoria: Casa'],
+  ['BULLIDOR','Categoria: Casa'],
+  ['CASSOLA','Categoria: Casa'],
+  ['CRANI','Categoria: Cos'],
+  ['TEMPLA','Categoria: Cos'],
+  ['POMUL','Categoria: Cos'],
+  ['MANDIBULA','Categoria: Cos'],
+  ['GENIVA','Categoria: Cos'],
+  ['PALADAR','Categoria: Cos'],
+  ['GOLA','Categoria: Cos'],
+  ['LARINGE','Categoria: Cos'],
+  ['TRAQUEA','Categoria: Cos'],
+  ['ESOFAG','Categoria: Cos'],
+  ['DIAFRAGMA','Categoria: Cos'],
+  ['BUDELL','Categoria: Cos'],
+  ['PANCREES','Categoria: Cos'],
+  ['MELSA','Categoria: Cos'],
+  ['BUFETA','Categoria: Cos'],
+  ['UTER','Categoria: Cos'],
+  ['OVARI','Categoria: Cos'],
+  ['TESTICLE','Categoria: Cos'],
+  ['PROSTATA','Categoria: Cos'],
+  ['ARTERIA','Categoria: Cos'],
+  ['CAPILLAR','Categoria: Cos'],
+  ['LIMFA','Categoria: Cos'],
+  ['HORMONA','Categoria: Cos'],
+  ['ENZIM','Categoria: Cos'],
+  ['NEURONA','Categoria: Cos'],
+  ['NOTARI','Categoria: Professions'],
+  ['PROCURADOR','Categoria: Professions'],
+  ['ECONOMISTA','Categoria: Professions'],
+  ['COMPTABLE','Categoria: Professions'],
+  ['AUDITOR','Categoria: Professions'],
+  ['BANQUER','Categoria: Professions'],
+  ['CORREDOR','Categoria: Professions'],
+  ['AGENT','Categoria: Professions'],
+  ['VENEDOR','Categoria: Professions'],
+  ['DEPENDENT','Categoria: Professions'],
+  ['CAIXER','Categoria: Professions'],
+  ['REPARTIDOR','Categoria: Professions'],
+  ['MISSATGER','Categoria: Professions'],
+  ['TRANSPORTISTA','Categoria: Professions'],
+  ['MARINER','Categoria: Professions'],
+  ['CAPITA','Categoria: Professions'],
+  ['SOLDAT','Categoria: Professions'],
+  ['GUARDIA','Categoria: Professions'],
+  ['VIGILANT','Categoria: Professions'],
+  ['DETECTIU','Categoria: Professions'],
+  ['ESPIA','Categoria: Professions'],
+  ['TRADUCTOR','Categoria: Professions'],
+  ['INTERPRET','Categoria: Professions'],
+  ['BIBLIOTECARI','Categoria: Professions'],
+  ['ARXIVER','Categoria: Professions'],
+  ['HISTORIADOR','Categoria: Professions'],
+  ['ARQUEOLEG','Categoria: Professions'],
+  ['GEOLEG','Categoria: Professions'],
+  ['BIOLEG','Categoria: Professions'],
+  ['QUIMIC','Categoria: Professions'],
+  ['FISIC','Categoria: Professions'],
+  ['MATEMATIC','Categoria: Professions'],
+  ['ASTRONOM','Categoria: Professions'],
+  ['CASTANYOLES','Categoria: Música'],
+  ['TRIANGLE','Categoria: Música'],
+  ['GONG','Categoria: Música'],
+  ['PLATERETS','Categoria: Música'],
+  ['CAIXA','Categoria: Música'],
+  ['BOMBO','Categoria: Música'],
+  ['TIMBALA','Categoria: Música'],
+  ['OBOE','Categoria: Música'],
+  ['FAGOT','Categoria: Música'],
+  ['CORN','Categoria: Música'],
+  ['TROMPA','Categoria: Música'],
+  ['CORNETA','Categoria: Música'],
+  ['UKELELE','Categoria: Música'],
+  ['BANJO','Categoria: Música'],
+  ['MANDOLINA','Categoria: Música'],
+  ['LLAUT','Categoria: Música'],
+  ['CITARA','Categoria: Música'],
+  ['BALALAICA','Categoria: Música'],
+  ['TECLAT','Categoria: Música'],
+  ['SINTETITZADOR','Categoria: Música'],
+  ['ORGUE','Categoria: Música'],
+  ['CLAVICEMBAL','Categoria: Música'],
+  ['ESPINETA','Categoria: Música'],
+  ['VEU','Categoria: Música'],
+  ['SOPRANO','Categoria: Música'],
+  ['TENOR','Categoria: Música'],
+  ['BARITON','Categoria: Música'],
+  ['BAIX','Categoria: Música'],
+  ['CONTRALT','Categoria: Música'],
+  ['CAMIONETA','Categoria: Transports'],
+  ['TOTTERRENY','Categoria: Transports'],
+  ['MONOVOLUM','Categoria: Transports'],
+  ['LIMUSINA','Categoria: Transports'],
+  ['CARAVANA','Categoria: Transports'],
+  ['AUTOCARAVANA','Categoria: Transports'],
+  ['GRUA','Categoria: Transports'],
+  ['BULLDOZER','Categoria: Transports'],
+  ['EXCAVADORA','Categoria: Transports'],
+  ['LOCOMOTORA','Categoria: Transports'],
+  ['VAGO','Categoria: Transports'],
+  ['MONORAIL','Categoria: Transports'],
+  ['GONDOLA','Categoria: Transports'],
+  ['PIRAGUA','Categoria: Transports'],
+  ['CATAMARA','Categoria: Transports'],
+  ['IOT','Categoria: Transports'],
+  ['CREUER','Categoria: Transports'],
+  ['TRANSATLANTIC','Categoria: Transports'],
+  ['PETROLIER','Categoria: Transports'],
+  ['REMOLCADOR','Categoria: Transports'],
+  ['DIRIGIBLE','Categoria: Transports'],
+  ['PLANADOR','Categoria: Transports'],
+  ['ULTRALLEUGER','Categoria: Transports'],
+  ['DRON','Categoria: Transports'],
+  ['SANTANTONI','Categoria: Festes'],
+  ['TRESTOMBS','Categoria: Festes'],
+  ['CANDELERA','Categoria: Festes'],
+  ['CARNAVAL','Categoria: Festes'],
+  ['DIJOUSGRAS','Categoria: Festes'],
+  ['RAMS','Categoria: Festes'],
+  ['SETMANASANTA','Categoria: Festes'],
+  ['PROCESSO','Categoria: Festes'],
+  ['PASQUETES','Categoria: Festes'],
+  ['CORPUS','Categoria: Festes'],
+  ['OUCOMBALLA','Categoria: Festes'],
+  ['SANTPERE','Categoria: Festes'],
+  ['ASSUMPCIO','Categoria: Festes'],
+  ['FESTAMAJOR','Categoria: Festes'],
+  ['ENVELAT','Categoria: Festes'],
+  ['BALLDEGEGANTS','Categoria: Festes'],
+  ['DIABLE','Categoria: Festes'],
+  ['BESTIARI','Categoria: Festes'],
+  ['MULASSA','Categoria: Festes'],
+  ['VIBRIA','Categoria: Festes'],
+  ['CUCAFERA','Categoria: Festes'],
+  ['PATUM','Categoria: Festes'],
+  ['CALCA','Categoria: Roba'],
+  ['CALCOTETS','Categoria: Roba'],
+  ['SOSTENIDOR','Categoria: Roba'],
+  ['MITGES','Categoria: Roba'],
+  ['LEOTARDS','Categoria: Roba'],
+  ['ESPARDENYES','Categoria: Roba'],
+  ['SABATILLES','Categoria: Roba'],
+  ['BOTINS','Categoria: Roba'],
+  ['TALONS','Categoria: Roba'],
+  ['PLATAFORMES','Categoria: Roba'],
+  ['CAMISOLA','Categoria: Roba'],
+  ['ARMILLA','Categoria: Roba'],
+  ['GAVARDINA','Categoria: Roba'],
+  ['PARCA','Categoria: Roba'],
+  ['ANORAC','Categoria: Roba'],
+  ['IMPERMEABLE','Categoria: Roba'],
+  ['CAPA','Categoria: Roba'],
+  ['XAL','Categoria: Roba'],
+  ['MOCADOR','Categoria: Roba'],
+  ['MALL','Categoria: Eines'],
+  ['MACETA','Categoria: Eines'],
+  ['TENALLES','Categoria: Eines'],
+  ['FILFERRO','Categoria: Eines'],
+  ['CABLE','Categoria: Eines'],
+  ['ENDOLL','Categoria: Eines'],
+  ['INTERRUPTOR','Categoria: Eines'],
+  ['FUSIBLE','Categoria: Eines'],
+  ['BOMBETA','Categoria: Eines'],
+  ['LLANTERNA','Categoria: Eines'],
+  ['PILA','Categoria: Eines'],
+  ['CARREGADOR','Categoria: Eines'],
+  ['SOLDADOR','Categoria: Eines'],
+  ['POLIDORA','Categoria: Eines'],
+  ['LLIMADORA','Categoria: Eines'],
+  ['FRESADORA','Categoria: Eines'],
+  ['TORN','Categoria: Eines'],
+  ['PREMSA','Categoria: Eines'],
+  ['SERJANT','Categoria: Eines'],
+  ['CARGOLADORA','Categoria: Eines'],
+  ['SATISFACCIO','Categoria: Emocions'],
+  ['PLAER','Categoria: Emocions'],
+  ['GOIG','Categoria: Emocions'],
+  ['DELIT','Categoria: Emocions'],
+  ['EXTASI','Categoria: Emocions'],
+  ['ALLEUJAMENT','Categoria: Emocions'],
+  ['TRANQUILLITAT','Categoria: Emocions'],
+  ['DESCANS','Categoria: Emocions'],
+  ['RECEL','Categoria: Emocions'],
+  ['DESCONFIANCA','Categoria: Emocions'],
+  ['SOSPITA','Categoria: Emocions'],
+  ['INCERTESA','Categoria: Emocions'],
+  ['DUBTE','Categoria: Emocions'],
+  ['NEGUIT','Categoria: Emocions'],
+  ['INQUIETUD','Categoria: Emocions'],
+  ['FRUSTRACIO','Categoria: Emocions'],
+  ['DECEPCIO','Categoria: Emocions'],
+  ['DESENGANY','Categoria: Emocions'],
+  ['AMARGOR','Categoria: Emocions'],
+  ['RANCOR','Categoria: Emocions'],
+  ['RESSENTIMENT','Categoria: Emocions'],
+  ['INDIGNACIO','Categoria: Emocions'],
+  ['ESGLAI','Categoria: Emocions'],
+  ['TERROR','Categoria: Emocions'],
+  ['PAVOR','Categoria: Emocions'],
+  ['CAURE','Categoria: Verbs'],
+  ['SEURE','Categoria: Verbs'],
+  ['AIXECAR','Categoria: Verbs'],
+  ['ESTIRAR','Categoria: Verbs'],
+  ['EMPENYER','Categoria: Verbs'],
+  ['TIBAR','Categoria: Verbs'],
+  ['LLANCAR','Categoria: Verbs'],
+  ['AGAFAR','Categoria: Verbs'],
+  ['DEIXAR','Categoria: Verbs'],
+  ['DONAR','Categoria: Verbs'],
+  ['PRENDRE','Categoria: Verbs'],
+  ['PORTAR','Categoria: Verbs'],
+  ['DUR','Categoria: Verbs'],
+  ['POSAR','Categoria: Verbs'],
+  ['TREURE','Categoria: Verbs'],
+  ['OMPLIR','Categoria: Verbs'],
+  ['BUIDAR','Categoria: Verbs'],
+  ['TALLAR','Categoria: Verbs'],
+  ['ENGANXAR','Categoria: Verbs'],
+  ['LLIGAR','Categoria: Verbs'],
+  ['DESLLIGAR','Categoria: Verbs'],
+  ['ENCENDRE','Categoria: Verbs'],
+  ['APAGAR','Categoria: Verbs'],
+  ['ESCALFAR','Categoria: Verbs'],
+  ['REFREDAR','Categoria: Verbs'],
+  ['BULLIR','Categoria: Verbs'],
+  ['FREGIR','Categoria: Verbs'],
+  ['COURE','Categoria: Verbs'],
+  ['ROSTIR','Categoria: Verbs'],
+  ['PLUTO','Categoria: Espai'],
+  ['CERES','Categoria: Espai'],
+  ['EUROPA','Categoria: Espai'],
+  ['GANIMEDES','Categoria: Espai'],
+  ['TITA','Categoria: Espai'],
+  ['CALLISTO','Categoria: Espai'],
+  ['FOBOS','Categoria: Espai'],
+  ['DEIMOS','Categoria: Espai'],
+  ['ANDROMEDA','Categoria: Espai'],
+  ['VIALACTIA','Categoria: Espai'],
+  ['PULSAR','Categoria: Espai'],
+  ['QUASAR','Categoria: Espai'],
+  ['SUPERNOVA','Categoria: Espai'],
+  ['FORATNEGRE','Categoria: Espai'],
+  ['METEOR','Categoria: Espai'],
+  ['BOLID','Categoria: Espai'],
+  ['ORIO','Categoria: Espai'],
+  ['CASSIOPEA','Categoria: Espai'],
+  ['POLAR','Categoria: Espai'],
+  ['SIRIUS','Categoria: Espai'],
+  ['ESCARLATA','Categoria: Colors'],
+  ['CARMESI','Categoria: Colors'],
+  ['GRANAT','Categoria: Colors'],
+  ['CORALL','Categoria: Colors'],
+  ['AMBRE','Categoria: Colors'],
+  ['MOSTASSA','Categoria: Colors'],
+  ['OLIVA','Categoria: Colors'],
+  ['MENTA','Categoria: Colors'],
+  ['CEL','Categoria: Colors'],
+  ['MARI','Categoria: Colors'],
+  ['INDI','Categoria: Colors'],
+  ['MALVA','Categoria: Colors'],
+  ['FUCSIA','Categoria: Colors'],
+  ['IVORI','Categoria: Colors'],
+  ['CASTANY','Categoria: Colors'],
+  ['CENDRA','Categoria: Colors'],
+  ['PLOM','Categoria: Colors'],
+  ['CARBO','Categoria: Colors'],
 ];
 const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
 
@@ -1032,25 +1571,38 @@ function matsDau(ch, fons, tinta){
 }
 const geo = new RoundedBoxGeometry(1, 1, 1, 3, .18);
 const COLORS = ['#FF3E9A','#FFD600','#7CE800','#33E0FF','#FFFFFF','#C79BFF'];
-const DEMO = new URLSearchParams(location.search).has('demo'); // ?demo → el joc juga sol (per gravar reels)
+const DEMO = (new URLSearchParams(location.search).has('demo') || new URLSearchParams(location.search).has('espectador')); // ?demo → el joc juga sol (per gravar reels)
+
+// ===== Mode espectador: un bot amb nom que dubta i falla de tant en tant; toca «Vull jugar jo» per agafar el control =====
+const ESPECT = new URLSearchParams(location.search).has('espectador');
+const BOT_NOM = ESPECT ? ["Bot Culer", "Bot Perica", "Bot Gironí", "Bot de Mataró", "Bot Terrassenc", "Bot Empordanès", "Bot Lleidatà", "Bot Ebrenc"][Math.floor(Math.random() * 8)] : '';
+const botFalla = (p = .22) => ESPECT && Math.random() < p; // probabilitat d'error del bot en mode espectador
+const botPausa = () => ESPECT ? 600 + Math.random() * 1400 : 0; // temps de «pensar»
+window.espectPensa = () => {}; // mode espectador: sense cap avís ni botó; només es mira
+if (ESPECT) for (const ev of ['pointerdown','click','keydown']) document.addEventListener(ev, e => { if (e.isTrusted && !e.target.closest('#btn-musica, #musica, #tornar, a.tornar, a.pill')) { e.stopPropagation(); e.preventDefault(); } }, true); // bloqueja el jugador (els clics del bot no són «trusted» i passen)
 const QUIZ = new URLSearchParams(location.search).has('quiz'); // ?demo&quiz → pausa amb les lletres barrejades
 let pausaFins = 0, rondes = 0;
 const avisa = tipus => { try { parent.postMessage({ catquiz: tipus }, '*'); } catch (e) {} };
-let daus = [], resposta = '', objectiu = '', punts = 0, temps = 60, viu = false, encerts = 0, combo = 1, cols = 6, files = 1;
+let daus = [], resposta = '', objectiu = '', punts = 0, temps = 60, viu = false, encerts = 0, combo = 1, cols = 6, files = 1, nivell = 0;
+const usadesAna = new Set(); // cap paraula repetida a la partida
 const raig = new THREE.Raycaster(), punter = new THREE.Vector2();
 
-function cella(i, n){ const f = Math.floor(i / cols), enFila = Math.min(cols, n - f * cols); return [((i % cols) - (enFila-1)/2) * 1.15, f]; }
+let pasX = 1.15, escDau = 1; // una sola fila sempre: si la paraula és llarga, els daus s'encongeixen
+function cella(i, n){ return [(i - (n-1)/2) * pasX, 0]; }
 function posBase(i, n){ const [x, f] = cella(i, n); return new THREE.Vector3(x, -1.7 + f * 1.2, 1.5); } // les files del munt pugen, no s'enfonsen a la plataforma
 function posDalt(i, n){ const [x, f] = cella(i, n); return new THREE.Vector3(x, 1.1 + f * 1.2, 0); }
 function nova(){
   for (const d of daus) scene.remove(d); daus = []; resposta = '';
-  const maxL = 5 + Math.floor(encerts / 2);
-  const bossa = PARAULES.filter(x => x[0].length <= maxL); const llista = bossa.length > 1 ? bossa : PARAULES;
-  let p; do { p = llista[Math.floor(Math.random()*llista.length)]; } while (norm(p[0]) === objectiu);
+  const nou = Math.min(9, Math.floor(encerts / 2)); if (nou !== nivell || !objectiu) { const primer = !objectiu; nivell = nou; aplicaTema(nivell); document.getElementById('pista').textContent = 'Nivell ' + (nivell+1) + ': ' + TEMES[nivell].nom;
+    if (!primer) { pausaFins = Date.now() + 2600; temps += 3; pantallaNivell(nivell + 1, TEMES[nivell].nom, '+3 segons de regal', -1, 2400); } }
+  const minL = 4 + Math.round(nivell * .7), maxL = minL + (nivell >= 7 ? 2 : 1); // N1: 4-5 · N10: 10-12
+  const b1 = PARAULES.filter(x => x[0].length >= minL && x[0].length <= maxL), b2 = PARAULES.filter(x => x[0].length >= minL); const llista = b1.length > 1 ? b1 : (b2.length ? b2 : PARAULES);
+  const lliures = llista.filter(x => !usadesAna.has(norm(x[0]))), l2 = lliures.length ? lliures : llista;
+  let p; do { p = l2[Math.floor(Math.random()*l2.length)]; } while (norm(p[0]) === objectiu && l2.length > 1); usadesAna.add(norm(p[0]));
   objectiu = norm(p[0]); document.getElementById('pista').textContent = p[1];
   if (QUIZ && DEMO) { rondes++; if (rondes === 2) { pausaFins = Date.now() + 6500; setTimeout(() => avisa('quiz'), 1200); setTimeout(() => avisa('fi'), 9500); } }
   let ordre; do { ordre = [...objectiu].map((c, i) => ({ c, i })).sort(() => Math.random()-.5); } while (ordre.map(o => o.c).join('') === objectiu && objectiu.length > 1);
-  const n = objectiu.length, esc = 1; cols = innerWidth / innerHeight < 1 ? Math.min(n, 5) : Math.min(n, 12); files = Math.ceil(n / cols); terra.scale.x = prestatge.scale.x = Math.max(5.5, cols * 1.15 + .7) / 8; mida();
+  const n = objectiu.length; cols = n; files = 1; const ampleMax = innerWidth / innerHeight < 1 ? 7.4 : 12; pasX = Math.min(1.15, ampleMax / n); escDau = Math.max(.5, pasX / 1.15); const esc = escDau; terra.scale.x = prestatge.scale.x = Math.max(5.5, n * pasX + .7) / 8; mida();
   ordre.forEach((o, i) => {
     const m = contorn(new THREE.Mesh(geo, matsDau(o.c, COLORS[i % COLORS.length], '#1D2B64')), .05);
     m.userData = { ch: o.c, base: posBase(i, n).multiplyScalar(esc).setZ(1.5), usat: false, desti: null, rotY: 0 };
@@ -1059,10 +1611,10 @@ function nova(){
   });
 }
 function tria(m){
-  if (!viu || m.userData.usat) return;
+  if (!viu || m.userData.usat || Date.now() < pausaFins) return;
   m.userData.usat = true; resposta += m.userData.ch;
   const n = objectiu.length;
-  m.userData.desti = posDalt(resposta.length - 1, n);
+  m.userData.desti = posDalt(resposta.length - 1, n); m.scale.setScalar(escDau);
   m.userData.rotY += Math.PI * 2; so('clic');
   if (resposta.length === n) {
     if (resposta === objectiu) { encerts++; punts += n * 10 * combo; temps += 5; document.getElementById('punts').textContent = punts; so(combo > 1 ? 'win' : 'ok');
@@ -1076,7 +1628,7 @@ function desfes(){
   for (const d of daus) { d.userData.usat = false; d.userData.desti = d.userData.base.clone(); d.userData.rotZ = 0; }
 }
 function comenca(){
-  punts = 0; temps = 60; viu = false; compte(() => viu = true); encerts = 0; rondes = 0; pausaFins = 0; objectiu = ''; combo = 1; so('clic');
+  punts = 0; temps = 60; viu = false; compte(() => viu = true); encerts = 0; rondes = 0; pausaFins = 0; objectiu = ''; combo = 1; nivell = -1; usadesAna.clear(); so('clic');
   document.getElementById('punts').textContent = 0;
   document.getElementById('inici').hidden = true; document.getElementById('final').hidden = true; nova();
 }
@@ -1091,7 +1643,8 @@ function acaba(){
 document.getElementById('btn-inici').onclick = comenca;
 if (DEMO) { document.getElementById('inici').hidden = true; setTimeout(comenca, 500);
   setInterval(() => { if (!viu || resposta.length >= objectiu.length || Date.now() < pausaFins) return; // bot: toca la lletra correcta següent
-    const d = daus.find(x => !x.userData.usat && x.userData.ch === objectiu[resposta.length]); if (d) tria(d); }, 420); }
+    const bona = daus.find(x => !x.userData.usat && x.userData.ch === objectiu[resposta.length]), lliures = daus.filter(x => !x.userData.usat && x !== bona);
+    const d = botFalla(.06) && lliures.length ? lliures[Math.floor(Math.random()*lliures.length)] : bona; if (d) tria(d); }, ESPECT ? 800 : 420); }
 document.getElementById('btn-reinici').onclick = comenca;
 document.getElementById('btn-desfes').onclick = desfes;
 document.getElementById('btn-salta').onclick = () => { if (viu) { temps = Math.max(1, temps - 5); combo = 1; so('mal'); nova(); } };
@@ -1116,7 +1669,7 @@ function mida(){
   // Encaixa lletres (files de dalt i de baix) entre la pista i els botons
   const kb = 90 / innerHeight, top = 125 / innerHeight, lliure = 1 - kb - top;
   const tg = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-  const ample = Math.max(5.5, cols * 1.15 + .7), alt = 3.8 + files * 2.4;
+  const ample = Math.max(5.5, cols * pasX + .7), alt = 3.8 + files * 2.4;
   const d = Math.max(ample / (2 * tg * camera.aspect), alt / (lliure * 2 * tg));
   const centreY = (kb - top) / 2 * (2 * d * tg);
   camera.position.set(0, -.2 - centreY + .6, d); camera.lookAt(0, -.2 - centreY, 0);
@@ -1129,7 +1682,7 @@ window.__fi = () => acaba(false); // per a proves automàtiques
 function anima(){
   requestAnimationFrame(anima);
   const dt = Math.min(rellotge.getDelta(), .05); mouNuvols(dt); mouConfeti(dt); mouIlles(dt); solMesh.userData.raigs.rotation.z += dt * .15;
-  if (viu) { temps -= dt; document.getElementById('temps').textContent = Math.ceil(temps); if (temps <= 0) acaba(); }
+  if (viu && Date.now() >= pausaFins) { temps -= dt; document.getElementById('temps').textContent = Math.ceil(temps); if (temps <= 0) acaba(); }
   for (const d of daus) {
     d.position.lerp(d.userData.desti, Math.min(1, dt * 9));
     d.rotation.y += (d.userData.rotY - d.rotation.y) * Math.min(1, dt * 6);
@@ -1138,6 +1691,29 @@ function anima(){
   renderer.render(scene, camera);
 }
 anima();
+
+// ===== TEMA NEÓ (3D): ambients foscos amb estels, núvols translúcids, cubs flotants i sense contorns =====
+TEMES.splice(0, TEMES.length,
+ {nom:'Nebulosa violeta',cel:[0x1A1650,0x4A2FB5],gespa:0x4EE06A,sol:0xFFD24A,terra:0x2A2070},
+ {nom:'Cel índic',cel:[0x141A5A,0x3A3FB0],gespa:0x38E8FF,sol:0xFFFFFF,terra:0x1E2466},
+ {nom:'Aurora neó',cel:[0x0E2A4A,0x1AA0C0],gespa:0x5CF0A0,sol:0xC0FFE0,terra:0x1A3050},
+ {nom:'Magenta fosc',cel:[0x2A1048,0x8A2FB5],gespa:0xFF4FD8,sol:0xFFC0F0,terra:0x3A1A5A},
+ {nom:'Blau elèctric',cel:[0x0A1E5A,0x2060E0],gespa:0x38E8FF,sol:0xFFFFFF,terra:0x16306A},
+ {nom:'Posta còsmica',cel:[0x3A1058,0xE0507A],gespa:0xFF9A2E,sol:0xFFD060,terra:0x4A2050},
+ {nom:'Nit estelada',cel:[0x0C1038,0x2A3A8C],gespa:0xA06BFF,sol:0xE8E8FF,terra:0x1A1A50},
+ {nom:'Verd làser',cel:[0x0A2A30,0x0E7A6A],gespa:0x4EE06A,sol:0xE0FFE0,terra:0x12403A},
+ {nom:'Foc de neó',cel:[0x3A0A2A,0xD04040],gespa:0xFFD24A,sol:0xFFE080,terra:0x4A1A2A},
+ {nom:'Gel polar',cel:[0x102A5A,0x3AA0E0],gespa:0x9AE0FF,sol:0xFFFFFF,terra:0x20406A});
+matNuvol.color.setHex(0x9A8CFF); matNuvol.transparent = true; matNuvol.opacity = .22; matNuvol.depthWrite = false;
+matContorn.visible = false; // sense contorns negres: look net i lluminós
+const CUBS_NEO = [], colsNeo = [0xFF4F6D, 0xFF9A2E, 0xFFD24A, 0x4EE06A, 0x38E8FF, 0x4F7CFF, 0xA06BFF, 0xFF4FD8];
+for (let i = 0; i < 16; i++) { const s = .6 + Math.random() * 1.6; const c = new THREE.Mesh(new THREE.BoxGeometry(s, s, s), new THREE.MeshBasicMaterial({ color: colsNeo[i % colsNeo.length], transparent: true, opacity: .16 + Math.random() * .14, fog: false, depthWrite: false }));
+  c.position.set((Math.random() - .5) * 34, (Math.random() - .5) * 22, -16 - Math.random() * 26); c.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3); c.userData = { vy: .15 + Math.random() * .35, vr: (Math.random() - .5) * .4 }; scene.add(c); CUBS_NEO.push(c); }
+const mouNuvolsOrig = mouNuvols; mouNuvols = function(dt){ mouNuvolsOrig(dt); for (const c of CUBS_NEO) { c.position.y += c.userData.vy * dt; c.rotation.x += c.userData.vr * dt; c.rotation.z += c.userData.vr * .7 * dt; if (c.position.y > 14) c.position.y = -14; } };
+
+// Neó: estels sempre visibles i recolor de la plataforma/gespa inicial
+aplicaTema(0); // Neó: pinta l'ambient fosc ja a la pantalla d'inici
+scene.traverse(o => { if (o.material && o.material.color && !o.material.map && o.material.color.getHex() === 0x7CE800) o.material.color.setHex(TEMES[0].gespa); if (o.material && o.material.color && !o.material.map && o.material.color.getHex() === 0xA8683A) o.material.color.setHex(TEMES[0].terra); });
 </script>
 </body>
 </html>

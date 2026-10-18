@@ -2,6 +2,20 @@
 <html lang="ca">
 <head>
 <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SDE8LXDNP9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SDE8LXDNP9');
+  // Esdeveniments: inici de partida, tornar a jugar i clic a cada joc des de la portada
+  document.addEventListener('click', function(e){ var b = e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, a.carta'); if (!b) return;
+    var joc = location.pathname.split('/').pop().replace('.html','') || 'index';
+    if (b.matches('a.carta')) gtag('event', 'obrir_joc', { joc: (b.getAttribute('href') || '').split('/').pop().replace('.html','') });
+    else gtag('event', b.id === 'btn-reinici' ? 'tornar_a_jugar' : 'inici_partida', { joc: joc }); });
+</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>CatQuiz Minijocs · Reel</title>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
@@ -79,6 +93,8 @@ const REELS = {
   quizmotle: { quiz:'motle', t:'Motle', e:'🟩', tipus:'QUIZ', c:'#FFD600', hook:'Quina paraula és?', sub:'5 lletres · 6 intents', guio:[[1,'Verd = lloc correcte · Groc = hi és','baix']] },
   quizpenjat: { quiz:'penjat', t:'Penjat 3D', e:'🪢', tipus:'QUIZ', c:'#7CE800', hook:'Endevina la paraula', sub:'Abans que el bot!', guio:[[1,'Cada error, una peça del ninot','baix']] },
   quizanagrama: { quiz:'anagrama', t:'Anagrama', e:'🔀', tipus:'QUIZ', c:'#9B5CFF', hook:'Ordena les lletres', sub:'Quina paraula amaguen?', guio:[[1,'Fixa\'t en la pista','baix']] },
+  quizfutbol: { quiz:'futbol', t:'Quiz de futbol', e:'⚽', tipus:'QUIZ', c:'#7CE800', hook:'Qui és?', sub:'Endevina el jugador', guio:[[1,'Barça, Espanyol, Girona…','baix']] },
+  quizbarbarismes: { quiz:'barbarismes', t:'Barbarismes', e:'🧐', tipus:'QUIZ', c:'#FF8C1A', hook:'On és el barbarisme?', sub:'Tria la frase ben dita', guio:[[1,'Una amaga una expressió incorrecta','baix']] },
   quizcatala: { quiz:'catala', t:'Com es diu en català?', e:'🗣️', tipus:'QUIZ', c:'#FF3E9A', hook:'Com es diu en català?', sub:'Ho saps?', guio:[[1,'3 opcions · 12 segons','baix']] },
   quizintrus: { quiz:'intrus', t:"L'intrús", e:'🕵️', tipus:'QUIZ', c:'#33E0FF', hook:'Quin és l\'intrús?', sub:'Tres van juntes…', guio:[[1,'Una no hi pinta res','baix']] },
   quizaccents: { quiz:'accents', t:'Accents!', e:'✍️', tipus:'QUIZ', c:'#FF8C1A', hook:'Com s\'escriu?', sub:'Només una és correcta', guio:[[1,'Obert, tancat o cap?','baix']] },
@@ -92,6 +108,10 @@ const REELS = {
     guio:[[1,'5 lletres, 6 intents','dalt'],[4.5,'Verd = lloc correcte','baix'],[8,'Groc = hi és, però no aquí','baix','zoom'],[12,'500 paraules','dalt'],[15.5,'Paraula del dia cada dia','baix'],[19,'La teva ratxa es guarda 🔥','dalt','zoom']] },
   penjat: { t:'Penjat 3D', e:'🪢', tipus:'PARAULES', c:'#7CE800', hook:'El penjat.', sub:'Peça a peça',
     guio:[[1,'12 categories','dalt'],[4.5,'Cada error, una peça','baix','zoom'],[8,'8 errors i… penjat','dalt'],[11.5,'Pista: una lletra per 2 errors','baix'],[15,'548 paraules en català','dalt'],[19,'Quina ratxa faràs?','baix','zoom']] },
+  futbol: { t:'Quiz de futbol', e:'⚽', tipus:'FUTBOL', c:'#7CE800', hook:'Quant saps de futbol català?', sub:'Barça · Espanyol · Girona',
+    guio:[[1,'Endevina el jugador amb les pistes','dalt'],[5,'Com abans, més punts','baix'],[9,'I preguntes de trivia','dalt','zoom'],[14,'10 nivells de dificultat','baix'],[19,'Ets més culer o més perico?','dalt','zoom']] },
+  barbarismes: { t:'Barbarismes', e:'🧐', tipus:'PARAULES', c:'#FF8C1A', hook:'Ets més català que un calçot?', sub:'Caça el barbarisme',
+    guio:[[1,'Dues frases, una mal dita','dalt'],[5,'Tria la correcta','baix'],[9,'10 nivells de dificultat','dalt','zoom'],[14,'Dels bàsics als calcs subtils','baix'],[19,'Quantes n\'encertes?','dalt','zoom']] },
   catala: { t:'Com es diu en català?', e:'🗣️', tipus:'PARAULES', c:'#FF3E9A', hook:'Com es diu en català?', sub:'393 castellanismes',
     guio:[[1,'Un castellanisme, tres opcions','dalt'],[5,'12 segons per ronda','baix'],[9,'Ratxa de 3 = punts dobles','dalt','zoom'],[14,'Tot en català, tot en 3D','baix'],[19,'Quantes en saps?','dalt','zoom']] },
   intrus: { t:"L'intrús", e:'🕵️', tipus:'PARAULES', c:'#33E0FF', hook:'Quin és l\'intrús?', sub:'Tres van juntes',
