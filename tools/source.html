@@ -438,6 +438,25 @@ body.v-mosaic.v-game #mzHead,body.v-mosaic.v-game #tusalon,body.v-mosaic.v-game 
 .spop a,.spop button{display:flex;align-items:center;gap:10px;font:500 .92rem var(--f-body);color:#fff;text-decoration:none;background:none;border:0;border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left}
 .spop a:hover,.spop button:hover{background:rgba(255,255,255,.07)}
 .spop i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+/* Hoja de instalación para iPhone */
+.ios-sh{position:fixed;inset:0;z-index:300;display:flex;align-items:flex-end;justify-content:center;background:rgba(4,3,10,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .25s}
+.ios-sh.on{opacity:1}
+.ios-sh .pn{width:min(460px,100%);margin:0 8px calc(8px + env(safe-area-inset-bottom,0px));padding:22px 20px 16px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:26px;box-shadow:0 30px 80px rgba(0,0,0,.6);transform:translateY(40px);transition:transform .35s cubic-bezier(.2,1.3,.4,1)}
+.ios-sh.on .pn{transform:none}
+.ios-sh h3{margin:0 0 6px;font:700 1.15rem/1.2 var(--f-display);color:#fff}
+.ios-sh .lead{margin:0 0 14px;color:var(--mute);font-size:.92rem;line-height:1.45}
+.ios-sh ol{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:10px}
+.ios-sh li{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.05);font-size:.93rem;line-height:1.4}
+.ios-sh li>i{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--sun);color:var(--bg);font:700 .9rem var(--f-display);font-style:normal}
+.ios-sh li b{color:#fff}
+.ios-sh .gl{display:inline-grid;place-items:center;width:26px;height:26px;margin:0 2px;vertical-align:-7px;border-radius:7px;background:#fff;color:#0a84ff}
+.ios-sh .gl svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ios-sh .row{display:flex;gap:8px;width:100%}
+.ios-sh .row button{flex:1 1 0;min-width:0;margin:0;font:600 .86rem var(--f-body);white-space:nowrap;border-radius:999px;padding:12px 10px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--mute)}
+.ios-sh .row .ok{background:var(--sun);border-color:var(--sun);color:var(--bg)}
+.ios-sh .hint{position:absolute;left:50%;bottom:calc(2px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);color:var(--sun);font-size:1.4rem;animation:iosb 1.2s ease-in-out infinite;pointer-events:none}
+@keyframes iosb{50%{transform:translate(-50%,6px)}}
+body.iph #stFull{display:inline-flex!important;padding:10px 12px}
 .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:120;transform:translate(-50%,20px);opacity:0;display:flex;align-items:center;gap:12px;max-width:calc(100% - 32px);padding:12px 14px 12px 18px;background:#fff;color:var(--bg);border-radius:16px;font:500 .92rem/1.35 var(--f-body);box-shadow:0 20px 60px rgba(0,0,0,.5);transition:opacity .3s,transform .3s cubic-bezier(.2,.8,.2,1)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .toast button{flex:none;font:600 .85rem var(--f-body);border:0;border-radius:999px;padding:8px 14px;cursor:pointer;background:var(--bg);color:#fff}
@@ -1447,9 +1466,9 @@ GAMES.forEach(g=>{g.slug=slugOf(g);});
 const LANG=/^ca/.test(document.documentElement.lang||'')?'ca':'es';
 if(LANG==='ca'&&window.__CA){const C=window.__CA;GAMES.forEach(g=>{if(C.g[g.id])Object.assign(g,C.g[g.id]);});Object.keys(C.cats).forEach(k=>{if(CATS[k])CATS[k].n=C.cats[k];});Object.assign(CATD,C.catd);}
 const T=LANG==='ca'?{play:'Juga',soon:'Aviat',playX:'Juga a ',g1:' joc',gN:' jocs',now:'Juga ara',sheet:'Veure la fitxa',goTo:'Ves a ',of:' de ',saga:'Saga còsmica',nw:'NOU',age:'Edat recomanada: ',fav:'Afegeix als preferits',unfav:'Treu dels preferits',none:'No hi ha cap joc amb aquests filtres.',r1:' joc',rN:' jocs',copied:'Enllaç copiat',copy:'Copia l’enllaç',shareT:'Juga gratis a ',faved:'Desat als preferits',search:'Cerca',all:'Tots',
-  fPeq:'Per als petits',fShort:'Partides curtes',fCat:'En català',fMob:'Ideals per al mòbil',fNew:'Novetats',fFav:'Preferits',inst:'Instal·la el Salón com una app: s’obre a pantalla completa.',instB:'Instal·la',ios:'A l’iPhone: toca Compartir i després «Afegeix a la pantalla d’inici».',yrs:'+'}
+  fPeq:'Per als petits',fShort:'Partides curtes',fCat:'En català',fMob:'Ideals per al mòbil',fNew:'Novetats',fFav:'Preferits',inst:'Instal·la el Salón com una app: s’obre a pantalla completa.',instB:'Instal·la',ios:'A l’iPhone: toca Compartir i després «Afegeix a la pantalla d’inici».',iT:'Juga a pantalla completa',iS:'A l’iPhone, el navegador no deixa posar els jocs a pantalla completa. Afegeix el Salón a la pantalla d’inici i s’obrirà com una app, sense barres. Són tres tocs.',i1s:'Toca <b>Compartir</b> {S}. Si no el veus, és al menú <b>···</b> de la barra d’adreces.',i1c:'Toca <b>Compartir</b> {S}, a dalt a la dreta, al costat de la barra d’adreces.',i1o:'Obre el menú del navegador i toca <b>Compartir</b> {S}.',i2:'Tria <b>Afegeix a la pantalla d’inici</b> {A}. Potser has de baixar una mica.',i3:'Toca <b>Afegeix</b> i obre el Salón des de la seva icona.',iAppT:'Obre’l a Safari',iAppS:'Ara ets dins d’una altra app (Instagram, TikTok…) i des d’aquí no es pot instal·lar. Toca el menú <b>···</b> i tria <b>Obre a Safari</b>, o copia l’enllaç i enganxa’l a Safari.',iCopy:'Copia l’enllaç',iCopied:'Enllaç copiat',iOk:'Entesos',iNo:'No ho tornis a mostrar',iFs:'Pantalla completa',yrs:'+'}
 :{play:'Jugar',soon:'Próximamente',playX:'Jugar a ',g1:' juego',gN:' juegos',now:'Jugar ahora',sheet:'Ver ficha',goTo:'Ir a ',of:' de ',saga:'Saga cósmica',nw:'NUEVO',age:'Edad recomendada: ',fav:'Añadir a favoritos',unfav:'Quitar de favoritos',none:'No hay juegos con esos filtros.',r1:' juego',rN:' juegos',copied:'Enlace copiado',copy:'Copiar enlace',shareT:'Juega gratis a ',faved:'Guardado en favoritos',search:'Buscar',all:'Todos',
-  fPeq:'Para peques',fShort:'Partidas cortas',fCat:'En catalán',fMob:'Ideales para móvil',fNew:'Novedades',fFav:'Favoritos',inst:'Instala el Salón como una app: se abre a pantalla completa.',instB:'Instalar',ios:'En iPhone: toca Compartir y luego «Añadir a pantalla de inicio».',yrs:'+'};
+  fPeq:'Para peques',fShort:'Partidas cortas',fCat:'En catalán',fMob:'Ideales para móvil',fNew:'Novedades',fFav:'Favoritos',inst:'Instala el Salón como una app: se abre a pantalla completa.',instB:'Instalar',ios:'En iPhone: toca Compartir y luego «Añadir a pantalla de inicio».',iT:'Juega a pantalla completa',iS:'En iPhone, el navegador no deja poner los juegos a pantalla completa. Añade el Salón a tu pantalla de inicio y se abrirá como una app, sin barras. Son tres toques.',i1s:'Toca <b>Compartir</b> {S}. Si no lo ves, está en el menú <b>···</b> de la barra de direcciones.',i1c:'Toca <b>Compartir</b> {S}, arriba a la derecha, junto a la barra de direcciones.',i1o:'Abre el menú del navegador y toca <b>Compartir</b> {S}.',i2:'Elige <b>Añadir a pantalla de inicio</b> {A}. Puede que tengas que bajar un poco.',i3:'Toca <b>Añadir</b> y abre el Salón desde su icono.',iAppT:'Ábrelo en Safari',iAppS:'Estás dentro de otra app (Instagram, TikTok…) y desde aquí no se puede instalar. Toca el menú <b>···</b> y elige <b>Abrir en Safari</b>, o copia el enlace y pégalo en Safari.',iCopy:'Copiar enlace',iCopied:'Enlace copiado',iOk:'Entendido',iNo:'No volver a mostrar',iFs:'Pantalla completa',yrs:'+'};
 const LP=g=>(LANG==='ca'?'ca/':'')+'jugar/'+g.slug+'/';
 const HEART='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.6-4.6-9.5-9.3C1.1 7.8 3.3 4.4 6.8 4.4c2.1 0 3.6 1.1 4.4 2.6.8-1.5 2.3-2.6 4.4-2.6 3.5 0 5.7 3.4 4.3 6.8-1.9 4.7-7.9 9.3-7.9 9.3z"/></svg>';
 /* Almacenamiento local (favoritos, partidas recientes). Si el navegador lo bloquea, la web funciona igual. */
@@ -1665,6 +1684,7 @@ function requestClose(){if(stagePushed){stagePushed=false;history.back();}else c
 addEventListener('message',e=>{if(e.data==='salon:close'&&e.source===fr.contentWindow&&!st.hidden)requestClose();});
 function openGame(src,title,from){
   lastFocus=document.activeElement;
+  if(iphone&&!standalone&&!window.claude)setTimeout(()=>{if(!st.hidden)iosSheet(false);},1400);
   curG=GAMES.find(g=>g.play===src)||null;
   if(curG){recent=[curG.id].concat(recent.filter(id=>id!==curG.id)).slice(0,12);store.set('recent',recent);stat('jugar/'+curG.slug,curG.name);
     store.set('plays',(store.get('plays',0)|0)+1);}
@@ -1696,7 +1716,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-random]')){const p=GAMES.filter(g=>g.play);const g=p[Math.floor(Math.random()*p.length)];const c=document.querySelector('.card[data-id="'+g.id+'"]');openGame(g.play,g.name,c);}
 });
 $('#stClose').addEventListener('click',requestClose);$('#immBack').addEventListener('click',requestClose);
-$('#immFs').addEventListener('click',()=>{try{(document.fullscreenElement?document.exitFullscreen():st.requestFullscreen()).catch(()=>{});}catch(e){}});
+$('#immFs').addEventListener('click',()=>{if(iphone&&!document.fullscreenEnabled){iosSheet(true);return;}try{(document.fullscreenElement?document.exitFullscreen():st.requestFullscreen()).catch(()=>{});}catch(e){}});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if(!$('#sPop').hidden){$('#sPop').hidden=true;return;}if(!finder.hidden){closeFinder();return;}if(!st.hidden)requestClose();return;}
   const typing=/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))||e.target.isContentEditable;
@@ -1921,9 +1941,34 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredIns
 window.addEventListener('appinstalled',()=>{deferredInstall=null;syncInstall();stat('instalada','App instalada');});
 function doInstall(){
   if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.finally(()=>{deferredInstall=null;syncInstall();});}
-  else if(ios)toast(T.ios,null,null,()=>{});
+  else if(ios)iosSheet(true);
+}
+/* iPhone: Safari no permite pantalla completa ni abrir el instalador; se explica cómo añadirlo a la pantalla de inicio */
+const UA=navigator.userAgent;
+const iphone=/iphone|ipod/i.test(UA);
+const inApp=/FBAN|FBAV|Instagram|TikTok|musical_ly|BytedanceWebview|Snapchat|Line\/|LinkedInApp|Pinterest|GSA\//i.test(UA);
+const iosBr=/CriOS/i.test(UA)?'c':/FxiOS|EdgiOS|OPiOS/i.test(UA)?'o':'s';
+if(iphone&&!standalone&&!window.claude){document.body.classList.add('iph');$('#stFull').textContent='⛶';$('#stFull').setAttribute('aria-label',T.iFs);}
+const IC_S='<span class="gl"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M7 11H5v10h14V11h-2"/></svg></span>';
+const IC_A='<span class="gl"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span>';
+let iosEl=null;
+function iosSheet(force){
+  if(iosEl||standalone||window.claude)return;
+  if(!force){const now=Date.now();if(store.get('iosNo',false)||now-(store.get('iosAt',0)||0)<3*864e5)return;store.set('iosAt',now);}
+  const w=document.createElement('div');w.className='ios-sh';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');w.setAttribute('aria-label',T.iT);
+  const body=inApp?'<h3>'+T.iAppT+'</h3><p class="lead">'+T.iAppS+'</p>'
+    :'<h3>'+T.iT+'</h3><p class="lead">'+T.iS+'</p><ol><li><i>1</i><span>'+T['i1'+iosBr].replace('{S}',IC_S)+'</span></li><li><i>2</i><span>'+T.i2.replace('{A}',IC_A)+'</span></li><li><i>3</i><span>'+T.i3+'</span></li></ol>';
+  w.innerHTML='<div class="pn">'+body+'<div class="row">'+(inApp?'<button type="button" class="cp">'+T.iCopy+'</button>':'<button type="button" class="no">'+T.iNo+'</button>')+'<button type="button" class="ok">'+T.iOk+'</button></div></div>';
+  (st.hidden?document.body:st).appendChild(w);iosEl=w;requestAnimationFrame(()=>w.classList.add('on'));
+  const close=()=>{w.classList.remove('on');setTimeout(()=>w.remove(),260);iosEl=null;};
+  w.addEventListener('click',e=>{if(e.target===w)close();});
+  w.querySelector('.ok').addEventListener('click',close);
+  const no=w.querySelector('.no');if(no)no.addEventListener('click',()=>{store.set('iosNo',true);close();});
+  const cp=w.querySelector('.cp');if(cp)cp.addEventListener('click',()=>{const u=location.href.split('#')[0];const ok=()=>{cp.textContent=T.iCopied;};try{navigator.clipboard.writeText(u).then(ok,()=>prompt('',u));}catch(e){prompt('',u);}});
+  stat('ios-instalar',inApp?'iPhone · app externa':'iPhone · instrucciones');
 }
 function maybeInstall(){
+  if(iphone)return;
   if(fine||!canInstall()||store.get('instNo',false)||(store.get('plays',0)|0)<2)return;
   toast(T.inst,T.instB,doInstall,()=>store.set('instNo',true));store.set('instNo',true);
 }
@@ -1932,7 +1977,8 @@ if(!window.claude&&'serviceWorker' in navigator&&location.protocol==='https:')wi
 
 if(document.fullscreenEnabled){
   $('#stFull').addEventListener('click',()=>{try{(document.fullscreenElement?document.exitFullscreen():st.requestFullscreen()).catch(()=>{});}catch(e){}});
-}else $('#stFull').hidden=true;
+}else if(iphone&&!standalone&&!window.claude){$('#stFull').addEventListener('click',()=>iosSheet(true));}
+else $('#stFull').hidden=true;
 
 /* ---------- Bucle de animación ---------- */
 if(!reduce){
