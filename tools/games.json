@@ -154,6 +154,21 @@
    "play": "juegos/verano/index.html"
   },
   {
+   "id": "carrevamp",
+   "slug": "car-revamp",
+   "kw": "juego de lavar coches",
+   "cat": "motor",
+   "name": "Car Revamp",
+   "note": "Lava y repinta coches",
+   "blurb": "Juego de taller de coches: lava el barro con la manguera, frota el óxido con el cepillo, hincha las ruedas y repinta cada vehículo del color que quieras. Seis vehículos, del cupé deportivo al superdeportivo, pasando por una pickup, un muscle car, una furgoneta retro y un todoterreno.",
+   "tags": [
+    "Coches",
+    "Taller",
+    "Pintura"
+   ],
+   "play": "juegos/car-revamp/index.html"
+  },
+  {
    "slug": "monster-smash",
    "id": "monster",
    "kw": "juego de monster truck",
@@ -426,6 +441,21 @@
    ],
    "kw": "app de DJ online",
    "play": "juegos/cabina/index.html"
+  },
+  {
+   "id": "bloquesneon",
+   "slug": "bloques-neon",
+   "kw": "juego de puzle de bloques",
+   "cat": "accion",
+   "name": "Bloques Neón",
+   "note": "Encaja · Completa · Explota",
+   "blurb": "Puzle de bloques: arrastra las piezas al tablero, completa filas y columnas y hazlas explotar en combos de neón. Cuarenta niveles en cuatro mundos, con gemas, piedras y movimientos limitados, y un modo infinito para batir tu récord.",
+   "tags": [
+    "Puzle",
+    "Combos",
+    "40 niveles"
+   ],
+   "play": "juegos/bloques-neon/index.html"
   },
   {
    "id": "ciudadela",
@@ -1103,7 +1133,7 @@
  "CATD": {
   "accion": {
    "t": "Acción",
-   "d": "Puntería, peleas, combates aéreos y plataformas con espada: partidas para poner a prueba tus reflejos."
+   "d": "Puntería, peleas, combates aéreos, plataformas con espada y puzles de bloques: partidas para poner a prueba tus reflejos."
   },
   "deporte": {
    "t": "Deporte",
@@ -1115,7 +1145,7 @@
   },
   "motor": {
    "t": "Motor",
-   "d": "Karts, monster trucks, carreras de neón y montañas rusas de cerditos."
+   "d": "Karts, monster trucks, carreras de neón, montañas rusas de cerditos y un taller para lavar y repintar coches."
   },
   "historias": {
    "t": "Historias",

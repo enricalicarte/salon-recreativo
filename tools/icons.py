@@ -952,6 +952,55 @@ def _(I):
     for i in range(3): I.add(f'<line x1="{70-i*10}" y1="{390+i*22}" x2="{10-i*10}" y2="{420+i*22}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.85-i*.2}"/>')
     sparkle(I, 330, 210, 16)
 
+@icon('car-revamp')
+def _(I):
+    bg(I, '#2b3142', '#0b0d14', '#6fe3ff', .10)
+    # elevador
+    I.add(f'<rect x="60" y="372" width="392" height="22" rx="6" fill="#3a3f4c" stroke="{INK}" stroke-width="6"/>'
+          + ''.join(f'<rect x="{x}" y="394" width="34" height="90" fill="#9aa3b2" stroke="{INK}" stroke-width="6"/>' for x in (150, 328)))
+    # coche: mitad oxidada (izq) y mitad recién pintada (dcha)
+    body = 'M70 352 Q70 300 120 292 L170 250 Q190 236 230 236 L310 236 Q345 236 370 262 L398 290 Q448 296 448 336 L448 352 Z'
+    I.add(f'<defs><clipPath id="crL"><rect x="0" y="0" width="256" height="512"/></clipPath><clipPath id="crR"><rect x="256" y="0" width="256" height="512"/></clipPath></defs>')
+    I.add(f'<path d="{body}" fill="#b5652c" clip-path="url(#crL)"/>'
+          + ''.join(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#7a3a18" clip-path="url(#crL)"/>' for x, y, r in ((110, 320, 14), (160, 300, 10), (200, 330, 16), (230, 270, 9), (140, 342, 8)))
+          + f'<path d="{body}" fill="#e8212b" clip-path="url(#crR)"/><path d="M290 250 L340 250 Q356 252 368 268" stroke="#fff" stroke-width="7" fill="none" opacity=".6" stroke-linecap="round" clip-path="url(#crR)"/>'
+          f'<path d="{body}" fill="none" stroke="{INK}" stroke-width="8" stroke-linejoin="round"/>'
+          f'<path d="M188 256 L230 248 L240 290 L176 292 Z M262 248 L320 248 Q340 250 352 270 L360 290 L262 290 Z" fill="#9fdcff" stroke="{INK}" stroke-width="6"/>'
+          f'<path d="M256 226 V362" stroke="#fff" stroke-width="5" stroke-dasharray="10 8" opacity=".8"/>')
+    for x in (150, 362):
+        I.add(f'<circle cx="{x}" cy="356" r="34" fill="#22252c" stroke="{INK}" stroke-width="7"/><circle cx="{x}" cy="356" r="14" fill="#c9ced8"/>')
+    # cepillo y pistola de agua
+    I.add(f'<g transform="translate(118 168) rotate(-24)"><rect x="-44" y="-16" width="88" height="34" rx="10" fill="#ffb11f" stroke="{INK}" stroke-width="6"/>'
+          + ''.join(f'<path d="M{x} 18 v18" stroke="#f3ead6" stroke-width="6" stroke-linecap="round"/>' for x in range(-34, 40, 12)) + '</g>')
+    I.add(f'<path d="M430 170 Q380 190 352 236" stroke="#9fe6ff" stroke-width="10" fill="none" stroke-linecap="round" opacity=".9"/>'
+          f'<g transform="translate(440 160) rotate(20)"><rect x="-10" y="-20" width="50" height="30" rx="8" fill="#ffd23f" stroke="{INK}" stroke-width="6"/><rect x="20" y="6" width="16" height="36" rx="5" fill="#ffd23f" stroke="{INK}" stroke-width="6"/></g>')
+    sparkle(I, 402, 222, 18, '#fff'); sparkle(I, 330, 196, 12, '#ffe46b'); sparkle(I, 438, 300, 10)
+
+@icon('bloques-neon')
+def _(I):
+    bg(I, '#3a2fa8', '#14205e', '#ff6ad0', .10)
+    PALB = {1: ('#e8384f', '#ff7a8a', '#a3182b'), 3: ('#f3c230', '#ffe46b', '#b8860b'), 4: ('#5bbd3a', '#a0ec7c', '#2f8a1f'),
+            5: ('#22c3c3', '#74f5ec', '#0e7a85'), 6: ('#2f6fe0', '#6aa5ff', '#1e3fa8'), 7: ('#9a4fe0', '#c88bff', '#5f26a3')}
+    def blk(x, y, s, c):
+        m, l, d = PALB[c]
+        I.add(f'<rect x="{x}" y="{y}" width="{s}" height="{s}" rx="{s*.2}" fill="{d}" stroke="{INK}" stroke-width="4"/>'
+              f'<rect x="{x+2}" y="{y+2}" width="{s-4}" height="{s*.8}" rx="{s*.18}" fill="{m}"/>'
+              f'<rect x="{x+s*.16}" y="{y+s*.1}" width="{s*.68}" height="{s*.1}" rx="3" fill="#fff" opacity=".6"/>')
+    # tablero
+    X0, Y0, C = 96, 120, 46
+    I.add(f'<rect x="{X0-14}" y="{Y0-14}" width="{C*7+28}" height="{C*7+28}" rx="22" fill="#0e1444" stroke="#c88bff" stroke-width="7"/>')
+    for r in range(7):
+        for c in range(7):
+            I.add(f'<rect x="{X0+c*C+3}" y="{Y0+r*C+3}" width="{C-6}" height="{C-6}" rx="7" fill="#18215a"/>')
+    fill = {(6, 0): 6, (6, 1): 6, (5, 0): 6, (6, 4): 3, (6, 5): 3, (6, 6): 3, (5, 6): 5, (4, 6): 5, (4, 0): 1, (5, 1): 4, (5, 2): 4, (6, 2): 4, (2, 5): 7, (3, 5): 7, (3, 6): 7, (3, 0): 5, (3, 1): 3, (3, 2): 1, (3, 3): 6, (3, 4): 4}
+    for (r, c), col in fill.items(): blk(X0 + c*C + 2, Y0 + r*C + 2, C - 4, col)
+    # fila que explota
+    I.add(f'<rect x="{X0-10}" y="{Y0+3*C-6}" width="{C*7+20}" height="{C+12}" rx="14" fill="#6fe3ff" opacity=".35"/>'
+          f'<rect x="{X0-4}" y="{Y0+3*C+C*.35}" width="{C*7+8}" height="{C*.3}" rx="6" fill="#e8fbff" opacity=".9"/>')
+    # pieza en la mano
+    for r, c in ((0, 0), (0, 1), (1, 1)): blk(330 + c*52, 34 + r*52, 50, 1)
+    sparkle(I, 120, 300, 22, '#ffe46b'); sparkle(I, 420, 250, 16); sparkle(I, 260, 290, 14, '#ff9de0')
+
 @icon('ciudadela-de-arena')
 def _(I):
     bg(I, '#ffb35c', '#7a2e3a', '#ffe7a8', .12)
