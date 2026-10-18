@@ -979,7 +979,7 @@ def pitch(I, c1='#2bd46a', c2='#0d6b33'):
 
 @icon('fifa-11-kids')
 def _(I):
-    pitch(I, '#4fd1ff', '#1b5fae')
+    pitch(I, '#2bd46a', '#0d6b33')
     for x in (70, 440): cone(I, x, 470)
     # escudo de prevención
     I.add(f'<path d="M400 70 L460 92 V140 Q460 186 400 212 Q340 186 340 140 V92Z" fill="#a3e635" stroke="{INK}" stroke-width="8"/><path d="M372 140 L394 162 L432 118" stroke="{INK}" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>')
@@ -989,7 +989,7 @@ def _(I):
 
 @icon('tecnica-individual')
 def _(I):
-    pitch(I, '#2bd46a', '#0d6b33')
+    pitch(I, '#4fd1ff', '#1b5fae')
     for x in (300, 380, 460): cone(I, x, 470, '#ffd23f')
     kidfb(I, 180, 330, 'kick', '#3c7bff')
     fball(I, 280, 360, 34)
