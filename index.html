@@ -1703,10 +1703,41 @@ let lastFocus=null;
 let curG=null,stagePushed=false;
 /* cargar el juego sin añadir entradas al historial (así «atrás» vuelve a la ficha) */
 function setFr(u){try{fr.contentWindow.location.replace(u);}catch(e){fr.src=u;}}
+/* Pantalla completa siempre del reproductor entero (no solo del juego), para que la barra o la muesca de volver se vean siempre */
+function stFs(on){
+  try{
+    if(on){
+      if(!(document.fullscreenElement||document.webkitFullscreenElement)){
+        const f=st.requestFullscreen||st.webkitRequestFullscreen;
+        if(f){const pr=f.call(st,{navigationUI:'hide'});if(pr&&pr.catch)return pr.catch(()=>{});}
+        else if(typeof iphone!=='undefined'&&iphone&&!standalone)iosSheet(true);
+      }
+    }else if(document.fullscreenElement||document.webkitFullscreenElement){
+      const x=document.exitFullscreen||document.webkitExitFullscreen;if(x){const pr=x.call(document);if(pr&&pr.catch)return pr.catch(()=>{});}
+    }
+  }catch(e){}
+  return Promise.resolve();
+}
+function hookFrame(){
+  try{
+    const w=fr.contentWindow;if(!w||w.__salonFs||!w.Element)return;w.__salonFs=1;
+    const req=function(){return stFs(true);},ex=function(){return stFs(false);};
+    const isFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+    ['requestFullscreen','webkitRequestFullscreen','webkitRequestFullScreen','mozRequestFullScreen','msRequestFullscreen'].forEach(k=>{try{w.Element.prototype[k]=req;}catch(e){}});
+    ['exitFullscreen','webkitExitFullscreen','webkitCancelFullScreen','mozCancelFullScreen','msExitFullscreen'].forEach(k=>{try{w.Document.prototype[k]=ex;}catch(e){}});
+    ['fullscreenElement','webkitFullscreenElement','webkitCurrentFullScreenElement','mozFullScreenElement'].forEach(k=>{try{Object.defineProperty(w.Document.prototype,k,{get(){return isFs()?this.documentElement:null;},configurable:true});}catch(e){}});
+    ['fullscreenEnabled','webkitFullscreenEnabled'].forEach(k=>{try{Object.defineProperty(w.Document.prototype,k,{get(){return true;},configurable:true});}catch(e){}});
+    ['webkitIsFullScreen','fullscreen'].forEach(k=>{try{Object.defineProperty(w.Document.prototype,k,{get(){return isFs();},configurable:true});}catch(e){}});
+  }catch(e){}
+}
+fr.addEventListener('load',hookFrame);
+let hookT=0;
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{try{const d=fr.contentDocument;if(d){d.dispatchEvent(new Event('fullscreenchange'));d.dispatchEvent(new Event('webkitfullscreenchange'));}}catch(e){}}));
 function requestClose(){if(stagePushed){stagePushed=false;history.back();}else closeGame();}
 addEventListener('message',e=>{if(e.data==='salon:close'&&e.source===fr.contentWindow&&!st.hidden)requestClose();});
 function openGame(src,title,from){
   lastFocus=document.activeElement;
+  clearInterval(hookT);hookT=setInterval(()=>{if(st.hidden){clearInterval(hookT);return;}hookFrame();},250);
   if(iphone&&!standalone&&!window.claude)setTimeout(()=>{if(!st.hidden)iosSheet(false);},1400);
   curG=GAMES.find(g=>g.play===src)||null;
   if(curG){recent=[curG.id].concat(recent.filter(id=>id!==curG.id)).slice(0,12);store.set('recent',recent);stat('jugar/'+curG.slug,curG.name);
@@ -1739,7 +1770,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-random]')){const p=GAMES.filter(g=>g.play);const g=p[Math.floor(Math.random()*p.length)];const c=document.querySelector('.card[data-id="'+g.id+'"]');openGame(g.play,g.name,c);}
 });
 $('#stClose').addEventListener('click',requestClose);$('#immBack').addEventListener('click',requestClose);
-$('#immFs').addEventListener('click',()=>{if(iphone&&!document.fullscreenEnabled){iosSheet(true);return;}try{(document.fullscreenElement?document.exitFullscreen():st.requestFullscreen()).catch(()=>{});}catch(e){}});
+$('#immFs').addEventListener('click',()=>{if(iphone&&!document.fullscreenEnabled){iosSheet(true);return;}stFs(!document.fullscreenElement);});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if(!$('#sPop').hidden){$('#sPop').hidden=true;return;}if(!finder.hidden){closeFinder();return;}if(!st.hidden)requestClose();return;}
   const typing=/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))||e.target.isContentEditable;
