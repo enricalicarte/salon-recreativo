@@ -1004,6 +1004,25 @@ def _(I):
     I.add('<path d="M120 220 v-60 M100 180 l20 -20 l20 20 M392 220 v-60 M372 180 l20 -20 l20 20" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>')
     sparkle(I, 90, 100, 18); sparkle(I, 430, 90, 14, '#fff6c0')
 
+@icon('looping-loco')
+def _(I):
+    bg(I, '#c08cff', '#5a2ab8', '#ffd0f0', .14)
+    # looping
+    I.add(f'<circle cx="256" cy="230" r="150" fill="none" stroke="{INK}" stroke-width="58"/><circle cx="256" cy="230" r="150" fill="none" stroke="#3a3550" stroke-width="44"/>'
+          f'<circle cx="256" cy="230" r="150" fill="none" stroke="#ff4fa3" stroke-width="6" stroke-dasharray="22 18"/>'
+          f'<path d="M-10 420 H200 Q256 410 256 380" fill="none" stroke="{INK}" stroke-width="58"/><path d="M-10 420 H200 Q256 410 256 380" fill="none" stroke="#3a3550" stroke-width="44"/>'
+          f'<path d="M256 380 Q256 410 312 420 H522" fill="none" stroke="{INK}" stroke-width="58"/><path d="M256 380 Q256 410 312 420 H522" fill="none" stroke="#3a3550" stroke-width="44"/>')
+    I.add('<path d="M10 420 H502" stroke="#ffd23f" stroke-width="5" stroke-dasharray="20 16"/>')
+    # moto boca abajo arriba del looping
+    I.add('<g transform="translate(256 66) rotate(180) scale(1.25)">'
+          f'<circle cx="-38" cy="-8" r="20" fill="#22252c" stroke="{INK}" stroke-width="6"/><circle cx="38" cy="-8" r="20" fill="#22252c" stroke="{INK}" stroke-width="6"/>'
+          f'<circle cx="-38" cy="-8" r="9" fill="#e8e8f0"/><circle cx="38" cy="-8" r="9" fill="#e8e8f0"/>'
+          f'<path d="M-40 -30 L-6 -46 H30 L44 -28 Z" fill="#ffd23f" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/>'
+          f'<rect x="-14" y="-82" width="28" height="38" rx="12" fill="#3cc3ff" stroke="{INK}" stroke-width="6"/><circle cx="0" cy="-96" r="18" fill="#ff5a3c" stroke="{INK}" stroke-width="6"/><rect x="-12" y="-100" width="24" height="9" rx="4" fill="#9fdcff"/>'
+          '</g>')
+    I.add('<path d="M330 84 q30 0 50 20 M340 60 q40 0 66 30" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>')
+    sparkle(I, 96, 96, 18, '#ffe14d'); sparkle(I, 430, 300, 14)
+
 @icon('stu-el-especialista')
 def _(I):
     bg(I, '#7fd6ff', '#2f8fe0', '#ffffff', .16)

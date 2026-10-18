@@ -202,6 +202,21 @@
    "play": "juegos/verano/index.html"
   },
   {
+   "id": "loopingloco",
+   "slug": "looping-loco",
+   "kw": "juego de motos con loopings",
+   "cat": "motor",
+   "name": "Looping Loco",
+   "note": "Motos, loopings y saltos de locura",
+   "blurb": "Juego de motos con loopings en 3D: corre a toda velocidad, gira por los loopings, salta rampas y esquiva las barreras con turbo, escudos y combos. Nueve circuitos, de Parque Neón a Galaxia Loca, y cinco vehículos para desbloquear, de la Moto Rayo al Cohete Fénix.",
+   "tags": [
+    "Motos",
+    "Loopings",
+    "9 circuitos"
+   ],
+   "play": "juegos/looping-loco/index.html"
+  },
+  {
    "id": "stu",
    "slug": "stu-el-especialista",
    "kw": "juego de especialistas",
@@ -367,7 +382,7 @@
    "kw": "juego de montaña rusa",
    "cat": "motor",
    "name": "Aventura Porc",
-   "note": "Antes: Looping Loco",
+   "note": "Atracciones en un mundo de cerditos",
    "blurb": "Juego de montaña rusa en un parque de atracciones de cerditos: cambia de vía, salta y agáchate en vagonetas, troncos y atracciones de agua. Cada nivel va más rápido.",
    "tags": [
     "Montaña rusa",
@@ -1252,7 +1267,7 @@
   },
   "motor": {
    "t": "Motor",
-   "d": "Karts, monster trucks, carreras de neón, especialistas que salen volando, montañas rusas de cerditos y un taller para lavar y repintar coches."
+   "d": "Karts, motos con loopings, monster trucks, carreras de neón, especialistas que salen volando, montañas rusas de cerditos y un taller para lavar y repintar coches."
   },
   "historias": {
    "t": "Historias",
