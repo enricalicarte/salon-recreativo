@@ -1069,6 +1069,27 @@ def _(I):
           f'<g transform="translate(440 160) rotate(20)"><rect x="-10" y="-20" width="50" height="30" rx="8" fill="#ffd23f" stroke="{INK}" stroke-width="6"/><rect x="20" y="6" width="16" height="36" rx="5" fill="#ffd23f" stroke="{INK}" stroke-width="6"/></g>')
     sparkle(I, 402, 222, 18, '#fff'); sparkle(I, 330, 196, 12, '#ffe46b'); sparkle(I, 438, 300, 10)
 
+@icon('crucigiro')
+def _(I):
+    bg(I, '#fff3c4', '#ffb35c', '#ffffff', .2)
+    I.add('<path d="M-10 522 V380 Q120 300 256 360 Q390 300 522 370 V522Z" fill="#3b9a4a"/><path d="M-10 522 V420 Q140 360 300 410 Q420 380 522 420 V522Z" fill="#2c7a3a"/>')
+    # crucigrama
+    cells = [(0, 1), (1, 1), (2, 1), (3, 1), (1, 0), (1, 2), (1, 3), (3, 0), (3, 2)]
+    letters = {(0, 1): 'L', (1, 1): 'A', (2, 1): 'G', (3, 1): 'O', (1, 0): 'C', (1, 2): 'S', (1, 3): 'A'}
+    for (c, r) in cells:
+        x, y = 150 + c * 54, 52 + r * 54
+        ch = letters.get((c, r), '')
+        tile(I, x, y, 50, ch, '#3cc3ff' if ch else '#ffffff', '#fff', 30, 10)
+    # rueda
+    I.add(f'<circle cx="256" cy="380" r="112" fill="#fff8ec" stroke="{INK}" stroke-width="8"/>')
+    pts = {'L': (256, 300), 'A': (336, 380), 'G': (256, 460), 'O': (176, 380)}
+    I.add('<path d="M256 300 L336 380 L256 460" fill="none" stroke="#4fc35a" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>')
+    for ch, (x, y) in pts.items():
+        on = ch in 'LAG'
+        I.add(f'<circle cx="{x}" cy="{y}" r="32" fill="{"#4fc35a" if on else "#fff8ec"}" stroke="{INK}" stroke-width="6"/>'
+              f'<text x="{x}" y="{y+13}" text-anchor="middle" font-size="38" {FONT} fill="{"#fff" if on else INK}">{ch}</text>')
+    sparkle(I, 440, 120, 18, '#fff'); sparkle(I, 70, 150, 14, '#ffd23f')
+
 @icon('bloques-neon')
 def _(I):
     bg(I, '#3a2fa8', '#14205e', '#ff6ad0', .10)

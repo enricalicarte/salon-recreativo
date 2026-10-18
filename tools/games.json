@@ -521,6 +521,21 @@
    "play": "juegos/cabina/index.html"
   },
   {
+   "id": "crucigiro",
+   "slug": "crucigiro",
+   "kw": "juego de palabras con rueda de letras",
+   "cat": "accion",
+   "name": "Crucigiro",
+   "note": "Une letras y completa el crucigrama",
+   "blurb": "Crucigrama de palabras en castellano: gira la rueda de letras, únelas con el dedo y rellena las casillas. Doscientos niveles en ocho temas, palabras extra que dan monedas y pistas para revelar letras cuando te atascas.",
+   "tags": [
+    "Palabras",
+    "Crucigrama",
+    "200 niveles"
+   ],
+   "play": "juegos/crucigiro/index.html"
+  },
+  {
    "id": "bloquesneon",
    "slug": "bloques-neon",
    "kw": "juego de puzle de bloques",
@@ -1255,7 +1270,7 @@
  "CATD": {
   "accion": {
    "t": "Acción",
-   "d": "Puntería, peleas, combates aéreos, plataformas con espada y puzles de bloques: partidas para poner a prueba tus reflejos."
+   "d": "Puntería, peleas, combates aéreos, plataformas con espada y puzles de bloques y de palabras: partidas para poner a prueba tus reflejos."
   },
   "deporte": {
    "t": "Deporte",
