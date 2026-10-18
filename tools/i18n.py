@@ -107,7 +107,7 @@ ES_CQ = {
  'cq_perdudes': dict(kw="juego de letras en catalán", blurb="Juego de letras en catalán: a la palabra le faltan letras y tienes que escribirlas en orden. Tres errores y se revela; veinte segundos por ronda."),
 }
 
-CA_CATS = {"cosmico": "Còsmic", "invierno": "Alta Temporada", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
+CA_CATS = {"cosmico": "Còsmic", "invierno": "Alta Temporada", "entrenos": "Entrenaments", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
 CA_CATD = {"accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
            "deporte": {"t": "Esport", "d": "Futbol 7, Kings League i unes olimpíades de granja per als més petits."},
            "ritmo": {"t": "Ritme", "d": "Notes que cauen, guitarres i cabines de DJ: música per tocar amb els dits."},
@@ -119,8 +119,14 @@ CA_CATD = {"accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos
 
 # Textos fijos de la portada: (castellano, catalán). Cada uno debe aparecer en la fuente.
 CA_UI = [
- ('<a href="#trilogia">Saga cósmica</a><a href="#sec-accion">Acción</a>', '<a href="#trilogia">Saga còsmica</a><a href="#sec-accion">Acció</a>'),
- ('<a href="#sec-ritmo">Ritmo</a>', '<a href="#sec-ritmo">Ritme</a>'),
+ ('<a href="#trilogia">Saga cósmica</a>', '<a href="#trilogia">Saga còsmica</a>'),
+ ('<a href="#saga-entrenos">Entrenamientos</a><a href="#sec-accion">Acción</a>', '<a href="#saga-entrenos">Entrenaments</a><a href="#sec-accion">Acció</a>'),
+ ('<a class="x" href="#sec-ritmo">Ritmo</a>', '<a class="x" href="#sec-ritmo">Ritme</a>'),
+ ('>Entrenamientos</h2>', '>Entrenaments</h2>'),
+ ('Tres sesiones de entrenamiento en 3D para fútbol base, pensadas para niños de 7 y 8 años: un entrenador virtual hace cada ejercicio, una voz lo explica y cada uno tiene cinco niveles. Calentamiento preventivo FIFA 11+ Kids, técnica individual con balón y fuerza con el propio peso.',
+  'Tres sessions d’entrenament en 3D per al futbol base, pensades per a nens i nenes de 7 i 8 anys: un entrenador virtual fa cada exercici, una veu l’explica i cadascun té cinc nivells. Escalfament preventiu FIFA 11+ Kids, tècnica individual amb pilota i força amb el propi pes.'),
+ ('>3 sesiones</span>', '>3 sessions</span>'),
+ ('data-k="saga-entrenos">Entrenamientos <small>', 'data-k="saga-entrenos">Entrenaments <small>'),
  ('aria-label="Buscar juegos"><svg', 'aria-label="Cerca jocs"><svg'),
  ('<span class="l">Buscar</span>', '<span class="l">Cerca</span>'),
  ('<span class="l">Jugar a uno al azar</span><span class="s">Al azar ▶</span>', '<span class="l">Juga a un joc a l’atzar</span><span class="s">A l’atzar ▶</span>'),

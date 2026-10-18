@@ -952,6 +952,58 @@ def _(I):
     for i in range(3): I.add(f'<line x1="{70-i*10}" y1="{390+i*22}" x2="{10-i*10}" y2="{420+i*22}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.85-i*.2}"/>')
     sparkle(I, 330, 210, 16)
 
+def kidfb(I, x, y, pose='stand', shirt='#a3e635', s=1):
+    """niño futbolista: x,y = cadera"""
+    L = {'stand': ('M-14 0 L-18 70', 'M14 0 L18 70'), 'kick': ('M-12 0 L-22 70', 'M12 0 Q50 30 80 20'),
+         'squat': ('M-16 0 L-48 26 L-30 70', 'M16 0 L48 26 L30 70'), 'jump': ('M-14 0 L-40 50', 'M14 0 L34 30 L20 64')}[pose]
+    A = {'stand': ('M-26 -60 L-50 -20', 'M26 -60 L50 -20'), 'kick': ('M-26 -60 L-62 -40', 'M26 -60 L58 -86'),
+         'squat': ('M-26 -60 L-6 -36', 'M26 -60 L6 -36'), 'jump': ('M-26 -60 L-60 -96', 'M26 -60 L58 -30')}[pose]
+    g = f'<g transform="translate({x} {y}) scale({s})">'
+    for d in L: g += f'<path d="{d}" stroke="{INK}" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="{d}" stroke="#ffcf9e" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    g += f'<rect x="-30" y="-14" width="60" height="30" rx="10" fill="#1f2a44" stroke="{INK}" stroke-width="7"/>'
+    for d in A: g += f'<path d="{d}" stroke="{INK}" stroke-width="22" fill="none" stroke-linecap="round"/><path d="{d}" stroke="#ffcf9e" stroke-width="11" fill="none" stroke-linecap="round"/>'
+    g += f'<rect x="-32" y="-78" width="64" height="70" rx="20" fill="{shirt}" stroke="{INK}" stroke-width="8"/>'
+    g += f'<circle cx="0" cy="-112" r="34" fill="#ffcf9e" stroke="{INK}" stroke-width="8"/><path d="M-34 -116 Q-30 -150 0 -150 Q32 -150 34 -116 Q20 -132 0 -130 Q-20 -132 -34 -116Z" fill="#6b3d1f" stroke="{INK}" stroke-width="6"/>'
+    I.add(g + '</g>')
+    eyes(I, x, y - 112 * s, .6 * s, 20 * s); smile(I, x, y - 96 * s, .5 * s, True)
+
+def fball(I, x, y, r=34):
+    I.add(f'<circle cx="{x}" cy="{y}" r="{r}" {st("#fff")}/><path d="M{x} {y-r*.45} L{x+r*.43} {y-r*.14} L{x+r*.27} {y+r*.36} L{x-r*.27} {y+r*.36} L{x-r*.43} {y-r*.14}Z" fill="{INK}"/>')
+
+def cone(I, x, y, c='#ff8a1c'):
+    I.add(f'<path d="M{x-22} {y} L{x} {y-52} L{x+22} {y}Z" fill="{c}" stroke="{INK}" stroke-width="6" stroke-linejoin="round"/><path d="M{x-12} {y-24} H{x+12}" stroke="#fff" stroke-width="7"/><rect x="{x-30}" y="{y-4}" width="60" height="10" rx="4" fill="{c}" stroke="{INK}" stroke-width="5"/>')
+
+def pitch(I, c1='#2bd46a', c2='#0d6b33'):
+    bg(I, c1, c2, '#ffffff', .12)
+    I.add('<path d="M-10 410 H522" stroke="#fff" stroke-width="8" opacity=".55"/><ellipse cx="256" cy="410" rx="170" ry="40" fill="none" stroke="#fff" stroke-width="7" opacity=".5"/>')
+
+@icon('fifa-11-kids')
+def _(I):
+    pitch(I, '#4fd1ff', '#1b5fae')
+    for x in (70, 440): cone(I, x, 470)
+    # escudo de prevención
+    I.add(f'<path d="M400 70 L460 92 V140 Q460 186 400 212 Q340 186 340 140 V92Z" fill="#a3e635" stroke="{INK}" stroke-width="8"/><path d="M372 140 L394 162 L432 118" stroke="{INK}" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>')
+    kidfb(I, 230, 330, 'jump', '#ff5a3c')
+    I.add('<path d="M120 250 q30 -20 60 0 M110 290 q30 -20 60 0" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".8"/>')
+    fball(I, 330, 440, 30); sparkle(I, 90, 110, 18)
+
+@icon('tecnica-individual')
+def _(I):
+    pitch(I, '#2bd46a', '#0d6b33')
+    for x in (300, 380, 460): cone(I, x, 470, '#ffd23f')
+    kidfb(I, 180, 330, 'kick', '#3c7bff')
+    fball(I, 280, 360, 34)
+    I.add('<path d="M300 300 Q340 270 360 300 M310 250 Q360 210 390 250" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>')
+    sparkle(I, 420, 110, 20, '#ffe46b'); sparkle(I, 80, 120, 14)
+
+@icon('plan-de-fuerza')
+def _(I):
+    pitch(I, '#ffb35c', '#c2410c')
+    kidfb(I, 256, 330, 'squat', '#a3e635')
+    fball(I, 256, 280, 30)
+    I.add('<path d="M120 220 v-60 M100 180 l20 -20 l20 20 M392 220 v-60 M372 180 l20 -20 l20 20" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>')
+    sparkle(I, 90, 100, 18); sparkle(I, 430, 90, 14, '#fff6c0')
+
 @icon('car-revamp')
 def _(I):
     bg(I, '#2b3142', '#0b0d14', '#6fe3ff', .10)
