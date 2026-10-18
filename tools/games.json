@@ -208,11 +208,11 @@
    "cat": "motor",
    "name": "Stu el Especialista",
    "note": "Salta, revienta y vuela",
-   "blurb": "Juego de especialistas: acelera con el coche o la moto, salta la rampa y revienta el muro de cajas. El vehículo se desmonta y Stu sale volando: planea, recoge estrellas, da volteretas y aterriza en las dianas. Con turbo, cajas TNT y dos especialistas, Stu y El Vendado.",
+   "blurb": "Juego de especialistas con cinco vehículos (coche, moto, monster truck, kart y cohete): acelera, salta la rampa y revienta el muro de cajas para que Stu salga volando y aterrice en las dianas. Seis escenarios, del estadio a una base lunar, y tres desafíos: looping, equilibrio sobre una viga y aros de fuego.",
    "tags": [
     "Especialistas",
     "Saltos",
-    "Coche y moto"
+    "5 vehículos"
    ],
    "play": "juegos/stu-el-especialista/index.html"
   },
