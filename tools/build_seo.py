@@ -26,7 +26,7 @@ D = json.load(open(os.path.join(root, 'tools/games.json'), encoding='utf-8'))
 G, CATS, CATD = D['GAMES'], D['CATS'], D['CATD']
 e = lambda x: html.escape(str(x), quote=True)
 play = [g for g in G if g.get('play')]
-ORDER = ['accion', 'deporte', 'ritmo', 'motor', 'historias', 'marca', 'relax', 'catquiz']
+ORDER = ['accion', 'puzles', 'deporte', 'ritmo', 'motor', 'historias', 'marca', 'relax', 'catquiz']
 EMAIL = OWNER['email']
 PEND = '<mark class="pend">[pendiente]</mark>'
 AGE = {'olimpiadas': 3, 'aventura': 3, 'towerstack': 3, 'miramar': 16}
@@ -58,8 +58,8 @@ def pwa(p):
             f'<link rel="apple-touch-icon" href="{p}icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">'
             '<meta name="apple-mobile-web-app-title" content="Salón"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">')
 
-GENRE = {'entrenos': 'sesión de entrenamiento de fútbol', 'invierno': 'juego de deportes de invierno', 'accion': 'juego de acción', 'deporte': 'juego de deporte', 'ritmo': 'juego de ritmo musical', 'motor': 'juego de motor', 'historias': 'juego narrativo', 'marca': 'juego con marca', 'relax': 'juego relajante', 'cosmico': 'juego cósmico', 'catquiz': 'juego de palabras en catalán'}
-GENRE_CA = {'entrenos': "sessió d'entrenament de futbol", 'invierno': "joc d'esports d'hivern", 'accion': "joc d'acció", 'deporte': "joc d'esport", 'ritmo': 'joc de ritme musical', 'motor': 'joc de motor', 'historias': 'joc narratiu', 'marca': 'joc amb marca', 'relax': 'joc relaxant', 'cosmico': 'joc còsmic', 'catquiz': 'joc de paraules en català'}
+GENRE = {'entrenos': 'sesión de entrenamiento de fútbol', 'invierno': 'juego de deportes de invierno', 'accion': 'juego de acción', 'puzles': 'juego de puzles', 'deporte': 'juego de deporte', 'ritmo': 'juego de ritmo musical', 'motor': 'juego de motor', 'historias': 'juego narrativo', 'marca': 'juego con marca', 'relax': 'juego relajante', 'cosmico': 'juego cósmico', 'catquiz': 'juego de palabras en catalán'}
+GENRE_CA = {'entrenos': "sessió d'entrenament de futbol", 'invierno': "joc d'esports d'hivern", 'accion': "joc d'acció", 'puzles': 'joc de trencaclosques', 'deporte': "joc d'esport", 'ritmo': 'joc de ritme musical', 'motor': 'joc de motor', 'historias': 'joc narratiu', 'marca': 'joc amb marca', 'relax': 'joc relaxant', 'cosmico': 'joc còsmic', 'catquiz': 'joc de paraules en català'}
 
 # ---------- estilos de las páginas interiores ----------
 CSS = """*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:#07060f;color:#f5f2ff;font:16px/1.65 'Onest',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}a{color:#ffd23f}
@@ -235,6 +235,11 @@ HUBS = [
   intro=['Juegos de motor para jugar en el navegador: haz trucos en el aire con una moto de motocross, salta con un monster truck, derrapa con un kart para cargar el turbo o conduce por una carretera de neón.',
          'Todos funcionan en móvil y ordenador, gratis y sin anuncios. Partidas rápidas para batir tu récord una y otra vez.'],
   pick=lambda g: g['cat'] == 'motor'),
+ dict(slug='juegos-de-puzles', lang='es', title='Juegos de puzles online gratis | Salón Recreativo', h1='Juegos de puzles online',
+  desc='Juegos de puzles online gratis: crucigrama con rueda de letras, puzle de bloques de neón y torres para apilar. Para móvil y PC, sin descargas ni anuncios.',
+  intro=['Juegos de puzles para jugar en el navegador: forma palabras girando una rueda de letras, encaja bloques para completar filas y columnas o apila una torre lo más alta posible.',
+         'Partidas cortas para pensar un poco y batir tu récord. Funcionan en móvil y ordenador, gratis y sin anuncios.'],
+  pick=lambda g: g['cat'] == 'puzles'),
 ]
 HUB_CSS = """.hub{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;list-style:none;padding:0;margin:26px 0}
 .hub a{display:flex;flex-direction:column;height:100%;text-decoration:none;color:#fff;background:#171232;border:1px solid rgba(255,255,255,.1);border-radius:18px;overflow:hidden}.hub a:hover{border-color:#ffd23f}

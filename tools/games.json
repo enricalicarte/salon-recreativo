@@ -524,7 +524,7 @@
    "id": "crucigiro",
    "slug": "crucigiro",
    "kw": "juego de palabras con rueda de letras",
-   "cat": "accion",
+   "cat": "puzles",
    "name": "Crucigiro",
    "note": "Une letras y completa el crucigrama",
    "blurb": "Crucigrama de palabras en castellano: gira la rueda de letras, únelas con el dedo y rellena las casillas. Doscientos niveles en ocho temas, palabras extra que dan monedas y pistas para revelar letras cuando te atascas.",
@@ -539,7 +539,7 @@
    "id": "bloquesneon",
    "slug": "bloques-neon",
    "kw": "juego de puzle de bloques",
-   "cat": "accion",
+   "cat": "puzles",
    "name": "Bloques Neón",
    "note": "Encaja · Completa · Explota",
    "blurb": "Puzle de bloques: arrastra las piezas al tablero, completa filas y columnas y hazlas explotar en combos de neón. Cuarenta niveles en cuatro mundos, con gemas, piedras y movimientos limitados, y un modo infinito para batir tu récord.",
@@ -598,7 +598,7 @@
    "slug": "tower-stack",
    "id": "towerstack",
    "kw": "juego de apilar bloques",
-   "cat": "accion",
+   "cat": "puzles",
    "name": "Tower Stack",
    "blurb": "Juego de apilar bloques: suelta cada pieza sobre la anterior y lo que sobresale se corta y cae. Si la clavas en el centro, recuperas anchura. ¿Hasta qué piso llegas?",
    "tags": [
@@ -1265,12 +1265,16 @@
   "entrenos": {
    "n": "Entrenamientos",
    "c": "#a3e635"
+  },
+  "puzles": {
+   "n": "Puzles",
+   "c": "#c26bff"
   }
  },
  "CATD": {
   "accion": {
    "t": "Acción",
-   "d": "Puntería, peleas, combates aéreos, plataformas con espada y puzles de bloques y de palabras: partidas para poner a prueba tus reflejos."
+   "d": "Puntería, peleas, combates aéreos, plataformas con espada y carreras sin fin: partidas para poner a prueba tus reflejos."
   },
   "deporte": {
    "t": "Deporte",
@@ -1307,6 +1311,10 @@
   "entrenos": {
    "t": "Entrenamientos",
    "d": "Sesiones de entrenamiento en 3D para fútbol base: calentamiento, técnica y fuerza."
+  },
+  "puzles": {
+   "t": "Puzles",
+   "d": "Palabras, bloques y torres: puzles para pensar un poco, encajar piezas y batir tu récord."
   }
  }
 }

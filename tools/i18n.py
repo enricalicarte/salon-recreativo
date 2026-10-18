@@ -107,8 +107,8 @@ ES_CQ = {
  'cq_perdudes': dict(kw="juego de letras en catalán", blurb="Juego de letras en catalán: a la palabra le faltan letras y tienes que escribirlas en orden. Tres errores y se revela; veinte segundos por ronda."),
 }
 
-CA_CATS = {"cosmico": "Còsmic", "invierno": "Alta Temporada", "entrenos": "Entrenaments", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
-CA_CATD = {"accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
+CA_CATS = {"cosmico": "Còsmic", "invierno": "Alta Temporada", "entrenos": "Entrenaments", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "puzles": "Trencaclosques", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
+CA_CATD = {"puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: trencaclosques per pensar una mica, encaixar peces i batre el teu rècord."}, "accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
            "deporte": {"t": "Esport", "d": "Futbol 7, Kings League i unes olimpíades de granja per als més petits."},
            "ritmo": {"t": "Ritme", "d": "Notes que cauen, guitarres i cabines de DJ: música per tocar amb els dits."},
            "motor": {"t": "Motor", "d": "Karts, monster trucks, motos, curses de neó i muntanyes russes de porquets."},
@@ -121,6 +121,7 @@ CA_CATD = {"accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos
 CA_UI = [
  ('<a href="#trilogia">Saga cósmica</a>', '<a href="#trilogia">Saga còsmica</a>'),
  ('<a href="#saga-entrenos">Entrenamientos</a><a href="#sec-accion">Acción</a>', '<a href="#saga-entrenos">Entrenaments</a><a href="#sec-accion">Acció</a>'),
+ ('<a class="x" href="#sec-puzles">Puzles</a>', '<a class="x" href="#sec-puzles">Trencaclosques</a>'),
  ('<a class="x" href="#sec-ritmo">Ritmo</a>', '<a class="x" href="#sec-ritmo">Ritme</a>'),
  ('>Entrenamientos</h2>', '>Entrenaments</h2>'),
  ('Tres sesiones de entrenamiento en 3D para fútbol base, pensadas para niños de 7 y 8 años: un entrenador virtual hace cada ejercicio, una voz lo explica y cada uno tiene cinco niveles. Calentamiento preventivo FIFA 11+ Kids, técnica individual con balón y fuerza con el propio peso.',
