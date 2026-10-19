@@ -112,6 +112,54 @@
    "play": "juegos/plan-de-fuerza/index.html"
   },
   {
+   "id": "boxeokids",
+   "slug": "boxeo-kids",
+   "kw": "boxeo para niños",
+   "sg": 2,
+   "cat": "entrenos",
+   "name": "Boxeo Kids",
+   "note": "Entrenamientos · Boxeo sin contacto",
+   "blurb": "Boxeo de sombra para niños de 7 y 8 años, sin contacto: guardia, directos, ganchos, esquivas, juego de piernas y combinaciones. Un entrenador en 3D con guantes hace cada golpe delante de ti, una voz lo explica y cada ejercicio tiene cinco niveles.",
+   "tags": [
+    "Boxeo",
+    "Sin contacto",
+    "Coordinación"
+   ],
+   "play": "juegos/boxeo-kids/index.html"
+  },
+  {
+   "id": "yogakids",
+   "slug": "yoga-kids",
+   "kw": "yoga para niños",
+   "sg": 2,
+   "cat": "entrenos",
+   "name": "Yoga Kids",
+   "note": "Entrenamientos · Equilibrio y calma",
+   "blurb": "Yoga para niños de 7 y 8 años: árbol, guerreros, perro y cobra, gato y vaca, mariposa y relajación final. Un avatar en 3D hace cada postura, ilumina los músculos que trabaja y guía la respiración, con cinco niveles por postura.",
+   "tags": [
+    "Yoga",
+    "Equilibrio",
+    "Calma"
+   ],
+   "play": "juegos/yoga-kids/index.html"
+  },
+  {
+   "id": "estirakids",
+   "slug": "estiramientos-kids",
+   "kw": "estiramientos para niños después de entrenar",
+   "sg": 2,
+   "cat": "entrenos",
+   "name": "Estiramientos Kids",
+   "note": "Entrenamientos · Vuelta a la calma",
+   "blurb": "Estiramientos suaves para después de entrenar: cuádriceps, isquiotibiales, gemelos, aductores, glúteos, hombros, tríceps y espalda. Un avatar en 3D ilumina el músculo que se estira, se hacen los dos lados y hay cinco niveles, de suave a profundo.",
+   "tags": [
+    "Estiramientos",
+    "Vuelta a la calma",
+    "Fútbol base"
+   ],
+   "play": "juegos/estiramientos-kids/index.html"
+  },
+  {
    "id": "gransalto",
    "slug": "el-gran-salto",
    "kw": "juego de salto de esquí",
@@ -1330,7 +1378,7 @@
   },
   "entrenos": {
    "t": "Entrenamientos",
-   "d": "Sesiones de entrenamiento en 3D para fútbol base: calentamiento, técnica y fuerza."
+   "d": "Sesiones de entrenamiento en 3D para niños: calentamiento, técnica, fuerza, boxeo, yoga y estiramientos."
   },
   "puzles": {
    "t": "Puzles",

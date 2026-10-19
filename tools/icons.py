@@ -973,9 +973,13 @@ def _(I):
 def kidfb(I, x, y, pose='stand', shirt='#a3e635', s=1):
     """niño futbolista: x,y = cadera"""
     L = {'stand': ('M-14 0 L-18 70', 'M14 0 L18 70'), 'kick': ('M-12 0 L-22 70', 'M12 0 Q50 30 80 20'),
-         'squat': ('M-16 0 L-48 26 L-30 70', 'M16 0 L48 26 L30 70'), 'jump': ('M-14 0 L-40 50', 'M14 0 L34 30 L20 64')}[pose]
+         'squat': ('M-16 0 L-48 26 L-30 70', 'M16 0 L48 26 L30 70'), 'jump': ('M-14 0 L-40 50', 'M14 0 L34 30 L20 64'),
+         'punch': ('M-14 0 L-40 34 L-46 70', 'M14 0 L34 36 L42 70'), 'tree': ('M-8 0 L-8 72', 'M10 0 L58 30 L2 42'),
+         'quad': ('M-8 0 L-8 72', 'M10 0 L14 50 L44 22')}[pose]
     A = {'stand': ('M-26 -60 L-50 -20', 'M26 -60 L50 -20'), 'kick': ('M-26 -60 L-62 -40', 'M26 -60 L58 -86'),
-         'squat': ('M-26 -60 L-6 -36', 'M26 -60 L6 -36'), 'jump': ('M-26 -60 L-60 -96', 'M26 -60 L58 -30')}[pose]
+         'squat': ('M-26 -60 L-6 -36', 'M26 -60 L6 -36'), 'jump': ('M-26 -60 L-60 -96', 'M26 -60 L58 -30'),
+         'punch': ('M-26 -60 L-52 -80 L-48 -100', 'M26 -60 L70 -78 L112 -82'), 'tree': ('M-24 -64 L-30 -130 L-6 -160', 'M24 -64 L30 -130 L6 -160'),
+         'quad': ('M-26 -60 L-86 -76', 'M26 -60 L46 -8 L44 18')}[pose]
     g = f'<g transform="translate({x} {y}) scale({s})">'
     for d in L: g += f'<path d="{d}" stroke="{INK}" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="{d}" stroke="#ffcf9e" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
     g += f'<rect x="-30" y="-14" width="60" height="30" rx="10" fill="#1f2a44" stroke="{INK}" stroke-width="7"/>'
@@ -1021,6 +1025,31 @@ def _(I):
     fball(I, 256, 280, 30)
     I.add('<path d="M120 220 v-60 M100 180 l20 -20 l20 20 M392 220 v-60 M372 180 l20 -20 l20 20" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>')
     sparkle(I, 90, 100, 18); sparkle(I, 430, 90, 14, '#fff6c0')
+
+@icon('boxeo-kids')
+def _(I):
+    bg(I, '#ff4d63', '#7a0e22', '#ffd0d6', .14)
+    I.add('<path d="M40 470 H472" stroke="#fff" stroke-width="8" opacity=".5"/><path d="M40 430 H472 M40 390 H472" stroke="#fff" stroke-width="5" opacity=".25"/>')
+    kidfb(I, 210, 340, 'punch', '#e0293f')
+    for gx, gy in ((162, 238), (322, 258)): I.add(f'<circle cx="{gx}" cy="{gy}" r="30" {st("#ffc400")}/><path d="M{gx-14} {gy+18} h28" stroke="{INK}" stroke-width="6" stroke-linecap="round"/>')
+    for i in range(3): I.add(f'<path d="M{372+i*18} {226+i*18} l40 -10" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="{.9-i*.25}"/>')
+    sparkle(I, 430, 110, 20, '#ffe46b'); sparkle(I, 90, 120, 14)
+
+@icon('yoga-kids')
+def _(I):
+    bg(I, '#b9a2ff', '#3b2385', '#f0e8ff', .12)
+    I.add('<rect x="96" y="420" width="320" height="30" rx="15" fill="#ff7a59" stroke="#1d1442" stroke-width="8"/>')
+    kidfb(I, 256, 340, 'tree', '#a58bff')
+    I.add(f'<circle cx="256" cy="104" r="16" {st("#ffd23f", 6)}/>')
+    sparkle(I, 100, 130, 18); sparkle(I, 420, 150, 14, '#fff6c0'); sparkle(I, 410, 330, 10)
+
+@icon('estiramientos-kids')
+def _(I):
+    bg(I, '#ffd27a', '#b8700c', '#fff3c8', .14)
+    I.add('<path d="M-10 452 H522" stroke="#fff" stroke-width="8" opacity=".55"/>')
+    kidfb(I, 256, 344, 'quad', '#f2b134')
+    I.add('<path d="M330 330 q24 -20 0 -44 M352 340 q36 -32 0 -70" stroke="#8a4dff" stroke-width="8" fill="none" stroke-linecap="round"/>')
+    sparkle(I, 100, 110, 18); sparkle(I, 420, 110, 14, '#fff6c0')
 
 @icon('looping-loco')
 def _(I):
