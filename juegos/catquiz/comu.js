@@ -109,6 +109,35 @@
     if (e.target.closest && e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, #playBtn, #nextBtn')) marcaJugat();
   }, true);
 
+  // ---- repte del dia: un sol intent per joc i dia (compta el primer)
+  CQ.repteFet = function (joc) { var v = ls.get('catquiz-repte-' + (joc || JOC), '').split('|'); return v[0] === dataISO() ? v : null; };
+  function compteEnrere(el) {
+    function pinta() { var d = new Date(), m = new Date(d); m.setHours(24, 0, 0, 0); var t = Math.max(0, Math.floor((m - d) / 1000));
+      el.textContent = String(Math.floor(t / 3600)).padStart(2, '0') + ':' + String(Math.floor(t % 3600 / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+      if (!t) location.reload(); }
+    pinta(); setInterval(pinta, 1000);
+  }
+  function pantallaRepteFet(v) {
+    var txt = ''; try { txt = decodeURIComponent(v[2] || ''); } catch (e) {}
+    var linies = txt.split('\n'), quadres = linies.slice(1).join('\n').replace(/\s+\d+\/10.*$/, '');
+    var pendents = AMB_REPTE.filter(function (j) { return j !== JOC && !CQ.repteFet(j); });
+    var d = document.createElement('div'); d.className = 'cq-fet'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', "Repte d'avui fet");
+    d.innerHTML = '<div class="cq-fet-caixa"><p class="cq-fet-eti">Repte del dia · ' + NOMS[JOC] + '</p><h1>Ja l\'has fet avui!</h1>' +
+      (v[1] ? '<p class="cq-fet-nota">' + (JOC === 'motle' ? (v[1] === 'X' ? 'Avui no l\'has encertada' : 'Encertada en ' + v[1] + ' intents') : v[1] + ' de 10') + '</p>' : '') +
+      (quadres ? '<pre class="cq-fet-res">' + quadres.replace(/[<&]/g, '') + '</pre>' : '') +
+      '<p class="cq-fet-txt">El repte nou surt d\'aquí a <b class="cq-fet-compte"></b></p>' +
+      '<div class="cq-fet-bot">' + (txt ? '<button type="button" class="cq-fet-comp">📤 Comparteix</button>' : '') + '<a class="cq-fet-lliure" href="' + JOC + '.html">▶ Juga lliure</a></div>' +
+      (pendents.length ? '<p class="cq-fet-txt">Encara et ' + (pendents.length === 1 ? 'queda 1 repte' : 'queden ' + pendents.length + ' reptes') + ' d\'avui:</p><div class="cq-fet-altres">' +
+        pendents.map(function (j) { return '<a href="' + j + '.html?repte">' + NOMS[j] + '</a>'; }).join('') + '</div>'
+        : '<p class="cq-fet-txt">🔥 Has fet tots els reptes d\'avui!</p>') +
+      '<a class="cq-fet-tornar" href="../index.html">← Tots els jocs</a></div>';
+    document.body.appendChild(d);
+    compteEnrere(d.querySelector('.cq-fet-compte'));
+    var bc = d.querySelector('.cq-fet-comp');
+    if (bc) bc.onclick = function () { CQ.comparteix(txt, WEB + '/jocs/' + JOC + '.html?repte'); try { gtag('event', 'comparteix', { joc: JOC, repte: 1, fet: 1 }); } catch (er) {} };
+    if (!CASA) d.querySelectorAll('.cq-fet-tornar').forEach(function (a) { a.href = '../../../#sec-catquiz'; a.target = '_top'; });
+  }
+
   // ---- compartir
   function avisCurt(t) {
     var a = document.createElement('div'); a.className = 'cq-avis'; a.textContent = t; document.body.appendChild(a);
@@ -144,7 +173,7 @@
   function enFinal(fin) {
     var punts = puntsFinals();
     desaPartida(punts);
-    if (REPTE) ls.set('catquiz-repte-' + JOC, dataISO() + '|' + CQ.res.filter(Boolean).length);
+    if (REPTE && !CQ.repteFet()) { var tr = textResultat(punts); ls.set('catquiz-repte-' + JOC, dataISO() + '|' + (JOC === 'motle' ? (tr.text.match(/ (\d|X)\/6/) || ['', '?'])[1] : CQ.res.filter(Boolean).length) + '|' + encodeURIComponent(tr.text)); }
     var caixa = fin.querySelector('.caixa') || fin.firstElementChild || fin;
     var b = caixa.querySelector('.cq-comparteix');
     if (!b) {
@@ -188,10 +217,22 @@
     '.cq-galetes .cq-si{background:linear-gradient(180deg,#6CEB5A,#2FB03C);box-shadow:0 4px 0 #1E7F2C}.cq-galetes .cq-no{background:rgba(255,255,255,.08);box-shadow:none}' +
     '.cq-avis{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:9999;padding:10px 18px;border-radius:999px;background:rgba(24,20,70,.95);border:1.5px solid rgba(150,170,255,.5);color:#fff;font:700 15px Roboto,system-ui,sans-serif;transition:opacity .5s}.cq-avis.fora{opacity:0}' +
     '.cq-comparteix{margin-top:12px!important}.cq-res{font-size:22px!important;letter-spacing:2px;margin:6px 0 0!important}' +
-    'html.cq-escola #barra,html.cq-escola .barra{display:none!important}';
+    'html.cq-escola #barra,html.cq-escola .barra{display:none!important}' +
+    '.cq-fet{position:fixed;inset:0;z-index:9998;display:grid;place-items:center;padding:16px;overflow:auto;background:radial-gradient(circle at 50% 25%,rgba(120,90,255,.45),transparent 60%),linear-gradient(170deg,#4A2FB5,#2E2080 45%,#1A1650);font:500 15px/1.45 Roboto,system-ui,sans-serif;color:#fff;text-align:center}' +
+    '.cq-fet-caixa{width:min(440px,100%);padding:26px 22px;border-radius:28px;background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.95));border:1.5px solid rgba(150,170,255,.45);box-shadow:0 0 40px rgba(110,140,255,.3),0 18px 40px rgba(0,0,0,.35)}' +
+    '.cq-fet-eti{display:inline-block;margin:0 0 10px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9C4FF;background:rgba(24,20,70,.6);border:1.5px solid rgba(150,170,255,.45)}' +
+    '.cq-fet h1{margin:0;font:900 clamp(28px,8vw,40px)/1.05 Roboto,sans-serif;color:#FFD24A;text-shadow:0 0 20px rgba(255,210,74,.45),0 3px 0 rgba(0,0,0,.35)}' +
+    '.cq-fet-nota{margin:10px 0 0;font-size:20px;font-weight:900}.cq-fet-res{margin:10px 0 0;font:22px/1.25 system-ui,sans-serif;letter-spacing:2px;white-space:pre-wrap}' +
+    '.cq-fet-txt{margin:16px 0 0;color:#D9D6FF}.cq-fet-compte{color:#5CF0FF;font-variant-numeric:tabular-nums}' +
+    '.cq-fet-bot{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}' +
+    '.cq-fet-bot button,.cq-fet-bot a{display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:999px;font:700 15px Roboto,sans-serif;letter-spacing:.03em;color:#fff;text-decoration:none;cursor:pointer;border:2px solid rgba(255,255,255,.55)}' +
+    '.cq-fet .cq-fet-comp{background:linear-gradient(180deg,#FFB24A,#F0781A)!important;box-shadow:0 4px 0 #A64E0E!important;text-transform:none!important;font:700 15px Roboto,sans-serif!important;width:auto!important;margin:0!important}.cq-fet .cq-fet-lliure{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 4px 0 #1E7F2C!important}' +
+    '.cq-fet-altres{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}.cq-fet-altres a{min-height:44px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;color:#fff;text-decoration:none;font-weight:700;font-size:14px;background:rgba(24,20,70,.6);border:1.5px solid rgba(150,170,255,.45)}' +
+    '.cq-fet-altres a:hover{border-color:#fff}.cq-fet-tornar{display:inline-block;margin-top:18px;color:#C9C4FF;min-height:44px;line-height:44px}';
   var st = document.createElement('style'); st.textContent = css; (document.head || document.documentElement).appendChild(st);
 
   document.addEventListener('DOMContentLoaded', function () {
+    if (REPTE && CQ.repteFet()) pantallaRepteFet(CQ.repteFet());
     if (!consent && !ESPECT && CASA) CQ.galetes();
     // fora de catquiz.cat, «← CatQuiz» torna a la secció CatQuiz de la web que acull els jocs
     if (!CASA) document.querySelectorAll('a[href="../index.html"]').forEach(function (a) { a.href = '../../../#sec-catquiz'; a.target = '_top'; });
