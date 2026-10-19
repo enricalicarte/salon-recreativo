@@ -25,6 +25,7 @@
   function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
+  var AMB_NENS = ['futbol', 'esportistes', 'castells'];
   var REPTE = Q.has('repte') && !ESPECT && AMB_REPTE.indexOf(JOC) > -1;
   var ESCOLA = Q.has('escola') && !ESPECT;
   var CQ = window.CQ = {
@@ -35,12 +36,15 @@
     res: [], files: [],
     efectes: ls.get('catquiz-efectes', '1') !== '0',
     daltonic: ls.get('catquiz-daltonic', '0') === '1',
+    // mode nens (quizzes de preguntes): sense rellotge, preguntes més fàcils i pistes més lentes
+    nens: AMB_NENS.indexOf(JOC) > -1 && !ESPECT && !REPTE && ls.get('catquiz-nens', '0') === '1',
     avui: dataISO, ls: ls,
     marca: function (ok) { if (this.res.length < 10) this.res.push(!!ok); },
     // tria amb la llavor del dia (repte) o a l'atzar
     tria: function (a) { return a[Math.floor((REPTE ? CQ.rng() : Math.random()) * a.length)]; }
   };
   if (CQ.daltonic) document.documentElement.classList.add('daltonic');
+  if (CQ.nens) document.documentElement.classList.add('cq-nens');
   if (JOC) document.documentElement.classList.add('cq-' + JOC);
   // ---- mode daltònic: encert en blau i error en taronja (en lloc de verd i vermell), i ✓/✕ als botons
   // (el Motle té els seus colors propis: taronja = lletra al seu lloc, blau = lletra en un altre lloc)
@@ -71,13 +75,26 @@
   addEventListener('resize', ajustaTitols);
   // interruptor del mode daltònic a la pantalla d'inici de cada joc (també s'activa des dels ajustos de la portada)
   document.addEventListener('DOMContentLoaded', function () {
-    var cx = document.querySelector('#inici .caixa, #startOv .caixa'); if (!cx || ESPECT) return;
+    var cx = document.querySelector('#inici .caixa, #startOv .caixa, .carta#inici > div'); if (!cx || ESPECT) return;
+    var dest = cx;
+    if (AMB_NENS.indexOf(JOC) > -1 && !REPTE) {
+      // fila d'opcions: mode nens + mode daltònic
+      dest = document.createElement('div'); dest.className = 'cq-opcions';
+      dest.style.cssText = 'display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 18px;margin-top:14px';
+      var k = document.createElement('label'); k.className = 'cq-nens-tog';
+      k.style.cssText = 'display:inline-flex;align-items:center;gap:10px;min-height:44px;font:700 14px Roboto,sans-serif;color:#fff;cursor:pointer;white-space:nowrap';
+      k.innerHTML = '<input type="checkbox" style="width:20px;height:20px;accent-color:#FFD24A;margin:0"><span>🧒 Mode nens <span style="font-weight:500;color:#D9D6FF">(sense rellotge)</span></span>';
+      k.title = 'Sense límit de temps, preguntes més fàcils i pistes més lentes';
+      var kc = k.querySelector('input'); kc.checked = CQ.nens;
+      kc.addEventListener('change', function () { CQ.nens = kc.checked; ls.set('catquiz-nens', kc.checked ? '1' : '0'); document.documentElement.classList.toggle('cq-nens', kc.checked); });
+      dest.appendChild(k); cx.appendChild(dest);
+    }
     var l = document.createElement('label'); l.className = 'cq-dalt';
-    l.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;min-height:44px;font:500 14px Roboto,sans-serif;color:#D9D6FF;cursor:pointer';
+    l.style.cssText = (dest === cx ? 'display:flex;margin-top:14px;' : 'display:inline-flex;white-space:nowrap;') + 'align-items:center;justify-content:center;gap:10px;min-height:44px;font:500 14px Roboto,sans-serif;color:#D9D6FF;cursor:pointer';
     l.innerHTML = '<input type="checkbox" style="width:20px;height:20px;accent-color:#3D8EFF;margin:0"> 👁️ Mode daltònic';
     var c = l.querySelector('input'); c.checked = CQ.daltonic;
     c.addEventListener('change', function () { ls.set('catquiz-daltonic', c.checked ? '1' : '0'); location.reload(); });
-    cx.appendChild(l);
+    dest.appendChild(l);
   });
   if (ESCOLA) document.documentElement.classList.add('cq-escola');
   if (REPTE) document.documentElement.classList.add('cq-repte');
@@ -217,7 +234,7 @@
     '.cq-galetes .cq-si{background:linear-gradient(180deg,#6CEB5A,#2FB03C);box-shadow:0 4px 0 #1E7F2C}.cq-galetes .cq-no{background:rgba(255,255,255,.08);box-shadow:none}' +
     '.cq-avis{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:9999;padding:10px 18px;border-radius:999px;background:rgba(24,20,70,.95);border:1.5px solid rgba(150,170,255,.5);color:#fff;font:700 15px Roboto,system-ui,sans-serif;transition:opacity .5s}.cq-avis.fora{opacity:0}' +
     '.cq-comparteix{margin-top:12px!important}.cq-res{font-size:22px!important;letter-spacing:2px;margin:6px 0 0!important}' +
-    'html.cq-escola #barra,html.cq-escola .barra{display:none!important}' +
+    'html.cq-escola #barra,html.cq-escola .barra,html.cq-nens #barra{display:none!important}' +
     '.cq-fet{position:fixed;inset:0;z-index:9998;display:grid;place-items:center;padding:16px;overflow:auto;background:radial-gradient(circle at 50% 25%,rgba(120,90,255,.45),transparent 60%),linear-gradient(170deg,#4A2FB5,#2E2080 45%,#1A1650);font:500 15px/1.45 Roboto,system-ui,sans-serif;color:#fff;text-align:center}' +
     '.cq-fet-caixa{width:min(440px,100%);padding:26px 22px;border-radius:28px;background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.95));border:1.5px solid rgba(150,170,255,.45);box-shadow:0 0 40px rgba(110,140,255,.3),0 18px 40px rgba(0,0,0,.35)}' +
     '.cq-fet-eti{display:inline-block;margin:0 0 10px;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C9C4FF;background:rgba(24,20,70,.6);border:1.5px solid rgba(150,170,255,.45)}' +

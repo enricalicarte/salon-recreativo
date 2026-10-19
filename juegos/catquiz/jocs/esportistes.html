@@ -371,6 +371,7 @@ function samarreta(esport, txt){ return `<div class="esp">${ILUS[esport] || ILUS
 const inicials = n => n.split(' ').map(p => p[0]).join('').slice(0, 3).toUpperCase();
 
 // ---- Estat ----
+const NENS = () => !!(window.CQ && CQ.nens), difN = () => NENS() ? Math.floor(nivell / 3) : nivell, PISTA_MS = () => NENS() ? 4000 : 2500;
 const N = 100, PER = 10, TEMPS = { trivia: 12, vf: 10, mesgran: 10, anagrama: 14, pistes: 16, club: 10 };
 let ronda = 0, nivell = -1, punts = 0, encerts = 0, encertsNivell = 0, ratxa = 0, viu = false, bloquejat = false, tempsRonda = 0, tempsMax = 12, quizFet = false, quizAcabat = false;
 const usades = new Set(), tipusOrdre = ['trivia','anagrama','vf','mesgran','pistes','club'];
@@ -393,12 +394,12 @@ function prepara(){
   neteja(); const tipus = tipusOrdre[(ronda - 1) % tipusOrdre.length]; actual = { tipus }; $('esc').className = tipus; tempsMax = TEMPS[tipus]; tempsRonda = tempsMax;
   document.body.classList.toggle('lila', tipus === 'anagrama' || tipus === 'mesgran' || tipus === 'pistes');
   if (tipus === 'trivia') {
-    const q = noRep(bossaT(nivell), x => x[0]); $('tipus').textContent = 'Pregunta'; $('preg').textContent = q[0];
+    const q = noRep(bossaT(difN()), x => x[0]); $('tipus').textContent = 'Pregunta'; $('preg').textContent = q[0];
     targetaEmoji(EMOJI_T[ronda % EMOJI_T.length]);
     const ops = barreja(q[1].map((t, i) => ({ t, ok: i === q[2] }))); actual.ops = ops; actual.resposta = q[1][q[2]];
     opcions(ops, (o, el) => respon(o.ok, () => revelaOps(ops, el)));
   } else if (tipus === 'anagrama') {
-    const j = noRep(bossaJ(nivell), x => x[0]); const cognom = j[0].split(' ').pop().toUpperCase().normalize('NFD').replace(/[^A-Z]/g, '');
+    const j = noRep(bossaJ(difN()), x => x[0]); const cognom = j[0].split(' ').pop().toUpperCase().normalize('NFD').replace(/[^A-Z]/g, '');
     $('tipus').textContent = 'Endevina qui és'; $('preg').textContent = 'Ordena les lletres';
     actual.resposta = j[0]; actual.j = j;
     const lletres = barreja([...cognom]); $('lletres').style.display = 'flex'; $('lletres').style.setProperty('--n', cognom.length); lletres.forEach((c, i) => { const d = document.createElement('div'); d.className = 'll'; d.textContent = c; d.style.animationDelay = (i * .05) + 's'; $('lletres').appendChild(d); });
@@ -406,12 +407,12 @@ function prepara(){
     const ops = barreja([{ t: j[0], ok: true }, ...altres]); actual.ops = ops;
     opcions(ops, (o, el) => respon(o.ok, () => { revelaOps(ops, el); revelaAnagrama(j, cognom); }));
   } else if (tipus === 'vf') {
-    const q = noRep(bossaVF(nivell), x => x[0]); $('tipus').textContent = 'Verdader o fals'; actual.ok = q[1]; actual.resposta = q[1] ? 'VERDADER' : 'FALS';
+    const q = noRep(bossaVF(difN()), x => x[0]); $('tipus').textContent = 'Verdader o fals'; actual.ok = q[1]; actual.resposta = q[1] ? 'VERDADER' : 'FALS';
     const fr = document.createElement('div'); fr.className = 'frase'; fr.innerHTML = '<p></p>'; fr.firstChild.textContent = q[0]; $('targetes').appendChild(fr); actual.frase = fr;
     $('vf').querySelectorAll('button').forEach(b => b.classList.remove('apagat', 'bona')); $('vf').style.display = 'flex';
     $('vf').querySelector('.no').onclick = () => respon(!q[1], revelaVF); $('vf').querySelector('.si').onclick = () => respon(q[1], revelaVF);
   } else if (tipus === 'mesgran') {
-    const b = bossaJ(nivell); const a = noRep(b, x => x[0]); let c; do { c = tria(FUT.J); } while (c[0] === a[0] || !FUT.D[c[0]] || !FUT.D[a[0]]);
+    const b = bossaJ(difN()); const a = noRep(b, x => x[0]); let c; do { c = tria(FUT.J); } while (c[0] === a[0] || !FUT.D[c[0]] || !FUT.D[a[0]]);
     const dA = FUT.D[a[0]], dC = FUT.D[c[0]], anyA = Number(dA.split('/').reverse().join('')), anyC = Number(dC.split('/').reverse().join(''));
     const okA = anyA < anyC; $('tipus').textContent = 'Qui és més gran?'; $('preg').textContent = 'Qui va néixer abans?'; actual.resposta = okA ? a[0] : c[0];
     const tA = targeta(a[3], inicials(a[0]), a[0], 'A'), tC = targeta(c[3], inicials(c[0]), c[0], 'B');
@@ -419,15 +420,15 @@ function prepara(){
     tA.style.cursor = tC.style.cursor = 'pointer'; tA.onclick = () => respon(okA, actual.revela); tC.onclick = () => respon(!okA, actual.revela);
     actual.ops = [{ ok: okA, el: tA }, { ok: !okA, el: tC }];
   } else if (tipus === 'pistes') {
-    const j = noRep(bossaJ(nivell), x => x[0]); $('tipus').textContent = 'Qui és?'; $('preg').textContent = 'Cada 2,5 segons, una pista'; actual.resposta = j[0]; actual.j = j; actual.pistes = 0;
+    const j = noRep(bossaJ(difN()), x => x[0]); $('tipus').textContent = 'Qui és?'; $('preg').textContent = NENS() ? 'Cada 4 segons, una pista' : 'Cada 2,5 segons, una pista'; actual.resposta = j[0]; actual.j = j; actual.pistes = 0;
     $('pistes').style.display = 'flex';
     const mostra = () => { if (actual.pistes >= 5 || bloquejat) return; const d = document.createElement('div'); d.className = 'pista'; d.innerHTML = `<b>${actual.pistes + 1}</b><span>${j[1][actual.pistes]}</span>`; $('pistes').appendChild(d); actual.pistes++; so('clic'); };
-    mostra(); actual.timer = setInterval(mostra, 2500);
+    mostra(); actual.timer = setInterval(mostra, PISTA_MS());
     const altres = barreja(FUT.J.filter(x => x[0] !== j[0] && (x[3] === j[3] || Math.random() < .4))).slice(0, 3).map(x => ({ t: x[0], ok: false }));
     const ops = barreja([{ t: j[0], ok: true }, ...altres]); actual.ops = ops;
     opcions(ops, (o, el) => respon(o.ok, () => { revelaOps(ops, el); clearInterval(actual.timer); targeta(j[3], inicials(j[0]), j[0]); $('pistes').style.display = 'none'; }, o.ok ? (5 - actual.pistes) * 6 : 0));
   } else { // esport
-    const j = noRep(FUT.J.filter(x => x[2] <= nivell + 2), x => x[0]); $('tipus').textContent = 'Quin esport?'; $('preg').textContent = `${j[0]}: en quin esport destaca?`; actual.resposta = j[3];
+    const j = noRep(FUT.J.filter(x => x[2] <= difN() + 2), x => x[0]); $('tipus').textContent = 'Quin esport?'; $('preg').textContent = `${j[0]}: en quin esport destaca?`; actual.resposta = j[3];
     targetaEmoji('medalla');
     const tots = [...new Set(FUT.J.map(x => x[3]))].filter(e => e !== j[3]);
     const ops = barreja([j[3], ...barreja(tots).slice(0, 2)].map(c => ({ t: c, ok: c === j[3] }))); actual.ops = ops;
@@ -468,7 +469,7 @@ function aturaGravacio(){ return new Promise(res => { recorder.onstop = () => { 
     $('inici').querySelector('div').appendChild(a); $('inici').hidden = false; recorder = null; res(); }; recorder.stop(); }); }
 function pantalla(eti, num, estr, txt, ms){ return new Promise(res => { $('nivellEti').textContent = eti; $('nivellNum').textContent = num; $('nivellEstr').textContent = estr; $('nivellTxt').textContent = txt; $('nivellcapa').hidden = false; so('win'); setTimeout(() => { $('nivellcapa').hidden = true; res(); }, ms); }); }
 function comenca(){ ronda = 0; nivell = -1; punts = 0; encerts = 0; encertsNivell = 0; ratxa = 0; usades.clear(); quizFet = false; quizAcabat = false; $('punts').innerHTML = '<small>PUNTS</small>0'; $('inici').hidden = true; $('final').hidden = true; so('clic'); viu = true; novaRonda(); }
-function acaba(){ viu = false; so('win'); avisa('fi'); const millor = Math.max(Number(localStorage.getItem('catquiz-esportistes') || 0), punts); localStorage.setItem('catquiz-esportistes', millor);
+function acaba(){ viu = false; so('win'); avisa('fi'); const millor = Math.max(Number(localStorage.getItem('catquiz-esportistes' + (NENS() ? '-nens' : '')) || 0), punts); localStorage.setItem('catquiz-esportistes' + (NENS() ? '-nens' : ''), millor);
   $('finalTitol').innerHTML = encerts >= 80 ? 'Ets un crack!' : encerts >= 50 ? 'Molt bé!' : 'Continua entrenant!'; $('finalPunts').innerHTML = `<b>${punts}</b> punts · ${encerts}/${N}`; $('finalTxt').textContent = punts >= millor ? 'Nou rècord!' : `El teu rècord és ${millor}.`; $('final').hidden = QUIZ && DEMO; if (DEMO) setTimeout(comenca, 4000); }
 $('btn-inici').onclick = comenca; $('btn-reinici').onclick = comenca;
 // bot per a demos/reels
@@ -489,7 +490,7 @@ const btnM = $('musica'); btnM.style.opacity = AUDIO.actiu ? 1 : .5; btnM.onclic
 // temporitzador
 let ultim = performance.now();
 (function tic(){ requestAnimationFrame(tic); const ara = performance.now(), dt = Math.min(.5, (ara - ultim) / 1000); ultim = ara;
-  if (viu && !bloquejat && actual && !(window.CQ && CQ.escola)) { tempsRonda -= dt; $('bar').style.transform = `scaleX(${Math.max(0, tempsRonda / tempsMax)})`; if (tempsRonda <= 0) fallaTemps(); } })();
+  if (viu && !bloquejat && actual && !(window.CQ && (CQ.escola || CQ.nens))) { tempsRonda -= dt; $('bar').style.transform = `scaleX(${Math.max(0, tempsRonda / tempsMax)})`; if (tempsRonda <= 0) fallaTemps(); } })();
 </script>
 <script>
 // Pantalla completa: s'activa en començar a jugar (cal un toc de l'usuari) i el botó la commuta.
