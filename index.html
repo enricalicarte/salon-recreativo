@@ -1831,6 +1831,7 @@ renderMine();
   let built=false;
   /* rellena la última fila del mosaico con piezas de «Al azar» y «Buscar» para que no queden huecos */
   function fillGrid(){
+    if(grid.hidden)return;
     grid.querySelectorAll('.tile.fill').forEach(t=>t.remove());
     const cols=getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length;if(!cols)return;
     const F=[['data-random','🎲',LANG==='ca'?'A l’atzar':'Al azar'],['data-find','🔍',LANG==='ca'?'Cerca':'Buscar'],['data-find="nuevos"','✦',T.fNew],['data-find="peques"','🧸',T.fPeq],['data-find="cortas"','⏱️',T.fShort],['data-find="catala"','💬',T.fCat]];
@@ -1861,8 +1862,8 @@ renderMine();
     const out=[];let b=0;
     const step=Math.max(2,Math.floor(small.length/Math.max(1,big.length)));   // grandes repartidos por todo el mosaico, nunca amontonados al final
     small.forEach((g,i)=>{if(i%step===0&&b<big.length){out.push([big[b],b===0?'big xl':'big'+(b%2?' r':'')]);b++;}out.push([g,'']);});
-    grid.innerHTML=out.map(([g,c])=>tile(g,c)).join('');
-    addEventListener('resize',()=>{clearTimeout(fillGrid.t);fillGrid.t=setTimeout(fillGrid,150);});
+    /* la parrilla mezclada de vídeos e iconos ya no se muestra: solo las filas por saga y categoría */
+    grid.innerHTML='';grid.hidden=true;grid.parentNode.hidden=true;
     const order=['cosmico','invierno','entrenos'].concat(['accion','puzles','deporte','ritmo','motor','historias','marca','relax','catquiz']);
     bands.innerHTML=order.map(k=>{const list=all.filter(g=>g.cat===k);if(!list.length)return '';
       const t=k==='cosmico'?T.saga:(CATD[k]?CATD[k].t:CATS[k].n);
