@@ -612,15 +612,6 @@ def _(I):
     for i, (ch, c) in enumerate([('M', '#4fc35a'), ('O', '#4fc35a'), ('T', '#4fc35a'), ('L', '#4fc35a'), ('E', '#4fc35a')]): tile(I, 26 + i * 94, 340, 84, ch, c, '#fff', 54, 14)
     sparkle(I, 450, 80, 18)
 
-@icon('catquiz-esquiva')
-def _(I):
-    cq_bg(I, '#ff9ad5', '#9a3cff')
-    I.add(f'<path d="M256 180 L-40 522 H552Z" fill="{I.lg("#8de06a", "#3a9a3a")}"/>')
-    for (x, y, s) in ((150, 230, 60), (360, 260, 74)): I.add(f'<rect x="{x-s/2}" y="{y-s/2}" width="{s}" height="{s}" rx="10" {st("#ff5a3c", 7)}/>')
-    I.add(f'<circle cx="256" cy="360" r="70" {st(I.lg("#ffe680", "#ffb11f"))}/><circle cx="234" cy="350" r="10" fill="{INK}"/><circle cx="278" cy="350" r="10" fill="{INK}"/><path d="M236 384 q20 14 40 0" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/>')
-    I.add(f'<circle cx="390" cy="410" r="28" {st("#ffd23f", 6)}/><text x="390" y="422" text-anchor="middle" font-size="32" {FONT} fill="{INK}">€</text>')
-    for i in range(3): I.add(f'<path d="M{150-i*24} {330+i*20} h-40" stroke="#fff" stroke-width="9" stroke-linecap="round"/>')
-
 @icon('catquiz-accents')
 def _(I):
     cq_bg(I, '#38e5ff', '#2a6ad6')
@@ -643,13 +634,6 @@ def _(I):
         I.add(f'<g transform="rotate({r} {x+50} {y+50})">'); tile(I, x, y, 100, ch, c, INK, 64, 18); I.add('</g>')
     I.add(f'<path d="M380 400 C440 380 450 330 430 300" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M412 300 L432 280 L448 308Z" fill="#fff"/>')
 
-@icon('catquiz-caca-estrelles')
-def _(I):
-    bg(I, '#8de06a', '#2a9a3a', '#ffffff', .18)
-    for (x, y, r, rot) in ((130, 140, 44, -10), (380, 110, 36, 15), (400, 330, 48, 5), (150, 380, 32, -20)): I.add(f'<path d="{star5(x, y, r, rot=rot-90)}" {st("#ffd23f", 7)}/>')
-    I.add(f'<circle cx="256" cy="256" r="70" {st(I.lg("#ff7ad9", "#d12a8a"))}/>'); shine(I, 230, 225, 22, 12, -30, .6)
-    I.add(f'<circle cx="300" cy="420" r="34" {st("#2b2440", 7)}/><path d="M318 392 Q330 370 350 372" stroke="{INK}" stroke-width="6" fill="none"/><circle cx="352" cy="370" r="7" fill="#ff9a3c"/>')
-
 @icon('catquiz-sopa-de-lletres')
 def _(I):
     cq_bg(I, '#9cd8ff', '#4a7dff')
@@ -667,6 +651,40 @@ def _(I):
         tile(I, 36 + i * 112, 190, 104, ch, '#fff' if ch != '?' else '#b98cff', INK if ch != '?' else '#fff', 68, 18)
     I.add(f'<g transform="translate(390 400) rotate(-30)"><rect x="-90" y="-22" width="160" height="44" rx="8" {st("#ffd23f", 7)}/><path d="M70 -22 L110 0 L70 22Z" {st("#ffc4a0", 7)}/><rect x="-110" y="-22" width="30" height="44" rx="8" {st("#ff7ab0", 7)}/></g>')
     sparkle(I, 90, 100, 18)
+
+@icon('catquiz-roda-de-paraules')
+def _(I):
+    cq_bg(I, '#7af0b0', '#1b9a6a')
+    for i, ch in enumerate('ROSA'): tile(I, 70 + i * 76, 40, 70, ch, '#4ee06a', '#fff', 44, 14)
+    for j, ch in enumerate('OCA'): tile(I, 70, 116 + j * 76, 70, ch if j else '', '#4ee06a' if j else '#fff', '#fff', 44, 14)
+    I.add(f'<circle cx="320" cy="330" r="150" {st("#fff")}/><circle cx="320" cy="330" r="118" fill="none" stroke="#d9dcef" stroke-width="6"/>')
+    pos = [(320, 222), (420, 300), (382, 420), (258, 420), (220, 300)]
+    I.add(f'<polyline points="320,222 420,300 382,420" fill="none" stroke="#38e5ff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>')
+    for (x, y), ch in zip(pos, 'RSOAC'):
+        sel = ch in 'RSO'
+        I.add(f'<circle cx="{x}" cy="{y}" r="38" {st("#38e5ff" if sel else "#fff", 7)}/><text x="{x}" y="{y+17}" text-anchor="middle" font-size="46" {FONT} fill="{"#fff" if sel else INK}">{ch}</text>')
+    sparkle(I, 460, 70, 18)
+
+@icon('catquiz-pronoms-febles')
+def _(I):
+    cq_bg(I, '#38e5ff', '#2a6ad6')
+    I.add(f'<path d="M70 90 H442 Q472 90 472 120 V280 Q472 310 442 310 H230 L160 380 L176 310 H70 Q40 310 40 280 V120 Q40 90 70 90Z" {st("#fff")}/>')
+    I.add(f'<text x="256" y="175" text-anchor="middle" font-size="46" {FONT} fill="{INK}">EL LLIBRE,</text>')
+    I.add(f'<rect x="96" y="205" width="120" height="66" rx="16" {st("#ff4fa3", 7)}/><text x="156" y="252" text-anchor="middle" font-size="44" {FONT} fill="#fff">L\'</text>')
+    I.add(f'<text x="330" y="252" text-anchor="middle" font-size="40" {FONT} fill="{INK}">HE LLEGIT</text>')
+    for i, (w, c) in enumerate((('HI', '#ffd23f'), ('EN', '#7af0b0'), ('HO', '#b98cff'))):
+        x = 226 + i * 104; I.add(f'<rect x="{x-48}" y="388" width="96" height="70" rx="35" {st(c, 7)}/><text x="{x}" y="436" text-anchor="middle" font-size="40" {FONT} fill="{INK}">{w}</text>')
+    sparkle(I, 470, 360, 16); sparkle(I, 50, 60, 14)
+
+@icon('catquiz-quiz-d-esportistes')
+def _(I):
+    cq_bg(I, '#ffd23f', '#ff8a1f')
+    I.add(f'<path d="M190 40 L256 190 L322 40 H284 L256 110 L228 40Z" {st("#3d8eff")}/><path d="M228 40 L256 110 L284 40Z" fill="#ff3355" stroke="{INK}" stroke-width="7" stroke-linejoin="round"/>')
+    I.add(f'<circle cx="256" cy="290" r="120" {st(I.lg("#ffe27a", "#ffb11f"))}/><circle cx="256" cy="290" r="86" fill="none" stroke="#fff3b0" stroke-width="10"/>')
+    I.add(f'<text x="256" y="335" text-anchor="middle" font-size="130" {FONT} fill="{INK}">1</text>'); shine(I, 210, 230, 34, 16, -30, .55)
+    I.add(f'<circle cx="440" cy="300" r="42" {st("#ff8a1f", 7)}/><path d="M398 300 H482 M440 258 V342 M410 270 Q436 300 410 330 M470 270 Q444 300 470 330" stroke="{INK}" stroke-width="5" fill="none"/>')
+    I.add(f'<circle cx="432" cy="438" r="36" {st("#d4e600", 7)}/><path d="M404 416 Q432 438 404 460 M460 416 Q432 438 460 460" stroke="#fff" stroke-width="6" fill="none"/>')
+    sparkle(I, 80, 110, 20); sparkle(I, 440, 120, 16)
 
 # ===================== v2: personajes y escenas más ilustrativas =====================
 @icon('aura-battle')
@@ -1217,7 +1235,7 @@ def _(I):
     sparkle(I, 110, 110, 18)
 
 # CatQuiz: la mascota gata asoma en la esquina
-for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-esquiva','catquiz-caca-estrelles','catquiz-barbarismes','catquiz-quiz-de-futbol']:
+for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
 
 

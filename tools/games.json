@@ -981,88 +981,8 @@
    "play": "juegos/relax/index.html#rana"
   },
   {
-   "id": "cq_barbarismes",
-   "slug": "catquiz-barbarismes",
-   "kw": "joc de barbarismes en català",
-   "cat": "catquiz",
-   "name": "Barbarismes",
-   "blurb": "Joc de barbarismes en català: dues frases, una amb una expressió incorrecta. Tria la ben dita. Deu nivells de dificultat creixent i punts dobles a partir de tres encerts seguits.",
-   "tags": [
-    "Barbarismes",
-    "Frases",
-    "Català"
-   ],
-   "pal": [
-    "#1b1448",
-    "#3b2a8f",
-    "#ff6b6b",
-    "🚫"
-   ],
-   "play": "juegos/catquiz/jocs/barbarismes.html"
-  },
-  {
-   "id": "cq_futbol",
-   "slug": "catquiz-quiz-de-futbol",
-   "kw": "quiz de futbol en català",
-   "cat": "catquiz",
-   "name": "Quiz de futbol",
-   "blurb": "Quant saps de futbol català? Cent preguntes en deu nivells sobre el Barça, l'Espanyol, el Girona i la selecció: trivia, «qui és?» per pistes, vertader o fals i «qui és més gran?».",
-   "tags": [
-    "Futbol",
-    "Trivia",
-    "Català"
-   ],
-   "pal": [
-    "#1b1448",
-    "#3b2a8f",
-    "#3ddc84",
-    "⚽"
-   ],
-   "play": "juegos/catquiz/jocs/futbol.html"
-  },
-  {
-   "slug": "catquiz-com-es-diu-en-catala",
-   "id": "cq_catala",
-   "kw": "joc de castellanismes",
-   "cat": "catquiz",
-   "name": "Com es diu en català?",
-   "blurb": "Joc de castellanismes en català: et diem una paraula mal dita i tries la catalana correcta entre tres. Deu rondes de 12 segons i punts dobles amb tres encerts seguits.",
-   "tags": [
-    "Castellanismes",
-    "Vocabulari",
-    "Català"
-   ],
-   "pal": [
-    "#1b1448",
-    "#3b2a8f",
-    "#ffb23e",
-    "🗣️"
-   ],
-   "play": "juegos/catquiz/jocs/catala.html"
-  },
-  {
-   "slug": "catquiz-l-intrus",
-   "id": "cq_intrus",
-   "kw": "joc de l'intrús en català",
-   "cat": "catquiz",
-   "name": "L'intrús",
-   "blurb": "Joc de l'intrús en català: quatre paraules, tres de la mateixa categoria i una que no hi encaixa. Troba-la abans que s'acabi el temps i suma punts dobles amb la ratxa.",
-   "tags": [
-    "Categories",
-    "Vocabulari",
-    "Català"
-   ],
-   "pal": [
-    "#1b1448",
-    "#3b2a8f",
-    "#3cc3ff",
-    "🕵️"
-   ],
-   "play": "juegos/catquiz/jocs/intrus.html"
-  },
-  {
-   "slug": "catquiz-motle",
    "id": "cq_motle",
+   "slug": "catquiz-motle",
    "kw": "Wordle en català",
    "cat": "catquiz",
    "name": "Motle",
@@ -1075,38 +995,98 @@
    "pal": [
     "#1b1448",
     "#3b2a8f",
-    "#3ddc84",
-    "🔤"
+    "#4ee06a",
+    "🟩"
    ],
    "play": "juegos/catquiz/jocs/motle.html"
   },
   {
-   "slug": "catquiz-esquiva",
-   "id": "cq_esquiva",
-   "kw": "joc d'esquivar en català",
+   "id": "cq_roda",
+   "slug": "catquiz-roda-de-paraules",
+   "kw": "joc de paraules en català",
    "cat": "catquiz",
-   "name": "Esquiva!",
-   "blurb": "Joc d'arcade en català: mou-te, salta els blocs baixets, recull monedes i fes servir l'escut blau per aguantar un cop més. Amb fletxes o tocant la pantalla.",
+   "name": "Roda de paraules",
+   "blurb": "Joc de paraules en català tipus mots encreuats: uneix les lletres de la roda amb el dit per formar les paraules que falten. 300 nivells, cada cop amb paraules més llargues.",
    "tags": [
-    "Arcade",
-    "Reflexos",
+    "Mots encreuats",
+    "Paraules",
     "Català"
    ],
    "pal": [
     "#1b1448",
     "#3b2a8f",
-    "#ff7a45",
-    "🏃"
+    "#4ee06a",
+    "🔤"
    ],
-   "play": "juegos/catquiz/jocs/esquiva.html"
+   "play": "juegos/catquiz/jocs/roda.html"
   },
   {
-   "slug": "catquiz-accents",
+   "id": "cq_pronoms",
+   "slug": "catquiz-pronoms-febles",
+   "kw": "joc de pronoms febles",
+   "cat": "catquiz",
+   "name": "Pronoms febles",
+   "blurb": "Joc de pronoms febles en català: el, la, ho, en, hi, li i les combinacions més traïdores. Tria el pronom correcte en cada frase, en deu nivells de fàcil a difícil.",
+   "tags": [
+    "Pronoms febles",
+    "Gramàtica",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#38e5ff",
+    "🧩"
+   ],
+   "play": "juegos/catquiz/jocs/pronoms.html"
+  },
+  {
+   "id": "cq_barbarismes",
+   "slug": "catquiz-barbarismes",
+   "kw": "joc de barbarismes en català",
+   "cat": "catquiz",
+   "name": "Barbarismes",
+   "blurb": "Joc de barbarismes en català: completa la frase amb la forma correcta. Calcs, formes deformades i expressions que sonen bé però no ho són, en deu nivells de dificultat creixent.",
+   "tags": [
+    "Barbarismes",
+    "Frases",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ff4fa3",
+    "🚫"
+   ],
+   "play": "juegos/catquiz/jocs/barbarismes.html"
+  },
+  {
+   "id": "cq_catala",
+   "slug": "catquiz-com-es-diu-en-catala",
+   "kw": "joc de castellanismes",
+   "cat": "catquiz",
+   "name": "Com es diu en català?",
+   "blurb": "Joc de castellanismes en català: et diem una paraula que es diu malament i tries la catalana correcta entre tres. Més de 700 paraules en deu nivells.",
+   "tags": [
+    "Castellanismes",
+    "Vocabulari",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ff4fa3",
+    "💬"
+   ],
+   "play": "juegos/catquiz/jocs/catala.html"
+  },
+  {
    "id": "cq_accents",
+   "slug": "catquiz-accents",
    "kw": "joc d'accents en català",
    "cat": "catquiz",
    "name": "Accents!",
-   "blurb": "Joc d'accents en català: una paraula, tres maneres d'escriure-la i només una és correcta. Tens 10 segons per ronda per posar l'accent on toca, o no posar-ne.",
+   "blurb": "Joc d'accents en català: una paraula, tres maneres d'escriure-la i només una és correcta. Posa l'accent on toca, o no en posis, en deu nivells de fàcil a difícil.",
    "tags": [
     "Accents",
     "Ortografia",
@@ -1115,14 +1095,14 @@
    "pal": [
     "#1b1448",
     "#3b2a8f",
-    "#ff5fa8",
-    "´"
+    "#38e5ff",
+    "✍️"
    ],
    "play": "juegos/catquiz/jocs/accents.html"
   },
   {
-   "slug": "catquiz-penjat-3d",
    "id": "cq_penjat",
+   "slug": "catquiz-penjat-3d",
    "kw": "penjat en català",
    "cat": "catquiz",
    "name": "Penjat 3D",
@@ -1135,14 +1115,14 @@
    "pal": [
     "#1b1448",
     "#3b2a8f",
-    "#9a8cff",
+    "#4ee06a",
     "🪢"
    ],
    "play": "juegos/catquiz/jocs/penjat.html"
   },
   {
-   "slug": "catquiz-anagrama",
    "id": "cq_anagrama",
+   "slug": "catquiz-anagrama",
    "kw": "anagrames en català",
    "cat": "catquiz",
    "name": "Anagrama",
@@ -1155,58 +1135,38 @@
    "pal": [
     "#1b1448",
     "#3b2a8f",
-    "#e8e04a",
+    "#4ee06a",
     "🔀"
    ],
    "play": "juegos/catquiz/jocs/anagrama.html"
   },
   {
-   "slug": "catquiz-caca-estrelles",
-   "id": "cq_estrelles",
-   "kw": "joc de caçar estrelles",
+   "id": "cq_intrus",
+   "slug": "catquiz-l-intrus",
+   "kw": "joc de l'intrús en català",
    "cat": "catquiz",
-   "name": "Caça estrelles",
-   "blurb": "Joc d'arcade en català: mou la bola, caça estrelles daurades, encadena combos i evita les bombes. L'imant atreu les estrelles i el rellotge et dona més temps.",
+   "name": "L'intrús",
+   "blurb": "Joc de l'intrús en català: quatre paraules, tres de la mateixa categoria i una que no hi encaixa. Troba-la abans que s'acabi el temps i suma punts dobles amb la ratxa.",
    "tags": [
-    "Arcade",
-    "Combos",
-    "Català"
-   ],
-   "pal": [
-    "#1b1448",
-    "#3b2a8f",
-    "#7df9ff",
-    "⭐"
-   ],
-   "play": "juegos/catquiz/jocs/estrelles.html"
-  },
-  {
-   "slug": "catquiz-sopa-de-lletres",
-   "id": "cq_sopa",
-   "kw": "sopa de lletres en català",
-   "cat": "catquiz",
-   "name": "Sopa de lletres",
-   "blurb": "Sopa de lletres en català online: sis paraules d'una categoria amagades en una graella de 8×8, en horitzontal, vertical o diagonal. Tens 150 segons per trobar-les.",
-   "tags": [
-    "Sopa de lletres",
     "Categories",
+    "Vocabulari",
     "Català"
    ],
    "pal": [
     "#1b1448",
     "#3b2a8f",
-    "#ff9a3c",
-    "🔍"
+    "#ff4fa3",
+    "🕵️"
    ],
-   "play": "juegos/catquiz/jocs/sopa.html"
+   "play": "juegos/catquiz/jocs/intrus.html"
   },
   {
-   "slug": "catquiz-lletres-perdudes",
    "id": "cq_perdudes",
+   "slug": "catquiz-lletres-perdudes",
    "kw": "joc de lletres en català",
    "cat": "catquiz",
    "name": "Lletres perdudes",
-   "blurb": "Joc de lletres en català: a la paraula li falten lletres i les has d'escriure en ordre. Tres errors i es revela; vint segons per ronda.",
+   "blurb": "Joc de lletres en català: a la paraula li falten lletres i les has d'escriure en ordre. Tres errors i es revela; deu nivells, cada cop amb més forats.",
    "tags": [
     "Ortografia",
     "Lletres",
@@ -1215,10 +1175,70 @@
    "pal": [
     "#1b1448",
     "#3b2a8f",
-    "#6ef0b0",
-    "🧩"
+    "#38e5ff",
+    "❓"
    ],
    "play": "juegos/catquiz/jocs/perdudes.html"
+  },
+  {
+   "id": "cq_sopa",
+   "slug": "catquiz-sopa-de-lletres",
+   "kw": "sopa de lletres en català",
+   "cat": "catquiz",
+   "name": "Sopa de lletres",
+   "blurb": "Sopa de lletres en català: sis paraules d'una categoria amagades en una graella de 8×8, en horitzontal, vertical o diagonal. Arrossega el dit i troba-les totes.",
+   "tags": [
+    "Sopa de lletres",
+    "Categories",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#4ee06a",
+    "🔎"
+   ],
+   "play": "juegos/catquiz/jocs/sopa.html"
+  },
+  {
+   "id": "cq_futbol",
+   "slug": "catquiz-quiz-de-futbol",
+   "kw": "quiz de futbol català",
+   "cat": "catquiz",
+   "name": "Quiz de futbol",
+   "blurb": "Quant saps de futbol català? Deu nivells de preguntes sobre el Barça, l'Espanyol i el Girona: trivia, «qui és?» per pistes, verdader o fals i «qui va néixer abans?».",
+   "tags": [
+    "Futbol",
+    "Trivia",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ffd23f",
+    "⚽"
+   ],
+   "play": "juegos/catquiz/jocs/futbol.html"
+  },
+  {
+   "id": "cq_esportistes",
+   "slug": "catquiz-quiz-d-esportistes",
+   "kw": "quiz d'esportistes catalans",
+   "cat": "catquiz",
+   "name": "Quiz d'esportistes",
+   "blurb": "Quant saps dels esportistes catalans? Setanta campions de vint-i-tres esports: endevina qui és per les pistes, de quin esport és i qui va néixer abans, en deu nivells.",
+   "tags": [
+    "Esport",
+    "Trivia",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ffd23f",
+    "🏅"
+   ],
+   "play": "juegos/catquiz/jocs/esportistes.html"
   }
  ],
  "CATS": {
@@ -1302,7 +1322,7 @@
   },
   "catquiz": {
    "t": "CatQuiz Minijocs",
-   "d": "Minijuegos de palabras en catalán y un quiz de fútbol, para jugar y aprender."
+   "d": "Minijuegos de palabras en catalán y quizzes de fútbol y deportistas catalanes, para jugar y aprender."
   },
   "invierno": {
    "t": "Alta Temporada",

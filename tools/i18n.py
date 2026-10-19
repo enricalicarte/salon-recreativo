@@ -95,16 +95,19 @@ CA_G = {
 
 # Fichas en castellano de los juegos de CatQuiz (el juego sigue en catalán)
 ES_CQ = {
- 'cq_catala': dict(kw="juego de castellanismos en catalán", blurb="Juego de castellanismos en catalán: te damos una palabra mal dicha y eliges la catalana correcta entre tres. Diez rondas de 12 segundos y puntos dobles con tres aciertos seguidos."),
- 'cq_intrus': dict(kw="juego del intruso en catalán", blurb="Juego del intruso en catalán: cuatro palabras, tres de la misma categoría y una que no encaja. Encuéntrala antes de que se acabe el tiempo y suma puntos dobles con la racha."),
- 'cq_motle': dict(kw="Wordle en catalán", blurb="El Wordle en catalán: adivina la palabra de cinco letras en seis intentos. Verde, en su sitio; amarillo, está pero en otro lugar. Con palabra del día y partidas aleatorias."),
- 'cq_esquiva': dict(kw="juego de esquivar en catalán", blurb="Juego arcade en catalán: muévete, salta los bloques bajos, recoge monedas y usa el escudo azul para aguantar un golpe más. Con flechas o tocando la pantalla."),
- 'cq_accents': dict(kw="juego de acentos en catalán", blurb="Juego de acentos en catalán: una palabra, tres formas de escribirla y solo una es correcta. Tienes 10 segundos por ronda para poner el acento donde toca, o no ponerlo."),
- 'cq_penjat': dict(kw="ahorcado en catalán", blurb="El juego del ahorcado en catalán y en 3D: elige una categoría y adivina la palabra antes de que se monte el muñeco. Ocho errores y se acaba; la pista te da una letra."),
- 'cq_anagrama': dict(kw="anagramas en catalán", blurb="Juego de anagramas en catalán: las letras caen desordenadas y tienes que ordenarlas para formar la palabra. 60 segundos, 5 más por acierto y palabras cada vez más largas."),
- 'cq_estrelles': dict(kw="juego de cazar estrellas", blurb="Juego arcade en catalán: mueve la bola, caza estrellas doradas, encadena combos y evita las bombas. El imán atrae las estrellas y el reloj te da más tiempo."),
- 'cq_sopa': dict(kw="sopa de letras en catalán", blurb="Sopa de letras en catalán online: seis palabras de una categoría escondidas en una cuadrícula de 8×8, en horizontal, vertical o diagonal. Tienes 150 segundos para encontrarlas."),
- 'cq_perdudes': dict(kw="juego de letras en catalán", blurb="Juego de letras en catalán: a la palabra le faltan letras y tienes que escribirlas en orden. Tres errores y se revela; veinte segundos por ronda."),
+ "cq_motle": dict(kw="Wordle en catalán", blurb="El Wordle en catalán: adivina la palabra de cinco letras en seis intentos. Verde, en su sitio; amarillo, está pero en otro lugar. Con palabra del día y partidas aleatorias."),
+ "cq_roda": dict(kw="juego de palabras en catalán", blurb="Juego de palabras en catalán tipo crucigrama: une las letras de la rueda con el dedo para formar las palabras que faltan. 300 niveles, cada vez con palabras más largas."),
+ "cq_pronoms": dict(kw="juego de pronombres débiles en catalán", blurb="Juego de pronombres débiles en catalán: el, la, ho, en, hi, li y las combinaciones más traicioneras. Elige el pronombre correcto en cada frase, en diez niveles de fácil a difícil."),
+ "cq_barbarismes": dict(kw="juego de barbarismos en catalán", blurb="Juego de barbarismos en catalán: completa la frase con la forma correcta. Calcos, formas deformadas y expresiones que suenan bien pero no lo son, en diez niveles de dificultad creciente."),
+ "cq_catala": dict(kw="juego de castellanismos en catalán", blurb="Juego de castellanismos en catalán: te damos una palabra mal dicha y eliges la catalana correcta entre tres. Más de 700 palabras en diez niveles."),
+ "cq_accents": dict(kw="juego de acentos en catalán", blurb="Juego de acentos en catalán: una palabra, tres formas de escribirla y solo una es correcta. Pon el acento donde toca, o no lo pongas, en diez niveles de fácil a difícil."),
+ "cq_penjat": dict(kw="ahorcado en catalán", blurb="El juego del ahorcado en catalán y en 3D: elige una categoría y adivina la palabra antes de que se monte el muñeco. Ocho errores y se acaba; la pista te da una letra."),
+ "cq_anagrama": dict(kw="anagramas en catalán", blurb="Juego de anagramas en catalán: las letras caen desordenadas y tienes que ordenarlas para formar la palabra. 60 segundos, 5 más por acierto, y palabras cada vez más largas."),
+ "cq_intrus": dict(kw="juego del intruso en catalán", blurb="Juego del intruso en catalán: cuatro palabras, tres de la misma categoría y una que no encaja. Encuéntrala antes de que se acabe el tiempo y suma puntos dobles con la racha."),
+ "cq_perdudes": dict(kw="juego de letras en catalán", blurb="Juego de letras en catalán: a la palabra le faltan letras y tienes que escribirlas en orden. Tres errores y se revela; diez niveles, cada vez con más huecos."),
+ "cq_sopa": dict(kw="sopa de letras en catalán", blurb="Sopa de letras en catalán: seis palabras de una categoría escondidas en una cuadrícula de 8×8, en horizontal, vertical o diagonal. Arrastra el dedo y encuéntralas todas."),
+ "cq_futbol": dict(kw="quiz de fútbol catalán", blurb="¿Cuánto sabes de fútbol catalán? Diez niveles de preguntas sobre el Barça, el Espanyol y el Girona: trivia, «¿quién es?» por pistas, verdadero o falso y «¿quién nació antes?». En catalán."),
+ "cq_esportistes": dict(kw="quiz de deportistas catalanes", blurb="¿Cuánto sabes de los deportistas catalanes? Setenta campeones de veintitrés deportes: adivina quién es por las pistas, de qué deporte es y quién nació antes, en diez niveles. En catalán."),
 }
 
 CA_CATS = {"cosmico": "Còsmic", "invierno": "Alta Temporada", "entrenos": "Entrenaments", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "puzles": "Trencaclosques", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
@@ -115,7 +118,7 @@ CA_CATD = {"puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: tre
            "historias": {"t": "Històries", "d": "Jocs narratius amb calendari, records i misteri."},
            "marca": {"t": "Amb marca", "d": "Jocs fets a mida per a marques i clients."},
            "relax": {"t": "Relax Games", "d": "Divuit racons per desconnectar: aigua, foc, cel i mar, cadascun amb la seva música generativa. Sense punts, sense pressa i sense perdre."},
-           "catquiz": {"t": "CatQuiz Minijocs", "d": "Minijocs de paraules en català, per jugar i aprendre."}}
+           "catquiz": {"t": "CatQuiz Minijocs", "d": "Minijocs de paraules en català i quizzes de futbol i d'esportistes catalans, per jugar i aprendre."}}
 
 # Textos fijos de la portada: (castellano, catalán). Cada uno debe aparecer en la fuente.
 CA_UI = [

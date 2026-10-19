@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SDE8LXDNP9');
+  // Esdeveniments: inici de partida, tornar a jugar i clic a cada joc des de la portada
+  document.addEventListener('click', function(e){ var b = e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, a.carta'); if (!b) return;
+    var joc = location.pathname.split('/').pop().replace('.html','') || 'index';
+    if (b.matches('a.carta')) gtag('event', 'obrir_joc', { joc: (b.getAttribute('href') || '').split('/').pop().replace('.html','') });
+    else gtag('event', b.id === 'btn-reinici' ? 'tornar_a_jugar' : 'inici_partida', { joc: joc }); });
+</script>
+<script src="../comu.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Roda de paraules · CatQuiz Minijocs</title>
+<link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tile:#5fd068; --tile2:#3fae4b; --title:#0b8a1e; --accent:#62d96b;
+  --sky1:#f4fbf2; --sky2:#cfe8c4; --sky3:#4e7f2d; --hill1:#3d6b24; --hill2:#2b4f17;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#111;font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
+#app{position:fixed;inset:0;display:flex;justify-content:center;background:#111}
+#game{position:relative;width:100%;max-width:520px;height:100%;display:flex;flex-direction:column;overflow:hidden;
+  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 38%,var(--sky3) 100%);transition:background .6s}
+#decor{position:absolute;inset:0;pointer-events:none}
+#decor svg{position:absolute;bottom:0;left:0;width:100%;height:55%}
+#decor .hill1{fill:var(--hill1);transition:fill .6s}
+#decor .hill2{fill:var(--hill2);transition:fill .6s}
+#fade{position:absolute;top:0;left:0;right:0;height:34%;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,0));pointer-events:none}
+#top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 0}
+.pill{background:rgba(255,255,255,.85);border-radius:20px;padding:5px 12px;font-weight:800;color:#444;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.iconbtn{width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.85);font-size:18px;color:#444;box-shadow:0 2px 6px rgba(0,0,0,.15);cursor:pointer}
+#title{position:relative;z-index:2;text-align:center;font-weight:900;font-size:clamp(26px,8vw,40px);line-height:1.05;color:var(--title);margin:6px 10px 0;letter-spacing:.5px;text-transform:uppercase;transition:color .6s;text-shadow:0 1px 0 rgba(255,255,255,.5)}
+#gridArea{position:relative;z-index:2;flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:6px 10px}
+#grid{display:grid;gap:4px}
+.cell{border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;
+  background:rgba(255,255,255,.55);box-shadow:0 2px 3px rgba(0,0,0,.18),inset 0 0 0 1px rgba(255,255,255,.5);transition:background .25s}
+.cell.on{background:linear-gradient(180deg,var(--tile),var(--tile2));text-shadow:0 2px 3px rgba(0,0,0,.3)}
+.cell.pop{animation:pop .45s ease}
+.cell.target{outline:3px dashed #fff;animation:blink .8s infinite}
+@keyframes pop{0%{transform:scale(.3);filter:brightness(2)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes blink{50%{opacity:.5}}
+#preview{position:relative;z-index:2;height:44px;display:flex;align-items:center;justify-content:center}
+#word{min-width:90px;padding:4px 26px;border-radius:6px;background:rgba(255,255,255,.88);font-weight:900;letter-spacing:5px;color:#555;font-size:22px;text-align:center;opacity:0;transform:scale(.8);transition:all .15s;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+#word.show{opacity:1;transform:scale(1)}
+#word.ok{background:var(--tile);color:#fff}
+#word.bad{background:#e66;color:#fff;animation:shake .35s}
+#word.bonus{background:#ffc83d;color:#fff}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#bottom{position:relative;z-index:2;flex-shrink:0;width:100%;height:min(82vw,350px);margin-bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;align-items:center;justify-content:center}
+#wheel{position:relative;width:min(70vw,300px);height:min(70vw,300px);border-radius:50%;background:rgba(244,244,240,.94);box-shadow:0 6px 18px rgba(0,0,0,.3);touch-action:none;margin-top:0}
+#ring{position:absolute;inset:-14px;border-radius:50%;border:2px solid rgba(255,255,255,.7);pointer-events:none}
+#lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.letter{position:absolute;width:21%;height:21%;margin:-10.5% 0 0 -10.5%;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:clamp(26px,9vw,40px);color:#444;transition:left .45s,top .45s,background .12s,color .12s;pointer-events:none}
+.letter.sel{background:var(--tile);color:#fff}
+#shuffle{position:absolute;left:50%;top:50%;width:15%;height:15%;transform:translate(-50%,-50%);border-radius:50%;border:0;background:rgba(0,0,0,.06);font-size:22px;color:#777;cursor:pointer;z-index:3}
+.side{position:absolute;z-index:3;width:56px;height:56px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#4f7686,#1f4150);color:#fff;font-size:26px;box-shadow:0 3px 8px rgba(0,0,0,.35);cursor:pointer}
+.side small{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);background:#f2f2ee;color:#444;font-size:12px;font-weight:900;padding:1px 8px;border-radius:3px;white-space:nowrap}
+#hintBtn{right:14px;top:4px}
+#targetBtn{left:14px;top:4px}
+#bonusBtn{left:14px;bottom:16px;font-size:22px}
+.side.active{box-shadow:0 0 0 4px #ffe36a,0 3px 8px rgba(0,0,0,.35)}
+#toast{position:absolute;z-index:6;left:50%;top:22%;transform:translate(-50%,-10px);background:rgba(0,0,0,.75);color:#fff;padding:8px 16px;border-radius:18px;font-weight:700;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.overlay{position:absolute;inset:0;z-index:10;background:rgba(10,20,10,.72);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;color:#fff;padding:24px}
+.overlay.show{display:flex}
+.overlay h1{margin:0 0 6px;font-size:36px;font-weight:900;letter-spacing:1px}
+.overlay p{margin:6px 0 18px;font-size:17px;opacity:.9;max-width:320px}
+.big{border:0;border-radius:30px;padding:14px 38px;font-size:20px;font-weight:900;color:#fff;background:linear-gradient(180deg,var(--tile),var(--tile2));box-shadow:0 5px 0 rgba(0,0,0,.25);cursor:pointer}
+.bonuslist{max-height:55%;overflow:auto;background:rgba(255,255,255,.95);color:#333;border-radius:14px;padding:14px 18px;font-weight:800;line-height:1.7;max-width:340px}
+.bonuslist span{display:inline-block;margin:2px 4px;padding:0 8px;border-radius:6px;background:#eee}
+.bonuslist span.got{background:var(--tile);color:#fff}
+.confetti{position:absolute;top:-20px;width:10px;height:14px;z-index:11;animation:fall 2s linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* ===== TEMA NEÓ CatQuiz ===== */
+html,body{background:linear-gradient(170deg,#4A2FB5 0%,#2E2080 45%,#1A1650 100%)!important;font-family:'Roboto',system-ui,sans-serif!important}
+#app{background:transparent!important}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0 1.5px,transparent 2px),radial-gradient(circle at 72% 12%,rgba(255,255,255,.8) 0 1.2px,transparent 2px),radial-gradient(circle at 88% 64%,rgba(255,255,255,.7) 0 1.6px,transparent 2.2px),radial-gradient(circle at 34% 78%,rgba(255,255,255,.75) 0 1.2px,transparent 2px),radial-gradient(circle at 8% 60%,rgba(255,255,255,.6) 0 1.3px,transparent 2px),radial-gradient(circle at 92% 30%,rgba(255,255,255,.5) 0 1px,transparent 1.6px)}
+#game{background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 55%,var(--sky3) 100%)!important}
+#fade{display:none}
+#decor .hill1,#decor .hill2{opacity:.55}
+.cubs i{position:absolute;border-radius:18%;opacity:.16;animation:surac 9s ease-in-out infinite alternate}
+@keyframes surac{to{transform:translateY(-30px) rotate(40deg)}}
+.pill{background:rgba(24,20,70,.55)!important;color:#fff!important;border:1.5px solid rgba(150,170,255,.45);box-shadow:0 0 18px rgba(120,160,255,.45),inset 0 1px 0 rgba(255,255,255,.18)!important;font-weight:700!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);min-height:40px;display:inline-flex;align-items:center;padding:0 14px!important}
+#coins{color:#FFD24A!important}
+.iconbtn{background:rgba(24,20,70,.55)!important;color:#fff!important;border:1.5px solid rgba(150,170,255,.45)!important;box-shadow:0 0 18px rgba(120,160,255,.45)!important;width:44px!important;height:44px!important;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+#title{color:#fff!important;font-weight:900!important;text-shadow:0 0 14px rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35)!important;letter-spacing:.04em}
+.cell{background:rgba(255,255,255,.12)!important;box-shadow:0 3px 0 rgba(0,0,0,.3),inset 0 0 0 1.5px rgba(150,170,255,.45)!important}
+.cell.on{background:linear-gradient(180deg,var(--tile),var(--tile2))!important;box-shadow:0 3px 0 rgba(0,0,0,.3),0 0 14px var(--tile)!important}
+#word{background:rgba(24,20,70,.75)!important;color:#fff!important;border:1.5px solid rgba(150,170,255,.45);box-shadow:0 0 18px rgba(120,160,255,.45)!important}
+#word.ok{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important}
+#word.bad{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important}
+#word.bonus{background:linear-gradient(180deg,#FFD866,#F0A81A)!important;color:#2A1B00!important}
+#wheel{background:radial-gradient(circle at 50% 40%,rgba(80,60,180,.92),rgba(26,22,80,.96))!important;border:1.5px solid rgba(150,170,255,.5);box-shadow:0 0 40px rgba(120,160,255,.45),0 12px 30px rgba(0,0,0,.45)!important}
+#ring{border-color:rgba(150,170,255,.35)!important}
+.letter{color:#fff!important;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.letter.sel{background:linear-gradient(180deg,var(--tile),var(--tile2))!important;box-shadow:0 0 18px var(--tile)}
+#shuffle{background:rgba(255,255,255,.1)!important;color:#fff!important}
+.side{background:radial-gradient(circle at 35% 30%,#A06BFF,#5A35C8)!important;border:2px solid rgba(255,255,255,.5)!important;box-shadow:0 4px 0 #3A2090,0 0 18px rgba(160,107,255,.55)!important}
+.side small{background:#FFD24A!important;color:#2A1B00!important;border-radius:999px!important}
+.overlay{background:radial-gradient(circle at 50% 30%,rgba(120,90,255,.35),rgba(20,16,60,.9))!important}
+.overlay h1{font-weight:900;text-transform:uppercase;letter-spacing:.04em;text-shadow:0 0 14px rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35)}
+.overlay p{color:#D9D6FF}
+.caixa{background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.96));border:1.5px solid rgba(150,170,255,.45);border-radius:28px;box-shadow:0 0 40px rgba(110,140,255,.35),0 20px 40px rgba(0,0,0,.45);padding:26px 22px;max-width:360px;display:flex;flex-direction:column;align-items:center}
+.big{font-family:'Roboto',sans-serif;letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;border:3px solid rgba(255,255,255,.55)!important;box-shadow:0 6px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important;text-shadow:0 2px 0 rgba(0,0,0,.3);min-height:52px}
+.big:active{transform:translateY(5px);box-shadow:0 1px 0 #1E7F2C!important}
+.bonuslist{background:rgba(24,20,70,.75)!important;color:#fff!important;border:1.5px solid rgba(150,170,255,.45)}
+.bonuslist span{background:rgba(255,255,255,.12)!important}
+.bonuslist span.got{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important}
+#toast{background:rgba(24,20,70,.9)!important;border:1.5px solid rgba(150,170,255,.45)}
+.blocs{display:flex;gap:5px;justify-content:center;margin-bottom:14px}
+.blocs b{width:34px;height:38px;display:grid;place-items:center;border-radius:8px;font-size:20px;font-weight:900;color:#fff;background:var(--c);box-shadow:inset 0 -4px 0 rgba(0,0,0,.22),0 4px 0 rgba(0,0,0,.3),0 0 16px var(--c)}
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="game">
+  <div id="decor"><div class="cubs"><i style="left:8%;top:12%;width:46px;height:46px;background:#FF4FD8"></i><i style="right:10%;top:20%;width:34px;height:34px;background:#38E8FF;animation-delay:-3s"></i><i style="left:16%;top:46%;width:26px;height:26px;background:#FFD24A;animation-delay:-5s"></i><i style="right:18%;top:52%;width:52px;height:52px;background:#4EE06A;animation-delay:-2s"></i></div>
+   <svg viewBox="0 0 400 300" preserveAspectRatio="none">
+     <path class="hill2" d="M0 140 L70 70 L120 110 L190 30 L260 120 L320 80 L400 150 L400 300 L0 300Z"/>
+     <path class="hill1" d="M0 210 Q100 130 200 200 T400 190 L400 300 L0 300Z"/>
+   </svg>
+  </div>
+  <div id="fade"></div>
+  <div id="top">
+    <div style="display:flex;gap:8px;align-items:center"><a class="iconbtn" id="tornar" href="../index.html" title="Torna a CatQuiz">←</a><div class="pill" id="lvl">Nivell 1</div></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="pill" id="coins">🪙 150</div>
+      <button class="iconbtn" id="btn-musica" title="So">🔊</button><button class="iconbtn" id="fsBtn" title="Pantalla completa" aria-label="Pantalla completa"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </div>
+  <div id="title">DESAFIA EL TEU CERVELL</div>
+  <div id="gridArea"><div id="grid"></div></div>
+  <div id="preview"><div id="word"></div></div>
+  <div id="bottom">
+    <button class="side" id="targetBtn" title="Revela una casella">🎯<small id="targetCost">50</small></button>
+    <button class="side" id="hintBtn" title="Pista">💡<small id="hintCost">30</small></button>
+    <button class="side" id="bonusBtn" title="Paraules extra">⭐<small id="bonusCount">0</small></button>
+    <div id="wheel">
+      <div id="ring"></div>
+      <svg id="lines"></svg>
+      <button id="shuffle" title="Barreja">⟳</button>
+    </div>
+  </div>
+  <div id="toast"></div>
+
+  <div class="overlay show" id="startOv"><div class="caixa">
+    <div class="blocs"><b style="--c:#FF4F6D">R</b><b style="--c:#FF9A2E">O</b><b style="--c:#E8B400">D</b><b style="--c:#2FC04E">A</b></div>
+    <h1>Roda de paraules</h1>
+    <p>Uneix les lletres amb el dit i forma les paraules que falten al mot encreuat. Els accents no compten. 300 nivells, cada cop més llargs.</p>
+    <button class="big" id="playBtn">Juga</button></div>
+  </div>
+  <div class="overlay" id="winOv">
+    <h1>Nivell superat!</h1>
+    <p id="winMsg"></p>
+    <button class="big" id="nextBtn">Següent</button>
+    <button class="big" id="shareBtn" style="margin-top:14px;background:linear-gradient(180deg,#FFB24A,#F0781A)!important;box-shadow:0 6px 0 #A64E0E,0 0 22px rgba(255,160,60,.5)!important">📤 Comparteix</button>
+  </div>
+  <div class="overlay" id="bonusOv">
+    <h1 style="font-size:26px">Paraules extra</h1>
+    <p>Cada paraula vàlida que no és al tauler et dona 5 monedes.</p>
+    <div class="bonuslist" id="bonusList"></div>
+    <p></p>
+    <button class="big" id="closeBonus">Tanca</button>
+  </div>
+ </div>
+</div>
+
+<script>
+(()=>{
+"use strict";
+/* ---------- Niveles ---------- */
+const THEMES=[
+ {title:"Desafia el teu cervell",theme:{tile:"#4EE06A",tile2:"#2FB03C",title:"#fff",sky:["#4A2FB5","#2E2080","#1A1650"],hill:["#3A2A90","#241A68"]}},
+ {title:"Amplia el vocabulari",theme:{tile:"#FFB24A",tile2:"#F0781A",title:"#fff",sky:["#5A2FA5","#33207A","#1C1450"],hill:["#4A2A88","#2A1A60"]}},
+ {title:"Entrena la ment",theme:{tile:"#38E8FF",tile2:"#1FA8D6",title:"#fff",sky:["#2F3FB5","#20288A","#141A50"],hill:["#2A3290","#1A2068"]}},
+ {title:"Pensa ràpid",theme:{tile:"#FF6BB0",tile2:"#E0298A",title:"#fff",sky:["#6A2FA5","#40207A","#221450"],hill:["#5A2A88","#341A60"]}},
+ {title:"Esmola l'enginy",theme:{tile:"#A06BFF",tile2:"#6A3FD8",title:"#fff",sky:["#3A2FB5","#26208A","#161450"],hill:["#3A2A98","#221A68"]}},
+ {title:"Desperta la ment",theme:{tile:"#FFD24A",tile2:"#E0A81A",title:"#fff",sky:["#4A2FB5","#2E2080","#1A1650"],hill:["#3A2A90","#241A68"]}},
+ {title:"Supera el repte",theme:{tile:"#4EE0B0",tile2:"#1FB088",title:"#fff",sky:["#2F4AB5","#203080","#141E50"],hill:["#2A3A90","#1A2468"]}},
+ {title:"Mestre de paraules",theme:{tile:"#FF6B8A",tile2:"#E0294F",title:"#fff",sky:["#5A2F95","#38206A","#1E1446"],hill:["#4A2A78","#2C1A58"]}}
+];
+const DATA=[{"l":"OEPR","g":["PERO","POR","REP"],"b":["PER","PRO","PEO","POE"]},{"l":"OLTM","g":["MOLT","TOM","MOT"],"b":["LOT","MOL"]},{"l":"NASY","g":["ANYS","ANY","NAS"],"b":[]},{"l":"OXAI","g":["AIXO","XAI","OIX"],"b":["XIA"]},{"l":"TTOS","g":["TOTS","TOT","TOS"],"b":["SOT","TOST"]},{"l":"ANGR","g":["GRAN","RANG","GRA"],"b":["RAN","ARN"]},{"l":"ATRP","g":["PART","PRAT","ART"],"b":["PAR","RAP","TAP","RAT","TAR"]},{"l":"TGNE","g":["GENT","NET","GEN"],"b":[]},{"l":"IXAI","g":["AIXI","XAI","XIA"],"b":[]},{"l":"LCOL","g":["LLOC","COLL","COL"],"b":[]},{"l":"TTAN","g":["TANT","TAN","NAT"],"b":["ANT","TAT"]},{"l":"GAIV","g":["VAIG","VAGI","VIA"],"b":["AVI","GAI"]},{"l":"ADVI","g":["VIDA","DIA","VIA"],"b":["AVI","DIVA"]},{"l":"RSTE","g":["TRES","SER","RES"],"b":["ETS","SET","EST","RET","TES","REST"]},{"l":"ASIP","g":["PAIS","PAS","SAP"],"b":["PIS","SIA","PIA","API","PISA","SIP"]},{"l":"CASA","g":["CASA","CAS","SAC"],"b":[]},{"l":"NAOV","g":["NOVA","VAN","ONA"],"b":[]},{"l":"SDIE","g":["DIES","DEIS","DESI"],"b":["DES"]},{"l":"IAUV","g":["AVUI","VIU","VIA"],"b":["AVI","VAU"]},{"l":"AONB","g":["BONA","BON","ONA"],"b":["BAN","BOA"]},{"l":"TMABE","g":["TAMBE","TEMA","META","MAT","BAT","TEM"],"b":["AMB","BETA","MET","MATE","TAM"]},{"l":"TSAET","g":["ESTAT","ATES","TEST","TAST","ETS","SET"],"b":["ESTA","EST","ASE","TES","AST","TAT","TAS"]},{"l":"REETN","g":["ENTRE","ETERN","EREN","TREN","NET","RET"],"b":["REN","RETE","ETER"]},{"l":"OSMNE","g":["NOMES","NOMS","ONES","MON","SOM","NOM"],"b":["MES","ENS","SON","NOS","MONS","MOS","SEM","MONES","NEO"]},{"l":"HIAVA","g":["HAVIA","AVIA","VIA","AVI"],"b":[]},{"l":"TEMPS","g":["TEMPS","ETS","SET","PES","TEM","MET"],"b":["MES","EST","SEM","TES"]},{"l":"INERT","g":["TENIR","TREN","NIT","REI","NET","TIR"],"b":["ENTRI","RIENT","TRIEN","RET","TIREN","REN","TIN","TRI","INERT"]},{"l":"NBASA","g":["ABANS","BASA","SANA","NAS","BAS","BAN"],"b":["SABA"]},{"l":"ETSAN","g":["ESTAN","SANT","TENS","SENT","TAN","ETS"],"b":["ENS","ESTA","SET","EST","ATES","NET","SENAT","NAS","NETA","NETS","SENA","ANES","NAT","ASE","ATEN","TENSA","TES","ANT","SENTA","AST","TAS"]},{"l":"EROPD","g":["PODER","PERDO","PERO","POR","REP","PRO"],"b":["PER","PERD","PODRE","ORDE","PEO","POE"]},{"l":"NESDO","g":["DONES","ONES","DONS","DENS","DOS","DON"],"b":["ENS","SON","DES","NOS","NODES","NODE","NEO"]},{"l":"ERATL","g":["ALTRE","RELAT","REAL","TAL","ART","ALT"],"b":["ERA","TELA","ALE","RET","RAL","ELA","LAT","REL","RAT","LAR","ALTER","ALERT","ALER","REA","TAR"]},{"l":"NDORA","g":["DONAR","RONDA","DONA","NORD","RODA","RAO"],"b":["DON","NADO","ONA","NORA","ONDA","ODA","DRON","RAN","ORA","RAND","ARN"]},{"l":"TNMIE","g":["TENIM","MENT","MITE","NIT","NET","MIN"],"b":["TEM","MET","TIN","MINE"]},{"l":"AATRL","g":["ALTRA","ALTA","ARA","TAL","ART","ALT"],"b":["ALA","ALTAR","RATA","TARA","RAL","LAT","TALA","RAT","LAR","TAR"]},{"l":"FOARM","g":["FORMA","FORA","AMOR","MAR","RAO","MOR"],"b":["FAM","AMO","MORA","FAR","RAM","ROM","FRA","MOFA","ORA","FORM","AFRO"]},{"l":"EDPNO","g":["PODEN","DON","PEN","PEO","POE","PON"],"b":["NODE","NEO"]},{"l":"LPBEO","g":["POBLE","PLE","POL","BEL","BOL","PEO"],"b":["PEL","POE"]},{"l":"EANIT","g":["TENIA","EINA","NETA","TAN","NIT","NET"],"b":["TIA","ANIT","ETNIA","NAT","TINA","ATEN","TAI","TIN","ANT","NIA"]},{"l":"OECSS","g":["COSES","SECS","COS","SOC","SEC","ECO"],"b":["SES","ESCO","CES","ECOS"]},{"l":"FEAIN","g":["FEINA","FEIA","EINA","FINA","FAN","FAI"],"b":["AFI","NIA","FEN","FIA"]},{"l":"EMSHO","g":["HOMES","HOME","HEM","SOM","HOM","MOS"],"b":["MES","SEM"]},{"l":"OACDR","g":["ACORD","ROCA","RODA","RAO","COR","CAR"],"b":["ARC","CORDA","DRAC","RACO","ROC","ODA","CARO","OCA","CORA","ORA","RAC","CARD","COA","ARCO"]},{"l":"STEME","g":["ESTEM","TEMES","EMET","EMES","ETS","SET"],"b":["MES","EST","SETE","TEM","MET","SEM","TES","METES"]},{"l":"NLAIF","g":["FINAL","FINA","FILA","FAN","FIL","FAI"],"b":["AFI","NIA","FIA"]},{"l":"QPIUE","g":["EQUIP","PIQUE","QUI","PEU","PIU"],"b":["QUE"]},{"l":"RNASG","g":["GRANS","GRAN","SANG","GAS","NAS","GRA"],"b":["RAS","GRAS","RANG","RAN","RANGS","ARN"]},{"l":"PUITS","g":["TIPUS","PIUS","PIS","TIP","PIU","TUS"],"b":["PUT","SIP","PUS","TIPS","SIT"]},{"l":"CITSE","g":["ESTIC","TESI","ETS","SET","SEC","TIC"],"b":["EST","CITES","ETIC","ICS","SIC","CIS","TIES","TES","ETICS","TICS","TEC","CES","SIT","CIT"]},{"l":"HESRO","g":["HORES","SER","RES","ROS","SOR","ORS"],"b":["EROS"]},{"l":"IUAQN","g":["QUINA","QUAN","AQUI","QUIN","QUI","NAU"],"b":["UNA","NIU","NIA","UNIA"]},{"l":"FROAÇ","g":["FORÇA","FORA","RAO","FAR","FRA","ORA"],"b":["AFRO"]},{"l":"ALSUQ","g":["QUALS","QUAL","SAL","USA","AUS","SUA"],"b":["ALS","LAS"]},{"l":"ETARR","g":["TERRA","ERRAT","ART","RAR","RET","RAT"],"b":["ERA","REA","ERRA","TAR"]},{"l":"SEOMS","g":["MESOS","SOM","MOS","SEM"],"b":["MES","SES"]},{"l":"ILRAB","g":["ABRIL","RIBA","BAR","IRA","RAI","RAL"],"b":["RIA","LIRA","LAR","ARI","BRI","RABI","BAI","ALBI","BARI"]},{"l":"IAVNC","g":["CANVI","VINC","VAN","VIA","AVI","NIA"],"b":["ACI","CAN"]},{"l":"ERSBA","g":["SABER","SERA","BASE","SER","RES","BAR"],"b":["ERA","BARS","RAS","BAS","ASE","RESA","BES","SABRE","BESAR","ARES","BESA","REA"]},{"l":"GUANL","g":["ALGUN","ALGU","GUAL","NAU","GAL","NUL"],"b":["UNA","UNGLA","ANUL"]},{"l":"PÇAAL","g":["PLAÇA","ALÇA","PLA","PAL","ALA","APA"],"b":["PALA"]},{"l":"AANREC","g":["ENCARA","ANAR","CARA","AREA","CARN","CREA","ARA","CAR"],"b":["ERA","CAN","ARC","ACER","ARENA","REC","ANEC","CERA","ARCA","CARENA","REN","RAN","RAC","REA","ARNE","ARN","CRANE","CENA"]},{"l":"DANTUR","g":["DURANT","TARD","RUTA","DURA","TAN","ART","DUR","NAU"],"b":["UNA","ATUR","DUT","DURAN","RAU","DUTA","RUA","NAT","DURAT","URNA","RUNA","DAU","RAT","RAN","ANT","DUNA","TRAU","TAU","TUR","RAND","DAT","ARN","TAR"]},{"l":"TAROCN","g":["CONTRA","TORNA","TOCAR","NOTA","TAN","ART","RAO","COR"],"b":["CAN","ROCA","TOCA","CARN","TORN","CAR","ARC","TOC","ACTOR","CORT","CANT","TRON","RACO","CANTO","CANO","CONTAR","ONA","ROC","NOTAR","RATO","CONTA","TRO","TRONC","TANC","TONA","CROAT","NAT","TON","TAC","ROTA","COTA","NORA","CARO","OCA","TANCO","RAT","TORA","RAN","TRONA","ANT"]},{"l":"REPIRM","g":["PRIMER","PREMI","PRIM","EMIR","MIRE","REI","REP","REM"],"b":["PER","PRIME","PREM","ERM"]},{"l":"ETAMXI","g":["MATEIX","MATI","EXIT","TEMA","TAXI","EIXA","MAI","EIX"],"b":["TIA","MITE","META","MAT","MIXT","TEM","XAI","MIA","XAT","MIXTA","MATX","MET","AMI","TAI","MATE","TEMIA","METXA","TAM","XIA","EIXAM"]},{"l":"NEARMA","g":["MANERA","ANAR","MARE","ANEM","MENA","AREA","ARA","MAR"],"b":["ERA","ARMA","MAREA","MANA","ARENA","RAM","MANAR","MERA","ANAM","REM","AMAR","AMER","RAMA","REN","ARAM","AMEN","RAN","MARA","AMA","ERM","REA","ANAREM","ARNE","ARN"]},{"l":"GRVNOE","g":["GOVERN","NEGO","NOVE","VEN","GEN","EGO","REG","REN"],"b":["NEO"]},{"l":"UTIATC","g":["CIUTAT","ACTIU","CITA","TUIT","CAU","CUA","TIC","TIA"],"b":["ACI","CITAT","CUITA","TAC","ACTUI","ATIC","TAI","ACUT","TAUT","CUIT","TAU","TACIT","TAT","CIT"]},{"l":"LLMOIR","g":["MILLOR","MOLI","MOLL","MIRO","MIL","OLI","MOR","ROL"],"b":["MORI","ROM","MOL","LLI","LLOM","MILL"]},{"l":"ESMPRE","g":["SEMPRE","PERMES","SEREM","PRES","SER","RES","REP","PES"],"b":["PER","MES","ERES","EREM","SERE","EMES","SERP","SEM","REM","PERES","ESPER","EMPES","REPS","PREM","REMS","ERM","ERMS","EMPRES","RESEM","PERS"]},{"l":"SEGOSN","g":["SEGONS","SEGON","GENS","SENS","SONS","ONES","GOS","GEN"],"b":["ENS","SON","NOS","SES","EGO","NEGO","GOSEN","GES","EGOS","NEO"]},{"l":"TRPTIA","g":["PARTIT","PATIR","PATIT","PART","PATI","PRAT","TRIA","ART"],"b":["TRIAT","IRA","TIR","TIRA","PAR","TIA","RAP","TIRAT","RAI","TRAIT","TAP","TIP","PARI","PIA","TAI","RIA","PARIT","PITA","RAT","PAIR","API","ARI","TRI","ATRI","TAT","PIRA","TAR"]},{"l":"VNAADT","g":["DAVANT","AVANT","DATA","ANAT","NATA","VAN","TAN","NAT"],"b":["ANT","TANDA","DAT"]},{"l":"OTRPSU","g":["SUPORT","PROU","POTS","SORT","PORT","POT","POR","SOU"],"b":["SURT","RUS","POST","OUS","PRO","TROS","POU","TURO","PUR","PORTS","ROS","TOP","STOP","SURTO","POUS","TRO","SURO","OPUS","PORS","SUOR","TOS","TOU","TOUS","SOR","TORS","ORS","TUS","PURS","PUT","USO","POS","SOT","PROS","PUS","TUR","PORUS"]},{"l":"SBAMEL","g":["SEMBLA","SABEM","MALES","BASE","LEMA","MAL","MAS","SAL"],"b":["LES","ELS","AMB","MES","ALS","LAS","ALES","MEL","BALES","MALS","MESA","BEL","SALEM","ALE","MALBE","BAS","ASE","SEM","ELA","BES","ELM","BESA","SALE","BELA","AMES","SALM","LESA","MELSA"]},{"l":"ABROTR","g":["TROBAR","TROBA","ROBAR","OBRA","ROBA","ART","RAO","BAR"],"b":["ROBAT","RATO","BOT","TORRA","BROT","BARO","BAT","TRO","BOTA","RAR","ROTA","ROB","RAT","TORA","TAO","ORA","TROB","TARO","BOA","BOR","BOTAR","TAR"]},{"l":"TCNEER","g":["CENTRE","RECENT","ENTRE","EREN","CERT","CENT","TREN","NET"],"b":["CREEN","TENC","RECTE","ETERN","REC","TREC","ENCERT","RET","TRENC","REN","TEC","RETE","CREE","ETER"]},{"l":"IUAHAR","g":["HAURIA","HAURA","AHIR","ARA","RIU","HUI","IRA","RAU"],"b":["RAI","RUA","ARIA","RIA","ARI","AURA"]},{"l":"ALCEOS","g":["ESCOLA","COSA","SOLA","CAS","SOL","COS","SOC","CEL"],"b":["LES","ELS","ALS","CAL","LAS","COL","SALO","SAL","SEC","ALES","OCEA","SECA","SAC","COLA","CAOS","ECO","OSCA","CELS","ESCO","ALE","ASE","CASO","CALES","CLOS","COLS","ELA","SOCA","OCA","SOLC","SALE","CES","COA","CLOSA","CELA","CASE","ECOS","LAC","LESA"]},{"l":"UEQTRA","g":["QUATRE","QUART","RUTA","TEUA","TREU","ATUR","ART","RAU"],"b":["QUE","ERA","TEU","RUA","RET","UTER","RAT","ATREU","QUER","ATEU","TRAU","TAU","TUR","REA","TAR"]},{"l":"VAETAS","g":["ESTAVA","ATES","ETS","SET","VAS","VES","VET","ASE"],"b":["SEVA","ESTA","TEVA","EST","ATESA","VAST","TES","ASTA","AVET","AST","VETA","VESTA","TAS","VASTA"]},{"l":"BUCPLI","g":["PUBLIC","CLUB","CLIP","PUC","PIC","PUB","CUB","BUC"],"b":["PIU"]},{"l":"CPEOTM","g":["COMPTE","COMTE","COM","POT","COP","POC","TOC","TOM"],"b":["PETO","MOT","TOP","TEMO","ECO","TEM","COET","MET","COMET","PEO","COME","CEP","COPE","POE","TEMPO","MOC","TEC","TOPE","POM","MEC"]},{"l":"EDIRAX","g":["DEIXAR","DEIXA","IDEA","DEIA","AIRE","DIA","DIR","REI"],"b":["ERA","EIX","EIXA","IRA","AERI","DIRA","DIRE","RAI","RADI","XAI","REIA","DEA","RIA","REIXA","ARI","IDEAR","DEIX","REID","ARID","RAID","DERIA","REA","XIA"]},{"l":"LAUGNA","g":["ALGUNA","ALGUN","ANUAL","ALGU","GANA","AULA","NAU","ALA"],"b":["UNA","GALA","GAL","NUL","GUAL","ANAL","UNGLA","ANUL","ANAU"]},{"l":"IRLELB","g":["LLIBRE","LLEI","BELL","REBI","ELL","REI","BEL","LLI"],"b":["REL","BRI","IBER","EBRI","BEI"]},{"l":"EIESRV","g":["SERVEI","SERIE","VIES","REIS","VERS","SER","RES","REI"],"b":["VEI","ERES","VES","SERE","REVES","VERES","VERI","VIS","SEVER","VEIES","VEIE","IVES","RIES","VIE","SERVI","RESI"]},{"l":"IADOPR","g":["PODRIA","PODIA","RADIO","RAPID","DIA","DIR","POR","RAO"],"b":["ODI","PODRA","PRO","RODA","IRA","PAIO","DIRA","PAR","RAP","ODIA","ODIAR","RAI","DRAP","RADI","PADRI","OIDA","PODI","PARI","PROA","IDO","ODA","PIA","PADRO","OPI","RIA","PARO","ORDI","PAIR","API","ARI","ORA","ARID","RAID","PIRA"]},{"l":"SOSIAP","g":["PAISOS","PAIS","POSA","SAPS","PAS","SIS","SAP","PIS"],"b":["PASSI","PISOS","PASSIO","POSI","SOPA","PAIO","PASSO","SIA","PIA","OASI","OSSIA","OPI","POSIS","API","PISA","SIP","POS","PAIOS","OASIS","SOSA","ASOS"]},{"l":"IEIOCD","g":["EDICIO","CODI","DIC","ODI","ECO","OCI","DEC","IDO"],"b":["IODE","ODIE"]},{"l":"GIAMET","g":["IMATGE","MAIG","MATI","TEMA","MAI","MIG","GAI","GAT"],"b":["TIA","MITE","META","MAT","MAG","TEM","MIA","MEGA","MAGI","MET","AMI","TAI","MATE","TEMIA","TAM"]},{"l":"HVNEIA","g":["HAVIEN","ENVIA","VINE","EINA","VAN","HAN","VIA","AVI"],"b":["VEIA","VEI","VEN","VENIA","VEINA","VENA","NIA","NEVA","NEVI","VIE"]},{"l":"SALTIL","g":["LLISTA","ILLA","LLIT","SALT","ALTS","TAL","ALT","SAL"],"b":["ALS","LAS","ALL","TALL","LLATI","TALLS","TIA","ASIL","TALS","LLITS","SIA","LILA","TIL","LLI","ALLS","TAI","LLIS","LAT","LLISA","LLAST","AST","LLA","TALLI","SIT","TAS"]},{"l":"RELUIL","g":["LLIURE","LLEI","LLUR","LLEU","ELL","REI","RIU","ULL"],"b":["LLUIR","LLI","RULL","REL","LLU","RIEU"]},{"l":"CALATU","g":["ACTUAL","TAULA","ALTA","ATAC","CLAU","TAL","ALT","CAU"],"b":["CAL","CUA","AULA","ACTUA","ALA","ACTA","CALA","TACA","TAC","CALAT","ACUT","LAT","TALA","CULTA","AUCA","TAU","LAC","LACA"]},{"l":"VLELIN","g":["NIVELL","LLEI","VINE","VELL","ELL","VEI","VEN","VEL"],"b":["LLI","VIL","LEV","NEVI","VIE"]},{"l":"STUIMN","g":["MINUTS","UNITS","MINUT","UNIT","MUNT","NITS","NIT","MIN"],"b":["UNS","NIU","MUT","UNIM","NIUS","MIS","TUS","TIN","MUNTS","MUTS","SUM","SIT"]},{"l":"IESRGU","g":["SEGUIR","SEGUR","GREU","SER","RES","REI","RIU","RUS"],"b":["SEU","REUS","REIS","RIUS","GREUS","GRIS","GIR","GUIES","REG","REIG","SEGUI","SUE","GIRES","GIRS","GRES","GIREU","RIES","USE","GES","RIEU","GRUES","RESI"]},{"l":"RBONME","g":["NOMBRE","MENOR","OBRE","MON","BON","BEN","NOM","MOR"],"b":["MOREN","OBREN","RENOM","BORN","ROBEN","ROM","REBO","REM","REN","ROB","MONER","ERM","BOR","NEO"]},{"l":"RISTOR","g":["SORTIR","SORT","TROS","TRIO","TIR","ROS","TRO","TOS"],"b":["TIRS","SOR","SORTI","TORS","TIRO","ORS","TRI","SOT","TORI","SIT","ORRIS"]},{"l":"LGIERL","g":["LLEGIR","LLEIG","LLEI","ELL","REI","GEL","GIR","REG"],"b":["REIG","LLI","REL","LLIG","GELI"]},{"l":"ADUREQ","g":["QUEDAR","QUADRE","QUEDA","DURA","ADEU","DEU","DUR","RAU"],"b":["QUE","ERA","RUA","DEA","DAU","QUER","REA","RUDE"]},{"l":"CTAPOM","g":["TAMPOC","CAMP","COPA","COM","CAP","POT","COP","POC"],"b":["COMPTA","POCA","TOCA","TOC","TOM","AMO","MOT","COMA","TOP","MACO","PAM","POMA","MATO","MAT","POTA","TAC","TAP","COTA","OCA","MOTA","OPTA","ATOM","CAMPO","MOC","TAO","CAPO","TAM","POM","TOPA","COA","TOMA"]},{"l":"IVTONS","g":["SOVINT","SINO","VIST","VOTS","VINT","NOIS","NIT","VOS"],"b":["SON","NOS","NOI","VOT","NITS","VINS","TON","TONS","TOS","SONI","VIS","VOTI","IONS","TIN","SOT","NOTI","VOTIN","SIT","OVI"]},{"l":"LBOUFT","g":["FUTBOL","FOU","BOU","BOT","TUB","LOT","BOL","TOU"],"b":["BUFO","BUF","TOFU"]},{"l":"MAJENR","g":["MENJAR","MENJA","MARE","ANEM","MENA","MERA","MAR","RAM"],"b":["ERA","REM","AMER","REN","AMEN","RAN","ERM","JANER","REA","ARNE","ARN"]},{"l":"SCEALS","g":["CLASSE","CASES","SALES","ALES","CAS","CEL","SAL","SEC"],"b":["LES","ELS","ALS","CAL","LAS","SECA","SAC","SES","SECS","CELS","ALE","ESCAS","ASE","SACS","CALES","ELA","SALS","SALE","CES","ASES","CELA","CASE","CESSA","LAC","LESA","ESSA"]},{"l":"EAITPT","g":["PETITA","PIETAT","PETIT","PATIT","TIETA","PATI","TIA","TAP"],"b":["TIP","PIA","APTE","TAI","PITA","API","TIET","PETA","PETI","TAT"]},{"l":"TEISUD","g":["ESTUDI","ESTIU","DIES","DUES","DIU","DIT","DEU","ETS"],"b":["SEU","DES","TEU","SUD","SET","EST","TEUS","DIUS","DESTI","DUT","DITS","DEUS","TESI","DIEU","SUITE","DUTES","DITES","DUET","SUE","DUTS","TIES","TES","TUS","EDIT","USE","DUS","SIT","DEIS","DESI","DUIT","SEDUIT"]},{"l":"PROIPA","g":["PROPIA","PROPI","PROP","POR","RAO","PRO","POP","IRA"],"b":["PAIO","PAR","RAP","RAI","PIPA","PARI","PROA","PIA","OPI","RIA","PARO","PAP","PAIR","API","ARI","POPA","PAPI","ORA","PIRA"]},{"l":"TDPERU","g":["PERDUT","DRET","PREU","PERD","DEU","DUR","PEU","REP"],"b":["PER","TEU","TREU","DUT","PUR","DUET","RET","UTER","PURE","PUT","TUR","RUDE"]},{"l":"MHNASU","g":["HUMANS","MANS","HUMA","SUMA","HAN","HAS","MAS","NAU"],"b":["UNA","UNS","USA","AUS","NAS","NAUS","MUSA","HAM","SUA","SUM","MAU","ANUS","HUNS"]},{"l":"EOMRNU","g":["NUMERO","MENOR","MON","NOU","NOM","MUR","NEU","MOR"],"b":["MEU","MOU","MOURE","EURO","MOREN","MENU","MOUEN","RENOM","ROM","REM","MURO","ROMEU","REN","MONER","ERM","REMOU","NEO"]},{"l":"UIOREN","g":["REUNIO","UNIO","UNIR","NOU","REI","RIU","NOI","NEU"],"b":["EURO","NIU","REN","RIUEN","RIEU","RENOI","NEO"]},{"l":"OGNRIE","g":["ORIGEN","REGIO","ROIG","GENI","REI","NOI","GIR","GEN"],"b":["EGO","GIRO","REG","REIG","NEGO","REN","RING","GIREN","GIN","RENOI","NEO"]},{"l":"TRNNOE","g":["ENTORN","TORNEN","TREN","TORN","TRON","NEN","NET","TRO"],"b":["TORNE","TON","RET","REN","TENOR","ENTRO","NOTEN","NOTE","RETO","NEO"]},{"l":"MSLTUI","g":["ULTIMS","ULTIM","UTILS","UTIL","MIL","MUT","TIL","MIS"],"b":["MULTI","TUS","MUTS","SUM","SIT"]},{"l":"AADEMN","g":["DEMANA","DEMA","ANEM","MENA","DAMA","MANA","ANAM","DEA"],"b":["DEM","AMEN","NEDA","AMA"]},{"l":"ITGOSE","g":["GESTIO","GOTES","GEST","TESI","ETS","SET","GOS","GOT"],"b":["EST","OEST","GOTS","EGO","TOS","TIES","TES","SOT","TIGES","ESTOIG","GES","SIT","EGOS"]},{"l":"GEASHU","g":["HAGUES","HAGUE","SEUA","HAS","HEU","GAS","USA","AUS"],"b":["SEU","ASE","HEUS","SUE","AUGE","SEGA","SUA","USE","HAGES","GES","EUGA"]},{"l":"COCSIE","g":["SECCIO","SOCI","COSI","COS","SOC","SEC","ECO","CEC"],"b":["OCI","ESCO","CECS","ICS","SIC","CIS","CES","ECOS"]},{"l":"ATEDUQ","g":["QUEDAT","QUEDA","EDAT","TEUA","ADEU","DUTA","DEU","DUT"],"b":["QUE","TEU","DUET","DEA","DAU","ATEU","TAU","DAT"]},{"l":"RAUSBC","g":["BUSCAR","BUSCA","CURSA","CURS","CURA","CAS","RUS","BAR"],"b":["CAU","CUA","USAR","URBA","CAR","ARC","BASC","USA","AUS","BUS","SAC","BARS","ABUS","SUC","RAS","ARCS","CARS","RAU","RUA","CRU","CRUA","RUC","CAUS","CUB","BAS","CUBA","BRU","BRUC","BRAUS","BRAU","BUC","BRUSA","SUAR","BAC","SUA","RUCS","RAC","CUBS","SUCAR","SURA"]},{"l":"IAUSRU","g":["USUARI","USAR","RIUS","SUAU","RIU","RUS","USA","AUS"],"b":["IRA","RAS","SIA","RAU","RAI","RUA","RIA","UAU","SUAR","SUA","ARI","SURA"]},{"l":"ÇCROEM","g":["COMERÇ","COM","COR","MOR","ROC","ECO","REC","ROM"],"b":["REM","COME","MOC","OCRE","ERM","MEC","CREO"]},{"l":"ASLORV","g":["VALORS","VALOR","VOLS","VOL","SOL","VOS","RAO","VAL"],"b":["ALS","VAS","LAS","SOLA","ROSA","VORA","SALO","SAL","SOLAR","ROL","VOLAR","ROS","ORAL","RAS","ROLS","VOLA","LARS","VALS","RAL","SOR","ORS","LAR","ORALS","ORA","OVAL","SALVO","RALS","VORAL","ORLA"]},{"l":"IANFSL","g":["FINALS","FINAL","FINS","FALS","FAN","FAS","FIL","SAL"],"b":["ALS","LAS","NAS","FANS","FILS","FINA","FILA","ASIL","AFINS","SIA","FAI","AFI","NIA","ANIS","FIA"]},{"l":"CSENAE","g":["ESCENA","CENS","SECA","SENA","CAS","SEC","NAS","SAC"],"b":["ENS","CAN","ANES","ENCES","ANEC","ENCESA","ASE","ANECS","CES","CANES","CANS","CASE","CENA"]},{"l":"LAHROA","g":["ALHORA","HORA","HOLA","ORAL","ARA","RAO","ROL","ALA"],"b":["RAL","LAR","HALO","ORA","ORLA"]},{"l":"INEOCX","g":["CONEIX","NEIX","CINE","NOI","EIX","XOC","XIC","ECO"],"b":["OCI","XEIC","COIX","XEC","OIX","IXEN","NEO"]},{"l":"OUTSIM","g":["MOTIUS","MOTIU","SOM","SOU","OUS","MOU","TOM","MOT"],"b":["MOTS","MOS","MUT","TIMO","TOS","TOU","TOUS","MOST","MIS","TUS","MOTI","USO","MUTS","SOT","OMIS","SUM","MOUS","SIT"]},{"l":"OUTARS","g":["AUTORS","AUTOR","SOTA","SORT","SURT","ART","RAO","SOU"],"b":["RUTA","ROSA","ARTS","RUS","OUS","USAR","ATUR","TROS","USA","AUS","TURO","ROS","RATO","AUTO","RAS","SURTO","USAT","RAU","TRO","SURO","RUA","TAURO","SUOR","TOS","ROTA","TOU","TOUS","ROSAT","SOR","SUAR","TORS","ORS","TUS","RAT","SUA","TORA","USO","TAO","SUAT","SOT"]},{"l":"EARELGN","g":["GENERAL","GENER","NEGRE","REGNE","NEGRA","NEGAR","ANGEL","GRAN","EREN","REAL"],"b":["ERA","REGAL","GENERA","GEL","NEGA","ALEGRE","REGLA","GRA","ANGLE","RANG","GEN","GAL","REG","ALE","RAL","ELA","REN","REGNA","REL","LAR","RAN","REGALEN","RENAL","NEGARE","ALER","AGRE","REA","ARNE","ARN","GRAL","ALEGREN"]},{"l":"ELAGNUL","g":["LLENGUA","ALGUN","ENLLA","LEGAL","LLUNA","ALGU","ELLA","ANEU","ELL","NAU"],"b":["UNA","NEU","ULL","ANGEL","GEL","ALL","NEGA","ANELL","GALL","ANGLE","GEN","GAL","LLEU","NUL","ALE","GUAL","ELA","AUGE","LLU","LLA","UNGLA","ANUL","EUGA"]},{"l":"CEBOTRU","g":["OCTUBRE","OBERT","REBUT","CREU","CERT","OBRE","BREU","CURT","COR","TOC"],"b":["TEU","TREU","CORT","COBERT","BRUT","EURO","TURO","TURC","COURE","ROC","BOU","OBTE","BEC","BOT","TROBEU","ECO","TUB","BROT","REC","TROBE","TRO","BROU","CORB","CRU","TRUC","BEU","COET","REBO","RUC","TREC","CUB","COU","TOU","RET","BRU","BRUC","BRETO","REBOT","UTER","BUC"]},{"l":"SAEGEDV","g":["VEGADES","DEVESA","SEDA","DESE","DEGA","VAS","GAS","VES","ASE","DEA"],"b":["SEVA","DES","SEGA","GES","SEDE","VEDA"]},{"l":"JOIMAAR","g":["MAJORIA","MAJOR","AMOR","MIRA","ROJA","ARMA","ARA","MAI","MAR","RAO"],"b":["MOR","AMO","IRA","JOIA","MORA","MIRO","MORI","RAIM","RAM","RAI","MORIA","ROM","MIA","RIMA","AROMA","ARIA","AMI","AMAR","RAMA","RIA","ARAM","RAJA","ARI","ORA","MARA","AMA"]},{"l":"COITAEN","g":["ATENCIO","TENIA","ANTIC","NACIO","TINC","ACTE","CENT","NOTA","TAN","NIT"],"b":["ACI","CAN","CITA","NOIA","TOCA","NOI","EINA","CONTE","NET","TOC","CANT","CINTA","TIC","ETICA","NETA","CINE","CANTO","OCEA","CANO","ONA","TIA","ECO","TENC","OCI","CONTA","ANIT","CAIENT","ICONA","ETIC","ETNIC","ANEC","ETNIA","TANC","TONA","COET","NAT","TON","ETNICA","TAC","TINA"]},{"l":"OCFLIAI","g":["OFICIAL","FACIL","OFICI","FACI","COLA","FILA","FOC","OLI","FIL","COL"],"b":["CAL","ACI","AFICIO","OCI","FALCO","FICA","FAI","OCA","IAIO","AFI","FICO","COA","FOCA","LAC","LAIC","FIA","FOLI","FILO","COLI","FOLC"]},{"l":"EITXCER","g":["EXERCIT","CREIX","EXIT","CERT","CRIT","EIXE","REI","EIX","RIC","TIC"],"b":["TIR","XIC","RECTE","ETIC","REC","TREC","RET","XEIC","XEC","TEC","TRI","RETE","TXEC","CREE","EXERCI","ETER","CIT"]},{"l":"NOÇAMCE","g":["COMENÇA","CANÇO","ANEM","MENA","ENÇA","OCEA","COM","MON","NOM","AMO"],"b":["CAN","CANO","COMA","MONA","ONA","MACO","ECO","ANEC","OCA","COME","MANEC","AMEN","MOC","COA","CANEM","MEC","NEO","CENA"]},{"l":"NTCUOJN","g":["CONJUNT","JUNT","NOU","JOC","TOC","JOU","TON","COU","TOU"],"b":[]},{"l":"LPSBICU","g":["PUBLICS","PUBLIC","CLUBS","CLUB","PLUS","PUC","PIS","BUS","PIC","SUC"],"b":["PUB","CUB","CLIP","PICS","ICS","SIC","BIS","BUC","CIS","PIU","PIUS","SIP","PUS","CUBS","CLIPS","BUCS"]},{"l":"JIMTANA","g":["MITJANA","MITJA","ANIMA","MATI","ANAT","ANIM","MINA","TAN","MAI","NIT"],"b":["AMANT","MIN","TIA","MANA","ANIMAT","ANIT","MAT","MANTA","AMAT","MIA","NAT","NATA","TINA","ANAM","MANIA","AMI","TAI","AMIANT","MANAT","TIN","ANT","IMANT","NIA","AMA","TAM","AMINA"]},{"l":"XEOEIRF","g":["OFEREIX","EIXE","ORFE","FIRE","FER","REI","EIX","FRE","XEF","FIX"],"b":["FEIX","FEREIX","EFE","XOFER","XERIF","OIX","FIXE","RIF","OFERIX","OFERI"]},{"l":"NAAERDB","g":["BANDERA","BANDA","RENDA","ARENA","ANAR","AREA","ARAB","ARA","BEN","BAR"],"b":["ERA","BADEN","NEDAR","BAN","DEA","REN","RAN","RANDA","NEDA","RADA","NADAR","RAND","REA","ARNE","ARN","BADAR"]},{"l":"UIDNSLL","g":["DILLUNS","DINS","ULLS","DIUS","NIUS","DIU","ULL","NIU","NUL","LLI"],"b":["UNS","SUD","LLIS","DIN","LLU","DUS","NULS"]},{"l":"INIECLS","g":["SILENCI","LINIES","CENS","CINE","CELS","CEL","SEC","ICS","SIC","CIS"],"b":["LES","ELS","ENS","IENS","CES","INCIS"]},{"l":"ENEFLTO","g":["TELEFON","FENT","FONT","LENT","TELE","FET","NET","LOT","TON","FON"],"b":["EFE","ELF","FEN","NOTE","OFEN","FEL","NEO"]},{"l":"ASIVTRI","g":["VISITAR","VISITA","VISTA","VIST","ARTS","AVIS","ART","VIA","VAS","AVI"],"b":["TRIA","IRA","TIR","TIRA","TIA","RAS","SAVI","SIA","RAI","IRIS","VARIS","VIS","TAI","VISAT","RIA","TIRS","VAST","RAT","ARI","TIRI","TRI","VISA","TRII","TSAR","VITA","AST","VISIR","AVISI","ATRI","SIT","TAS","TAR"]},{"l":"DOCAAVT","g":["ADVOCAT","CADA","ATAC","DATA","TOCA","COVA","CAVA","ACTA","VOT","TOC"],"b":["TOCAVA","VACA","DOT","VOTA","TACA","TOVA","TAC","COTA","ODA","OCA","VOTADA","TOCADA","TAO","ADVOCA","COA","DAT","DOTA"]},{"l":"GIESTUI","g":["ESTIGUI","SEGUIT","SIGUI","ESTIU","SIGUT","GUST","GEST","TESI","ETS","SET"],"b":["SEU","TEU","EST","TEUS","GUIES","SUITE","SEGUI","SUE","TIES","TES","TUS","SEGUT","TIGES","USE","GES","SIT"]},{"l":"PESAGNI","g":["PAGINES","ESPAI","PENSA","GANES","PAIS","PENA","SANG","GENS","PAS","SAP"],"b":["ENS","PIS","GAS","PES","EINA","SIGA","GAI","NAS","NEGA","SIGNE","PAGES","GESPA","PENSI","PINS","SIGNA","SENA","GENI","ESPIA","GEN","SIA","ANES","PESA","GAIS","GENIS","PEN","ASE","PIN","PEGA","ESPINA","PIA","SENIA","SEGA","API","PENS","ESPIGA","GIN","PISA","SIP","NIA","PIGA"]},{"l":"BALEERC","g":["CELEBRA","REBEL","CLAR","REAL","CREA","ACER","CEL","BAR","CAR","ARC"],"b":["ERA","CAL","CABLE","BECA","BEC","CEBA","REC","BEL","CERA","ALE","RAL","ELA","CALB","REBE","BAC","CEREAL","REL","LAR","CABRE","CREE","RAC","BELA","ALER","CELA","RECEL","LAC","REA"]},{"l":"NYGAUNE","g":["ENGUANY","GUANYEN","NENA","ANEU","NEGA","ANY","NEN","NAU","NEU","NAN"],"b":["UNA","GEN","ENGANY","YANG","GUANY","AUGE","EUGA"]},{"l":"RBNAIRE","g":["ARRIBEN","BARRI","REINA","ARBRE","RIERA","AIRE","EINA","BEN","REI","BAR"],"b":["ERA","RIBERA","RIBA","IRA","AERI","ANIRE","REBRA","REBIA","REBRAN","RAI","RAR","ARRIBE","BAN","REBI","REIA","REN","RIA","ARI","RAN","BRI","NIA","IBER","ARRI","EBRI","RABI","REBIN","BAI","BEI","ERARI","REA","ERRA","ARNE","ARN","BARI"]},{"l":"EETINDV","g":["EVIDENT","VEIENT","DIENT","DEIEN","VINE","VINT","VENT","NIT","DIT","NET"],"b":["VEI","VEN","VET","VEIEN","DEVIEN","DETE","DENT","EVITEN","DIN","TIN","VEIE","EDIT","NEVI","VIE","VIDENT"]},{"l":"BOCEETJ","g":["OBJECTE","OBTE","COET","JOC","TOC","BEC","BOT","ECO","JET","TEC"],"b":["BOC"]},{"l":"ISNLLEV","g":["NIVELLS","NIVELL","ILLES","VEINS","LLEIS","ELLS","LLEI","VINE","VELL","ELL"],"b":["LES","ELS","ENS","VIES","VEI","VINS","VEN","VES","VELLS","VEL","VENS","VILES","LLI","VIS","LLIS","VIL","LEV","IENS","IVES","NEVI","VIE"]},{"l":"RGEAALI","g":["ALEGRIA","GAIRE","REIAL","REGAL","REAL","AIRE","AREA","GIRA","ARA","REI"],"b":["ERA","GEL","GALERIA","GAI","AERIA","REGLA","IRA","ALA","AERI","GALA","GIR","GRA","RAIG","GAL","RAI","ALIGA","ALEGRA","REG","ALE","REIG","ARIA","ALIE","ARGILA","REIA","RAL","ELA","GALERA","AGIL","REGALA","RIA","ALIAR","REL","LIRA","AGRA","LAR","ARI","GELI","ALER","GAIA","AGRE"]},{"l":"FLADEER","g":["FEDERAL","FREDA","REAL","FRED","FARE","AFER","FER","FAR","FRE","ALE"],"b":["DEL","ERA","FRA","LED","RAL","ELA","DEA","FERA","REL","LAR","FEDER","EFE","ELF","ALER","FEL","REA"]},{"l":"EPIIRDM","g":["IMPEDIR","IMPERI","PREMI","MEDI","PERD","DIEM","DIRE","DIR","REI","REP"],"b":["PER","MIRI","PRIM","EMIR","DIREM","PERDI","REM","MIRE","DEM","PRIME","DIRIEM","PREM","REID","ERM"]},{"l":"BEENSLM","g":["SEMBLEN","LEMES","BENS","EMES","BEN","MEL","BEL","SEM","BES","ELM"],"b":["LES","ELS","MES","ENS","MENES","SEMEN","SEMBLE"]},{"l":"YRSSEON","g":["SENYORS","SENYOR","RESSO","ROSES","SENS","SONS","SENY","SER","RES","ROS"],"b":["ENS","SON","NOS","SES","ONES","REN","SENSOR","SOR","ORS","EROS","RENS","NEO"]},{"l":"EECNISM","g":["ENEMICS","ENEMIC","EINES","MINES","CENS","CINE","EMES","CIM","SEC","MIN"],"b":["MES","ENS","CINEMES","CIMS","ENCES","SEM","ICS","SIC","CIS","MIS","MENES","SEMEN","IENS","CES","MINE","MEC","MIES"]},{"l":"ABGTIOL","g":["OBLIGAT","BOTIGA","OBLIGA","BLOG","TAL","ALT","OLI","GOL","GAI","GAT"],"b":["BLAT","BOLA","ALTO","BOIG","TIA","OBLIT","GOT","BOT","GOTA","GAL","LOT","GOLA","BAT","BIO","BOTI","BOL","BOTA","TIL","IOGA","TAI","AGIL","OBI","TALO","LAT","BIT","TAO","BIGA","TOGA","BOLI","BAI","ALBI","BOA"]},{"l":"GURRLAE","g":["REGULAR","ARREU","REGAL","RURAL","ARREL","ALGU","REAL","GREU","GRAU","GEL"],"b":["ERA","REGLA","GRA","GAL","REGULA","RAU","RUA","RAR","REG","ALE","GRUA","GUAL","RAL","ELA","AUGE","REL","LAR","REGAR","GERRA","ALER","ERUGA","AGRE","REA","ERRA","GRAL","EUGA"]},{"l":"BSNUEQU","g":["BUSQUEN","BENS","USEN","NEUS","BEN","NEU","BUS","BEU","SUE","BES"],"b":["SEU","ENS","QUE","UNS","UNES","NUES","BEUS","USE"]},{"l":"BMOLISS","g":["SIMBOLS","SIMBOL","MOBILS","MOBIL","SOLS","SOM","SOL","SIS","MIL","OLI"],"b":["MOLI","MISS","MOS","BIO","BOL","MOL","OLIS","OBI","BIS","MIS","SILS","OMIS","BOLI","BOLS"]},{"l":"ENOTCCR","g":["CONCRET","CONCERT","CONTE","CONEC","CREC","CERT","CENT","TREN","TORN","COR"],"b":["NET","TOC","CORT","TRON","ROC","ECO","CEC","TENC","REC","TRO","TRONC","TORNE","COET","TREC","TON","RET","TRENC","REN","TENOR","ENTRO","TEC","OCRE","RETOC","NOTE","CREO","RETO","NEO"]},{"l":"SRINJAD","g":["JARDINS","DINAR","JARDI","DIRAN","DINS","DIRA","DIA","DIR","NAS","IRA"],"b":["RAS","DIRAS","SIA","RAI","RADI","DINARS","RIA","ARI","DIN","RAN","DINA","NIA","ARID","RAID","ANIS","RAND","DANS","ARIDS","ARN","SIDRA","SARD"]},{"l":"ERTDPNE","g":["PERDENT","PRETEN","ENTRE","REPTE","DEPEN","DRET","EREN","TREN","PREN","REP"],"b":["PER","NET","PERD","PERDEN","ETERN","TENDRE","PEN","DETE","DENT","RET","PETE","REN","RETE","ETER","PERDE"]},{"l":"FIAACRG","g":["GRAFICA","GRACIA","FARIA","CARA","FARA","FACI","FAIG","FIRA","GIRA","ARA"],"b":["ACI","CAR","ARC","RIC","GRAFIC","RICA","GAI","IRA","GIR","GRA","FAR","FICAR","CRIA","RAIG","RAI","AGAFI","FIAR","FIGA","ARCA","FRA","FICA","ARIA","FAI","FARGA","FRAGA","RIA","AGRA","ARI","AFI","RAC","RIF","GRAFIA","FIG","RIFA","GAIA","FIA","FRAC","GIRAFA"]},{"l":"SHRARIO","g":["HORARIS","HORARI","ARROS","SORRA","HORA","AHIR","ROSA","HAS","RAO","IRA"],"b":["ROS","RAS","SIA","RAI","RAR","OASI","RIA","ROSARI","SOR","ORS","RARS","ARI","ORA","ARRI","SARRO","ORRIS"]},{"l":"CAXUTAB","g":["BUTXACA","ACTUA","TABAC","ATAC","TAXA","ACTA","ABAT","CAU","CUA","TUB"],"b":["BAT","TACA","XAT","XUT","CUB","TAC","CUBA","BUTACA","ACUT","TABU","BUC","BATA","BAC","AUCA","TAU","BAU","BUTA"]},{"l":"IRDAICN","g":["INDICAR","INDICA","DIARI","CRIDA","INDIA","DINAR","CARN","DIA","DIR","DIC"],"b":["ACI","CAN","DIRIA","CAR","ARC","RIC","RICA","DRAC","INDI","IRA","DIRA","ACID","DIRAN","CRIA","RAI","RADI","CRANI","INDIC","RIA","ARI","DIN","RAN","RANCI","DINA","NIA","RAC","CARD","ARID","RAID","CRIDI","RAND","CADI","ARN","CIRI"]},{"l":"CASNIUN","g":["ANUNCIS","ANUNCI","UNICA","CUINA","UNICS","UNIC","CAS","NAU","CAU","CUA"],"b":["UNA","UNS","ACI","CAN","USA","AUS","NAS","NAUS","SAC","CASI","NINA","SUC","NIU","NAN","SIA","NIN","CAUS","NINS","NANS","ICS","NIUS","SIC","CIS","SUA","NIA","UNIA","CAUSI","ANIS","CANS","ISCA","ANUS"]},{"l":"RAENLLÇ","g":["LLENÇAR","ENLLAÇ","ENLLA","ANELL","ELLA","REAL","LLAR","ENÇA","ELL","ALL"],"b":["ERA","LLENÇA","ALE","LLAÇ","RAL","ELA","REN","LLERA","REL","LAR","RAN","LLENÇ","RENAL","ALER","LLA","REA","ARNE","ARN"]},{"l":"NETZOAD","g":["DOTZENA","DONAT","DOTZE","DONA","ZONA","EDAT","NOTA","ONZE","TAN","NET"],"b":["DON","NETA","NADO","ONA","TENDA","DOT","TONA","NAT","TON","ATEN","ONDA","DENT","ODA","DEA","DENOTA","ZEN","ANT","NEDA","TAO","DATEN","ZETA","NODE","NOTE","DAT","DOTA","NEO"]},{"l":"AÇPANCI","g":["INCAPAÇ","CAPAÇ","PANIC","ANCIA","CAÇA","CAPA","PICA","CAP","PIC","APA"],"b":["ACI","CAN","PIN","PIA","API","PINÇA","NIA","NAP"]},{"l":"ZTOORHI","g":["HORITZO","TRIO","HORT","TORO","TIRO","TIR","ZOO","TRO","OZO","TRI"],"b":["TORI"]},{"l":"VROANRE","g":["RENOVAR","VORERA","VAREN","NOVA","VORA","VERA","VAN","RAO","VEN","ONA"],"b":["ERA","RAR","NORA","VENA","REN","RENOVA","NOVE","RAN","ORA","NEVA","REA","ERRA","ARNE","ARN","ERRO","NEO"]},{"l":"OVEDRNE","g":["VENEDOR","VENDRE","NORD","EREN","VERD","ORDE","DRON","DON","VEN","REN"],"b":["NOVE","NODE","NEO"]},{"l":"XRTEEAP","g":["EXPERTA","EXPERT","REPTE","PARET","EXTRA","PART","PARE","PRAT","ART","REP"],"b":["PER","ERA","PAR","RAP","PETAR","PERA","XAT","TAP","RET","PETE","APTE","RAT","PERXA","RETE","PETA","RAPTE","ETER","REA","TAR"]},{"l":"SSMFEOA","g":["FAMOSES","MESOS","FAMOS","FASE","SOM","FEM","FOS","FES","MAS","FAS"],"b":["MES","FAM","AMO","AMOS","SES","MESA","SOFA","FASES","FOSSA","MOS","ASE","SEM","MASOS","FEMS","FOSA","MOFA","OFES","FOSES","ASES","AMES","SOSA","ASOS","MOSSA","ESSA"]},{"l":"BTFELAA","g":["ALFABET","FALTA","ALTA","FETA","ALBA","BLAT","FET","TAL","ALT","ALA"],"b":["BALA","TELA","ABAT","ALFA","FATAL","BEL","BAT","BETA","ALE","BATLE","ELA","BATA","LAT","TALA","BELA","ELF","FAT","FEL","FETAL","TABAL"]},{"l":"MXSAEMI","g":["MAXIMES","MAXIMS","MAXIM","EIXA","MESA","IMAM","MAI","MAS","EIX","XAI"],"b":["MES","SIA","MIA","ASE","SEM","AMI","SAMI","MEM","MAIES","SIMA","MIS","MIM","MAMI","MEMS","AMES","AMIS","IMAMS","XAIS","MAMES","MAM","MIES","XIA","EIXAM"]},{"l":"TAORFVI","g":["FAVORIT","FAVOR","VOTAR","FORTA","FORA","FORT","FIRA","ART","RAO","VIA"],"b":["AVIO","VOT","VORA","AVI","TRIA","FORAT","IRA","TIR","TIRA","TRIO","FAR","FITA","TIA","RATO","FART","RAI","TRO","VOTA","FIAR","TOVA","ROTA","FRA","FAI","TAI","VOTI","RIA","RATIO","TIRO","RAT","FORTI","ARI","TORA","TAO","TRI","AFI","ORA","RIF","VITA","RIFA","AFRO"]},{"l":"LEOIDUB","g":["OBLIDEU","DOBLE","DIEU","DUEL","DIU","DEU","ODI","OLI","DOL","BOU"],"b":["DEL","DUO","BEL","BIO","BOL","BEU","DEBIL","LED","IDO","IDOL","OBI","DELI","BOLI","LIED","BEI","EDIL","IODE","ODIE"]},{"l":"IRNSCTI","g":["INSCRIT","CRISI","CRITS","TINC","RISC","RICS","NITS","CRIT","NIT","RIC"],"b":["CRIST","TIC","TIR","IRIS","ICS","SIC","TIRS","CIS","TIN","TIRI","TICS","TRI","TRII","TRIIN","CITI","CIRIS","SIT","CIRI","CIT","INCIS"]},{"l":"CETBUDE","g":["DECEBUT","DUBTE","DEUTE","DEBUT","DEU","DUT","DUC","BEC","TUB","DEC"],"b":["TEU","BEU","CUB","DETE","DUET","BUC","TEC"]},{"l":"NSEOPOL","g":["POLONES","PENSO","POSEN","PLENS","SOLEN","POLS","SOL","PLE","PES","POL"],"b":["LES","ELS","ENS","SON","PEL","PELS","NOS","ONES","POSO","PONS","SOLO","POLO","OPOSEN","PEN","POSE","PEO","PEONS","POE","PENS","SONO","POS","PENOS","PON","PESOL","LONES","NEO"]},{"l":"TIEVLOA","g":["VIOLETA","VOLIA","VOLTA","VILA","AVIO","VOL","TAL","ALT","VIA","VAL"],"b":["TEVA","VOT","OLI","AVI","VEIA","VEI","VITAL","ALTO","OLIVA","TELA","TIA","VELA","EVITA","ELIT","VET","VEL","LOT","VOLA","VOTA","VIOLAT","TIL","TOVA","ALE","ALIE","ELA","ALEVI","TAI","VOTI","VIL","TALO","LEV","LAT","VIAL","VOLAT","TAO","VOLT","VETO","AVET","OVAL","VITA"]},{"l":"LSGBAOL","g":["GLOBALS","GLOBAL","ALLO","BLOG","SOLA","BALL","GOLS","SOL","GAS","GOS"],"b":["ALS","LAS","GOL","SALO","SAL","ALL","BOLA","BLOGS","BALLS","GALL","OLLA","GAL","GOLA","BOL","SABO","LLOSA","BAS","ALLS","GALLS","LLOGA","GOSA","LLA","BOA","BOLS","BALLO","GALS","BLASO"]},{"l":"IIADUXB","g":["DIBUIXA","DIBUIX","BUIDA","BIAIX","AIXI","BAIX","DUIA","DIA","DIU","XAI"],"b":["BUDA","BAIXI","DAU","DUX","BAU","BAI","XIA","XIU"]},{"l":"ICAEPIG","g":["EGIPCIA","EGIPCI","EPICA","PICA","CEGA","PEGA","CAP","GAI","PIC","PIA"],"b":["ACI","EPIC","CEP","API","PIGA"]},{"l":"LSIETEG","g":["ELEGITS","ELEGIT","SEGLE","ESTIL","SETGE","TELE","GEST","ETS","SET","GEL"],"b":["LES","ELS","EST","TESI","ELIT","ELITS","ESTEL","SETE","TELES","TIL","TIES","TES","GELI","TIGES","GES","GELS","SIT"]},{"l":"LDEIVCI","g":["DECLIVI","CIVIL","DIVI","VICI","CEL","DIC","VEI","VEL","DEC","LED"],"b":["DEL","VIL","LEV","DELI","LIED","VIE","EDIL"]},{"l":"IBUSATD","g":["BUDISTA","SABUT","SITUA","DIUS","BUIT","DITS","DIA","DIU","DIT","DUT"],"b":["SUD","USA","AUS","BUS","DITA","DUIA","BUITS","TIA","ABUS","BUIDA","TUB","USAT","SIA","BAT","DUTA","TUBS","BAS","BUST","BUSTIA","DAUS","DUBTIS","BITS","DUTS","TAI","DUBTA","TABU","BIS","BUDA","DUBTI","DAU","TUS","BIT","SUA","SUAT","BUIDAT","TAU","AST","BAU","BAI","DAT"]},{"l":"AQUGSEI","g":["SAQUEIG","AIGUES","QUASI","AQUI","SEUA","GUIA","SIGA","QUI","GAS","GAI"],"b":["SEU","QUE","USA","AUS","SEGUIA","ESQUI","GUIES","SIA","GAIS","ASE","SEGUI","SUE","QUEIA","AUGE","SEGA","SUA","USE","GES","SEQUIA","EUGA"]},{"l":"TALSER","g":["ALTRES","ALTRE","TRES","SERA","SER","RES","TAL","ART"],"b":["LES","ELS","ALS","ERA","ESTA","ETS","ALT","REAL","SET","EST","LAS","ARTS","SALT","ALTS","ATES","SAL","RELAT","ALES","TELA","TALS","RAS","LARS","ALE","ASE","RET","RAL","ELA","RESA","LAT","REL","TES","RAT","LAR","ARES","REST","ALTER","SALE","TSAR","AST","ALERT"]},{"l":"ANSTRO","g":["NOSTRA","TORNA","SANT","SOTA","SORT","TAN","ART","RAO"],"b":["SON","NOS","NOTA","ROSA","ARTS","TORN","TROS","TRON","NAS","ROS","ONA","NOTAR","RATO","RAS","TRO","TONA","NAT","TON","TONS","TOS","ROTA","NORA","ROSAT","SOR","TORS","ORS","RAT","TORA","RAN","TRONA","ANT","TAO","SOT","ORA","TSAR","AST","TARO","ARN","TAS","TAR"]},{"l":"ORESTN","g":["NOSTRE","TRES","TENS","SENT","SORT","SER","RES","ETS"],"b":["ENS","SON","NOS","SET","EST","OEST","TREN","TORN","NET","TROS","TRON","ROS","ONES","NETS","TRO","TORNE","TON","TONS","TOS","RET","REN","TENOR","SOR","TORS","ENTRO","ORS","TES","REST","SOT","EROS","NOTE","RENS","RETO","NEO"]},{"l":"GSLUAN","g":["ALGUNS","ALGUN","ALGU","SANG","GAS","NAU","SAL","USA"],"b":["UNA","ALS","UNS","LAS","AUS","NAS","NAUS","GAL","NUL","GUAL","SUA","UNGLA","ANUL","ANUS","GALS","NULS"]},{"l":"ENTEMR","g":["MENTRE","ENTRE","TERME","EREN","TREN","MENT","EREM","NET"],"b":["EMET","METRE","ETERN","TEM","TEMER","MET","RET","REM","REN","RETE","REMET","ERM","ETER"]},{"l":"TLEMSO","g":["MOLTES","MOLT","SOM","SOL","ETS","SET","TOM","MEL"],"b":["LES","ELS","MES","EST","OEST","MOT","MOTS","TEMO","LOT","MOS","TEM","TOS","MOL","MET","MOST","SEM","TES","ELM","SOT"]},{"l":"LSCOAI","g":["SOCIAL","COSA","SOLA","CAS","SOL","COS","SOC","OLI"],"b":["ALS","CAL","ACI","LAS","COL","SALO","SAL","SOCI","COSI","SAC","COLA","CAOS","CASI","ASIL","OCI","SIA","OSCA","CASO","CLOS","OLIS","COLS","SOCA","OCA","ICS","OASI","SOCIA","SIC","CIS","SOLC","COA","CLOSA","LAC","LAIC","ISCA","COLI"]},{"l":"OEPSTR","g":["POTSER","PERO","TRES","POTS","SER","POT","RES","POR"],"b":["PER","ETS","SORT","SET","EST","PORTES","PORT","OEST","ESPORT","REP","PES","POST","PRES","PRO","TROS","PETO","PORTS","ROS","TOP","STOP","SERP","TRO","PORS","TOS","POSE","RET","PEO","SOR","TORS","ORS","POE","TES","REPS","POS","REST","SOT","EROS","PROS","TOPE","RETO"]},{"l":"APIRRT","g":["PARTIR","PATIR","PART","PATI","PRAT","TRIA","ART","IRA"],"b":["TIR","TIRA","PAR","TIA","RAP","RAI","RAR","TAP","TIP","PARI","PIA","TAI","RIA","PARIT","PITA","RAT","PAIR","API","ARI","TRI","ARRI","ATRI","PIRA","TAR"]},{"l":"VRTEAS","g":["TRAVES","TRES","SERA","SER","RES","ART","ETS","SET"],"b":["SEVA","ERA","ESTA","TEVA","EST","VAS","ARTS","ATES","VERS","VES","RAS","VET","VERA","ASE","RET","RESA","VAST","TES","RAT","ARES","REST","AVET","TSAR","AST","VETA","REA","VESTA","TAS","TAR"]},{"l":"OCRESP","g":["PROCES","PERO","SER","RES","COP","POC","POR","COS"],"b":["PER","SOC","COR","REP","PES","PRES","PRO","SEC","ROS","ROC","ECO","SERP","REC","PORS","ESCO","POSE","PEO","SOR","CEP","COPE","ORS","POE","REPS","POS","EROS","OCRE","PROS","CES","CREO","ECOS","PERS"]},{"l":"OTACTS","g":["COSTAT","TOTS","COSA","SOTA","TOT","CAS","COS","SOC"],"b":["TOCA","TOC","SAC","CAOS","TAST","OSCA","TOS","TAC","CASO","COTA","SOCA","OCA","TAO","SOT","AST","TOST","COA","TAT","TAS"]},{"l":"OGNSAE","g":["SEGONA","SEGON","GANES","SANG","GENS","GAS","GOS","NAS"],"b":["ENS","SON","NOS","NEGA","ONA","ONES","SENA","GEN","EGO","ANES","ASE","NEGO","SEGA","GOSEN","GOSA","GES","EGOS","NEO"]},{"l":"ORTANR","g":["TORNAR","TORNA","NOTA","TORN","TRON","TAN","ART","RAO"],"b":["ONA","NOTAR","RATO","TORRA","TRO","TONA","RAR","NAT","TON","ROTA","NORA","RAT","TORA","RAN","TRONA","ANT","TAO","ORA","TARO","ARN","TAR"]},{"l":"IUMCSA","g":["MUSICA","AMICS","CAMI","MICA","AMIC","MAI","CAS","MAS"],"b":["ACI","CAU","CUA","SUMA","MUSIC","CIM","USA","AUS","SAC","CASI","SUC","CIMS","SIA","MIA","CAUS","MUSA","AMI","ICS","SAMI","SIC","CIS","SIMA","MIS","SUA","SUM","CAUSI","AMIS","CIMA","ISCA","MAU"]},{"l":"OARTMS","g":["MOSTRA","SOTA","SORT","AMOR","SOM","ART","MAR","RAO"],"b":["MAS","ROSA","ARTS","MOR","TROS","TOM","AMO","MOT","AMOS","ROS","MOTS","MORA","RATO","RAS","MATO","MAT","RAM","MOS","TRO","ROM","TOS","ROTA","MOST","MOTA","ROSAT","SOR","ATOM","TORS","ORS","RAT","MORS","TORA","TAO","SOT","ORA","TAM","TSAR","AST","TARO","TAS"]},{"l":"NSERDI","g":["DINERS","DIES","DINS","REIS","SER","DIR","RES","REI"],"b":["ENS","DES","DIRE","DENS","REN","DIN","REID","IENS","RIES","RENS","DEIS","DESI","RESI"]},{"l":"GASENL","g":["ANGLES","GANES","ANGEL","SANG","GENS","GAS","GEL","SAL"],"b":["LES","ELS","ALS","ENS","LAS","NAS","ALES","NEGA","ANGLE","SENA","GEN","GAL","ANES","ALE","ASE","ELA","SEGA","SALE","GES","GELS","LESA","GALS"]},{"l":"PANSER","g":["PENSAR","SERA","PARE","PENA","SER","RES","PAS","SAP"],"b":["PER","ENS","ERA","PENSA","REP","PES","PRES","PREN","NAS","PAR","RAS","RAP","SENA","SERP","ANES","PESA","PERA","PEN","ASE","RESA","REN","PENS","RAN","REPS","ARES","RENS","REA","ARNE","PERS","ARN","NAP"]},{"l":"ORRATP","g":["PORTAR","PART","PORT","POT","POR","ART","RAO","PRO"],"b":["PRAT","TOP","PAR","RATO","RAP","TORRA","TRO","POTA","RAR","TAP","ROTA","PROA","OPTA","PARO","RAT","TORA","TAO","ORA","TOPA","TARO","TAR"]},{"l":"ETSRIN","g":["SENTIR","TENIR","TRES","TENS","SER","RES","NIT","REI"],"b":["ENS","ETS","SENT","SET","EST","TREN","REIS","NET","NITS","TIR","TESI","NETS","ENTRI","RIENT","TRIEN","RET","TIREN","REN","TIRS","TIES","TES","TIN","TRI","REST","IENS","RIES","RENS","INERT","SIT","RESI"]},{"l":"TRAMCE","g":["MERCAT","MARE","TEMA","ACTE","CERT","CREA","ART","MAR"],"b":["ERA","CAR","ARC","ACER","META","MAT","RAM","REC","TEM","CERA","TREC","TAC","MERA","MET","RET","REM","AMER","MATE","RAT","TEC","RAC","TAM","ERM","MEC","REA","TAR"]},{"l":"SAPEMR","g":["PREMSA","SERA","MARE","PARE","SER","RES","PAS","MAR"],"b":["PER","MES","ERA","SAP","MAS","REP","PES","PRES","PAR","MESA","PAM","RAS","RAP","RAM","SERP","PESA","PERA","ASE","MERA","SEM","REM","AMER","RESA","REPS","PREM","ARES","REMS","ERM","ERMS","AMES","REA","PERS"]},{"l":"VRAETI","g":["EVITAR","AIRE","VEIA","REI","ART","VIA","AVI","VEI"],"b":["ERA","TEVA","TRIA","IRA","TIR","AERI","TIRA","TIA","EVITA","VET","VERA","RAI","VERI","RET","REIA","TAI","RIA","RAT","ARI","TRI","AVET","VITA","VETA","ATRI","VIE","REA","TAR"]},{"l":"PEEARS","g":["ESPERA","SERA","PARE","SER","RES","PAS","SAP","REP"],"b":["PER","ERA","PES","PRES","ERES","SERE","PAR","RAS","RAP","SERP","PESA","PERA","ASE","PERES","RESA","ESPER","REPS","ARES","REA","PERS"]},{"l":"SOFCER","g":["FORCES","SER","FER","RES","COS","SOC","FOS","COR"],"b":["FOC","FES","SEC","ROS","ROC","ECO","REC","FRE","ESCO","ORFE","ORFES","SOR","ORS","OFES","EROS","OCRE","SOFRE","CES","CREO","ECOS"]},{"l":"ORVSEI","g":["VERSIO","VIES","REIS","VERS","SER","RES","REI","VOS"],"b":["VEI","VES","ROS","VERI","VIS","SOR","ORS","EROS","IVES","RIES","VIE","SERVI","OVI","RESI"]},{"l":"ECAMIN","g":["CINEMA","CAMI","MICA","ANEM","MENA","AMIC","EINA","MAI"],"b":["ACI","CAN","ANIM","CIM","MINA","CINE","MIN","ANEC","MIA","AMI","MANEC","AMEN","NIA","CANEM","MINE","MEC","CIMA","CENA"]},{"l":"QNASTU","g":["QUANTS","QUAN","SANT","TAN","NAU","USA","AUS","NAS"],"b":["UNA","UNS","NAUS","USANT","USAT","NAT","TUS","SUA","ANT","SUAT","TAU","AST","TAS","ANUS"]},{"l":"CTSEIR","g":["ESCRIT","ESTIC","TRES","CERT","SER","RES","REI","ETS"],"b":["SET","EST","RISC","REIS","RICS","RIC","CRIT","CRITS","SEC","CRIST","TIC","TIR","TESI","CITES","ETIC","REC","TREC","RET","ICS","SIC","TIRS","CIS","TIES","TES","ETICS","TICS","TEC","TRI","REST","CES","RIES","SIT","CIT","RESI"]},{"l":"MORATF","g":["FORMAT","FORMA","FORA","AMOR","FORT","ART","MAR","RAO"],"b":["FORTA","MOR","FAM","TOM","FORAT","AMO","MOT","MORA","FAR","RATO","FART","MATO","MAT","RAM","TRO","ROM","ROTA","FRA","MOTA","ATOM","MOFA","RAT","TORA","TAO","ORA","TAM","FORM","AFRO","FAT","TARO","TOMA","TAR"]},{"l":"MRESTE","g":["MESTRE","ESTEM","TERME","TRES","SER","RES","ETS","SET"],"b":["MES","EST","TEMES","METRES","TERMES","ERES","SEREM","EREM","SERE","EMET","EMES","METRE","SETE","TEM","TEMER","MET","RET","SEM","REM","TES","REMS","REST","RETE","METES","REMET","ERM","ERMS","ETER","RESEM"]},{"l":"VPSREO","g":["PROVES","PERO","SER","RES","POR","VOS","REP","PES"],"b":["PER","PRES","PRO","VERS","VES","ROS","SERP","PORS","POSE","PEO","SOR","ORS","POE","REPS","POS","EROS","PROS","PERS"]},{"l":"RMSUAE","g":["MESURA","SERA","MARE","SEUA","SER","RES","MAR","MAS"],"b":["MES","SEU","ERA","MEU","RUS","REUS","MUR","USAR","SUMA","USA","AUS","MESA","RAS","RAM","RAU","RUA","MUSA","ASE","MERA","SEM","REM","SUE","AMER","RESA","SUAR","SUA","ARES","REMS","SUM","USE","SURA","ERM","ERMS","AMES","REA","MAU"]},{"l":"MNLAOR","g":["NORMAL","AMOR","MON","NOM","MAR","MAL","RAO","MOR"],"b":["AMO","ROL","MONA","ONA","MORA","ORAL","RAM","ROM","MOL","NORA","RAL","LAR","RAN","ORA","ARN","ORLA"]},{"l":"RESICAG","g":["GRACIES","GAIRE","SERA","AIRE","RISC","SER","RES","CAS","REI","GAS"],"b":["ERA","ACI","GIRA","CREA","SIGA","REIS","CAR","ARC","RICS","RIC","RICA","GAI","SEC","ACER","GRIS","IRA","SECA","SAC","AERI","GIR","GRA","CASI","RAS","GRAS","ARCS","CRIA","RAIG","CARS","REC","SIA","RAI","GAIS","CERA","CEGA","REG","REIG","ASE","REIA","RESA","ICS"]},{"l":"ESTRSON","g":["NOSTRES","TRES","TENS","SENT","SORT","TREN","SER","RES","ETS","SET"],"b":["ENS","SON","NOSTRE","NOS","EST","OEST","TORN","SENS","NET","RESSO","SOSTRE","ROSES","TROS","TRON","ROS","SES","SONS","ONES","NETS","TRO","TORNE","TON","TONS","TOS","RET","REN","TENOR","SENSOR","SOR","TORS","ENTRO","ORS","TES","REST","SOT","EROS","NOTE","RENS","RETO","NEO"]},{"l":"RAEMRIP","g":["PRIMERA","PRIMER","PREMI","MARE","PARE","MIRA","AIRE","MAI","REI","MAR"],"b":["PER","ERA","REP","RIERA","IRA","AERI","PAR","PAM","PRIM","RAP","RAIM","EMIR","RAM","RAI","PERA","MIA","RAR","RIMA","MERA","PARI","REM","REIA","AMI","MIRE","PIA","AMER","RIA","PAIR","API","ARI","PRIME","PREM","ARRI","ERM","ERARI","REA","ERRA","PIRA"]},{"l":"SGLUEAN","g":["ALGUNES","ALGUNS","ANGLES","ALGUN","GANES","ALGU","SEUA","SANG","GENS","GAS"],"b":["LES","ELS","UNA","SEU","ALS","ENS","UNS","UNES","LAS","NAU","ANEU","NEU","ANGEL","GEL","SAL","USA","AUS","NAS","ALES","NEGA","NAUS","USEN","ANGLE","SENA","NEUS","GEN","GAL","ANES","NUL","ALE","GUAL","ASE","SUE","ELA","AUGE","SEGA","SUA","NUES","SALE","USE"]},{"l":"TMENAAS","g":["SETMANA","ESTAN","SANT","TEMA","TENS","SENT","MANS","TAN","ETS","SET"],"b":["MES","ENS","ESTA","ANAT","ANEM","MENA","EST","MAS","MENT","ATES","NET","SENAT","NAS","NETA","AMANT","MESA","MANA","SANA","META","NETS","SENA","MAT","MANTA","AMAT","ANES","TEM","NAT","NATA","ASE","ATEN","MET","SEM","ANAM","ATESA","MATE","TENSA","AMEN","TES","MANAT","ANT"]},{"l":"BATRLEL","g":["TREBALL","TALLER","ALTRE","ELLA","REAL","LLAR","TAL","ELL","ART","ALT"],"b":["ERA","BAR","BALL","LLETRA","ALL","RELAT","BELL","TALL","BLAT","TELA","BEL","BAT","BETA","ALE","BATLE","RET","RAL","ELA","LLERA","LAT","REL","RAT","LAR","ALTER","BELA","ALERT","ALER","LLA","REA","TAR"]},{"l":"IAMSSET","g":["SISTEMA","MATI","TEMA","ATES","TESI","MAI","SIS","ETS","SET","MAS"],"b":["MES","ESTA","EST","SES","MESA","TIA","MITE","MISS","META","MAT","SIA","TEM","MIA","ASE","MET","SEM","AMI","SAMI","TAI","MATE","MAIES","TIES","SIMA","TES","MIS","TEMIA","TAM","AST","ASES","AMES","AMIS","SIT","TAS","MIES","ESSA"]},{"l":"TUUCRLA","g":["CULTURA","CLAR","CLAU","RUTA","CURT","CURA","TAL","ART","ALT","CAU"],"b":["CAL","CUA","CAR","ARC","ATUR","TURC","RAU","RUA","CRU","CRUA","TRUC","RUC","TAC","RAL","ACUT","UAU","LAT","RAT","LAR","CULTA","TRAU","RAC","TAU","TUR","LAC","TAR"]},{"l":"AITXAEM","g":["MATEIXA","MATEIX","MATI","EXIT","TEMA","TAXA","TAXI","EIXA","MAI","EIX"],"b":["TIA","MITE","META","MAT","MIXT","AMAT","TEM","XAI","MIA","XAT","MIXTA","MATX","MET","AMI","TAI","MATE","TEMIA","METXA","AMA","TAM","XIA","EIXAM"]},{"l":"EPRASNO","g":["PERSONA","PENSAR","PERO","SERA","PARE","SER","RES","PAS","POR","SAP"],"b":["PER","ENS","SON","ERA","NOS","RAO","PENA","POSA","PENSO","PENSA","ROSA","REP","PES","PRES","POSEN","PREN","PRO","NAS","SOPA","ROS","PAR","ONA","ONES","PONS","RAS","RAP","SENA","SERP","ANES","PESA","PERA","PORS","PEN","ASE","NORA","POSE","PROA","PEO","RESA","REN"]},{"l":"RITELAC","g":["ARTICLE","ALTRE","CLAR","ACTE","CERT","REAL","TAL","REI","ART","ALT"],"b":["ERA","CAL","ACI","AIRE","REIAL","CEL","CITA","CREA","CAR","ARC","RELAT","RIC","TRIA","CRIT","RICA","TIC","ETICA","ACER","IRA","TIR","AERI","TIRA","TELA","TIA","ELIT","CRIA","ETIC","REC","RAI","CERA","TIL","TREC","ALE","TAC","RET","ALIE","REIA","RAL","ELA","ATIC"]},{"l":"EMESARP","g":["EMPRESA","SEMPRE","SERA","MARE","PARE","SER","RES","PAS","MAR","SAP"],"b":["PER","MES","ERA","PREMSA","ESPERA","MAS","REP","PES","PRES","ERES","SEREM","PERMES","EREM","SERE","PAR","MESA","PAM","EMES","RAS","RAP","RAM","SERP","PESA","PERA","ASE","MERA","SEM","REM","PERES","AMER","RESA","ESPER","EMPES","REPS","PREM","ARES","REMS","ERM","ERMS","AMES"]},{"l":"INLMOSI","g":["MILIONS","SINO","NOMS","NOIS","MON","SOM","NOM","SOL","MIL","NOI"],"b":["SON","NOS","OLI","MOLI","MIN","MONS","MOS","MOL","SONI","OLIS","MIS","IONS","OMIS"]},{"l":"ESIVSER","g":["SERVEIS","SERVEI","SERIE","VIES","REIS","VERS","SER","RES","REI","SIS"],"b":["VEI","ERES","VES","SERE","SES","REVES","VERES","VERI","VIS","SEVER","VEIES","VEIE","IVES","RIES","VIE","SERVI","RESI"]},{"l":"NLOESCL","g":["CONSELL","LLOC","ELLS","COLL","ELL","SOL","COS","SOC","CEL","COL"],"b":["LES","ELS","ENS","SON","NOS","SOLEN","CENS","SEC","ONES","ECO","CELS","ESCO","CLOS","COLS","SOLC","CES","ECOS","LONES","NEO"]},{"l":"IVATETR","g":["VERITAT","EVITAR","AIRE","VEIA","TRIA","REI","ART","VIA","AVI","VEI"],"b":["ERA","TEVA","TRIAT","IRA","TIR","AERI","TIRA","TIA","EVITA","VET","TIRAT","VERA","TIETA","RAI","TRAIT","VERI","RET","REIA","TAI","RIA","RAT","ARI","TIET","TRI","AVET","VITA","VETA","ATRI","VIE","REA","TAT","TAR"]},{"l":"AEDNAMR","g":["DEMANAR","MANERA","DEMANA","ANAR","MARE","DEMA","ANEM","MENA","ARA","MAR"],"b":["ERA","AREA","ARMA","RENDA","DAMA","MAREA","MANA","ARENA","RAM","NEDAR","MANAR","MERA","ANAM","REM","AMAR","AMER","DEA","RAMA","REN","DEM","ARAM","AMEN","RAN","RANDA","NEDA","RADA","MARA","AMA","NADAR","ERM","RAND","REA","ANAREM","ARNE","ARN"]},{"l":"ISGMAET","g":["IMATGES","IMATGE","MAIG","MATI","TEMA","MAI","MIG","ETS","SET","MAS"],"b":["MES","ESTA","EST","GAS","SIGA","ATES","GAI","GAT","GEST","TESI","MESA","TIA","MITE","META","MAT","MAG","SIA","TEM","MIA","GAIS","MEGA","ASE","MAGI","MET","SEM","AMI","SAMI","TAI","MATE","MAIES","TIES","SIMA","TES","MIS","SEGA","TEMIA","TAM","AST","TIGES","GES"]},{"l":"UNAMELS","g":["ALUMNES","SEUA","MANS","ANEM","MENA","ANEU","MAL","MAS","NAU","NEU"],"b":["LES","ELS","UNA","MES","SEU","ALS","ENS","UNS","MEU","UNES","LAS","SAL","SUMA","LEMA","USA","AUS","MALES","NAS","ALES","MEL","NAUS","MALS","MENU","MESA","USEN","SENA","NEUS","ANES","NUL","SALEM","ALE","MUSA","ASE","SEM","SUE","ELA","AMEN","SUA","ELM","NUES"]},{"l":"PPLUARO","g":["POPULAR","PROU","PROP","PLAU","POR","PLA","PAU","RAO","PRO","POL"],"b":["PAL","POU","POP","ROL","PUR","PAR","ORAL","RAP","RAU","RUA","PROA","RAL","PARO","PAP","LAR","LUPA","POPA","ORA","AURO","ORLA"]},{"l":"EUTEGSN","g":["SEGUENT","SETGE","GENT","TENS","SENT","GENS","GUST","ETS","SET","NEU"],"b":["SEU","ENS","UNS","UNES","TEU","EST","TEUS","NET","GEST","USEN","NETS","NEUS","GEN","SETE","SUE","TES","TUS","NUES","SEGUT","USE","GES"]},{"l":"MAILUND","g":["MUNDIAL","ANIM","MINA","DUIA","DIA","DIU","MAI","MAL","MIL","NAU"],"b":["UNA","MIN","NIU","MIA","NUL","UNIM","AMI","DAU","DIN","DINA","DUNA","NIA","UNIA","MAU","ANUL"]},{"l":"EGAREIB","g":["GAIREBE","GAIRE","AIRE","GIRA","RIBA","AERI","REI","BAR","GAI","IRA"],"b":["ERA","GIR","GRA","RAIG","REBIA","RAI","REG","REIG","REBI","REIA","RIA","REBE","ARI","BRI","BIGA","IBER","EBRI","RABI","BAI","BEI","AGRE","REA","BARI"]},{"l":"TERANCL","g":["CENTRAL","ALTRE","CLAR","ACTE","CERT","REAL","TAN","TAL","ART","ALT"],"b":["ERA","CAL","CAN","CEL","CENT","TREN","ENTRA","CARN","CREA","CAR","ARC","NET","RELAT","LENT","CANT","NETA","ACER","TELA","TENC","REC","ANEC","TANC","CERA","RENTA","TREC","ALE","NAT","TAC","ATEN","RET","RAL","ELA","TRENC","REN","LAT","REL","RAT","LAR","RAN","ANT"]},{"l":"UNRGAAY","g":["GUANYAR","GRAN","ANAR","GRAU","GANA","RANG","ARA","ANY","NAU","GRA"],"b":["UNA","RAU","RUA","YANG","GRUA","GUANY","URNA","RUNA","AGRA","RAN","AURA","ARN","ANAU"]},{"l":"TDAENAR","g":["ENTRADA","ANAR","DRET","TARD","EDAT","DATA","ANAT","ARA","TAN","ART"],"b":["ERA","DRETA","AREA","TREN","ENTRA","NET","RENDA","NETA","ARENA","TENDA","NEDAR","RATA","RENTA","NAT","NATA","ATEN","DENT","RET","TARA","DEA","REN","TARDE","RAT","RAN","ANT","RANDA","NEDA","TANDA","DATEN","RADA","NADAR","RAND","DAT","REA","ARNE","ARN","TAR"]},{"l":"NVAICAR","g":["CANVIAR","CANVI","ANAR","CARA","CARN","VAN","ARA","VIA","CAR","ARC"],"b":["ACI","CAN","AVI","RIC","RICA","AVIA","IRA","CAVA","VINC","VACA","CRIA","RAI","CRANI","ANCIA","ARCA","ARIA","RIA","ARI","RAN","RANCI","NIA","RAC","ARN"]},{"l":"EAORLCI","g":["RELACIO","REIAL","CLAR","REAL","AIRE","ROCA","REI","RAO","COR","CEL"],"b":["ERA","CAL","ACI","OLI","COL","CREA","CAR","ARC","RIC","RICA","RACO","ROL","ACER","IRA","OCEA","COLA","AERI","ROC","ORAL","ECO","OCI","CRIA","REC","RAI","CERA","ALE","ALIE","REIA","RAL","CARO","ELA","OCA","RIA","REL","LIRA","LAR","ARI","CORA","ORA","OCRE"]},{"l":"AMRTLGA","g":["MALGRAT","ALTRA","ALTA","ARMA","ARA","TAL","ART","MAR","MAL","ALT"],"b":["GAT","ALA","GALA","GRA","ALTAR","MAT","MAG","RAM","GAL","RATA","AMAT","TARA","RAL","AMAR","RAMA","ARAM","LAT","TALA","AGRA","RAT","LAR","MARA","AMA","TAM","GRAL","TAR"]},{"l":"LIELRBS","g":["LLIBRES","LLIBRE","ILLES","LLEIS","ELLS","LLEI","SER","RES","ELL","REI"],"b":["LES","ELS","REIS","BELL","BEL","LLI","REBI","LLIS","BIS","REL","BES","BRI","IBER","EBRI","RIES","BEI","RESI"]},{"l":"NVTOATL","g":["VOLTANT","TANT","NOVA","TOT","VAN","TAN","VOL","TAL","ALT","VAL"],"b":["VOLTA","NOTA","VOT","ALTO","ONA","LOT","VOLA","VOTA","TONA","TOVA","NAT","TON","TALO","LAT","VOLAT","ANT","TAO","VOLT","OVAL","TAT"]},{"l":"LPTAAIC","g":["CAPITAL","ALTA","ATAC","CITA","PATI","CAP","TAL","PLA","ALT","PAL"],"b":["CAL","ACI","CAPA","TIC","ALA","ACTA","CALA","PICA","TIA","PIC","APA","PILA","PALA","TACA","TIL","TAC","TAP","TIP","CLIP","PIA","ATIC","TAI","CALAT","LAT","PITA","TALA","ALPI","API","LAC","LAIC","LACA","CIT"]},{"l":"ESIMPRR","g":["PRIMERS","PRIMER","PREMIS","PREMI","SER","RES","REI","PIS","REP","PES"],"b":["PER","MES","PRES","REIS","PRIM","EMIR","SERP","SEM","REM","MIRE","MIS","PRIME","REPS","PREM","SIP","REMS","PESI","RIES","ERM","ERMS","PERS","MIES","PIES","RESI"]},{"l":"ESRCARR","g":["CARRERS","SERA","CREA","ACER","SER","RES","CAS","CAR","ARC","SEC"],"b":["ERA","SECA","SAC","RAS","ARCS","CARS","REC","CERA","RAR","ASE","RESA","RARS","ARES","RAC","CES","CASE","REA","ERRA"]},{"l":"IPCELAX","g":["EXPLICA","EIXA","PICA","CAP","PLA","PLE","CEL","EIX","PAL","XIC"],"b":["PEL","CAL","ACI","PIC","PILA","EPICA","XAI","ALE","ALIE","CLIP","ELA","PIA","XEIC","EPIC","XEC","CEP","ALPI","API","CELA","LAC","LAIC","XIA"]},{"l":"IOLSMRL","g":["MILLORS","MILLOR","MOLI","SOM","SOL","MIL","OLI","MOR","ROL","ROS"],"b":["MOLL","MIRO","MORI","ROLS","MOS","ROM","MOL","LLI","OLIS","LLOM","MILL","LLIS","SOR","ORS","MIS","MORS","OMIS"]},{"l":"SDSITUE","g":["ESTUDIS","ESTIU","DIES","DUES","DIU","DIT","DEU","SIS","ETS","SET"],"b":["SEU","DES","TEU","SUD","ESTUDI","EST","TEUS","DIUS","DESTI","DUT","DITS","DEUS","TESI","SES","DIEU","SUITE","DUTES","DITES","DUET","SUE","DUTS","TIES","TES","TUS","EDIT","USE","DUS","SIT","DEIS","DESI","DUIT","SEDUIT"]},{"l":"ETRESNI","g":["INTERES","ENTRE","TENIR","TRES","EREN","TENS","SER","RES","NIT","REI"],"b":["ENS","ETS","SENT","SENTIR","SERIE","SET","EST","TREN","EINES","REIS","NET","NITS","ERES","TIR","TESI","SERE","NETS","ENTRI","ETERN","SETE","RIENT","TRIEN","RET","TIREN","REN","TIRS","TIES","TES","TIN","TRI","REST","RETE","IENS","RIES","RENS","ETER","INERT","SIT","RESI"]},{"l":"TSCTIUA","g":["CIUTATS","CIUTAT","SITUAT","ACTIU","SITUA","CITA","CAS","CAU","CUA","USA"],"b":["ACI","TUITS","TUIT","AUS","TIC","SAC","CASI","TIA","CITAT","SUC","TAST","USAT","SIA","CUITA","CAUS","TAC","ACTUI","ATIC","ICS","TAI","ACUT","SIC","CIS","TUS","SUA","TAUT","TICS","CUIT","SUAT","TAU","AST","CAUSI","TACIT","ASTUT","SIT","TAT","CIT","TAS","ISCA"]},{"l":"ATLANRU","g":["NATURAL","ALTRA","ANAR","ALTA","ANAT","ARA","TAN","TAL","ART","ALT"],"b":["UNA","TAULA","RUTA","NAU","NATURA","ANUAL","ATUR","AULA","ALA","ALTAR","RATA","RAU","RUA","NUL","NAT","NATA","TARA","RAL","URNA","RUNA","LAT","TALA","ANAL","RAT","LAR","RAN","AURA","ANT","TRAU","TAU","TUR","ARN","ANUL","ANAU","TAR"]},{"l":"NITOCIA","g":["NOTICIA","ANTIC","NACIO","TINC","NOTA","CITA","NOIA","TOCA","TAN","NIT"],"b":["ACI","CAN","NOI","TOC","CANT","CINTA","TIC","CANTO","CANO","ONA","TIA","OCI","CONTA","ANIT","ICONA","TANC","TONA","NAT","TON","TAC","TINA","COTA","OCA","ATIC","TAI","TANCO","TIN","ANT","TAO","IAIO","NIA","NOTI","COA","CITI","CIT"]},{"l":"ARSEITV","g":["REVISTA","TRAVES","TRES","SERA","VIST","SER","RES","REI","ART","ETS"],"b":["SEVA","ERA","ESTA","TEVA","VIA","VISTA","EVITAR","SET","EST","AIRE","VAS","ARTS","VIES","REIS","ATES","VERS","AVI","VEIA","VEI","AVIS","TRIA","VES","IRA","TIR","AERI","TESI","TIRA","TIA","EVITA","RAS","VET","SAVI","VERA","SIA","RAI","VERI","VARIS","ASE","VIS","RET"]},{"l":"LACTSLE","g":["CASTELL","ELLS","ELLA","ACTE","CAS","TAL","ELL","ETS","ALT","SET"],"b":["LES","ELS","ALS","ESTA","CAL","EST","CEL","LAS","SALT","ALTS","ATES","SAL","ALL","TALL","SEC","ALES","SECA","SAC","TALLS","TELA","TALS","CELS","ALE","TAC","ASE","CALES","ALLS","ELA","LAT","TES","TEC","LLAST","SALE","AST","CES","CELA","CASE","LLA","LAC","LESA"]},{"l":"RNEIAEG","g":["ENERGIA","GENER","GAIRE","NEGRE","REGNE","REINA","GRAN","EREN","AIRE","REI"],"b":["ERA","NEGRA","GIRA","EINA","NEGAR","GENERA","GAI","NEGA","IRA","AERI","GIR","ANIRE","GRA","GENI","RANG","GEN","RAIG","RAI","REG","REIG","REIA","REN","RING","REGNA","RIA","GIREN","ARI","GIN","RAN","NIA","NEGARE","AGRE","REA","ARNE","ARN"]},{"l":"ODRNAAJ","g":["JORNADA","DONAR","RONDA","ANAR","DONA","NORD","ROJA","RODA","ARA","RAO"],"b":["DON","NADO","ONA","NORA","ONDA","ODA","DRON","RAJA","RAN","RANDA","RADA","ORA","NADAR","RAND","ARN"]},{"l":"ARCDERO","g":["RECORDA","ACORD","ORDRE","ROCA","CREA","RODA","RAO","COR","CAR","ARC"],"b":["ERA","CORDA","CREADOR","DRAC","RACO","ACER","OCEA","ROC","RODAR","ECO","ORDE","REC","DEC","CERA","RAR","ODA","CARO","OCA","DEA","CORA","ORA","OCRE","RAC","CARD","COA","ARCO","CREO","REA","ERRA","ERRO"]},{"l":"ONIBTRE","g":["OBTENIR","TENIR","OBERT","TREN","OBRE","BON","BEN","NIT","REI","NOI"],"b":["TORN","NET","TRON","TIR","OBREN","TRIO","OBTE","BOT","BROT","ENTRI","BORN","TROBE","ROBEN","TRO","BIO","RIENT","BOTI","TORNE","REBO","TON","TRIEN","RET","REBI","BRETO","TIREN","REN","TENOR","OBI","REBOT","TIRO","ROB","ENTRO","BIT","TIN","TRI","BRI","NOTI","IBER","EBRI","NOTE"]},{"l":"DOISICE","g":["DECISIO","EDICIO","DIES","CODI","DISC","DOS","COS","SOC","DIC","ODI"],"b":["DES","SOCI","SEC","COSI","ECO","OCI","DEC","ESCO","IDO","ICS","SIC","CIS","CES","ECOS","DEIS","DESI","IODE","ODIE"]},{"l":"ECIOARC","g":["CREACIO","ACCIO","CREC","AIRE","ROCA","CREA","REI","RAO","COR","CAR"],"b":["ERA","ACI","ARC","RIC","RICA","COCA","RACO","ACER","IRA","OCEA","AERI","ROC","ECO","CEC","OCI","CRIA","REC","RAI","CERA","REIA","CARO","OCA","RIA","ARI","CORA","ORA","OCRE","RAC","COA","ARCO","CAIC","CREO","REA"]},{"l":"USRESME","g":["MESURES","SEREM","EREM","SERE","EMES","SER","RES","RUS","MUR","SEM"],"b":["MES","SEU","MEU","REUS","ERES","SES","REM","SUE","REMS","SUM","USE","ERM","ERMS","RESEM"]},{"l":"EEIORDP","g":["PERIODE","PODER","PERDO","PERO","DIR","REI","POR","REP","ODI","PRO"],"b":["PER","PERD","DIRE","PODRE","ORDE","PERDI","PODI","IDO","PEO","OPI","ORDI","POE","REID","IODE","ODIE","PERDE"]},{"l":"NESCTRE","g":["CENTRES","CENTRE","ENTRE","TRES","EREN","TENS","SENT","SER","RES","ETS"],"b":["ENS","CERT","SET","EST","CENT","TREN","RECENT","SECRET","NET","ERES","CENS","SEC","CREEN","SERE","TENC","NETS","RECTE","ETERN","REC","SETE","ENCES","TREC","ENCERT","RET","TRENC","REN","TES","TEC","REST","RETE","CREE","CES","RENS","ETER"]},{"l":"OCPMARR","g":["COMPRAR","CAMP","COM","CAP","COP","POC","POR","MAR","RAO","COR"],"b":["AMOR","COPA","ROCA","POCA","PRO","COMPRA","CAR","MOR","ARC","AMO","RACO","COMA","PAR","MORA","ROC","MACO","PAM","POMA","RAP","RAM","ROM","RAR","PROA","CARO","OCA","PARO","CAMPO","MOC","CORA","CAPO","ORA","RAC","POM","COA","ARCO"]},{"l":"AMEMORI","g":["MEMORIA","MARE","AMOR","MIRA","AIRE","MAI","REI","MAR","RAO","MOR"],"b":["ERA","AMO","IRA","AERI","MORA","MIRO","MORI","RAIM","EMIR","RAM","IMAM","RAI","MORIA","ROM","MIA","RIMA","MERA","REM","REIA","AMI","MIRE","AMER","MEM","RIA","MIM","ARI","ORA","MAMI","ERM","REA","MAM"]},{"l":"EDRITCE","g":["DIRECTE","DRET","CERT","CRIT","DIR","REI","DIT","DIC","RIC","TIC"],"b":["TIR","DIRE","RECTE","ETIC","REC","DEC","TREC","DETE","RET","TEC","TRI","EDIT","RETE","CREE","REID","ETER","CIT"]},{"l":"MGREANS","g":["GERMANS","GRANS","GRAN","SERA","MARE","MANS","ANEM","SER","RES","MAR"],"b":["MES","ENS","ERA","MENA","MAS","SANG","GANES","GENS","GAS","NEGRA","NEGAR","NAS","NEGA","GRA","MESA","RAS","GRAS","SENA","RANG","MAG","RAM","GEN","ANES","REG","MEGA","ASE","MERA","SEM","REM","AMER","RESA","REN","REGNA","AMEN","SEGA","RAN","GRES","ARES","REMS","ERM"]},{"l":"MEMOTNS","g":["MOMENTS","NOMES","TENS","SENT","NOMS","MON","SOM","NOM","ETS","SET"],"b":["MES","ENS","SON","NOS","EST","OEST","MENT","NET","TOM","MOT","MOTS","ONES","MONS","TEMO","NETS","MOS","TEM","TON","TONS","TOS","MET","MOST","SEM","MEM","TES","MONES","SOT","MEMS","NOTE","NEO"]},{"l":"ACONIIF","g":["OFICINA","NACIO","OFICI","FACI","NOIA","CANO","FINA","FAN","FOC","NOI"],"b":["ACI","CAN","ONA","AFICIO","OCI","ICONA","FON","FICA","FAI","OCA","IAIO","AFI","NIA","FICO","COA","FOCA","FIA"]},{"l":"LRANPAT","g":["PARLANT","ALTRA","PART","ANAR","ARA","TAN","TAL","ART","PLA","ALT"],"b":["ALTA","ANAT","PRAT","PAL","ALA","PAR","RAP","ALTAR","APA","RATA","PALA","NAT","NATA","TAP","TARA","RAL","LAT","TALA","ANAL","RAT","LAR","RAN","ANT","ARN","NAP","TAR"]},{"l":"ARABOTD","g":["TROBADA","TROBA","OBRA","TARD","DATA","ROBA","ARA","ART","RAO","BAR"],"b":["ARAB","RODA","ROBAT","RATO","BOT","ABAT","BROT","BARO","RATA","DOT","BAT","TRO","BOTA","DOTAR","ROTA","ODA","TARA","RODAT","BATA","ROB","RAT","TORA","TAO","RADA","ORA","TROB","DAT","DOTA","TARO","BOA","BOR","BADAR","BOTAR","TAR"]},{"l":"MYALNES","g":["ALMENYS","ANYS","MANS","ANEM","MENA","LEMA","ANY","MAL","MAS","SAL"],"b":["LES","ELS","MES","ALS","ENS","LAS","MALES","NAS","ALES","MEL","MALS","MESA","SENY","SENA","ANES","SALEM","ALE","ASE","SEM","ELA","AMEN","ELM","SALE","AMES","SALM","LESA","MELSA"]},{"l":"TSACEOI","g":["ESTACIO","ESTIC","COSA","SOTA","ACTE","CAS","COS","SOC","ETS","SET"],"b":["ESTA","EST","ACI","OEST","CITA","TOCA","ATES","TOC","SOCI","SEC","TIC","ETICA","COSI","OCEA","SECA","SAC","TESI","CAOS","CASI","CITES","TIA","ECO","OCI","ETIC","SIA","OSCA","ESCO","COET","TOS","TAC","ASE","CASO","COTA","SOCA","OCA","ATIC","ICS","OASI","TAI","SOCIA"]},{"l":"SREAEPR","g":["ESPERAR","ESPERA","SERA","PARE","SER","RES","PAS","SAP","REP","PES"],"b":["PER","ERA","PRES","ERES","SERE","PAR","RAS","RAP","SERP","PESA","PERA","RAR","ASE","PERES","RESA","ESPER","RARS","REPS","ARES","REA","ERRA","PERS"]},{"l":"NFRMOIE","g":["INFORME","MENOR","MOREN","FER","MON","NOM","REI","FEM","NOI","MOR"],"b":["MIN","MIRO","FERM","MORI","EMIR","RENOM","ROM","FRE","FON","ORFE","FIRE","REM","MIRE","REN","FORM","RIF","FEN","MONER","MINE","ERM","OFEN","OFERI","RENOI","NEO"]},{"l":"ORSTDIA","g":["SORTIDA","SOTA","TARD","SORT","DIA","DOS","DIR","ART","DIT","RAO"],"b":["RADIO","ROSA","ARTS","ODI","RODA","DITS","TRIA","TROS","IRA","TIR","ROS","TIRA","DITA","DIRA","TRIO","TIA","RATO","RAS","ODIA","DIRAS","SIA","DOT","ODIAR","RAI","TRO","RADI","DOTAR","TOS","OIDA","ROTA","IDO","ODA","OASI","RODAT","TAI","ROSAT","RIA","RATIO","TIRS","SOR"]}];
+const LEVELS={get length(){return DATA.length}};
+
+/* ---------- Estado ---------- */
+const $=id=>document.getElementById(id);
+const HINT_COST=30,TARGET_COST=50;
+let levelIdx=0,coins=150,L=null,layout=null,revealed=new Set(),foundBonus=new Set(),bonusWords=[],
+    order=[],path=[],pointer=null,targetMode=false,locked=false;
+try{levelIdx=parseInt(localStorage.getItem("catquiz-roda-pos")||"0")||0;coins=parseInt(localStorage.getItem("catquiz-roda-monedes")||"150");if(isNaN(coins))coins=150}catch(e){}
+function save(){if(ESPECT)return;try{localStorage.setItem("catquiz-roda-pos",levelIdx);localStorage.setItem("catquiz-roda-monedes",coins);if(levelIdx>Number(localStorage.getItem("catquiz-roda")||0))localStorage.setItem("catquiz-roda",levelIdx)}catch(e){}}
+
+/* ---------- Audio ---------- */
+let ac=null;let SO_ON=localStorage.getItem("catquiz-efectes")!=="0";
+function beep(f,d,type,v,delay){if(!SO_ON)return;try{
+  ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+  const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+(delay||0);
+  o.type=type||"sine";o.frequency.value=f;g.gain.setValueAtTime(v||.15,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+  o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d)}catch(e){}}
+const sfx={
+  tick:n=>beep(400+n*60,.08,"triangle",.12),
+  ok:()=>[523,659,784].forEach((f,i)=>beep(f,.18,"sine",.16,i*.07)),
+  bonus:()=>[784,988,1175].forEach((f,i)=>beep(f,.15,"square",.07,i*.06)),
+  bad:()=>beep(150,.25,"sawtooth",.1),
+  win:()=>[523,659,784,1047,1319].forEach((f,i)=>beep(f,.3,"sine",.18,i*.1)),
+  coin:()=>beep(1200,.1,"square",.06)
+};
+
+/* ---------- Generador de crucigrama ---------- */
+function buildLayout(words){
+  let best=null;
+  for(let t=0;t<600;t++){
+    const ws=[...new Set(words)].sort((a,b)=>b.length-a.length||Math.random()-.5);
+    if(t%3===2)ws.sort(()=>Math.random()-.5);
+    const cells=new Map(),dirs=new Map(),placed=[];
+    const key=(r,c)=>r+","+c;
+    const can=(w,r,c,d)=>{
+      const dr=d?1:0,dc=d?0:1;
+      if(cells.has(key(r-dr,c-dc))||cells.has(key(r+dr*w.length,c+dc*w.length)))return false;
+      let cross=0;
+      for(let i=0;i<w.length;i++){
+        const rr=r+dr*i,cc=c+dc*i,ex=cells.get(key(rr,cc));
+        if(ex!==undefined){
+          if(ex!==w[i]||dirs.get(key(rr,cc)).has(d))return false;
+          cross++;
+        }else if(cells.has(key(rr+dc,cc+dr))||cells.has(key(rr-dc,cc-dr)))return false;
+      }
+      return placed.length===0||(cross>0&&cross<w.length);
+    };
+    const put=(w,r,c,d)=>{
+      const dr=d?1:0,dc=d?0:1;
+      for(let i=0;i<w.length;i++){
+        const k=key(r+dr*i,c+dc*i);cells.set(k,w[i]);
+        if(!dirs.has(k))dirs.set(k,new Set());dirs.get(k).add(d);
+      }
+      placed.push({w,r,c,d});
+    };
+    put(ws[0],0,0,0);
+    for(let n=1;n<ws.length;n++){
+      const w=ws[n],cands=[];
+      for(const [k,ch] of cells){
+        const [cr,cc]=k.split(",").map(Number);
+        for(let i=0;i<w.length;i++)if(w[i]===ch)for(let d=0;d<2;d++){
+          const r=cr-(d?i:0),c=cc-(d?0:i);
+          if(can(w,r,c,d))cands.push([r,c,d]);
+        }
+      }
+      if(cands.length){const [r,c,d]=cands[Math.floor(Math.random()*cands.length)];put(w,r,c,d)}
+    }
+    let minR=1e9,minC=1e9,maxR=-1e9,maxC=-1e9;
+    for(const k of cells.keys()){const [r,c]=k.split(",").map(Number);minR=Math.min(minR,r);maxR=Math.max(maxR,r);minC=Math.min(minC,c);maxC=Math.max(maxC,c)}
+    const rows=maxR-minR+1,cols=maxC-minC+1;
+    const score=placed.length*1000-rows*cols*5-Math.abs(rows-cols)*8-Math.max(rows,cols)*60;
+    if(!best||score>best.score)best={score,rows,cols,minR,minC,placed};
+  }
+  const list=best.placed.map(p=>({w:p.w,r:p.r-best.minR,c:p.c-best.minC,d:p.d}));
+  return {rows:best.rows,cols:best.cols,words:list};
+}
+
+/* ---------- Carga de nivel ---------- */
+function loadLevel(){
+  const D=DATA[levelIdx%DATA.length],T=THEMES[levelIdx%THEMES.length];
+  L={letters:D.l,words:D.g,extra:D.b,title:T.title,theme:T.theme};
+  const th=L.theme,root=document.documentElement.style;
+  root.setProperty("--tile",th.tile);root.setProperty("--tile2",th.tile2);root.setProperty("--title",th.title);
+  root.setProperty("--sky1",th.sky[0]);root.setProperty("--sky2",th.sky[1]);root.setProperty("--sky3",th.sky[2]);
+  root.setProperty("--hill1",th.hill[0]);root.setProperty("--hill2",th.hill[1]);
+  $("title").textContent=L.title;
+  $("lvl").textContent="Nivell "+(levelIdx+1);
+  layout=buildLayout(L.words);
+  const placed=new Set(layout.words.map(x=>x.w));
+  bonusWords=L.words.filter(w=>!placed.has(w)).concat(L.extra);
+  revealed=new Set();foundBonus=new Set();path=[];targetMode=false;locked=false;
+  order=L.letters.split("");shuffleArr(order);
+  $("bonusCount").textContent="0";
+  renderGrid();renderWheel();updateCoins();setWord("");
+}
+function shuffleArr(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+
+/* ---------- Tablero ---------- */
+const cellLetter=new Map();
+function renderGrid(){
+  const g=$("grid");g.innerHTML="";cellLetter.clear();
+  layout.words.forEach(o=>{for(let i=0;i<o.w.length;i++){
+    const r=o.r+(o.d?i:0),c=o.c+(o.d?0:i);cellLetter.set(r+","+c,o.w[i])}});
+  const area=$("gridArea").getBoundingClientRect();
+  const s=Math.floor(Math.min((area.width-20)/layout.cols,(area.height-12)/layout.rows,64));
+  g.style.gridTemplateColumns="repeat("+layout.cols+","+s+"px)";
+  g.style.gridAutoRows=s+"px";
+  for(let r=0;r<layout.rows;r++)for(let c=0;c<layout.cols;c++){
+    const k=r+","+c,d=document.createElement("div");
+    if(cellLetter.has(k)){
+      d.className="cell";d.dataset.k=k;d.style.fontSize=Math.floor(s*.62)+"px";
+      if(revealed.has(k)){d.classList.add("on");d.textContent=cellLetter.get(k)}
+      d.addEventListener("pointerdown",()=>onCellTap(k));
+    }else d.style.visibility="hidden";
+    g.appendChild(d);
+  }
+}
+function cellEl(k){return $("grid").querySelector('[data-k="'+k+'"]')}
+function reveal(k,anim){
+  if(revealed.has(k))return;
+  revealed.add(k);const e=cellEl(k);if(!e)return;
+  e.classList.add("on");e.textContent=cellLetter.get(k);
+  if(anim){e.classList.remove("pop");void e.offsetWidth;e.classList.add("pop")}
+}
+function wordCells(o){const a=[];for(let i=0;i<o.w.length;i++)a.push((o.r+(o.d?i:0))+","+(o.c+(o.d?0:i)));return a}
+function isFound(o){return wordCells(o).every(k=>revealed.has(k))}
+function checkWin(){
+  if(layout.words.every(isFound)&&!locked){
+    locked=true;sfx.win();confetti();
+    const reward=20+layout.words.length*2;coins+=reward;levelIdx++;save();updateCoins();
+    setTimeout(()=>{$("winMsg").textContent="+"+reward+" monedes"+(foundBonus.size?" · "+foundBonus.size+(foundBonus.size>1?" paraules extra":" paraula extra"):"");$("winOv").classList.add("show")},900);
+  }
+}
+
+/* ---------- Rueda ---------- */
+let wheelSize=0;
+function letterPos(i,n){
+  const a=-Math.PI/2+i*2*Math.PI/n;
+  return {x:50+34*Math.cos(a),y:50+34*Math.sin(a)};
+}
+function renderWheel(){
+  const w=$("wheel");w.querySelectorAll(".letter").forEach(e=>e.remove());
+  const n=order.length;
+  order.forEach((ch,i)=>{
+    const p=letterPos(i,n),d=document.createElement("div");
+    d.className="letter";d.textContent=ch;d.dataset.i=i;
+    d.style.left=p.x+"%";d.style.top=p.y+"%";w.appendChild(d);
+  });
+  drawLines();
+}
+function centerOf(i){const p=letterPos(i,order.length),r=$("wheel").getBoundingClientRect();return {x:p.x/100*r.width,y:p.y/100*r.height}}
+function drawLines(){
+  const svg=$("lines"),r=$("wheel").getBoundingClientRect();
+  svg.setAttribute("viewBox","0 0 "+r.width+" "+r.height);
+  let pts=path.map(centerOf);
+  let s="";
+  if(pts.length){
+    const col=getComputedStyle(document.documentElement).getPropertyValue("--tile");
+    const sw=r.width*.1;
+    const all=pts.slice();if(pointer)all.push(pointer);
+    s='<polyline fill="none" stroke="'+col+'" stroke-width="'+sw+'" stroke-linecap="round" stroke-linejoin="round" opacity=".9" points="'+all.map(p=>p.x+","+p.y).join(" ")+'"/>';
+  }
+  svg.innerHTML=s;
+  $("wheel").querySelectorAll(".letter").forEach(e=>e.classList.toggle("sel",path.includes(+e.dataset.i)));
+}
+function hit(x,y){
+  const r=$("wheel").getBoundingClientRect(),rad=r.width*.11;
+  for(let i=0;i<order.length;i++){const c=centerOf(i);if(Math.hypot(c.x-x,c.y-y)<rad)return i}
+  return -1;
+}
+function setWord(txt,cls){
+  const w=$("word");w.textContent=txt;w.className=txt?"show "+(cls||""):"";
+}
+function localXY(e){const r=$("wheel").getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
+const wheel=$("wheel");
+wheel.addEventListener("pointerdown",e=>{
+  if(locked)return;
+  wheel.setPointerCapture(e.pointerId);
+  const p=localXY(e);pointer=p;path=[];
+  const h=hit(p.x,p.y);
+  if(h>=0){path=[h];sfx.tick(0)}
+  setWord(path.map(i=>order[i]).join(""));drawLines();
+});
+wheel.addEventListener("pointermove",e=>{
+  if(!path.length)return;
+  const p=localXY(e);pointer=p;const h=hit(p.x,p.y);
+  if(h>=0){
+    if(path.length>1&&h===path[path.length-2]){path.pop();sfx.tick(path.length)}
+    else if(!path.includes(h)){path.push(h);sfx.tick(path.length)}
+    setWord(path.map(i=>order[i]).join(""));
+  }
+  drawLines();
+});
+function endSel(){
+  if(!path.length){pointer=null;return}
+  const word=path.map(i=>order[i]).join("");
+  path=[];pointer=null;drawLines();
+  submit(word);
+}
+wheel.addEventListener("pointerup",endSel);
+wheel.addEventListener("pointercancel",endSel);
+
+function submit(word){
+  if(word.length<2){setWord("");return}
+  const o=layout.words.find(x=>x.w===word);
+  if(o){
+    if(isFound(o)){setWord(word,"bad");sfx.bad();toast("Ja la tens");}
+    else{
+      setWord(word,"ok");sfx.ok();
+      wordCells(o).forEach((k,i)=>setTimeout(()=>reveal(k,true),i*70));
+      setTimeout(checkWin,wordCells(o).length*70+50);
+    }
+  }else if(bonusWords.includes(word)){
+    if(foundBonus.has(word)){setWord(word,"bad");sfx.bad();toast("Ja la tens");}
+    else{foundBonus.add(word);coins+=5;save();updateCoins();setWord(word,"bonus");sfx.bonus();
+      $("bonusCount").textContent=foundBonus.size;toast("Paraula extra! +5 🪙");}
+  }else{setWord(word,"bad");sfx.bad()}
+  setTimeout(()=>{if(!path.length)setWord("")},800);
+}
+
+/* ---------- Botones ---------- */
+$("shuffle").addEventListener("click",()=>{
+  if(locked)return;
+  const cur=order.join("");let tries=0;
+  do{shuffleArr(order);tries++}while(order.join("")===cur&&tries<10);
+  path=[];pointer=null;
+  const w=$("wheel");w.querySelectorAll(".letter").forEach((e,i)=>{
+    const p=letterPos(i,order.length);e.textContent=order[i];e.style.left=p.x+"%";e.style.top=p.y+"%"});
+  drawLines();sfx.tick(2);
+});
+function spend(n){
+  if(coins<n){toast("Et falten monedes 🪙");sfx.bad();return false}
+  coins-=n;save();updateCoins();sfx.coin();return true;
+}
+function hiddenCells(){return [...cellLetter.keys()].filter(k=>!revealed.has(k))}
+$("hintBtn").addEventListener("click",()=>{
+  if(locked)return;
+  const h=hiddenCells();if(!h.length)return;
+  if(!spend(HINT_COST))return;
+  reveal(h[Math.floor(Math.random()*h.length)],true);setTimeout(checkWin,300);
+});
+$("targetBtn").addEventListener("click",()=>{
+  if(locked)return;
+  targetMode=!targetMode;
+  $("targetBtn").classList.toggle("active",targetMode);
+  $("grid").querySelectorAll(".cell").forEach(e=>e.classList.toggle("target",targetMode&&!revealed.has(e.dataset.k)));
+  if(targetMode)toast("Toca la casella que vulguis revelar");
+});
+function onCellTap(k){
+  if(!targetMode||revealed.has(k)||locked)return;
+  if(!spend(TARGET_COST))return;
+  targetMode=false;$("targetBtn").classList.remove("active");
+  $("grid").querySelectorAll(".cell").forEach(e=>e.classList.remove("target"));
+  reveal(k,true);setTimeout(checkWin,300);
+}
+$("bonusBtn").addEventListener("click",()=>{
+  const bl=$("bonusList");
+  bl.innerHTML=bonusWords.length?bonusWords.map(w=>'<span class="'+(foundBonus.has(w)?"got":"")+'">'+(foundBonus.has(w)?w:w.replace(/./g,"•"))+"</span>").join(""):"Aquest nivell no té paraules extra.";
+  $("bonusOv").classList.add("show");
+});
+$("closeBonus").addEventListener("click",()=>$("bonusOv").classList.remove("show"));
+$("nextBtn").addEventListener("click",()=>{$("winOv").classList.remove("show");loadLevel()});
+$("shareBtn").addEventListener("click",e=>{e.stopPropagation();if(window.CQ)CQ.comparteix("He superat el nivell "+levelIdx+" de la Roda de paraules de CatQuiz 🎡 Hi jugues?","https://www.catquiz.cat/jocs/roda.html");try{gtag("event","comparteix",{joc:"roda"})}catch(er){}});
+
+/* ---------- Pantalla completa ---------- */
+function goFull(){
+  const el=document.documentElement;
+  try{
+    if(!document.fullscreenElement){
+      const p=(el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen);
+      if(p){const r=p.call(el);if(r&&r.catch)r.catch(()=>{})}
+      if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("portrait").catch(()=>{});
+    }else{(document.exitFullscreen||document.webkitExitFullscreen).call(document)}
+  }catch(e){}
+}
+$("fsBtn").addEventListener("click",goFull);
+$("playBtn").addEventListener("click",()=>{
+  $("startOv").classList.remove("show");
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
+  if(!document.fullscreenElement&&!ESPECT)goFull();
+});
+
+/* ---------- Utilidades ---------- */
+function updateCoins(){$("coins").textContent="🪙 "+coins}
+let tt=null;
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),1400)}
+function confetti(){
+  const cols=["#ff5a5f","#ffd23f","#3bceac","#4d9de0","#e15554","#9b5de5"],g=$("game");
+  for(let i=0;i<60;i++){
+    const c=document.createElement("div");c.className="confetti";
+    c.style.left=Math.random()*100+"%";c.style.background=cols[i%cols.length];
+    c.style.animationDelay=Math.random()*.6+"s";c.style.animationDuration=1.6+Math.random()*1.4+"s";
+    g.appendChild(c);setTimeout(()=>c.remove(),3500);
+  }
+}
+window.addEventListener("resize",()=>{renderGrid();drawLines()});
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
+/* ---------- Mode espectador / demo ---------- */
+const Q=new URLSearchParams(location.search),ESPECT=Q.has("espectador")||Q.has("demo");
+const bsm=$("btn-musica");if(bsm){bsm.textContent=SO_ON?"🔊":"🔇";bsm.addEventListener("click",()=>{SO_ON=!SO_ON;try{localStorage.setItem("catquiz-efectes",SO_ON?"1":"0")}catch(e){}bsm.textContent=SO_ON?"🔊":"🔇"})}
+if(ESPECT){
+  levelIdx=Math.floor(Math.random()*40);coins=150;
+  for(const ev of ["pointerdown","click","keydown"])document.addEventListener(ev,e=>{if(e.isTrusted&&!e.target.closest("#tornar,#btn-musica"))
+    {e.stopPropagation();e.preventDefault()}},true);
+  $("startOv").classList.remove("show");
+  const espera=ms=>new Promise(r=>setTimeout(r,ms));
+  (async function bot(){
+    await espera(1200);
+    for(;;){
+      if($("winOv").classList.contains("show")){await espera(2200);$("winOv").classList.remove("show");loadLevel();await espera(1200);continue}
+      const pend=layout.words.filter(o=>!isFound(o));
+      if(!pend.length){await espera(600);continue}
+      let o=pend[Math.floor(Math.random()*pend.length)];
+      if(Math.random()<.18&&bonusWords.length){o={w:bonusWords[Math.floor(Math.random()*bonusWords.length)]}}
+      // tria índexs de la roda per a cada lletra
+      const usat=new Set(),idx=[];
+      for(const ch of o.w){const i=order.findIndex((c,j)=>c===ch&&!usat.has(j));if(i<0)break;usat.add(i);idx.push(i)}
+      if(idx.length!==o.w.length){await espera(400);continue}
+      path=[];
+      for(const i of idx){path.push(i);pointer=centerOf(i);sfx.tick(path.length);setWord(path.map(k=>order[k]).join(""));drawLines();await espera(260)}
+      await espera(250);endSel();await espera(1300+Math.random()*900);
+    }
+  })();
+}
+loadLevel();
+})();
+</script>
+</body>
+</html>

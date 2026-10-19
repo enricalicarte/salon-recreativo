@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SDE8LXDNP9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -15,6 +14,7 @@
     if (b.matches('a.carta')) gtag('event', 'obrir_joc', { joc: (b.getAttribute('href') || '').split('/').pop().replace('.html','') });
     else gtag('event', b.id === 'btn-reinici' ? 'tornar_a_jugar' : 'inici_partida', { joc: joc }); });
 </script>
+<script src="../comu.js"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Motle · CatQuiz Minijocs</title>
@@ -141,13 +141,21 @@
   .ll{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 4px 0 rgba(0,0,0,.35),var(--glow)!important}
   .ll.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important}
   .cap .tipus,.tipus{font-family:'Roboto',sans-serif!important}
+  /* Usabilitat: objectius tàctils de 44 px i botó de pantalla completa */
+  .hud a,.hud button,#btn-musica,#btn-pc{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .gros,#btn-inici,#btn-reinici{min-height:44px}
+  #btn-pc{font-family:'Roboto',sans-serif!important;font-size:20px!important;padding:0 10px!important;cursor:pointer;line-height:1}
+  @media (max-width:430px){ .hud a.pill .t-cq{display:none} }
+  @media (max-width:400px){ .hud{gap:4px!important;left:8px!important;right:8px!important} .hud .pill{font-size:15px!important;padding:4px 9px!important} .hud a,.hud button,#btn-musica,#btn-pc{min-width:40px!important} }
+  html.daltonic .tecla.be{background:linear-gradient(180deg,#FF9A5A,#E0602A)!important;box-shadow:0 3px 0 #9A3A10,0 0 14px rgba(245,121,58,.6)!important}
+  html.daltonic .tecla.quasi{background:linear-gradient(180deg,#A8D4FF,#5AA0E8)!important;color:#0A1A3A!important;box-shadow:0 3px 0 #2A5A9A,0 0 14px rgba(133,192,249,.5)!important}
 </style>
 </head>
 <body>
-<div class="hud"><a class="pill" href="../index.html">← CatQuiz</a><button class="pill" id="btn-musica" style="font-size:16px;padding:5px 10px;cursor:pointer">🎵</button><span class="pill acc" id="intents">1 / 6</span></div>
+<div class="hud"><a class="pill" href="../index.html">←<span class="t-cq">&nbsp;CatQuiz</span></a><button class="pill" id="btn-musica" style="font-size:16px;padding:5px 10px;cursor:pointer">🎵</button><span class="pill acc" id="intents">1 / 6</span></div>
 <div class="missatge" id="missatge"></div>
 <div class="teclat" id="teclat"></div>
-<div class="capa" id="inici"><div class="caixa"><h1>Motle</h1><p>Endevina la paraula de cinc lletres en sis intents. Verd: lletra al lloc correcte. Groc: hi és, però en un altre lloc. Lila: no hi és.</p><button class="gros" id="btn-inici">Paraula aleatòria</button> <button class="gros" id="btn-diari" class="acc">Paraula del dia</button><p id="ratxa" style="margin:14px 0 0;font-size:15px"></p></div></div>
+<div class="capa" id="inici"><div class="caixa"><h1>Motle</h1><p>Endevina la paraula de cinc lletres en sis intents. <span class="cq-cols">Verd: lletra al lloc correcte. Groc: hi és, però en un altre lloc.</span> Gris: no hi és.</p><button class="gros" id="btn-inici">Paraula aleatòria</button> <button class="gros" id="btn-diari" class="acc">Paraula del dia</button><p id="ratxa" style="margin:14px 0 0;font-size:15px"></p></div></div>
 <div class="capa" id="final" hidden><div class="caixa"><h1 id="titol-final">Bravo!</h1><p id="text-final"></p><button class="gros" id="btn-reinici">Una altra</button></div></div>
 
 <script type="importmap">
@@ -155,6 +163,7 @@
                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
 </script>
 <script type="module">
+var dtReal = 1/60; // temps real entre fotogrames (els rellotges del joc el fan servir encara que el 3D vagi lent)
 // Pantalla fixa: sense zoom ni desplaçament lateral (gestos de pinça i doble toc bloquejats)
 for (const ev of ['gesturestart','gesturechange','gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
 document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
@@ -260,7 +269,7 @@ function percussio(t, tipus){ const c = AUDIO.ctx; // bombo = sinus amb caiguda 
   g.gain.setValueAtTime(tipus === 'xarles' ? .08 : .25, t); g.gain.exponentialRampToValueAtTime(.001, t + (tipus === 'xarles' ? .04 : .14)); s.connect(f); f.connect(g); g.connect(AUDIO.mus); s.start(t); s.stop(t + .2); }
 // SFX: cada crida varia el to ±6% perquè no sonin repetitius
 const SFX = { ok:[660,1320,.14,'square'], mal:[220,90,.35,'sawtooth'], clic:[520,520,.05,'square'], win:[523,1568,.45,'square'], bonus:[880,1760,.2,'triangle'], pop:[500,800,.1,'triangle'], tic:[900,900,.05,'sine'] };
-function so(tipus){ try { if (!audioInit()) return; const [f0, f1, dur, tp] = SFX[tipus] || SFX.clic, v = 1 + (Math.random() - .5) * .12, t = AUDIO.ctx.currentTime;
+function so(tipus){ if (window.CQ && !CQ.efectes) { if (tipus === 'clic' && AUDIO.actiu) try { if (audioInit()) musicaInici(); } catch (e) {} return; } try { if (!audioInit()) return; const [f0, f1, dur, tp] = SFX[tipus] || SFX.clic, v = 1 + (Math.random() - .5) * .12, t = AUDIO.ctx.currentTime;
   if (tipus === 'win') { [0, 4, 7, 12].forEach((s, i) => nota(523 * Math.pow(2, s / 12) * v, t + i * .09, .25, { tipus: 'square', vol: .09 })); return; }
   nota(f0 * v, t, dur, { tipus: tp, fins: f1 * v, vol: .1 }); if (tipus === 'clic' && AUDIO.actiu) musicaInici(); } catch (e) {} }
 // Seqüenciador: planifica amb 120 ms d'antelació des d'un temporitzador de 25 ms (el rellotge precís és el de l'AudioContext)
@@ -285,7 +294,7 @@ Object.assign(window, { AUDIO, SEQ, so, musicaCommuta: () => musicaCommuta() });
 function musicaCommuta(){ AUDIO.actiu = !AUDIO.actiu; localStorage.setItem('catquiz-musica', AUDIO.actiu ? '1' : '0'); if (AUDIO.actiu) musicaInici(); else musicaAtura(); return AUDIO.actiu; }
 
 // Paraules de 5 lletres, sense accents. Amplia-la lliurement.
-const PARAULES = ['CASES','PLATA','MARES','VERDS','LLUNA','FOSCA','TAULA','PORTA','NEGRE','GROCS','BLAUS','ROURE','FULLA','PEDRA','SORRA','NEVAR','VENTS','CALOR','FREDS','GELAT','SUCRE','PANET','TOMBA','CAMPS','MUNTS','VALLS','RIURE','PLORS','CANTA','BALLA','SALTA','CORRE','SOMNI','FESTA','PLATS','FORNS','CUINA','TAPES','FRUIT','POMES','PERES','RAIMS','VIDRE','FERRO','FUSTA','PAPER','CARTA','GOSSA','OCELL','FLORS','ROSES','HERBA','ARBRE','BOSCS','TORRE','PONTS','RUTES','TRENS','COTXE','BARCA','NUVOL','ESTEL','TERRA','AIGUA','LLUMS','DENTS','MOTOS','RODES','CAMES','NASOS','CABRA','GALLS','CIGNE','TIGRE','ZEBRA','PLUJA','BOIRA','TRONS','LLAMP','PLACA','SOFAS','LLITS','RATES','BOLET','PINYA','MENTA','SALSA','PASTA','PIZZA','CREMA','FORMA','PUNTS','LINIA','AMICS','AVIAT','BANCS','BARRI','BLANC','BRACS','BROTS','BUITS','BUSCA','CAIXA','CALLA','CALMA','CANAL','CANVI','CAPES','CARES','CARNS','CASAL','CASCS','CELLA','CERCA','CINTA','CLAUS','CLARS','COBRA','COLLS','COLOR','COPES','CORDA','CORTS','COSTA','COURE','CREUS','CRIDA','CRITS','CUCUT','CURTS','DAMES','DEIXA','DIARI','DOLCA','DONES','DORMS','DRETS','DUBTE','DURES','ELLES','ENTRA','ESCAC','ESPAI','ESTIU','FAIXA','FALDA','FANGS','FEINA','FELIC','FILLS','FIRES','FITES','FLAMA','FOCUS','FONTS','FORCA','FORAT','FORTS','FOTOS','FRESC','FUGIR','FUMAR','GABIA','GALTA','GENER','GESTS','GIRAR','GLACA','GOTES','GRANS','GREUS','GRILL','GUANY','GUSTS','HORTS','HOTEL','HUMIT','ILLES','IMANS','JOVES','JUGAR','LLACS','LLARG','LLATI','LLEIG','LLEIS','LLIMA','LLOCS','LLOPS','LLUIR','MAGIC','MALES','MANEC','MANTA','MAPES','MARCS','MARGE','MASSA','MELIC','MENYS','MESOS','METGE','MIRAR','MOBLE','MOLLS','MONJO','MORAT','MOURE','MUSCA','NEDAR','NETES','NOMES','NOVES','OBRIR','OLIVA','OMBRA','ONADA','ORDRE','PALAU','PARET','PASSA','PATIS','PECES','PELLS','PENSA','PERLA','PESAR','PETIT','PILES','PINTA','PLANS','PLENS','PLOMA','POBLE','POLLS','PORCS','POSAR','PREUS','PRIMS','PROVA','PUNYS','QUIET','RADIO','RAMAT','RASPA','REGAL','REINA','RENOU','REPTE','ROBAR','RUSCS','SABEM','SABER','SALAT','SANTS','SEGLE','SEGUR','SENSE','SERPS','SETGE','SOLES','SOPAR','SORTS','SUAUS','TASCA','TEMPS','TENDA','TEULA','TIRAR','TITOL','TOTAL','TRIST','TRUCS','TURBO','UNGLA','URPES','VALOR','VELLS','VENIR','VERBS','VESPA','VIURE','VOLAR','VOLTA','XARXA','XERRA','XICOT','XIFRA','XINES','XOCAR','ABRIL','ACTES','ACTOR','AGAFA','AGUDA','AIRES','AJUDA','ALBES','ALCEN','ALLAU','ALTES','AMANT','AMPLE','ANELL','ANIMA','ARENA','ARMES','ARROS','ASSEU','ATLES','AVANT','BADIA','BAIXA','BALES','BANYS','BARBA','BARRA','BATRE','BEURE','BIGES','BLAVA','BOLES','BOMBA','BONIC','BOTES','BRISA','BROMA','BRUTS','BUFAR','BULLS','BURRO','BUSOS','CABAL','CABRE','CAFES','CAIRE','CALDO','CANES','CANYA','CAPSA','CARBO','CARRO','CAURE','CAVAR','CEDIR','CERTS','CITES','CIVIL','CLARA','CLIMA','CLOSA','COLLA','COLZE','COMTE','CONTE','CORBS','CORNS','COSIR','COVES','CRIAR','CULPA','CURAR','DANSA','DEBAT','DENSA','DESIG','DEUTE','DIETA','DIGNE','DINAR','DIVAN','DOBLE','DOLOR','DONAR','DRAPS','DROGA','DUNES','DURAR','EDATS','EINES','EIXOS','ENUIG','ENVIA','EQUIP','ERROR','ESCUT','ESPIA','ESQUI','ESTAT','ESTIL','EXTRA','FADES','FALTA','FANAL','FARTS','FATAL','FAVES','FEBRE','FERIR','FIBRA','FIDEL','FILAR','FINAL','FIRMA','FLUIX','FONDO','FRASE','FRESA','FRUIR','FUMAT','FUNDA','GALES','GANES','GASOS','GENIS','GENTS','GESTA','GIRES','GORRA','GRANA','GRATA','GREIX','GRISA','GRUES','GUIES','HABIL','HORES','HOSTE','IDEES','IGUAL','IMANT','INDEX','JARDI','JOIES','JUNTS','JUSTS','LLANA','LLARS','LLAST','LLAVI','LLEST','LLIGA','LLOSA','LLUNY','LOCAL','LOGIC','MAGRE','MANAR','MANSA','MARCA','MARIT','MARXA','MATAR','MENAR','MERLA','METRE','MIRAT','MISSA','MOBIL','MODES','MOLTS','MONTS','MORIR','MORTS','MOSCA','MOTIU','MUDAR','MURAL','NACRE','NAVAL','NEGAR','NENES','NEULA','NINES','NOCES','NOIES','NOTES','NUSOS','OBERT','OBRES','ODIAR','OLLES','ONCLE','OPERA','ORGUE','OSSOS','PACTE','PAGAR','PAGES','PALES','PANYS','PARAR','PARES','PARLA','PATIR','PAUSA','PEBRE','PEDAL','PELAR','PENYA','PESOS','PETAR','PILAR','PISTA','PLAER','PLANA','PLENA','PLOMS','POBRE','POEMA','POLIT','PORTS','POSTS','PREGA','PREMI','PRESA','PRIMA','PUJAR','PUNTA','QUOTA','RABIA','RACES','RADAR','RAMES','RAONS','REBRE','RECTE','REGNE','REIAL','RENDA','RESTA','RETRE','ROBES','ROCES','RODAR','RONDA','ROSAT','RUBIS','RUINA','SABIA','SABOR','SACRE','SALES','SALTS','SANAR','SEGON','SERIE','SEURE','SIGNE','SOBRE','SOCIS','SOLAR','SOLCS','SONAR','SOPES','SUMAR','TACTE','TALLA','TARDA','TEMES','TEMOR','TENIR','TERME','TOCAR','TORNS','TORTA','TRAMA','TRENA','TRIAR','TRONC','TURBA','UNITS','USUAL','VALER','VAPOR','VARIA','VEINS','VELES','VENDA','VERGE','VIALS','VIDES','VILES','VINYA','VIRUS','VISTA','VITAL','VOCAL','VOLER','VOLTS','VORES','XALET','XAPES','ZONES','AGENT','ALTAR','AMBRE','ANGLE','ANTIC','APLEC','ASTRE','BADAR','BAGUL','BALCO','BANDA','BASSA','BATEC','BRAVA','BRUSA','BUFET','CALAT','CALIU','CANTO','CASAT','CLAPA','COBLA','COLOM','CORAL','COTNA','COVAR','DEBUT','DESAR','DIANA','DOCTE','ENCES','ESTOL','FALCO','FINCA','FLOTA','FRARE','FREGA','GANXO','GLANS','GORGA','HAVER','HEURA','IMPUR','JAURE','LLAGA','LLEVA','MOLLA','MOTLE','NADAL','NEGRA','NOBLE','OBRAR','ORDIT','PADRI','PALLA','PERXA','PICAR','POLIR','RACIO','REBOT','RECER','RETOL','RIBOT','ROSSA','SABRE','SAFRA','SALDO','SEGAR','SOBRA','SOLER','TASSA','TRAUS','TRENC','VAGAR','VEDAT','VELAR','XUCLA'];
+const PARAULES = ["CASES","PLATA","LLUNA","TAULA","PORTA","NEGRE","FULLA","PEDRA","CALOR","GELAT","SUCRE","CANTA","BALLA","SALTA","CORRE","FESTA","CUINA","FRUIT","POMES","PAPER","CARTA","OCELL","FLORS","ARBRE","COTXE","TERRA","AIGUA","MOTOS","TIGRE","ZEBRA","PLUJA","PASTA","AMICS","BLANC","CAIXA","COLOR","ENTRA","ESTIU","FEINA","FOTOS","HOTEL","JUGAR","MIRAR","NEDAR","OBRIR","PETIT","POSAR","SABER","SOPAR","TEMPS","VENIR","VOLAR","ABRIL","AJUDA","BEURE","BONIC","DINAR","DONAR","MOLTS","PAGAR","PARLA","SOBRE","TARDA","TENIR","TOCAR","VOLER","VEURE","ABANS","COSES","FILLA","MUSEU","CANCO","GERMA","FACIL","VIDEO","AGOST","SALUT","MINUT","CAMIO","AMIGA","VERDA","FREDA","VELLA","BONES","RAPID","MAGIA","COIXI","PISOS","GROGA","CURTA","DUTXA","PIANO","MENJA","TORNA","ACABA","MARES","VERDS","FOSCA","SORRA","VENTS","CAMPS","RIURE","SOMNI","PLATS","TAPES","PERES","VIDRE","FERRO","FUSTA","GOSSA","ROSES","HERBA","TORRE","RUTES","TRENS","BARCA","LLUMS","DENTS","RODES","CAMES","CABRA","BOIRA","LLITS","RATES","BOLET","PINYA","MENTA","SALSA","PIZZA","CREMA","FORMA","PUNTS","AVIAT","BARRI","BUSCA","CALLA","CALMA","CANAL","CANVI","CARES","CINTA","CLAUS","COPES","CORDA","COSTA","CRIDA","CRITS","CURTS","DAMES","DEIXA","DIARI","DONES","DRETS","DURES","ELLES","ESPAI","FALDA","FILLS","FLAMA","FONTS","FORAT","ULTIM","LENTA","FORTA","BRUTA","MARRO","PANXA","ABRIC","NINOT","TAURO","ANECS","CEBES","TORRO","CACAU","XAMPU","REGLA","TINTA","CURSA","ROBOT","METRO","BOSSA","DOTZE","SETZE","AMAGA","RENTA","REMAR","REGAR","AULES","MASIA","CREAR","HEROI","FORTS","FRESC","FUGIR","FUMAR","GALTA","GENER","GIRAR","GOTES","GRANS","ILLES","JOVES","LLARG","LLOCS","LLOPS","MALES","MANTA","MAPES","MASSA","MENYS","MESOS","METGE","MOBLE","MOURE","NOVES","OLIVA","OMBRA","ONADA","ORDRE","PALAU","PARET","PASSA","PECES","PENSA","PERLA","PESAR","PILES","PINTA","PLANS","PLOMA","POBLE","PORCS","PREUS","PROVA","QUIET","REGAL","REINA","ROBAR","SABEM","SEGUR","SENSE","TENDA","TEULA","TIRAR","TOTAL","TRIST","VALOR","VELLS","VIURE","VOLTA","XARXA","ACTES","ACTOR","AGAFA","AIRES","ALTES","ANELL","FAMOS","VEINA","UNICA","TIPIC","UTILS","BUIDA","AMPLA","LLICO","EPOCA","RITME","PERDO","EXITS","PRATS","GESPA","SELVA","ALIGA","ERUGA","MICOS","LLORO","GAMBA","PRUNA","BLEDA","MANGO","CUIXA","FRONT","TUNEL","FICAR","TAPAR","PESCA","NEBOT","ARENA","ARMES","BAIXA","BARBA","BARRA","BLAVA","BOLES","BOMBA","BOTES","BROMA","BRUTS","BUFAR","CANYA","CAPSA","CARRO","CAURE","CIVIL","CLARA","CLIMA","CONTE","CULPA","CURAR","DANSA","DEBAT","DIETA","DOBLE","DOLOR","DURAR","EINES","ENVIA","EQUIP","ERROR","ESTAT","ESTIL","EXTRA","FALTA","FEBRE","FINAL","FRASE","GANES","HORES","IGUAL","JUNTS","LLANA","LLUNY","LOCAL","MARCA","MARIT","MARXA","MATAR","METRE","MORIR","MORTS","MOSCA","NENES","NINES","NOIES","NOTES","OBERT","OBRES","PARAR","PATIR","PAUSA","PISTA","PLENA","POBRE","BASIC","PANIC","TIMID","TOVES","LLISA","POLAR","CACAR","CASAR","NOTAR","GUIAR","BESAR","SUCAR","ETAPA","CICLE","NORMA","DESTI","OFICI","DRAMA","FLECA","PANDA","OQUES","PUCES","PILOT","POETA","MUSIC","JUTGE","MOTOR","CABLE","VIOLI","XIULA","POEMA","PREMI","PUJAR","PUNTA","REBRE","RESTA","ROBES","SABOR","SALTS","SEGON","SEURE","SONAR","SUMAR","TALLA","TRIAR","VIRUS","VISTA","ZONES","AGENT","BANDA","HAVER","NEGRA","GROCS","BLAUS","ROURE","NEVAR","FREDS","TOMBA","MUNTS","VALLS","PLORS","FORNS","BOSCS","PONTS","NUVOL","ESTEL","GALLS","TRONS","LLAMP","PLACA","LINIA","BANCS","BROTS","BUITS","CAPES","CASAL","CERCA","COBRA","COLLS","COURE","CREUS","DOLCA","DUBTE","FAIXA","FELIC","FIRES","FORCA","GREUS","GRILL","GUANY","HORTS","HUMIT","LLACS","LLEIG","LLEIS","LLIMA","HUMIL","CRUEL","FEBLE","GELOS","AMARG","SOLID","ETERN","MITIC","EPICA","IDEAL","RURAL","OBEIR","FIXAR","JURAR","RESAR","MORAL","MERIT","REPOS","HIMNE","RELAT","ALDEA","PORXO","RAMPA","BORSA","PULMO","FETGE","RONYO","ALBUM","PIULA","AVENC","MAGIC","MARGE","MORAT","NETES","NOMES","PELLS","PLENS","RADIO","REPTE","SALAT","SANTS","SEGLE","SOLES","TASCA","TRUCS","UNGLA","VERBS","VESPA","XERRA","XIFRA","XOCAR","AMANT","AMPLE","ARROS","AVANT","BADIA","BALES","BANYS","BRISA","BURRO","CERTS","CITES","COLLA","COLZE","COMTE","COVES","CRIAR","DENSA","DESIG","DEUTE","DIGNE","DRAPS","DROGA","DUNES","EDATS","ENUIG","ESCUT","ESPIA","FATAL","FIBRA","FIDEL","FLUIX","FUMAT","FUNDA","GORRA","GUIES","IDEES","JARDI","JOIES","JUSTS","LLARS","LLEST","LLIGA","MANSA","MIRAT","MISSA","FERMA","PORUC","ACIDA","ASPRE","CALID","ANSIA","FOBIA","ELOGI","OBLIT","ATZAR","ETICA","PROSA","FAULA","MITES","TOPIC","REPLA","DUANA","RAVAL","SINIA","BUFAL","ERICO","GEBRE","SOGRE","COFRE","GERRO","GUANT","SAFRA","PREGO","XAFEC","MOBIL","MODES","MOTIU","MURAL","NAVAL","NEGAR","NOCES","ODIAR","OLLES","OSSOS","PACTE","PALES","PARES","PEBRE","PEDAL","PELAR","PENYA","PESOS","PILAR","PLAER","PLANA","PORTS","PREGA","PRESA","PRIMA","QUOTA","RABIA","RADAR","RAONS","RECTE","RENDA","RODAR","RONDA","ROSAT","RUINA","SABIA","SALES","SOLAR","SOPES","TACTE","TEMES","TORNS","TRONC","UNITS","USUAL","VALER","VAPOR","VELES","VENDA","VERGE","VINYA","VITAL","VOCAL","XALET","ALTAR","ANGLE","ANTIC","BALCO","BRAVA","CASAT","COLOM","CORAL","FLOTA","FRARE","NOBLE","PALLA","VELOC","ASTUT","TOSCA","BRUSC","OPACA","ARIDA","LIRIC","FARSA","ESBOS","LEXIC","SERMO","DELIT","AFANY","ENYOR","LABOR","ABSIS","MASOS","ARADA","FOLRE","FORJA","PINSO","OLIBA","GARBI","TEMER","JEURE","FLUIR","AMBIT","BANAL","MIRRA","PICAR","ROSSA","SOBRA","TASSA","PANET","RAIMS","CIGNE","SOFAS","CARNS","CLARS","CORTS","FANGS","FITES","GABIA","GESTS","GUSTS","LLATI","LLUIR","MARCS","MONJO","PATIS","PRIMS","PUNYS","RAMAT","RASPA","SUAUS","TITOL","URPES","XICOT","XINES","AGUDA","ANIMA","BATRE","CAFES","CAIRE","CALDO","CARBO","CAVAR","CEDIR","CORBS","CORNS","COSIR","EIXOS","ESQUI","FADES","FAVES","FILAR","FIRMA","GRANA","GRATA","GREIX","GRISA","HABIL","INDEX","LLAVI","LLOSA","LOGIC","MAGRE","MONTS","NUSOS","ONCLE","OPERA","ORGUE","PAGES","PANYS","PETAR","TENAC","AUDAC","FUGAC","ATROC","LUCID","INERT","ZENIT","EXODE","LOBUL","MELSA","RITUS","CANON","LLENC","FARGA","ESTRI","RAUXA","DERIA","CLIXE","PLAFO","BIAIX","VETAR","DATAR","IDEAR","AGATA","DUCAT","BUCAL","RENAL","FUROR","GARSA","XALOC","PLOMS","POLIT","RACES","RAMES","REGNE","SERIE","SIGNE","SOCIS","TEMOR","TERME","TRAMA","TRENA","VEINS","VIALS","VIDES","VILES","VOLTS","VORES","XAPES","ASTRE","BADAR","BASSA","BATEC","BRUSA","BUFET","CALAT","CANTO","DESAR","DIANA","FALCO","FINCA","FREGA","GANXO","HEURA","LLAGA","LLEVA","MOLLA","MOTLE","PADRI","RACIO","REBOT","SABRE","XUCLA","CUCUT","DORMS","ESCAC","FOCUS","MANEC","MELIC","MOLLS","POLLS","SERPS","SETGE","SORTS","TURBO","ALBES","ALCEN","ASSEU","BULLS","BUSOS","CABAL","CANES","DIVAN","FANAL","FARTS","FERIR","ADHUC","ALGID","TACIT","SILEX","NANSA","ATIAR","LLOAR","ANHEL","ARDUA","ATZUR","TIMPA","VIMET","ENCIS","ELENC","VISIR","AVIDA","SORNA","POSIT","CODOL","FUTIL","BALMA","LLERA","CANEM","DALLA","SARRO","EIXAM","ULLAL","TELER","CUMUL","FONDO","GALES","GASOS","GENTS","GESTA","GIRES","GRUES","IMANT","MANAR","MUDAR","NEULA","POSTS","REIAL","RETRE","SANAR","TORTA","VARIA","APLEC","CLAPA","COBLA","DEBUT","ENCES","IMPUR","JAURE","OBRAR","PERXA","POLIR","RETOL","SALDO","SEGAR","SOLER","TRENC","VAGAR","VELAR","CASCS","CELLA","RUSCS","ALLAU","ATLES","CABRE","GENIS","HOSTE","LLAST","MENAR","MERLA","SOLCS","BAGUL","CALIU","COVAR","DOCTE","TRAUS","VEDAT","GLACA","CLOSA","FRUIR","NACRE","TURBA","AMBRE","COTNA","ESTOL","GORGA","RECER","RIBOT","RENOU","GLANS","ORDIT","EGIDA","AGAPE","ALBIR","DELER","AUGUR","JASPI","LIVID","CARMI","INFIM","TALEM","BAULA","NUESA","SEGOL","OBAGA","GORGS","ESTUC","TRITO","AMPIT","MURTA"];
 const FILES = [['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L','Ç'],['ENTRA','Z','X','C','V','B','N','M','ESBORRA']];
 
 const renderer = new THREE.WebGLRenderer({ antialias:true });
@@ -296,10 +305,10 @@ const camera = new THREE.PerspectiveCamera(40, 1, .1, 400);
 scene.add(new THREE.HemisphereLight(0xffffff, 0x3f7fd0, 1.5));
 const llum = new THREE.DirectionalLight(0xffffff, 1.4); llum.position.set(3, 6, 8); scene.add(llum);
 
-const COL = { buit:'#FFFFFF', be:'#7CE800', quasi:'#FFD600', no:'#6E7BB5' };
+const COL = (window.CQ && CQ.daltonic) ? { buit:'#FFFFFF', be:'#F5793A', quasi:'#85C0F9', no:'#6E7BB5' } : { buit:'#FFFFFF', be:'#7CE800', quasi:'#FFD600', no:'#6E7BB5' }; // mode daltònic: taronja i blau
 const solMesh = celISol(); illa(-15, -9, -30, 1.4); illa(16, -7, -34, 1.2); illa(-18, 10, -44, 1);
 for (let i = 0; i < 6; i++) nuvols.push(nuvol(-25 + i*10, -6 + Math.random()*14, -14 - Math.random()*8, 1.2 + Math.random()));
-const plataforma = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3, 1, 8), toon({ color: 0x7CE800 })); plataforma.position.y = -5.4; contorn(plataforma, .03); scene.add(plataforma);
+const plataforma = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3, 1, 8), toon({ color: 0x7CE800 })); plataforma.position.y = -5.4; contorn(plataforma, .03); scene.add(plataforma); plataforma.visible = false; // quedava darrere del teclat i el tapava
 function textura(ch, fons, tinta = '#1B1140'){
   const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
   g.fillStyle = fons; g.fillRect(0,0,128,128);
@@ -339,15 +348,15 @@ function pinta(m, ch, estat){
   m.material[4].map.dispose(); m.material = matsDau(ch, COL[estat], estat === 'no' ? '#FFFFFF' : '#1D2B64');
 }
 function mostra(txt){ const e = document.getElementById('missatge'); e.textContent = txt; e.classList.add('on'); clearTimeout(e.t); e.t = setTimeout(() => e.classList.remove('on'), 1600); }
-function franja(n){ // les paraules estan ordenades de comunes a rares: cada nivell n'agafa un terç
-  const talls = [0, .12, .25, .38, .5, .62, .72, .82, .9, 1], a = Math.floor(PARAULES.length * talls[Math.min(9, n)]), b = Math.floor(PARAULES.length * talls[Math.min(9, n) + 1] || PARAULES.length);
+function franja(n){ // les paraules estan ordenades de més fàcils a més difícils: cada nivell n'agafa una desena part
+  const talls = [0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1], a = Math.floor(PARAULES.length * talls[Math.min(9, n)]), b = Math.floor(PARAULES.length * talls[Math.min(9, n) + 1]); // 10 franges iguals, de comunes a rares
   return PARAULES.slice(a, Math.max(a + 5, b)); }
-function comenca(esDiari = false){
+function comenca(esDiari = false){ if (window.CQ) { CQ.files = []; if (CQ.repte) esDiari = true; CQ.motleDiari = esDiari; }
   diari = esDiari; so('clic'); aplicaTema(esDiari ? 0 : Math.min(9, nivell));
   if (!esDiari && Math.min(9, nivell) !== nivellMostrat) { nivellMostrat = Math.min(9, nivell); pantallaNivell(nivellMostrat + 1, TEMES[nivellMostrat].nom, '', -1, 2200); }
   const dia = Math.floor(Date.now() / 864e5), bossa = franja(nivell);
   const lliures = bossa.filter(w => !usades.has(w)), b2 = lliures.length ? lliures : bossa;
-  secret = esDiari ? PARAULES[dia % PARAULES.length] : b2[Math.floor(Math.random()*b2.length)]; if (!esDiari) { usades.add(secret); sessionStorage.setItem('catquiz-motle-usades', JSON.stringify([...usades])); } fila = 0; col = 0; viu = true; anims = [];
+  secret = esDiari ? PARAULES.slice(0, Math.floor(PARAULES.length / 2))[(dia * 7) % Math.floor(PARAULES.length / 2)] : b2[Math.floor(Math.random()*b2.length)]; if (!esDiari) { usades.add(secret); sessionStorage.setItem('catquiz-motle-usades', JSON.stringify([...usades])); } fila = 0; col = 0; viu = true; anims = [];
   graella = Array.from({length:6}, () => Array(5).fill(''));
   for (const f of daus) for (const m of f) { pinta(m, '', 'buit'); m.rotation.set(0,0,0); m.scale.setScalar(1); }
   for (const t of Object.values(tecles)) t.className = 'tecla' + (t.classList.contains('ampla') ? ' ampla' : '');
@@ -372,6 +381,7 @@ function entra(){
     const k = tecles[ch]; if (k) { const ordre = ['no','quasi','be']; const actual = ordre.findIndex(s => k.classList.contains(s));
       if (ordre.indexOf(estat) > actual) { k.classList.remove('no','quasi','be'); k.classList.add(estat); } }
   }
+  if (window.CQ) CQ.files.push(estats.slice());
   const guanyat = intent === secret; fila++; col = 0;
   setTimeout(() => {
     if (guanyat) acaba(true); else if (fila === 6) acaba(false);
@@ -419,21 +429,21 @@ document.getElementById('btn-reinici').onclick = () => { document.getElementById
 function mida(){
   renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
   // Encaixa la graella (5×6 daus) a l'espai que queda per sobre del teclat i la capçalera
-  const teclatH = document.getElementById('teclat').offsetHeight + 24, capH = 70;
+  const tq = document.getElementById('teclat'), rq = tq.getBoundingClientRect(), teclatH = rq.height ? innerHeight - rq.top + 18 : tq.offsetHeight + 24, capH = 70; // tot el que queda per sota de la part de dalt del teclat
   const kb = teclatH / innerHeight, top = capH / innerHeight, lliure = 1 - kb - top;
   const tg = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-  const d = Math.max(6.6 / (2 * tg * camera.aspect), 7.6 / (lliure * 2 * tg));
+  const d = Math.max(6.6 / (2 * tg * camera.aspect), 8.4 / (lliure * 2 * tg));
   const alt = 2 * d * tg, centreY = (kb - top) / 2 * alt; // desplaça el punt de mira perquè la graella quedi centrada a l'espai lliure
   camera.position.set(0, .4 - centreY, d); camera.lookAt(0, .4 - centreY, 0);
 }
-addEventListener('resize', mida); addEventListener('load', mida); mida();
+addEventListener('resize', mida); addEventListener('load', mida); mida(); if (window.ResizeObserver) new ResizeObserver(() => mida()).observe(document.getElementById('teclat')); // el teclat apareix en començar
 
 const rellotge = new THREE.Clock();
 const btnMusica = document.getElementById('btn-musica'); if (btnMusica) { btnMusica.style.opacity = AUDIO.actiu ? 1 : .5; btnMusica.onclick = () => { btnMusica.style.opacity = musicaCommuta() ? 1 : .5; }; }
 window.__fi = () => acaba(false); // per a proves automàtiques
 function anima(){
   requestAnimationFrame(anima);
-  const dt = Math.min(rellotge.getDelta(), .05); mouNuvols(dt); mouConfeti(dt); mouIlles(dt); solMesh.userData.raigs.rotation.z += dt * .15;
+  const dtR = Math.min(rellotge.getDelta(), 1); dtReal = dtR; const dt = Math.min(dtR, .05); mouNuvols(dt); mouConfeti(dt); mouIlles(dt); solMesh.userData.raigs.rotation.z += dt * .15;
   for (const a of anims) {
     a.t += dt; const p = Math.max(0, Math.min(1, (a.t - a.retard) / .5));
     a.m.rotation.x = p * Math.PI * 2;
@@ -469,6 +479,24 @@ const mouNuvolsOrig = mouNuvols; mouNuvols = function(dt){ mouNuvolsOrig(dt); fo
 // Neó: estels sempre visibles i recolor de la plataforma/gespa inicial
 aplicaTema(0); // Neó: pinta l'ambient fosc ja a la pantalla d'inici
 scene.traverse(o => { if (o.material && o.material.color && !o.material.map && o.material.color.getHex() === 0x7CE800) o.material.color.setHex(TEMES[0].gespa); if (o.material && o.material.color && !o.material.map && o.material.color.getHex() === 0xA8683A) o.material.color.setHex(TEMES[0].terra); });
+</script>
+<script>
+// Pantalla completa: s'activa en començar a jugar (cal un toc de l'usuari) i el botó la commuta.
+var ICO_PC = ['<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>', '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>']; // Si el navegador no ho permet (iPhone), no es mostra.
+(function(){
+  var el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen, q = new URLSearchParams(location.search);
+  if (!req || q.has('espectador') || q.has('demo') || q.has('video')) return;
+  var dins = function(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); };
+  var entra = function(){ if (dins()) return; try { var p = req.call(el, { navigationUI: 'hide' }); if (p && p.catch) p.catch(function(){}); } catch (e) {} };
+  var surt = function(){ var x = document.exitFullscreen || document.webkitExitFullscreen; if (x && dins()) try { x.call(document); } catch (e) {} };
+  document.addEventListener('click', function(e){ if (e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, .capa button.gros, .carta button')) entra(); }, true);
+  var b = document.createElement('button'); b.id = 'btn-pc'; b.className = 'pill'; b.type = 'button'; b.title = 'Pantalla completa'; b.setAttribute('aria-label', 'Pantalla completa'); b.innerHTML = ICO_PC[0];
+  b.addEventListener('click', function(e){ e.stopPropagation(); dins() ? surt() : entra(); });
+  var mus = document.getElementById('btn-musica') || document.getElementById('musica');
+  if (mus && mus.parentNode) mus.parentNode.insertBefore(b, mus.nextSibling); else { b.style.cssText = 'position:fixed;top:12px;right:12px;z-index:30'; document.body.appendChild(b); }
+  var upd = function(){ b.innerHTML = ICO_PC[dins() ? 1 : 0]; b.setAttribute('aria-label', dins() ? 'Surt de pantalla completa' : 'Pantalla completa'); b.title = dins() ? 'Surt de pantalla completa' : 'Pantalla completa'; };
+  document.addEventListener('fullscreenchange', upd); document.addEventListener('webkitfullscreenchange', upd);
+})();
 </script>
 </body>
 </html>
