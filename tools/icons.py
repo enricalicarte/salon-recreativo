@@ -686,6 +686,20 @@ def _(I):
     I.add(f'<circle cx="432" cy="438" r="36" {st("#d4e600", 7)}/><path d="M404 416 Q432 438 404 460 M460 416 Q432 438 460 460" stroke="#fff" stroke-width="6" fill="none"/>')
     sparkle(I, 80, 110, 20); sparkle(I, 440, 120, 16)
 
+@icon('catquiz-quiz-de-castells')
+def _(I):
+    cq_bg(I, '#9cd8ff', '#4a7dff')
+    I.add(f'<path d="M0 420 H512 V512 H0Z" fill="#e9c9a0"/>')
+    def pers(x, y, e, c):
+        I.add(f'<rect x="{x-14*e}" y="{y+18*e}" width="{28*e}" height="{30*e}" rx="{6*e}" fill="{c}" stroke="{INK}" stroke-width="5"/><rect x="{x-14*e}" y="{y+36*e}" width="{28*e}" height="{7*e}" fill="{INK}"/><circle cx="{x}" cy="{y+9*e}" r="{10*e}" fill="#f3c9a2" stroke="{INK}" stroke-width="5"/>')
+    for i in range(9): pers(120 + i * 34, 410, .95, '#e0533a')
+    for f in range(4):
+        n = 3; y = 362 - f * 50
+        for i in range(n): pers(222 + i * 34, y, 1, '#d7263d')
+    pers(239, 162, .85, '#d7263d'); pers(273, 162, .85, '#d7263d'); pers(256, 120, .8, '#d7263d'); pers(256, 80, .75, '#d7263d')
+    I.add(f'<path d="M268 92 L298 52" stroke="{INK}" stroke-width="12" stroke-linecap="round"/><path d="M268 92 L298 52" stroke="#d7263d" stroke-width="6" stroke-linecap="round"/>')
+    sparkle(I, 430, 90, 20); sparkle(I, 90, 140, 14)
+
 # ===================== v2: personajes y escenas más ilustrativas =====================
 @icon('aura-battle')
 def _(I):
@@ -1264,7 +1278,7 @@ def _(I):
     sparkle(I, 110, 110, 18)
 
 # CatQuiz: la mascota gata asoma en la esquina
-for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes']:
+for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
 
 

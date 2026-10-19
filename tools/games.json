@@ -1269,6 +1269,26 @@
    "play": "juegos/catquiz/jocs/futbol.html"
   },
   {
+   "id": "cq_castells",
+   "slug": "catquiz-quiz-de-castells",
+   "kw": "quiz de castells",
+   "cat": "catquiz",
+   "name": "Quiz de castells",
+   "blurb": "Quin castell és? Un 3 de 9 amb folre, un 4 de 8, un pilar de 6… Endevina els castells dibuixats, el vocabulari casteller i les colles, en deu nivells.",
+   "tags": [
+    "Castells",
+    "Cultura popular",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ff9a2e",
+    "🏰"
+   ],
+   "play": "juegos/catquiz/jocs/castells.html"
+  },
+  {
    "id": "cq_esportistes",
    "slug": "catquiz-quiz-d-esportistes",
    "kw": "quiz d'esportistes catalans",
@@ -1370,7 +1390,7 @@
   },
   "catquiz": {
    "t": "CatQuiz Minijocs",
-   "d": "Minijuegos de palabras en catalán y quizzes de fútbol y deportistas catalanes, para jugar y aprender."
+   "d": "Minijuegos de palabras en catalán y quizzes de fútbol, deportistas catalanes y castells, para jugar y aprender."
   },
   "invierno": {
    "t": "Alta Temporada",

@@ -54,12 +54,16 @@ CQ = [
   "Quant saps de futbol català? Deu nivells de preguntes sobre el Barça, l'Espanyol i el Girona: trivia, «qui és?» per pistes, verdader o fals i «qui va néixer abans?».",
   ['Futbol', 'Trivia', 'Català'], '#ffd23f', '⚽', "quiz de fútbol catalán",
   "¿Cuánto sabes de fútbol catalán? Diez niveles de preguntas sobre el Barça, el Espanyol y el Girona: trivia, «¿quién es?» por pistas, verdadero o falso y «¿quién nació antes?». En catalán."),
+ ('cq_castells', 'catquiz-quiz-de-castells', 'castells', 'Quiz de castells', "quiz de castells",
+  "Quin castell és? Un 3 de 9 amb folre, un 4 de 8, un pilar de 6… Endevina els castells dibuixats, el vocabulari casteller i les colles, en deu nivells.",
+  ['Castells', 'Cultura popular', 'Català'], '#ff9a2e', '🏰', "quiz de castells humanos",
+  "¿Qué castell es? Un 3 de 9 con folre, un 4 de 8, un pilar de 6… Adivina los castells dibujados, el vocabulario casteller y las collas, en diez niveles. En catalán."),
  ('cq_esportistes', 'catquiz-quiz-d-esportistes', 'esportistes', "Quiz d'esportistes", "quiz d'esportistes catalans",
   "Quant saps dels esportistes catalans? Setanta campions de vint-i-tres esports: endevina qui és per les pistes, de quin esport és i qui va néixer abans, en deu nivells.",
   ['Esport', 'Trivia', 'Català'], '#ffd23f', '🏅', "quiz de deportistas catalanes",
   "¿Cuánto sabes de los deportistas catalanes? Setenta campeones de veintitrés deportes: adivina quién es por las pistas, de qué deporte es y quién nació antes, en diez niveles. En catalán."),
 ]
-NOUS = ['cq_roda', 'cq_pronoms', 'cq_esportistes']
+NOUS = ['cq_castells', 'cq_roda', 'cq_pronoms', 'cq_esportistes']
 FORA = ['cq_esquiva', 'cq_estrelles']
 
 fitxa = lambda x: {"id": x[0], "slug": x[1], "kw": x[4], "cat": "catquiz", "name": x[3], "blurb": x[5], "tags": x[6], "pal": P(x[7], x[8]), "play": f"juegos/catquiz/jocs/{x[2]}.html"}

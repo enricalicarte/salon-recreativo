@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SDE8LXDNP9');
+  // Esdeveniments: inici de partida, tornar a jugar i clic a cada joc des de la portada
+  document.addEventListener('click', function(e){ var b = e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, a.carta'); if (!b) return;
+    var joc = location.pathname.split('/').pop().replace('.html','') || 'index';
+    if (b.matches('a.carta')) gtag('event', 'obrir_joc', { joc: (b.getAttribute('href') || '').split('/').pop().replace('.html','') });
+    else gtag('event', b.id === 'btn-reinici' ? 'tornar_a_jugar' : 'inici_partida', { joc: joc }); });
+</script>
+<script src="../comu.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Quiz de castells · CatQuiz Minijocs</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+  :root{--blau:#1E63F0;--lila:#5B2BE0;--vermell:#F0284A;--verd:#22C55E;--groc:#FFD400;--tinta:#1B1B3A;--neu:#fff}
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%;overflow:hidden;font-family:'Roboto','Poppins',sans-serif;color:var(--neu);background:var(--blau);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  /* fons de cercles concèntrics (PlayQuiz) */
+  #fons{position:fixed;inset:0;background:radial-gradient(circle at 50% 55%,transparent 0 6%,rgba(255,255,255,.07) 6% 12%,transparent 12% 18%,rgba(255,255,255,.07) 18% 24%,transparent 24% 30%,rgba(255,255,255,.07) 30% 36%,transparent 36% 42%,rgba(255,255,255,.07) 42% 48%,transparent 48% 54%,rgba(255,255,255,.07) 54% 60%,transparent 60% 66%,rgba(255,255,255,.07) 66% 72%,transparent 72% 78%,rgba(255,255,255,.07) 78% 84%,transparent 84%);transition:background-color .6s}
+  body.lila{background:var(--lila)} body.taronja{background:#FF8A00}
+  .lateral{position:fixed;top:50%;font-weight:700;font-size:clamp(11px,1.6vh,15px);letter-spacing:.14em;color:rgba(255,255,255,.9);transform-origin:center;white-space:nowrap;pointer-events:none;opacity:.9}
+  .lateral.esq{left:12px;transform:translate(-50%,-50%) rotate(-90deg) translateX(0);left:calc(12px + .7em)}
+  .lateral.dre{right:calc(12px + .7em);transform:translate(50%,-50%) rotate(90deg)}
+  #num{position:fixed;top:14px;left:14px;width:clamp(48px,8vh,74px);aspect-ratio:1;border-radius:50%;background:var(--vermell);color:#fff;display:grid;place-items:center;font-weight:800;font-size:clamp(22px,4vh,38px);box-shadow:0 5px 0 rgba(0,0,0,.25);z-index:3}
+  #punts{position:fixed;top:14px;right:14px;background:#fff;color:var(--tinta);font-weight:800;font-size:clamp(14px,2.4vh,22px);padding:.35em .9em;border-radius:999px;box-shadow:0 4px 0 rgba(0,0,0,.2);z-index:3}
+  #punts small{font-weight:700;color:#777;font-size:.7em;margin-right:.3em}
+  #logo{position:fixed;right:16px;bottom:14px;font-family:'Lilita One',sans-serif;font-size:clamp(16px,2.6vh,26px);color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.25);transform:rotate(-6deg);z-index:3}
+  #logo b{color:var(--groc)}
+  #tornar{position:fixed;left:14px;bottom:14px;color:#fff;text-decoration:none;font-weight:700;font-size:clamp(12px,1.9vh,16px);background:rgba(0,0,0,.25);padding:.4em .9em;border-radius:999px;z-index:3}
+  /* Capçalera de pregunta */
+  #cap{position:fixed;top:clamp(14px,2.2vh,22px);left:clamp(70px,11vh,100px);right:clamp(70px,11vh,100px);text-align:center;z-index:2}
+  #cap .tipus{font-weight:600;font-size:clamp(13px,2vh,18px);opacity:.95}
+  #cap .sub{font-weight:800;font-size:clamp(13px,2.2vh,20px);letter-spacing:.04em;text-transform:uppercase}
+  #cap .preg{font-weight:800;font-size:clamp(17px,3.4vh,34px);line-height:1.15;text-transform:uppercase;text-shadow:0 3px 0 rgba(0,0,0,.2);margin-top:.2em}
+  /* Escenari central */
+  #esc{position:fixed;inset:clamp(90px,15vh,140px) 5% clamp(70px,11vh,100px);display:grid;grid-template-columns:1fr 1fr;gap:4%;align-items:center;justify-items:center}
+  @media (max-aspect-ratio:1/1){#esc{grid-template-columns:1fr;grid-template-rows:auto auto;align-content:center;gap:2vh}}
+  /* Targeta (substitueix la foto): samarreta dibuixada */
+  .targeta{position:relative;width:min(88%,44vh);aspect-ratio:1.15;background:#fff;border-radius:18px;padding:3%;box-shadow:0 10px 0 rgba(0,0,0,.2);transform:rotate(-2deg);animation:entra .5s cubic-bezier(.2,1.4,.4,1) both}
+  .targeta .dins{width:100%;height:100%;border-radius:12px;overflow:hidden;display:grid;place-items:center;background:var(--fons,#F3A712)}
+  .targeta svg{width:70%;height:auto;filter:drop-shadow(0 6px 0 rgba(0,0,0,.18))}
+  .targeta .nom{position:absolute;left:50%;bottom:-6%;transform:translateX(-50%);background:var(--vermell);color:#fff;font-weight:800;font-size:clamp(14px,2.6vh,26px);padding:.25em .9em;border-radius:12px;white-space:nowrap;box-shadow:0 4px 0 rgba(0,0,0,.25);text-transform:uppercase}
+  .targeta .lletra{position:absolute;top:-8%;left:-4%;width:clamp(44px,7vh,64px);aspect-ratio:1;border-radius:14px;background:var(--vermell);color:#fff;font-weight:800;font-size:clamp(24px,4.4vh,40px);display:grid;place-items:center;border:4px solid #fff;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+  .targeta .ok,.targeta .ko{position:absolute;top:-8%;right:-4%;width:clamp(44px,7vh,64px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:clamp(22px,4vh,36px);border:4px solid #fff;box-shadow:0 4px 0 rgba(0,0,0,.25);animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+  .targeta .ok{background:var(--verd)} .targeta .ko{background:var(--vermell)}
+  .targeta .data{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);color:#fff;font-weight:800;font-size:clamp(18px,3.6vh,34px);text-shadow:0 3px 0 rgba(0,0,0,.35);white-space:nowrap;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+  .targeta.emoji .dins{font-size:clamp(70px,16vh,150px)}
+  /* Opcions A/B/C */
+  #targetes{display:contents}
+  #ops{width:100%;display:flex;flex-direction:column;gap:clamp(8px,1.6vh,16px);max-width:640px}
+  .op{display:flex;align-items:center;gap:3%;background:#fff;border-radius:999px;padding:.35em .35em .35em .35em;border:0;font:inherit;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.2);text-align:left;transition:transform .08s,opacity .3s;animation:entra .4s cubic-bezier(.2,1.4,.4,1) both;width:100%}
+  .op:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+  .op .l{width:clamp(40px,6.4vh,58px);aspect-ratio:1;border-radius:50%;background:var(--vermell);color:#fff;display:grid;place-items:center;font-weight:800;font-size:clamp(20px,3.6vh,32px);flex:none;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+  .op .t{color:var(--tinta);font-weight:800;font-size:clamp(15px,2.8vh,26px);text-transform:uppercase;letter-spacing:.02em;line-height:1.1;padding-right:.6em}
+  .op.be{background:var(--verd)} .op.be .t{color:#fff} .op.be .l{background:#fff;color:var(--verd)}
+  .op.fora{opacity:0;transform:scale(.9);pointer-events:none}
+  .op.ko{background:var(--vermell)} .op.ko .t{color:#fff} .op.ko .l{background:#fff;color:var(--vermell)}
+  /* Verdader / fals */
+  #vf{display:none;justify-content:space-between;align-items:center;width:100%;grid-column:1/-1;gap:4%}
+  #vf button{width:clamp(80px,16vh,150px);aspect-ratio:1;border-radius:50%;border:0;font-size:clamp(40px,8vh,76px);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.25);font-family:'Poppins',sans-serif}
+  #vf .no{background:var(--vermell)} #vf .si{background:var(--verd)}
+  #vf .resposta{background:var(--vermell);color:#fff;font-weight:800;font-size:clamp(22px,4.6vh,44px);padding:.2em 1em;border-radius:14px;box-shadow:0 6px 0 rgba(0,0,0,.25);text-transform:uppercase;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+  /* Anagrama: lletres */
+  #lletres{display:none;grid-column:1/-1;justify-content:center;gap:clamp(4px,.8vh,8px);flex-wrap:wrap;width:100%}
+  .ll{width:clamp(38px,7.6vh,72px);aspect-ratio:1;background:#fff;border-radius:8px;display:grid;place-items:center;font-weight:800;color:#111;font-size:clamp(24px,5vh,48px);box-shadow:0 5px 0 rgba(0,0,0,.25);text-transform:uppercase;animation:entra .4s cubic-bezier(.2,1.4,.4,1) both}
+  .ll.be{background:var(--verd);color:#fff} .ll.esp{background:transparent;box-shadow:none;width:clamp(14px,2vh,22px)}
+  /* Pistes */
+  #pistes{display:none;flex-direction:column;gap:clamp(6px,1.2vh,12px);width:100%;max-width:560px}
+  .pista{background:#fff;color:var(--tinta);font-weight:700;font-size:clamp(13px,2.3vh,20px);border-radius:14px;padding:.5em .9em;display:flex;gap:.6em;align-items:center;box-shadow:0 4px 0 rgba(0,0,0,.2);animation:entra .4s cubic-bezier(.2,1.4,.4,1) both}
+  .pista b{background:var(--groc);border-radius:50%;width:1.7em;height:1.7em;display:grid;place-items:center;flex:none}
+  /* Barra de temps */
+  #barra{position:fixed;left:8%;right:8%;bottom:clamp(20px,3vh,30px);height:clamp(22px,3.6vh,36px);background:#fff;border-radius:999px;padding:5px;box-shadow:0 5px 0 rgba(0,0,0,.2);z-index:2}
+  #barra i{display:block;height:100%;border-radius:999px;background:repeating-linear-gradient(-55deg,#22C55E 0 14px,#2ED170 14px 28px);transform-origin:left}
+  /* Cartes plenes: inici, nivell, final */
+  .carta{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:6%;z-index:10;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.08),transparent 60%),var(--lila)}
+  .carta[hidden]{display:none}
+  .carta h1{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(28px,7vh,64px);line-height:1;text-transform:uppercase;text-shadow:0 5px 0 rgba(0,0,0,.25)}
+  .carta h1 span{display:block;color:var(--groc)}
+  .carta .pill{display:inline-block;margin-top:2vh;background:var(--vermell);color:#fff;font-weight:800;font-size:clamp(16px,3vh,30px);padding:.3em 1em;border-radius:12px;box-shadow:0 6px 0 rgba(0,0,0,.25);transform:rotate(-2deg)}
+  .carta .pill b{color:var(--groc)}
+  .carta .emojis{font-size:clamp(40px,8vh,80px);margin-top:3vh;letter-spacing:.2em;filter:drop-shadow(0 6px 0 rgba(0,0,0,.2))}
+  .carta .emojis{display:flex;justify-content:center;gap:clamp(6px,1.4vh,14px);letter-spacing:0}
+  .carta .emojis svg.mini{width:clamp(48px,9vh,84px);height:auto}
+  .targeta.emoji .dins svg{width:74%;height:auto}
+  .carta button{margin-top:3vh;font:inherit;font-weight:800;font-size:clamp(18px,3.2vh,30px);background:var(--verd);color:#fff;border:0;border-radius:999px;padding:.6em 1.6em;cursor:pointer;box-shadow:0 7px 0 #15803D}
+  .carta p{margin-top:2vh;font-weight:600;font-size:clamp(13px,2.2vh,20px);opacity:.95;max-width:40ch}
+  .carta.taronja{background:repeating-radial-gradient(circle at 50% 50%,#FFB300 0 4vh,#FF8A00 4vh 8vh)}
+  .carta .estrelles{font-size:clamp(30px,6vh,60px);margin-top:1vh}
+  #nivellcapa .num{font-size:clamp(90px,26vh,240px);font-weight:800;line-height:.9;color:var(--groc);text-shadow:0 10px 0 rgba(0,0,0,.25);animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+  /* Disposicions per tipus */
+  #esc.anagrama,#esc.vf{grid-template-columns:1fr}
+  #esc.anagrama #lletres{order:-1}
+  #esc.pistes #pistes{order:-1}
+  #esc.mesgran{grid-template-columns:1fr}
+  #esc.mesgran #targetes{display:flex;gap:4%;justify-content:center;align-items:flex-start;width:100%}
+  #esc.mesgran .targeta{width:min(44%,40vh)}
+  #cap .preg{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  @media (max-aspect-ratio:1/1){
+    #cap{left:clamp(64px,10vh,90px);right:clamp(64px,10vh,90px)}
+    #cap .preg{font-size:clamp(15px,2.5vh,24px)}
+    #esc{inset:clamp(150px,22vh,200px) 5% clamp(84px,12vh,110px)}
+    .targeta{width:min(62%,30vh)}
+    #esc.mesgran .targeta{width:min(46%,34vh)}
+    #esc.mesgran #targetes{align-items:center}
+    .targeta .nom{font-size:clamp(11px,1.9vh,16px)}
+    .targeta .data{font-size:clamp(14px,2.6vh,22px);bottom:24%}
+    #barra{bottom:clamp(58px,9vh,72px);left:6%;right:6%}
+    #vf button{width:clamp(64px,11vh,96px)}
+  }
+  @keyframes entra{from{transform:scale(.6);opacity:0}}
+  @keyframes pop{from{transform:scale(0)}60%{transform:scale(1.15)}}
+  .amaga{display:none!important}
+  #musica{position:fixed;left:14px;top:clamp(70px,11vh,100px);background:rgba(0,0,0,.25);border:0;color:#fff;border-radius:999px;padding:.3em .6em;cursor:pointer;z-index:3}  /* Mode espectador */
+  #espect{position:fixed;left:50%;bottom:calc(max(10px,env(safe-area-inset-bottom)) + clamp(52px,8vh,74px));transform:translateX(-50%);z-index:40;display:flex;gap:8px;align-items:center;background:#1B1B3A;color:#fff;border:3px solid #fff;border-radius:999px;padding:6px 8px 6px 16px;font-family:'Fredoka',system-ui,sans-serif;font-weight:700;font-size:15px;box-shadow:0 6px 0 rgba(0,0,0,.35);white-space:nowrap;max-width:96vw}
+  #espect .punt{width:10px;height:10px;border-radius:50%;background:#F0284A;animation:espbat 1s infinite}
+  #espect a{background:#22C55E;color:#fff;text-decoration:none;border-radius:999px;padding:6px 14px;font-weight:800}
+  #espect .pensa{opacity:.85;font-weight:600;font-size:13px}
+  @keyframes espbat{50%{opacity:.3}}
+  /* ===== TEMA NEÓ (estil «Bloques Neón»): fons indi/violeta, vidre, resplendors, Roboto ===== */
+  :root{--cel:#4A2FB5;--cel2:#1A1650;--marí:#1E1850;--rosa:#FF4FD8;--taronja:#FF9A2E;--groc:#FFD24A;--llima:#4EE06A;--lila:#A06BFF;--neu:#FFFFFF;--tinta:#FFFFFF;--cian:#38E8FF;--vidre:rgba(24,20,70,.55);--vora:rgba(150,170,255,.45);--glow:0 0 18px rgba(120,160,255,.45)}
+  html,body{font-family:'Roboto','Fredoka',system-ui,sans-serif!important;background:linear-gradient(170deg,#4A2FB5 0%,#2E2080 45%,#1A1650 100%)!important;color:#fff}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0 1.5px,transparent 2px),radial-gradient(circle at 72% 12%,rgba(255,255,255,.8) 0 1.2px,transparent 2px),radial-gradient(circle at 88% 64%,rgba(255,255,255,.7) 0 1.6px,transparent 2.2px),radial-gradient(circle at 34% 78%,rgba(255,255,255,.75) 0 1.2px,transparent 2px),radial-gradient(circle at 58% 46%,rgba(255,255,255,.5) 0 1px,transparent 1.6px),radial-gradient(circle at 8% 60%,rgba(255,255,255,.6) 0 1.3px,transparent 2px),radial-gradient(circle at 48% 92%,rgba(255,255,255,.6) 0 1.1px,transparent 1.8px),radial-gradient(circle at 92% 30%,rgba(255,255,255,.5) 0 1px,transparent 1.6px)}
+  .titol,h1,.gran,.compte,.pill,button,.gros,.missatge,.pista,.pregunta,.tecla,.fr,.op,.ll,.frase,.pista-item,.nivell-capa .num,.nivell-capa .eti,.nivell-capa .nom,.nivell-capa .resum,.pill.cat,h2,h3,.sub,.baixa,.logo{font-family:'Roboto','Fredoka',system-ui,sans-serif!important;font-style:normal!important;-webkit-text-stroke:0!important;transform:none}
+  .titol,h1{font-weight:900!important;letter-spacing:.04em;text-transform:uppercase;color:#fff!important;text-shadow:0 0 14px rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35)!important;animation:none!important;transform:none!important}
+  .pill{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow),inset 0 1px 0 rgba(255,255,255,.18)!important;font-weight:700!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transform:none!important;letter-spacing:.01em}
+  .pill.acc{color:#FFD24A!important} .pill.temps,.pill.cat{color:#5CF0FF!important} .pill.err{color:#FF6B8A!important}
+  .pill.pop{animation:neopop .35s cubic-bezier(.2,1.8,.4,1)!important}
+  @keyframes neopop{50%{transform:scale(1.25)!important;box-shadow:0 0 26px rgba(255,210,74,.8)}}
+  .hud .pill{font-size:17px}
+  .capa{background:radial-gradient(circle at 50% 30%,rgba(120,90,255,.35),rgba(20,16,60,.88))!important}
+  .capa::before{background:none!important;animation:none!important}
+  .caixa{background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.96))!important;color:#fff!important;border:1.5px solid var(--vora)!important;border-radius:28px!important;box-shadow:0 0 40px rgba(110,140,255,.35),0 20px 40px rgba(0,0,0,.45)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .caixa::before{border:0!important} .caixa::after{display:none!important}
+  .caixa p,p{color:#D9D6FF!important;font-weight:500}
+  h1{font-size:46px;color:#fff!important}
+  .gran{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 18px rgba(255,210,74,.65),0 3px 0 rgba(0,0,0,.35)!important}
+  button,.gros{font-weight:700!important;letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;color:#fff!important;border:3px solid rgba(255,255,255,.55)!important;box-shadow:0 6px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important;text-shadow:0 2px 0 rgba(0,0,0,.3)}
+  button:active,.gros:active{transform:translateY(5px)!important;box-shadow:0 1px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important}
+  button::after,.gros::after{display:none!important}
+  button.acc,.gros.acc,.botons button,.cats .gros{background:linear-gradient(180deg,#FFB24A,#F0781A)!important;box-shadow:0 6px 0 #A64E0E,0 0 22px rgba(255,160,60,.5)!important}
+  .cats .gros{text-transform:none;letter-spacing:0;font-size:14px!important}
+  .missatge,.pista{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:700!important;transform:translateX(-50%)!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .pista{color:#C9B6FF!important}
+  .pregunta{background:linear-gradient(180deg,rgba(110,70,255,.9),rgba(70,40,190,.9))!important;color:#fff!important;border:1.5px solid rgba(190,170,255,.6)!important;box-shadow:0 0 28px rgba(140,110,255,.55),0 10px 24px rgba(0,0,0,.35)!important;font-weight:900!important;text-shadow:0 2px 0 rgba(0,0,0,.3)!important;transform:translateX(-50%)!important;letter-spacing:.02em}
+  .pregunta small{font-weight:500!important;color:#E6DEFF!important}
+  .tecla{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.07))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.2)!important;font-weight:700!important;border-radius:12px!important}
+  .tecla.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 3px 0 #1E7F2C,0 0 14px rgba(92,230,100,.6)!important}
+  .tecla.quasi{background:linear-gradient(180deg,#FFD866,#F0A81A)!important;color:#2A1B00!important;box-shadow:0 3px 0 #9A6A00,0 0 14px rgba(255,200,60,.5)!important}
+  .tecla.no,.tecla:disabled{background:rgba(255,255,255,.05)!important;color:rgba(255,255,255,.3)!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important}
+  .fr,.op{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 4px 0 rgba(0,0,0,.35),var(--glow)!important;font-weight:700!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .fr.be,.op.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 4px 0 #1E7F2C,0 0 18px rgba(92,230,100,.65)!important}
+  .fr.malament,.op.ko{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;box-shadow:0 4px 0 #8A1030,0 0 18px rgba(255,80,120,.6)!important}
+  .frase,.pista-item{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:600!important}
+  .frase .forat{border-bottom-color:#38E8FF!important} .frase .ok{color:#6CEB5A!important}
+  .pista-item b{background:#FFD24A!important;color:#2A1B00!important}
+  .nivell-capa{background:radial-gradient(circle at 50% 40%,rgba(120,90,255,.45),rgba(20,16,60,.9))!important}
+  .nivell-capa .num{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 30px rgba(255,210,74,.75),0 8px 0 rgba(0,0,0,.4)!important}
+  .nivell-capa .eti{font-weight:700!important;letter-spacing:.2em!important;text-shadow:0 0 12px rgba(255,255,255,.5)!important}
+  .nivell-capa .nom{background:linear-gradient(180deg,#A06BFF,#6A3FD8)!important;border:1.5px solid rgba(255,255,255,.5)!important;box-shadow:0 0 22px rgba(160,107,255,.6)!important;font-weight:700!important}
+  .nivell-capa .resum{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important}
+  .compte{font-weight:900!important;color:#FFD24A!important;text-shadow:0 0 40px rgba(255,210,74,.8),0 10px 0 rgba(0,0,0,.4)!important}
+  .llista span{font-family:'Roboto',sans-serif!important;background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:var(--glow)!important;font-weight:700!important}
+  .llista span.trobada{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;text-decoration:line-through}
+  .ll{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08))!important;color:#fff!important;border:1.5px solid var(--vora)!important;box-shadow:0 4px 0 rgba(0,0,0,.35),var(--glow)!important}
+  .ll.be{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important}
+  .cap .tipus,.tipus{font-family:'Roboto',sans-serif!important}
+  /* Neó sobre el layout PlayQuiz */
+  body,body.lila,body.taronja{background:linear-gradient(170deg,#4A2FB5 0%,#2E2080 45%,#1A1650 100%)!important}
+  #fons{background:radial-gradient(circle at 50% 55%,transparent 0 6%,rgba(255,255,255,.035) 6% 12%,transparent 12% 18%,rgba(255,255,255,.035) 18% 24%,transparent 24% 30%,rgba(255,255,255,.035) 30% 36%,transparent 36% 42%,rgba(255,255,255,.035) 42% 48%,transparent 48% 54%,rgba(255,255,255,.035) 54% 60%,transparent 60% 66%,rgba(255,255,255,.035) 66% 72%,transparent 72%)!important}
+  #num{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;border:2px solid rgba(255,255,255,.55);box-shadow:0 0 18px rgba(255,80,120,.6),0 5px 0 rgba(0,0,0,.3)!important}
+  #punts{background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora);box-shadow:var(--glow)!important} #punts small{color:#C9C4FF!important}
+  .op .l{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;box-shadow:0 0 12px rgba(255,80,120,.6)!important}
+  .op.be .l{background:#fff!important;color:#2FB03C!important} .op.ko .l{background:#fff!important;color:#E0294F!important}
+  .targeta{background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08))!important;border:1.5px solid var(--vora);box-shadow:0 0 28px rgba(120,160,255,.45),0 10px 0 rgba(0,0,0,.3)!important;transform:none!important}
+  .targeta .nom{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;box-shadow:0 0 14px rgba(255,80,120,.6)!important}
+  .targeta .lletra{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important}
+  #barra{background:var(--vidre)!important;border:1.5px solid var(--vora);box-shadow:var(--glow)!important}
+  #barra i{background:linear-gradient(90deg,#38E8FF,#4EE06A)!important;box-shadow:0 0 12px rgba(78,224,106,.7)}
+  .carta{background:radial-gradient(circle at 50% 30%,rgba(120,90,255,.4),transparent 60%),linear-gradient(170deg,#4A2FB5,#1A1650)!important}
+  .carta.taronja{background:radial-gradient(circle at 50% 50%,rgba(255,170,60,.35),transparent 60%),linear-gradient(170deg,#4A2FB5,#1A1650)!important}
+  .carta h1{text-shadow:0 0 18px rgba(255,255,255,.5),0 4px 0 rgba(0,0,0,.35)!important} .carta h1 span{color:#FFD24A!important}
+  .carta .pill{background:var(--vidre)!important;border:1.5px solid var(--vora);box-shadow:var(--glow)!important;transform:none!important}
+  .carta button{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;border:3px solid rgba(255,255,255,.55)!important;box-shadow:0 6px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55)!important}
+  #vf .no{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;box-shadow:0 0 22px rgba(255,80,120,.6),0 8px 0 rgba(0,0,0,.3)!important} #vf .si{background:linear-gradient(180deg,#6CEB5A,#2FB03C)!important;box-shadow:0 0 22px rgba(92,230,100,.6),0 8px 0 rgba(0,0,0,.3)!important}
+  #vf .resposta{background:linear-gradient(180deg,#FF6B8A,#E0294F)!important;box-shadow:0 0 18px rgba(255,80,120,.6)!important}
+  .lateral{color:rgba(200,195,255,.8)!important} #logo{text-shadow:0 0 14px rgba(255,255,255,.5),0 3px 0 rgba(0,0,0,.35)!important;transform:none!important}
+  #cap .preg{text-shadow:0 0 12px rgba(255,255,255,.4),0 3px 0 rgba(0,0,0,.3)!important}
+  #nivellcapa .num{color:#FFD24A!important;text-shadow:0 0 30px rgba(255,210,74,.75),0 8px 0 rgba(0,0,0,.4)!important}
+  /* Capçalera mòbil: número i punts en una fila; tipus + pregunta a sota, a tota l'amplada */
+  @media (max-aspect-ratio:1/1){
+    #cap{top:clamp(74px,10.5vh,96px)!important;left:5%!important;right:5%!important}
+    #cap .sub{display:none!important}
+    #cap .tipus{display:inline-block;font-size:12px!important;letter-spacing:.18em;text-transform:uppercase;color:#C9C4FF;background:var(--vidre);border:1.5px solid var(--vora);border-radius:999px;padding:3px 12px}
+    #cap .preg{font-size:clamp(17px,2.7vh,24px)!important;line-height:1.2!important;margin-top:.45em!important;text-transform:none!important;-webkit-line-clamp:4!important}
+    #num{width:52px!important;font-size:26px!important}
+    #musica{top:14px!important;left:76px!important}
+    #esc{inset:clamp(200px,27vh,240px) 5% clamp(110px,14vh,130px)!important}
+  }
+  #lletres{flex-wrap:nowrap!important} #lletres .ll{width:min(clamp(38px,7.6vh,72px),calc((78vw - (var(--n,6) - 1) * 6px) / var(--n,6)))!important;font-size:min(clamp(24px,5vh,48px),calc(60vw / var(--n,6)))!important;flex:none}
+  /* Usabilitat: objectius tàctils de 44 px i botó de pantalla completa */
+  .hud a,.hud button,#btn-musica,#btn-pc{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
+  .gros,#btn-inici,#btn-reinici{min-height:44px}
+  #btn-pc{font-family:'Roboto',sans-serif!important;font-size:20px!important;padding:0 10px!important;cursor:pointer;line-height:1}
+  @media (max-width:430px){ .hud a.pill .t-cq{display:none} }
+  @media (max-width:400px){ .hud{gap:4px!important;left:8px!important;right:8px!important} .hud .pill{font-size:15px!important;padding:4px 9px!important} .hud a,.hud button,#btn-musica,#btn-pc{min-width:40px!important} }
+  @media (min-aspect-ratio:1/1){ #cap{left:200px!important;right:200px!important} #barra{left:180px!important;right:180px!important} #musica{left:96px!important;top:20px!important} }
+  #btn-pc{position:fixed!important;top:20px;left:150px;z-index:4;background:var(--vidre)!important;color:#fff!important;border:1.5px solid var(--vora)!important;border-radius:999px;min-width:44px;min-height:44px}
+  @media (max-aspect-ratio:1/1){#btn-pc{top:14px!important;left:132px!important}}
+  #musica,#tornar{min-width:44px;min-height:44px;display:inline-flex;align-items:center}
+  /* Correccions de maquetació (octubre 2026) */
+  #pistes .pista{transform:none!important;position:static!important;width:100%;box-sizing:border-box;color:#fff!important}
+  #pistes .pista b{color:#2A1B00}
+  #cap .sub{display:none!important}
+  #cap .tipus{display:inline-block;font-size:12px!important;letter-spacing:.18em;text-transform:uppercase;color:#C9C4FF;background:var(--vidre);border:1.5px solid var(--vora);border-radius:999px;padding:3px 12px}
+  @media (min-aspect-ratio:1/1){
+    #cap .preg{font-size:clamp(18px,3.4vh,30px)!important;line-height:1.2!important;margin-top:.45em!important;text-transform:none!important}
+    #esc{inset:clamp(140px,20vh,180px) 6% clamp(80px,12vh,110px)!important}
+  }
+  @media (min-aspect-ratio:1/1) and (max-height:540px){
+    #cap{top:10px!important}
+    #cap .preg{font-size:17px!important;-webkit-line-clamp:2!important}
+    #esc{inset:96px 6% 62px!important;gap:2%!important}
+    #ops{gap:6px!important}
+    .op{padding:.15em!important}
+    .op .l{width:32px!important;border-width:2px!important;font-size:16px!important}
+    .op .t{font-size:14px!important}
+    #lletres .ll{width:min(34px,calc((70vw - (var(--n,6) - 1) * 6px) / var(--n,6)))!important;font-size:20px!important}
+    #pistes .pista{font-size:13px!important;padding:.35em .7em!important}
+    #barra{bottom:10px!important;height:20px!important}
+  }
+  /* «Qui és més gran?» i anagrama al mòbil: res no surt de la pantalla */
+  #esc.mesgran #targetes{gap:8%!important;padding:0 2%}
+  #esc.mesgran .targeta .nom{white-space:normal;text-align:center;line-height:1.1;width:max-content;max-width:120%;font-size:clamp(11px,1.8vh,20px)!important}
+  @media (max-aspect-ratio:1/1){
+    #esc.mesgran .targeta{width:40%!important}
+    #esc.anagrama{gap:3.5vh!important}
+  }
+  @media (max-aspect-ratio:1/1){ .lateral{display:none!important} }
+  /* Verdader o fals: l'afirmació en una targeta gran i dos botons amb text */
+  #esc.vf{display:flex!important;flex-direction:column;justify-content:center;align-items:center;gap:clamp(22px,5vh,48px)!important}
+  .frase{position:relative;width:min(100%,640px);box-sizing:border-box;padding:clamp(26px,5vh,48px) clamp(18px,4vw,40px);border-radius:26px;text-align:center;background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.95));border:1.5px solid var(--vora);box-shadow:0 0 30px rgba(120,160,255,.35),0 10px 0 rgba(0,0,0,.3);animation:entra .5s cubic-bezier(.2,1.4,.4,1) both}
+  .frase p{margin:0;color:#fff;font-weight:800;font-size:clamp(21px,3.4vh,34px);line-height:1.22;text-wrap:balance;text-shadow:0 3px 0 rgba(0,0,0,.3)}
+  .frase .veredicte{position:absolute;left:0;right:0;bottom:-.95em;margin:auto;width:max-content;padding:.3em 1.1em;border-radius:999px;border:3px solid #fff;color:#fff;font-weight:900;font-size:clamp(16px,2.4vh,22px);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+  .frase .veredicte.v{background:linear-gradient(180deg,#6CEB5A,#2FB03C);box-shadow:0 0 18px rgba(92,230,100,.6)}
+  .frase .veredicte.f{background:linear-gradient(180deg,#FF6B8A,#E0294F);box-shadow:0 0 18px rgba(255,80,120,.6)}
+  #vf{width:min(100%,640px)!important;justify-content:center!important;gap:14px!important}
+  #vf button{flex:1 1 0;width:auto!important;aspect-ratio:auto!important;min-height:clamp(60px,9vh,88px);border-radius:999px!important;border:3px solid rgba(255,255,255,.6)!important;display:flex!important;align-items:center;justify-content:center;gap:10px;font:900 clamp(17px,2.6vh,24px) 'Roboto',sans-serif!important;letter-spacing:.05em;text-transform:uppercase;transition:opacity .3s,transform .2s}
+  #vf button span{font-size:1.35em;line-height:1}
+  #vf button:active{transform:translateY(4px)}
+  #vf button.apagat{opacity:.25;transform:scale(.94)}
+  #vf button.bona{transform:scale(1.04)}
+  #vfmig{display:none!important}
+  /* Castells dibuixats */
+  .targeta.cast{width:min(84%,46vh)!important;aspect-ratio:.82!important;padding:2%!important}
+  .targeta.cast .dins{background:radial-gradient(circle at 50% 18%,rgba(255,220,140,.35),transparent 55%),linear-gradient(180deg,#5EC8FF,#9BDDFF 62%,#E9C9A0 62%,#D9B58A)!important;display:flex!important;align-items:flex-end;justify-content:center}
+  .targeta.cast svg{width:96%!important;height:96%!important;filter:none!important}
+  #esc.mescastell #targetes{display:flex!important;gap:5%;justify-content:center;width:100%}
+  #esc.mescastell .targeta.cast{width:44%!important;max-width:34vh}
+  #esc.castell,#esc.trivia{gap:2vh!important}
+  @media (max-aspect-ratio:1/1){ .targeta.cast{width:min(64%,31vh)!important} #esc.mescastell .targeta.cast{width:46%!important;max-width:none} #esc.castell,#esc.trivia{gap:1.6vh!important} }
+  @media (min-aspect-ratio:1/1) and (max-height:540px){ .targeta.cast{width:min(40%,30vh)!important} }
+  @media (max-aspect-ratio:1/1) and (max-height:760px){ .targeta.cast{width:min(50%,24vh)!important} #esc.mescastell .targeta.cast{width:44%!important} }
+  .carta .emojis .mini-cast{display:inline-grid;width:clamp(50px,9vh,84px);aspect-ratio:.82;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#5EC8FF,#9BDDFF 62%,#E9C9A0 62%);border:2px solid rgba(255,255,255,.5);box-shadow:0 5px 0 rgba(0,0,0,.25)}
+  .carta .emojis .mini-cast svg{width:100%;height:100%}
+  @media (min-aspect-ratio:1/1) and (max-height:540px){
+    #esc.vf{gap:16px!important}
+    .frase{padding:12px 18px 24px}
+    .frase p{font-size:17px}
+    .frase .veredicte{font-size:13px;bottom:-1.1em}
+    #esc.vf{gap:22px!important}
+    #vf button{min-height:48px}
+  } /* al mòbil, les etiquetes laterals quedaven sota les opcions */
+</style>
+</head>
+<body>
+<div id="fons"></div>
+<span class="lateral esq">CATQUIZ · CASTELLS</span><span class="lateral dre">CATQUIZ · CASTELLS</span>
+<div id="num">1</div><div id="punts"><small>PUNTS</small>0</div>
+<button id="musica">🎵</button>
+<a id="tornar" href="../index.html">← CatQuiz</a>
+<div id="logo">Cat<b>Quiz</b></div>
+<div id="cap"><div class="tipus" id="tipus"></div><div class="sub">CATQUIZ DE CASTELLS</div><div class="preg" id="preg"></div></div>
+<div id="esc">
+  <div id="targetes"></div>
+  <div id="ops"></div>
+  <div id="vf"><button class="no" type="button"><span aria-hidden="true">✕</span>Fals</button><div id="vfmig"></div><button class="si" type="button"><span aria-hidden="true">✓</span>Verdader</button></div>
+  <div id="lletres"></div>
+  <div id="pistes"></div>
+</div>
+<div id="barra"><i id="bar"></i></div>
+
+<div class="carta" id="inici"><div>
+  <div class="pill">CATQUIZ · CASTELLS</div>
+  <h1>Quant saps<span>de castells?</span></h1>
+  <div class="pill"><b>100</b> preguntes · <b>10</b> nivells</div>
+  <div class="emojis" id="emojis-castells"></div>
+  <p>Quin castell és? Un 3 de 9 amb folre, un 4 de 8, un pilar de 6… Endevina els castells dibuixats, el vocabulari casteller i les colles.</p>
+  <button id="btn-inici">▶ Comença</button>
+</div></div>
+<div class="carta" id="nivellcapa" hidden><div><div class="pill" id="nivellEti">NIVELL</div><div class="num" id="nivellNum">1</div><div class="estrelles" id="nivellEstr"></div><p id="nivellTxt"></p></div></div>
+<div class="carta taronja" id="outro" hidden><div><div id="logoGran" style="font-family:'Lilita One',sans-serif;font-size:clamp(50px,12vh,110px);text-shadow:0 8px 0 rgba(0,0,0,.25);transform:rotate(-4deg)">Cat<span style="color:#FFD400">Quiz</span></div><div class="pill" style="background:#fff;color:#1B1B3A;margin-top:4vh">SEGUEIX-NOS 👉 @catquiz.cat</div><p>Juga-hi gratis a catquiz.cat</p></div></div>
+<div class="carta taronja" id="final" hidden><div><h1 id="finalTitol">Fi del quiz!</h1><div class="pill" id="finalPunts"></div><p id="finalTxt"></p><button id="btn-reinici">↻ Torna-hi</button></div></div>
+
+<script>
+const FUT = {"V": [["PINYA", "Base de molta gent que aguanta el castell i esmorteeix les caigudes", 0], ["ENXANETA", "Infant que puja dalt de tot del castell i fa l'aleta", 0], ["CASTELL", "Construcció humana de diversos pisos que aixeca una colla", 0], ["COLLA", "Grup de persones que fan castells i porten la mateixa camisa", 0], ["CASTELLER", "Persona que fa torres humanes", 0], ["FAIXA", "Peça negra i llarga que es cenyeix a la cintura i protegeix l'esquena", 0], ["MOCADOR", "Peça vermella amb punts blancs que porten els castellers", 1], ["GRALLA", "Instrument de vent que acompanya els castells", 1], ["CAMISA", "Peça de roba que té el color de cada colla", 1], ["PILAR", "Castell d'una sola persona per pis", 1], ["TORRE", "Castell de dues persones per pis", 1], ["TIMBAL", "Instrument de percussió que sona amb la gralla", 1], ["TRONC", "Part del castell que s'alça damunt de la pinya", 2], ["CASC", "Protecció que porta al cap la canalla", 2], ["ASSAIG", "Trobada de la colla per practicar els castells", 2], ["CANALLA", "Conjunt dels infants d'una colla castellera", 2], ["ALETA", "Gest de la mà que fa l'enxaneta en coronar el castell", 2], ["DIADA", "Dia de festa assenyalat en què una colla fa la seva actuació més important", 2], ["BAIXOS", "Castellers del tronc que trepitgen a terra i aguanten el pes", 3], ["DOSOS", "Parella d'infants del pom de dalt, just sota l'acotxador", 3], ["FOLRE", "Segona pinya, posada damunt de la primera", 3], ["CARREGAT", "Castell que arriba a l'aleta però cau en baixar", 3], ["DESCARREGAT", "Castell coronat que es desmunta sense caure", 3], ["INTENT", "Castell que cau abans que l'enxaneta faci l'aleta", 3], ["PIS", "Cadascuna de les plantes d'un castell", 3], ["ACOTXADOR", "Infant que s'ajup damunt dels dosos, sota l'enxaneta (nom més estès)", 4], ["MANILLES", "Tercera base, damunt del folre, per als castells més alts", 4], ["GRALLER", "Músic que toca l'instrument de vent dels castells", 4], ["SEGONS", "Castellers que pugen damunt de les espatlles dels baixos", 4], ["CONTRAFORT", "Posició de la pinya que abraça el baix per darrere", 4], ["TERÇOS", "Castellers que pugen damunt de les espatlles dels segons", 4], ["MATINADES", "Toc de gralles de bon matí abans d'una diada", 4], ["AGULLA", "Posició de la pinya dins del nucli, davant del baix", 5], ["CROSSES", "Posicions de la pinya sota les aixelles dels baixos", 5], ["VENTS", "Posicions de la pinya entre dues rengles, que vetllen perquè no es moguin", 5], ["LATERALS", "Posicions de la pinya que aguanten una cama del segon", 5], ["PUNTALS", "Quarta base, molt petita, que aguanta els quarts", 5], ["QUARTS", "Castellers que pugen damunt de les espatlles dels terços", 5], ["TOC", "Música de gralla i timbal que marca cada fase del castell", 5], ["MANS", "Rengla de la pinya, darrere del baix, que subjecta el segon per sota del cul", 6], ["CORDÓ", "Cadascun dels anells de gent que formen la pinya", 6], ["RENGLA", "Cada filera de persones de la pinya", 6], ["ACTUACIÓ", "Cada sortida d'una colla a plaça per fer-hi castells davant del públic", 6], ["NET", "Dit del castell fet sense pinya, com a prova", 6], ["QUINTS", "Castellers que pugen damunt de les espatlles dels quarts", 7], ["SOCA", "Pinya de terra, la que queda sota el folre", 7], ["CONCURS", "Competició de castells que es fa a Tarragona cada dos anys", 7], ["CAMINANT", "Dit del castell que es desplaça sencer, sense desmuntar-se", 7], ["GAMMA", "La ___ extra aplega els castells més difícils", 7], ["MUIXERANGA", "Tradició valenciana de torres humanes, com la d'Algemesí", 7], ["SISENS", "Castellers que pugen damunt de les espatlles dels quints", 8], ["MOIXIGANGA", "Dansa religiosa que forma figures humanes sobre la Passió, com la de Sitges", 8], ["LLENYA", "Fer ___: en argot casteller, caure el castell", 8], ["VALENCIANS", "Ball de ___: dansa antiga de la qual van néixer els castells", 8], ["XIQUETS", "Els ___ de Valls: nom històric dels castellers vallencs", 8], ["CASSOLETA", "Nom penedesenc de l'acotxador", 9], ["FORMATGET", "Posició de la soca que omple els forats de les cantonades", 9], ["QUADRAR", "Definir la mida de la base d'un castell amb la col·locació dels baixos", 9]], "T": [["Com s'anomena l'infant que corona el castell?", ["Enxaneta", "Acotxador", "Baix"], 0, 0], ["Com es diu la base de gent que aguanta el castell?", ["Pinya", "Folre", "Tronc"], 0, 0], ["Quin instrument de vent acompanya els castells?", ["La gralla", "La trompeta", "La flauta travessera"], 0, 0], ["De quin color és la faixa dels castellers?", ["Negra", "Blanca", "Verda"], 0, 0], ["Quina peça de roba porta cada colla del seu color?", ["La camisa", "Els pantalons", "La faixa"], 0, 0], ["Quantes persones per pis té un pilar?", ["Una", "Dues", "Tres"], 0, 0], ["Quin gest fa l'enxaneta quan arriba dalt de tot?", ["Aixeca la mà", "Pica de mans", "Fa una reverència"], 0, 0], ["Què porta al cap la canalla del castell per seguretat?", ["Un casc", "Una gorra", "Una cinta"], 0, 0], ["Què vol dir que un castell s'ha «descarregat»?", ["Que s'ha coronat i desmuntat sense caure", "Que ha caigut abans de coronar-se", "Que s'ha fet sense pinya"], 0, 1], ["Com és el mocador típic dels castellers?", ["Vermell amb punts blancs", "Blau amb ratlles blanques", "Negre i llis"], 0, 1], ["Quin instrument de percussió sona amb la gralla?", ["El timbal", "La bateria", "Les castanyoles"], 0, 1], ["Com pugen al castell els castellers del tronc?", ["Descalços", "Amb espardenyes", "Amb botes"], 0, 1], ["Quantes persones per pis té una torre?", ["Dues", "Una", "Quatre"], 0, 1], ["De quin color és la camisa dels Castellers de Vilafranca?", ["Verd", "Lila", "Groc"], 0, 1], ["De quin color són els pantalons dels castellers?", ["Blancs", "Negres", "Blaus"], 0, 1], ["Com es diu la música que sona mentre es fa un castell?", ["El toc de castells", "El toc de matinades", "La sardana"], 0, 1], ["Què vol dir «4 de 8»?", ["Quatre persones per pis i vuit pisos", "Vuit persones per pis i quatre pisos", "Quatre castells en vuit rondes"], 0, 2], ["Què és un castell «carregat»?", ["El que arriba a l'aleta però cau en baixar", "El que es desmunta abans de l'aleta", "El que es fa sense folre"], 0, 2], ["Què és un «intent» en el món casteller?", ["Un castell que cau abans de l'aleta", "Un castell coronat que cau en baixar", "Un assaig a porta tancada"], 0, 2], ["Com es diu la part del castell que s'alça damunt de la pinya?", ["Tronc", "Soca", "Cordó"], 0, 2], ["A quina ciutat es fa el Concurs de Castells?", ["Tarragona", "Barcelona", "Girona"], 0, 2], ["Quina organització va declarar els castells patrimoni de la humanitat?", ["La UNESCO", "La UEFA", "L'OTAN"], 0, 2], ["Com es diu la segona pinya, que es posa damunt de la primera?", ["Folre", "Manilles", "Puntals"], 0, 2], ["Quina colla va guanyar el Concurs de Castells de Tarragona del 2026?", ["Castellers de Vilafranca", "Colla Vella dels Xiquets de Valls", "Colla Jove Xiquets de Tarragona"], 0, 2], ["Quin és el lema dels castellers?", ["Força, equilibri, valor i seny", "Força, ordre, unitat i fe", "Valor, treball, pau i seny"], 0, 3], ["Quin any la UNESCO va declarar els castells patrimoni de la humanitat?", ["2010", "2000", "2016"], 0, 3], ["Quina ciutat és considerada el bressol dels castells?", ["Valls", "Girona", "Lleida"], 0, 3], ["Quina expressió nascuda dels castells vol dir unir-se per fer força?", ["Fer pinya", "Fer llenya", "Fer l'aleta"], 0, 3], ["A quina ciutat se celebra la Diada de Sant Fèlix?", ["Vilafranca del Penedès", "Valls", "Terrassa"], 0, 3], ["Qui forma el pom de dalt d'un castell?", ["Els dosos, l'acotxador i l'enxaneta", "Els baixos, els segons i els terços", "Les crosses, els vents i els laterals"], 0, 3], ["Com es diu la tercera base, que va damunt del folre?", ["Manilles", "Puntals", "Soca"], 0, 3], ["En quina plaça de Tarragona actuen les colles el dia de Santa Tecla?", ["La plaça de la Font", "La plaça del Blat", "La plaça de Catalunya"], 0, 3], ["A quina ciutat se celebra la Diada de Santa Úrsula?", ["Valls", "Mataró", "Reus"], 0, 4], ["Quin dia se celebra la diada castellera de Sant Fèlix?", ["El 30 d'agost", "El 24 de juny", "L'11 de setembre"], 0, 4], ["On es va fer el primer Concurs de Castells, el 1932?", ["A la plaça de braus de Tarragona", "A la plaça Sant Jaume de Barcelona", "A la plaça del Blat de Valls"], 0, 4], ["Quina colla va guanyar el primer Concurs de Castells, el 1932?", ["Colla Vella dels Xiquets de Valls", "Castellers de Vilafranca", "Minyons de Terrassa"], 0, 4], ["A quina plaça actuen els Castellers de Barcelona per la Mercè?", ["La plaça Sant Jaume", "La plaça d'Espanya", "La plaça de les Glòries"], 0, 4], ["De quin color és la camisa dels Minyons de Terrassa?", ["Malva", "Verd", "Groc"], 0, 4], ["De quin ball tradicional provenen els castells?", ["El ball de valencians", "El ball de bastons", "El ball de gitanes"], 0, 4], ["Quina diada tanca la temporada a la plaça de la Vila de Vilafranca, l'1 de novembre?", ["Tots Sants", "Sant Fèlix", "Santa Úrsula"], 0, 4], ["Quina colla va carregar el primer 3 de 10 amb folre i manilles, el 15 de novembre del 1998?", ["Castellers de Vilafranca", "Minyons de Terrassa", "Colla Joves Xiquets de Valls"], 0, 5], ["Quina colla va descarregar el primer 3 de 10 amb folre i manilles, el 22 de novembre del 1998?", ["Minyons de Terrassa", "Castellers de Vilafranca", "Colla Vella dels Xiquets de Valls"], 0, 5], ["Quin any es van fundar els Castellers de Vilafranca?", ["1948", "1979", "1926"], 0, 5], ["En quin any es va fer el primer Concurs de Castells de Tarragona?", ["1932", "1952", "1980"], 0, 5], ["Quina colla va descarregar el primer 4 de 10 amb folre i manilles, el 22 de novembre del 2015?", ["Minyons de Terrassa", "Castellers de Vilafranca", "Colla Vella dels Xiquets de Valls"], 0, 5], ["Quin músic va presidir el jurat del primer Concurs de Castells?", ["Pau Casals", "Enric Granados", "Isaac Albéniz"], 0, 5], ["Cada quant temps se celebra el Concurs de Castells de Tarragona?", ["Cada dos anys", "Cada any", "Cada quatre anys"], 0, 5], ["A quina ciutat es va inaugurar el Museu Casteller de Catalunya, el 2023?", ["Valls", "Tarragona", "Vilafranca del Penedès"], 0, 5], ["Quina colla va carregar el primer 2 de 9 amb folre i manilles de la història, el 1993?", ["Minyons de Terrassa", "Castellers de Vilafranca", "Nens del Vendrell"], 0, 6], ["Quina colla va fer el primer 4 de 9 amb folre del segle XX, per Santa Úrsula del 1981?", ["Colla Vella dels Xiquets de Valls", "Colla Jove Xiquets de Tarragona", "Castellers de Barcelona"], 0, 6], ["Des de quin any vesteixen de verd els Castellers de Vilafranca?", ["1957", "1948", "1998"], 0, 6], ["Quina va ser la primera colla fundada fora de l'àrea castellera tradicional, el 1969?", ["Castellers de Barcelona", "Capgrossos de Mataró", "Castellers de Lleida"], 0, 6], ["Quins castellers pugen damunt de les espatlles dels terços?", ["Els quarts", "Els segons", "Els dosos"], 0, 6], ["Quina colla va guanyar el Concurs de Castells del 1970?", ["Nens del Vendrell", "Castellers de Vilafranca", "Colla Joves Xiquets de Valls"], 0, 6], ["Quin any es va fundar la Coordinadora de Colles Castelleres de Catalunya?", ["1989", "1969", "2010"], 0, 6], ["Per quina festa de Mataró fan diada els Capgrossos?", ["Les Santes", "La Mercè", "Santa Tecla"], 0, 6], ["Quina colla va descarregar el primer 3 de 8 del segle XX, el 1951?", ["Nens del Vendrell", "Castellers de Vilafranca", "Xiquets de Reus"], 0, 7], ["Quina colla va carregar el primer 2 de 9 amb folre de la història, el 2005?", ["Castellers de Vilafranca", "Minyons de Terrassa", "Colla Joves Xiquets de Valls"], 0, 7], ["Quina colla va descarregar el 1998 el primer 4 de 9 sense folre del segle XX?", ["Minyons de Terrassa", "Castellers de Barcelona", "Nens del Vendrell"], 0, 7], ["Quin any la Colla Joves Xiquets de Valls va carregar el seu primer 3 de 10 amb folre i manilles?", ["2024", "1998", "2010"], 0, 7], ["Quina colla va guanyar totes les edicions del Concurs de Castells entre el 2002 i el 2016?", ["Castellers de Vilafranca", "Colla Vella dels Xiquets de Valls", "Minyons de Terrassa"], 0, 7], ["Quina colla va guanyar el Concurs de Castells del 2018?", ["Colla Vella dels Xiquets de Valls", "Castellers de Vilafranca", "Colla Jove Xiquets de Tarragona"], 0, 7], ["Per què no es va fer el Concurs de Castells del 2020?", ["Per la pandèmia de covid-19", "Per una tempesta", "Per obres a la plaça"], 0, 7], ["Quin recorregut fan els pilars caminant de les colles de Tarragona el 24 de setembre?", ["De la plaça de les Cols a l'Ajuntament", "De la Catedral al port", "De l'estació a la Rambla Nova"], 0, 7], ["Quina colla va descarregar el primer 4 de 9 amb folre i l'agulla de la història, el 1996?", ["Castellers de Vilafranca", "Minyons de Terrassa", "Colla Vella dels Xiquets de Valls"], 0, 8], ["Quina colla va descarregar el primer 3 de 9 amb folre del segle XX, el 1986?", ["Colla Joves Xiquets de Valls", "Nens del Vendrell", "Castellers de Barcelona"], 0, 8], ["Quin castell van descarregar els Castellers de Vilafranca per Santa Tecla del 2016, el primer de deu pisos descarregat a Tarragona?", ["3 de 10 amb folre i manilles", "5 de 10 amb folre i manilles", "Pilar de 10 amb folre i manilles"], 0, 8], ["Quina colla va carregar el 2011 el primer castell de gamma extra d'una colla de Tarragona, un 5 de 9 amb folre?", ["Colla Jove Xiquets de Tarragona", "Xiquets de Tarragona", "Xiquets del Serrallo"], 0, 8], ["De quin color va ser la primera camisa dels Castellers de Vilafranca?", ["Rosat", "Blau", "Groc"], 0, 8], ["Com s'anomena a Valls l'infant que s'ajup damunt dels dosos?", ["Aixecador", "Formatget", "Pilaner"], 0, 8], ["En quina plaça del Vendrell es fan els castells de Santa Teresa?", ["La plaça Vella", "La plaça de la Font", "La plaça del Blat"], 0, 8], ["Com es diu l'acotxador en l'argot del Penedès?", ["Cassoleta", "Formatget", "Rengla"], 0, 9], ["Quina colla va descarregar el primer 2 de 9 amb folre i manilles, el 1994?", ["Colla Vella dels Xiquets de Valls", "Castellers de Barcelona", "Castellers de Vilafranca"], 0, 9], ["En quina ciutat es va reunir el comitè de la UNESCO que va declarar els castells patrimoni, el 2010?", ["Nairobi", "París", "Ginebra"], 0, 9], ["Quina colla va guanyar els concursos Jorba Preciados de Barcelona (1964-1966)?", ["Colla Vella dels Xiquets de Valls", "Nens del Vendrell", "Castellers de Vilafranca"], 0, 9], ["Quin any els Castellers de Vilafranca van guanyar el Concurs de Castells per primer cop?", ["1972", "1996", "1952"], 0, 9], ["De quin autor prové el vers del lema «Força, equilibri, valor i seny»?", ["Josep Anselm Clavé", "Jacint Verdaguer", "Àngel Guimerà"], 0, 9], ["En un castell de vuit pisos, quan comença a sonar el toc de castells?", ["Quan pugen els quarts", "Quan es tanca la pinya", "Quan l'enxaneta fa l'aleta"], 0, 9], ["Quanta gent va assistir, aproximadament, al primer Concurs de Castells del 1932?", ["Unes 6.000 persones", "Unes 60.000 persones", "Unes 600 persones"], 0, 9]], "VF": [["L'enxaneta és l'infant que corona el castell", true, 0], ["La pinya és el pis més alt del castell", false, 0], ["Els castellers porten una faixa negra a la cintura", true, 0], ["La gralla és un instrument de percussió", false, 0], ["Una torre té dues persones per pis", true, 1], ["Un pilar té tres persones per pis", false, 1], ["Els Castellers de Vilafranca porten camisa verda", true, 1], ["Els castellers del tronc pugen al castell amb sabates", false, 1], ["Un «3 de 9» té tres persones per pis i nou pisos", true, 2], ["Un castell «carregat» és el que es desmunta sense caure", false, 2], ["El Concurs de Castells se celebra a Tarragona", true, 2], ["Els Castellers de Barcelona porten camisa groga", false, 2], ["La UNESCO va declarar els castells patrimoni de la humanitat el 2010", true, 3], ["El folre és la base que es posa damunt de les manilles", false, 3], ["Valls és considerada el bressol dels castells", true, 3], ["La Diada de Sant Fèlix se celebra a Tarragona", false, 3], ["Els Minyons de Terrassa porten camisa de color malva", true, 4], ["El primer Concurs de Castells de Tarragona es va fer el 1980", false, 4], ["Hi va haver castells a la cerimònia inaugural dels Jocs Olímpics de Barcelona 92", true, 4], ["La Diada de Santa Úrsula se celebra al Vendrell", false, 4], ["Els Castellers de Vilafranca van carregar el primer 3 de 10 amb folre i manilles el 1998", true, 5], ["Els Castellers de Barcelona van descarregar el primer 4 de 10 amb folre i manilles", false, 5], ["Pau Casals va presidir el jurat del primer Concurs de Castells", true, 5], ["Els Castellers de Vilafranca es van fundar el 1979", false, 5], ["Els Castellers de Barcelona es van fundar el 1969", true, 6], ["La Coordinadora de Colles Castelleres de Catalunya es va fundar el 2010", false, 6], ["Els Castellers de Sants són coneguts com a Borinots", true, 6], ["Els Castellers de Sabadell són coneguts com a Gausacs", false, 6], ["El casc per a la canalla es va fer obligatori després d'un accident mortal a Mataró el 2006", true, 7], ["El Concurs de Castells del 2020 es va fer sense públic", false, 7], ["La Colla Vella dels Xiquets de Valls va guanyar el Concurs de Castells del 2018", true, 7], ["Els Nens del Vendrell es van fundar el 1979", false, 7], ["Els Castellers de Vilafranca van descarregar el primer 4 de 9 amb folre i l'agulla de la història el 1996", true, 8], ["Els Minyons de Terrassa van carregar el primer 2 de 9 amb folre i manilles el 1983", false, 8], ["La primera camisa dels Castellers de Vilafranca era de color rosat", true, 8], ["El Museu Casteller de Catalunya es va inaugurar a Tarragona", false, 8], ["El lema «Força, equilibri, valor i seny» prové d'un vers de Josep Anselm Clavé", true, 9], ["La UNESCO va aprovar la declaració dels castells en una reunió a París", false, 9], ["El Concurs de Castells del 1952 va acabar amb un empat al primer lloc", true, 9], ["El primer Concurs de Castells, el 1932, el va guanyar la Colla Nova dels Xiquets de Valls", false, 9]], "C": [["Castellers de Vilafranca", ["Colla de l'Alt Penedès", "Fundada el setembre del 1948", "Porta camisa verda des del 1957", "Van carregar el primer 3 de 10 amb folre i manilles (1998)", "Els coneixen com «els Verds»"], 0, "#2E8B3A"], ["Minyons de Terrassa", ["Colla del Vallès Occidental", "Fundada el 1979", "Camisa de color malva", "Van carregar el primer 2 de 9 amb folre i manilles de la història (1993)", "Van descarregar el primer 4 de 10 amb folre i manilles (2015)"], 1, "#A97BB5"], ["Colla Vella dels Xiquets de Valls", ["Colla de l'Alt Camp", "Camisa de color rosat", "Va guanyar el primer Concurs de Castells, el 1932", "Va descarregar el primer 2 de 9 amb folre i manilles (1994)", "Va fer el primer 4 de 9 amb folre del segle XX (1981)"], 1, "#E8798F"], ["Colla Joves Xiquets de Valls", ["Colla de l'Alt Camp", "Camisa vermella", "Va descarregar el primer 3 de 9 amb folre del segle XX (1986)", "Va carregar el seu primer 3 de 10 per Santa Úrsula del 2024", "Rivals de la Vella a la plaça del Blat"], 2, "#D2232A"], ["Castellers de Barcelona", ["Fundada el 1969", "Camisa vermella", "Primera colla fundada fora de l'àrea castellera tradicional", "Creu de Sant Jordi el 2002", "Actuen a la plaça de Sant Jaume per la Mercè"], 2, "#D2232A"], ["Colla Jove Xiquets de Tarragona", ["Fundada el 1979", "Camisa lila", "Va recuperar la dualitat de dues colles a la seva ciutat", "Primer 4 de 9 amb folre carregat per una colla de la seva ciutat (1993)", "Primer castell de deu d'una colla de la seva ciutat (2014)"], 3, "#9B7FC0"], ["Xiquets de Tarragona", ["Nascuda el 1970 de la fusió de dues colles", "Camisa de ratlles blanques i vermelles", "La seva camisa a ratlles es coneix com la dels «matalassers»", "El 2026 va celebrar cent anys d'història castellera", "Actua cada any per Santa Tecla, el 23 de setembre"], 3, "#C8102E"], ["Capgrossos de Mataró", ["Colla del Maresme", "Fundada el 1996", "Camisa blau marí", "Tercera al Concurs de Castells del 2002", "Fa diada per les Santes, al juliol"], 3, "#1F2F5C"], ["Castellers de Sants", ["Colla del Barcelonès", "Primera actuació el 9 de maig del 1993", "Camisa grisa, en record dels antics obrers tèxtils", "El 2013 van viatjar a l'Índia per al festival Dahi Handi", "Els anomenen «Borinots»"], 4, "#8A8D8F"], ["Castellers de Sabadell", ["Colla del Vallès Occidental", "Fundada el maig del 1994", "Camisa verd ampolla", "Han descarregat el 3 de 9 amb folre", "Els anomenen «Saballuts»"], 4, "#1E5B3A"], ["Nens del Vendrell", ["Colla del Baix Penedès", "Primera actuació el 15 d'octubre del 1926", "Camisa vermella", "Van descarregar el primer 3 de 8 del segle XX (1951)", "Van guanyar el Concurs de Castells del 1970"], 4, "#C8102E"], ["Castellers de la Vila de Gràcia", ["Colla del Barcelonès", "Fundada a la segona meitat dels anys noranta", "Camisa blava", "Medalla d'Honor de Barcelona el 1999", "Surten a la pel·lícula «L'auberge espagnole»"], 5, "#2B4C8C"], ["Castellers de Lleida", ["Colla del Segrià", "Presentada l'1 d'octubre del 1995", "Camisa de color bordeus", "Primera colla castellera de Ponent", "Nascuda al barri de Pardinyes"], 5, "#7A1F2B"], ["Xiquets de Reus", ["Colla del Baix Camp", "Fundada el 18 de novembre del 1981", "Camisa de color avellana", "Fa la seva diada a la plaça del Mercadal", "Actua per la festa major de Sant Pere"], 5, "#A0784F"], ["Xicots de Vilafranca", ["Colla de l'Alt Penedès", "Presentada l'11 de setembre del 1982", "Camisa vermella", "Segona colla castellera de la seva ciutat", "Celebra la Diada del Roser, a l'octubre"], 6, "#C8102E"], ["Castellers de Sant Cugat", ["Colla del Vallès Occidental", "Primera actuació el 30 de juny del 1996", "Camisa verda, el color de Collserola", "El seu primer cap de colla va ser Xavier Serres", "Els anomenen «Gausacs»"], 6, "#3E7D3A"], ["Castellers de Castelldefels", ["Fundada el 1982", "Camisa groga", "Colla del Baix Llobregat", "Es presenta com la colla degana de la seva comarca", "Els anomenen «els Grocs»"], 6, "#F2C200"], ["Castellers de Mallorca", ["Colla de les Illes Balears", "Fundada el 1996", "Camisa grana", "Va néixer el mateix any que els Al·lots de Llevant de Manacor", "Té la seu a Palma"], 6, "#7B1E2E"], ["Xiquets del Serrallo", ["Colla del Tarragonès", "Fundada el 1988", "Camisa blau marí", "Una de les quatre colles de la ciutat de Santa Tecla", "Porta el nom del barri mariner de la ciutat"], 7, "#1F2F5C"], ["Bordegassos de Vilanova", ["Fundada el 1972", "Camisa de color groc terrós", "Van fer el seu primer 7 de 7 per festa major el 2013", "Colla del Garraf", "La seva ciutat és la capital del Garraf"], 7, "#E8B21E"], ["Nois de la Torre", ["Colla del Tarragonès", "Debut el 4 de setembre del 1975, per Santa Rosalia", "Camisa blau cel", "Considerada la desena colla més antiga de Catalunya", "Una de les poques colles sense cap interrupció en la seva història"], 8, "#87C1E6"], ["Sagals d'Osona", ["Colla de la Catalunya Central", "Fundada el 1997", "Camisa de color carbassa", "Va impulsar un projecte d'integració per a persones immigrades", "Té el local a Vic"], 8, "#E8772E"], ["Tirallongues de Manresa", ["Colla del Bages", "Fundada el 1993", "Camisa de ratlles blanques i blau marí", "Van descarregar el seu primer 3 de 8 el 2017, a la seva diada", "La seva ciutat és la capital del Bages"], 8, "#1F2F5C"], ["Minyons de l'Arboç", ["Colla del Baix Penedès", "Fundada el 1958", "Camisa vermella", "Van carregar el 4 de 8 a Vilafranca per Sant Miquel del 2012", "El primer mot del nom el comparteix amb una colla del Vallès Occidental"], 9, "#C8102E"]]};
+// ===== Motor d'àudio 100% procedural (Web Audio) =====
+// Bus mestre amb guany i compressor → SFX per oscil·ladors amb variació aleatòria de to → música per seqüenciador amb lookahead
+const AUDIO = { ctx: null, master: null, mus: null, soroll: null, actiu: localStorage.getItem('catquiz-musica') !== '0' };
+function audioInit(){ if (AUDIO.ctx) return AUDIO.ctx; const C = window.AudioContext || window.webkitAudioContext; if (!C) return null;
+  AUDIO.ctx = new C(); AUDIO.master = AUDIO.ctx.createGain(); AUDIO.master.gain.value = .8;
+  const comp = AUDIO.ctx.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 4; AUDIO.master.connect(comp); comp.connect(AUDIO.ctx.destination);
+  AUDIO.mus = AUDIO.ctx.createGain(); AUDIO.mus.gain.value = .22; AUDIO.mus.connect(AUDIO.master);
+  const b = AUDIO.ctx.createBuffer(1, AUDIO.ctx.sampleRate, AUDIO.ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; AUDIO.soroll = b;
+  return AUDIO.ctx; }
+// Una nota: oscil·lador + envolupant (attack/decay) i lliscament de to opcional
+function nota(f, t, dur, o = {}){ const c = AUDIO.ctx, osc = c.createOscillator(), g = c.createGain(); osc.type = o.tipus || 'square';
+  osc.frequency.setValueAtTime(f, t); if (o.fins) osc.frequency.exponentialRampToValueAtTime(o.fins, t + dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(o.vol ?? .1, t + (o.atac ?? .005)); g.gain.exponentialRampToValueAtTime(.0008, t + dur);
+  osc.connect(g); g.connect(o.dest || AUDIO.master); osc.start(t); osc.stop(t + dur + .02); }
+function percussio(t, tipus){ const c = AUDIO.ctx; // bombo = sinus amb caiguda de to; caixa/xarles = soroll filtrat
+  if (tipus === 'bombo') { nota(150, t, .18, { tipus: 'sine', fins: 45, vol: .5, dest: AUDIO.mus }); return; }
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = AUDIO.soroll; f.type = tipus === 'xarles' ? 'highpass' : 'bandpass'; f.frequency.value = tipus === 'xarles' ? 7000 : 1800;
+  g.gain.setValueAtTime(tipus === 'xarles' ? .08 : .25, t); g.gain.exponentialRampToValueAtTime(.001, t + (tipus === 'xarles' ? .04 : .14)); s.connect(f); f.connect(g); g.connect(AUDIO.mus); s.start(t); s.stop(t + .2); }
+// SFX: cada crida varia el to ±6% perquè no sonin repetitius
+const SFX = { ok:[660,1320,.14,'square'], mal:[220,90,.35,'sawtooth'], clic:[520,520,.05,'square'], win:[523,1568,.45,'square'], bonus:[880,1760,.2,'triangle'], pop:[500,800,.1,'triangle'], tic:[900,900,.05,'sine'] };
+function so(tipus){ if (window.CQ && !CQ.efectes) { if (tipus === 'clic' && AUDIO.actiu) try { if (audioInit()) musicaInici(); } catch (e) {} return; } try { if (!audioInit()) return; const [f0, f1, dur, tp] = SFX[tipus] || SFX.clic, v = 1 + (Math.random() - .5) * .12, t = AUDIO.ctx.currentTime;
+  if (tipus === 'win') { [0, 4, 7, 12].forEach((s, i) => nota(523 * Math.pow(2, s / 12) * v, t + i * .09, .25, { tipus: 'square', vol: .09 })); return; }
+  nota(f0 * v, t, dur, { tipus: tp, fins: f1 * v, vol: .1 }); if (tipus === 'clic' && AUDIO.actiu) musicaInici(); } catch (e) {} }
+// Seqüenciador: planifica amb 120 ms d'antelació des d'un temporitzador de 25 ms (el rellotge precís és el de l'AudioContext)
+const SEQ = { bpm: 126, pas: 0, seguent: 0, timer: null, lookahead: .12, interval: 25, estil: 'quiz' };
+const ESCALA = [0, 2, 4, 7, 9, 12, 14, 16]; // pentatònica major sobre Do
+const ESTILS = {
+  quiz:    { bpm: 126, base: 261.63, baix: [0,0,7,0, 5,5,0,5, 3,3,0,3, 5,5,7,7], ritme: 'bombo.xarles.caixa.xarles' },
+  suspens: { bpm: 100, base: 220,    baix: [0,0,0,3, 0,0,0,5, 0,0,0,3, 7,7,5,3], ritme: 'bombo.xarles.xarles.xarles', menor: true },
+};
+let melodia = [];
+function novaMelodia(){ const e = ESTILS[SEQ.estil]; let g = 3; melodia = Array.from({ length: 32 }, (_, i) => { if (i % 2 && Math.random() < .55) return null; g = Math.max(0, Math.min(ESCALA.length - 1, g + Math.round((Math.random() - .5) * 3))); return e.menor ? [0,3,5,7,10,12,15,17][g] : ESCALA[g]; }); }
+function tocaPas(p, t){ const e = ESTILS[SEQ.estil], r = e.ritme.split('.');
+  if (p % 4 === 0) percussio(t, r[0]); if (p % 4 === 2) percussio(t, 'xarles'); if (p % 8 === 4) percussio(t, r[2]); if (p % 2) percussio(t, 'xarles');
+  if (p % 2 === 0) { const s = e.baix[(p / 2) % 16]; nota(e.base / 2 * Math.pow(2, s / 12), t, .22, { tipus: 'triangle', vol: .16, dest: AUDIO.mus }); }
+  const m = melodia[p % 32]; if (m !== null && m !== undefined) nota(e.base * 2 * Math.pow(2, m / 12) * (1 + (Math.random() - .5) * .004), t, .16, { tipus: 'square', vol: .05, dest: AUDIO.mus, atac: .01 });
+  if (p === 31 && Math.random() < .4) novaMelodia(); }
+function planifica(){ const c = AUDIO.ctx, pasDur = 60 / SEQ.bpm / 4; while (SEQ.seguent < c.currentTime + SEQ.lookahead) { tocaPas(SEQ.pas, SEQ.seguent); SEQ.seguent += pasDur; SEQ.pas = (SEQ.pas + 1) % 32; } }
+function musicaInici(estil = SEQ.estil){ if (!audioInit() || SEQ.timer) return; SEQ.estil = estil; SEQ.bpm = ESTILS[estil].bpm; novaMelodia(); SEQ.pas = 0; SEQ.seguent = AUDIO.ctx.currentTime + .05;
+  AUDIO.mus.gain.cancelScheduledValues(AUDIO.ctx.currentTime); AUDIO.mus.gain.setTargetAtTime(.22, AUDIO.ctx.currentTime, .3); SEQ.timer = setInterval(planifica, SEQ.interval); }
+function musicaAtura(){ if (!SEQ.timer) return; clearInterval(SEQ.timer); SEQ.timer = null; AUDIO.mus.gain.setTargetAtTime(0, AUDIO.ctx.currentTime, .4); }
+
+const Q = new URLSearchParams(location.search);
+const VIDEO = Q.has('video'), N_VIDEO = Number(Q.get('n') || 10), GRAVA = Q.has('grava');
+const DEMO = Q.has('demo') || Q.has('espectador') || VIDEO, QUIZ = Q.has('quiz');
+
+// ===== Mode espectador: un bot amb nom que dubta i falla de tant en tant; toca «Vull jugar jo» per agafar el control =====
+const ESPECT = new URLSearchParams(location.search).has('espectador');
+const BOT_NOM = ESPECT ? ["Bot Culer", "Bot Perica", "Bot Gironí", "Bot de Mataró", "Bot Terrassenc", "Bot Empordanès", "Bot Lleidatà", "Bot Ebrenc"][Math.floor(Math.random() * 8)] : '';
+const botFalla = (p = .22) => ESPECT && Math.random() < p; // probabilitat d'error del bot en mode espectador
+const botPausa = () => ESPECT ? 600 + Math.random() * 1400 : 0; // temps de «pensar»
+window.espectPensa = () => {}; // mode espectador: sense cap avís ni botó; només es mira
+if (ESPECT) for (const ev of ['pointerdown','click','keydown']) document.addEventListener(ev, e => { if (e.isTrusted && !e.target.closest('#btn-musica, #musica, #tornar, a.tornar, a.pill')) { e.stopPropagation(); e.preventDefault(); } }, true); // bloqueja el jugador (els clics del bot no són «trusted» i passen)
+const avisa = t => { try { parent.postMessage({ catquiz: t }, '*'); } catch (e) {} };
+const $ = id => document.getElementById(id), espera = ms => new Promise(r => setTimeout(r, ms));
+const barreja = a => a.slice().sort(() => Math.random() - .5), tria = a => a[Math.floor(Math.random() * a.length)];
+const CLUBS = { 'Barça': ['#A50044','#004D98'], 'Espanyol': ['#FFFFFF','#0060C0'], 'Girona': ['#FFFFFF','#D00000'], 'Catalunya': ['#FCDD09','#DA121A'] };
+// Samarreta dibuixada (sense fotos): ratlles amb els colors del club i el dorsal/inicials
+let nCl = 0;
+function samarreta(club, txt){ const [a, b] = CLUBS[club] || CLUBS['Barça']; const id = 'cl' + (nCl++);
+  return `<svg viewBox="0 0 200 200"><defs><clipPath id="${id}"><path d="M60 20 L80 10 Q100 25 120 10 L140 20 L180 50 L160 80 L145 70 L145 185 L55 185 L55 70 L40 80 L20 50 Z"/></clipPath></defs><path d="M60 20 L80 10 Q100 25 120 10 L140 20 L180 50 L160 80 L145 70 L145 185 L55 185 L55 70 L40 80 L20 50 Z" fill="${a}" stroke="#222" stroke-width="6" stroke-linejoin="round"/>
+  <g clip-path="url(#${id})">${[0,1,2,3,4,5,6].map(i => `<rect x="${28 + i*22}" y="0" width="11" height="200" fill="${b}"/>`).join('')}</g>
+  <path d="M60 20 L80 10 Q100 25 120 10 L140 20 L180 50 L160 80 L145 70 L145 185 L55 185 L55 70 L40 80 L20 50 Z" fill="none" stroke="#222" stroke-width="6" stroke-linejoin="round"/>
+  <text x="100" y="128" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="800" font-size="${txt.length > 2 ? 34 : 52}" fill="#fff" stroke="#222" stroke-width="3" paint-order="stroke">${txt}</text></svg>`; }
+const inicials = n => n.split(' ').map(p => p[0]).join('').slice(0, 3).toUpperCase();
+
+// ---- Estat ----
+const N = 100, PER = 10, TEMPS = { castell: 14, trivia: 12, vf: 10, mescastell: 14, anagrama: 16, pistes: 16 };
+let ronda = 0, nivell = -1, punts = 0, encerts = 0, encertsNivell = 0, ratxa = 0, viu = false, bloquejat = false, tempsRonda = 0, tempsMax = 12, quizFet = false, quizAcabat = false;
+const usades = new Set(), tipusOrdre = ['castell','trivia','anagrama','vf','mescastell','pistes'];
+let actual = null;
+function noRep(llista, clau){ const l = llista.filter(x => !usades.has(clau(x))); const x = tria(l.length ? l : llista); usades.add(clau(x)); return x; }
+function bossaJ(n){ for (let r = 0; r < 10; r++) { const b = FUT.C.filter(x => Math.abs(x[2] - n) <= r); if (b.length >= 6) return b; } return FUT.C; }
+function bossaV(n){ for (let r = 0; r < 10; r++) { const b = FUT.V.filter(x => Math.abs(x[2] - n) <= r); if (b.length >= 6) return b; } return FUT.V; }
+function bossaT(n){ for (let r = 0; r < 10; r++) { const b = FUT.T.filter(x => Math.abs(x[3] - n) <= r); if (b.length >= 6) return b; } return FUT.T; }
+function bossaVF(n){ for (let r = 0; r < 10; r++) { const b = FUT.VF.filter(x => Math.abs(x[2] - n) <= r); if (b.length >= 4) return b; } return FUT.VF; }
+function neteja(){ $('targetes').innerHTML = ''; $('ops').innerHTML = ''; $('ops').style.display = 'none'; $('vf').style.display = 'none'; $('vfmig').innerHTML = ''; $('lletres').style.display = 'none'; $('lletres').innerHTML = ''; $('pistes').style.display = 'none'; $('pistes').innerHTML = ''; $('preg').textContent = ''; $('tipus').textContent = ''; clearInterval(actual && actual.timer); }
+function targeta(club, txt, nom, lletra, fons){ const d = document.createElement('div'); d.className = 'targeta'; d.style.setProperty('--fons', fons || (club === 'Espanyol' ? '#5B2BE0' : club === 'Girona' ? '#F3A712' : '#F3A712'));
+  d.innerHTML = `<div class="dins">${samarreta(club, txt)}</div>` + (lletra ? `<div class="lletra">${lletra}</div>` : '') + (nom ? `<div class="nom">${nom}</div>` : ''); $('targetes').appendChild(d); return d; }
+function targetaEmoji(e){ const d = document.createElement('div'); d.className = 'targeta emoji'; d.style.setProperty('--fons', '#1E63F0'); d.innerHTML = `<div class="dins">${ILUS[e] || e}</div>`; $('targetes').appendChild(d); return d; }
+function opcions(llista, cb){ $('ops').style.display = 'flex'; llista.forEach((o, i) => { const b = document.createElement('button'); b.className = 'op'; b.style.animationDelay = (i * .08) + 's'; b.innerHTML = `<span class="l">${'ABCD'[i]}</span><span class="t">${o.t}</span>`; b.onclick = () => cb(o, b); o.el = b; $('ops').appendChild(b); }); }
+function revelaOps(ops, triat){ for (const o of ops) { if (o.ok) o.el.classList.add('be'); else if (o.el === triat) o.el.classList.add('ko'); else o.el.classList.add('fora'); } }
+const ILUS = {"pilota": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"100\" cy=\"100\" r=\"70\" fill=\"#FFFFFF\" stroke=\"#1D1B4B\" stroke-width=\"5\"/><path d=\"M100.0 70.6 L128.0 90.9 L117.3 123.8 L82.7 123.8 L72.0 90.9 Z\" fill=\"#1D1B4B\" stroke=\"#1D1B4B\" stroke-width=\"2\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M100.0 70.6 L100.0 32.4\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M128.0 90.9 L164.3 79.1\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M117.3 123.8 L139.7 154.7\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M82.7 123.8 L60.3 154.7\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M72.0 90.9 L35.7 79.1\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "copa": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M58 36 L142 36 L136 92 Q100 120 64 92 Z\" fill=\"#FFC21A\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M60 46 Q30 46 36 70 Q42 88 66 88 M140 46 Q170 46 164 70 Q158 88 134 88\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M60 46 Q30 46 36 70 Q42 88 66 88 M140 46 Q170 46 164 70 Q158 88 134 88\" fill=\"none\" stroke=\"#FFC21A\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M90 112 L110 112 L114 140 L86 140 Z\" fill=\"#FFC21A\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M66 140 L134 140 L140 166 L60 166 Z\" fill=\"#8A5A2B\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M80 48 L92 48 L88 84 Q80 80 78 70 Z\" fill=\"#FFE27A\" stroke=\"#1D1B4B\" stroke-width=\"0\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/></svg>", "estadi": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14 150 L14 96 Q100 56 186 96 L186 150 Q100 176 14 150 Z\" fill=\"#3D8EFF\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M30 140 L30 108 Q100 78 170 108 L170 140 Q100 160 30 140 Z\" fill=\"#2FB03C\" stroke=\"#1D1B4B\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M100 92 L100 152 M30 124 Q100 110 170 124\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><ellipse cx=\"100\" cy=\"122\" rx=\"14\" ry=\"8\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"3\"/><path d=\"M30 96 L30 50\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"30\" cy=\"46\" r=\"9\" fill=\"#FFD24A\" stroke=\"#1D1B4B\" stroke-width=\"4\"/><path d=\"M170 96 L170 50\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"170\" cy=\"46\" r=\"9\" fill=\"#FFD24A\" stroke=\"#1D1B4B\" stroke-width=\"4\"/></svg>", "porteria": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20 170 L180 170\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M44 66 L44 166\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M64 66 L64 166\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M84 66 L84 166\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M104 66 L104 166\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M124 66 L124 166\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M144 66 L144 166\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M164 66 L164 166\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M30 80 L170 80\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M30 98 L170 98\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M30 116 L170 116\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M30 134 L170 134\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M30 152 L170 152\" fill=\"none\" stroke=\"#C9CDE8\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M24 60 L176 60 L176 170 M24 60 L24 170\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"16\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M24 60 L176 60 L176 170 M24 60 L24 170\" fill=\"none\" stroke=\"#FFFFFF\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"128\" cy=\"136\" r=\"22\" fill=\"#FFFFFF\" stroke=\"#1D1B4B\" stroke-width=\"5\"/><path d=\"M128.0 126.8 L136.8 133.1 L133.4 143.5 L122.6 143.5 L119.2 133.1 Z\" fill=\"#1D1B4B\" stroke=\"#1D1B4B\" stroke-width=\"2\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M128.0 126.8 L128.0 114.7\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M136.8 133.1 L148.2 129.4\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M133.4 143.5 L140.5 153.2\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M122.6 143.5 L115.5 153.2\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M119.2 133.1 L107.8 129.4\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "samarreta": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M60 26 L80 16 Q100 32 120 16 L140 26 L180 56 L160 86 L145 76 L145 184 L55 184 L55 76 L40 86 L20 56 Z\" fill=\"#FFFFFF\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M80 16 Q100 40 120 16\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><text x=\"100\" y=\"128\" text-anchor=\"middle\" font-family=\"Roboto,sans-serif\" font-weight=\"900\" font-size=\"54\" fill=\"#1D1B4B\">?</text></svg>", "medalla": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M70 20 L100 80 L130 20 L112 20 L100 48 L88 20 Z\" fill=\"#3D8EFF\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M88 20 L100 48 L112 20 Z\" fill=\"#FF3355\" stroke=\"#1D1B4B\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"100\" cy=\"118\" r=\"46\" fill=\"#FFC21A\" stroke=\"#1D1B4B\" stroke-width=\"5\"/><circle cx=\"100\" cy=\"118\" r=\"32\" fill=\"#FFE27A\" stroke=\"#1D1B4B\" stroke-width=\"4\"/><text x=\"100\" y=\"134\" text-anchor=\"middle\" font-family=\"Roboto,sans-serif\" font-weight=\"900\" font-size=\"44\" fill=\"#1D1B4B\">1</text></svg>", "podi": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M70 80 L130 80 L130 170 L70 170 Z\" fill=\"#FFC21A\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M18 110 L70 110 L70 170 L18 170 Z\" fill=\"#C9CDE8\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 126 L182 126 L182 170 L130 170 Z\" fill=\"#E08A4A\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><text x=\"100\" y=\"132\" text-anchor=\"middle\" font-family=\"Roboto,sans-serif\" font-weight=\"900\" font-size=\"36\" fill=\"#1D1B4B\">1</text><text x=\"44\" y=\"150\" text-anchor=\"middle\" font-family=\"Roboto,sans-serif\" font-weight=\"900\" font-size=\"36\" fill=\"#1D1B4B\">2</text><text x=\"156\" y=\"158\" text-anchor=\"middle\" font-family=\"Roboto,sans-serif\" font-weight=\"900\" font-size=\"36\" fill=\"#1D1B4B\">3</text><path d=\"M100 22 L109 44 L132 44 L114 58 L121 80 L100 66 L79 80 L86 58 L68 44 L91 44 Z\" fill=\"#FFD24A\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/></svg>", "crono": "<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M88 22 L112 22 L112 34 L88 34 Z\" fill=\"#C9CDE8\" stroke=\"#1D1B4B\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"100\" cy=\"112\" r=\"68\" fill=\"#FFFFFF\" stroke=\"#1D1B4B\" stroke-width=\"5\"/><circle cx=\"100\" cy=\"112\" r=\"56\" fill=\"#E8ECFF\" stroke=\"#1D1B4B\" stroke-width=\"3\"/><path d=\"M100 112 L100 70 M100 112 L128 126\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><circle cx=\"100\" cy=\"112\" r=\"7\" fill=\"#FF3355\" stroke=\"#1D1B4B\" stroke-width=\"3\"/><path d=\"M100.0 62.0 L100.0 68.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M125.0 68.7 L122.0 73.9\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M143.3 87.0 L138.1 90.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M150.0 112.0 L144.0 112.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M143.3 137.0 L138.1 134.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M125.0 155.3 L122.0 150.1\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M100.0 162.0 L100.0 156.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M75.0 155.3 L78.0 150.1\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M56.7 137.0 L61.9 134.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M50.0 112.0 L56.0 112.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M56.7 87.0 L61.9 90.0\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M75.0 68.7 L78.0 73.9\" fill=\"none\" stroke=\"#1D1B4B\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"}; // il·lustracions vectorials (iguals a tots els dispositius)
+const EMOJI_T = ['pilota','copa','estadi','porteria'];
+document.addEventListener('DOMContentLoaded', () => { const e = document.getElementById('emojis-castells'); if (e) e.innerHTML = [[1,6,0,0,0,0,'#2FB03C'],[2,8,1,0,0,0,'#E0479E'],[3,9,1,0,0,0,'#D7263D'],[4,8,0,0,0,0,'#7B3FE4']].map(([w,n,f,m,p,a,col]) => `<span class="mini-cast">${dibuixaCastell({w,n,f,m,p,a,col})}</span>`).join(''); });
+
+
+// ---- Castells: catàleg (estructures reals) i noms ----
+const CASTELLS = [ // [gent per pis, pisos, folre, manilles, puntals, agulla, dificultat 0-9]
+  [1,4,0,0,0,0,0],[1,5,0,0,0,0,0],[1,6,0,0,0,0,1],[1,7,1,0,0,0,5],[1,8,1,1,0,0,7],[1,9,1,1,1,0,9],
+  [2,6,0,0,0,0,1],[2,7,0,0,0,0,2],[2,8,0,0,0,0,4],[2,8,1,0,0,0,5],[2,9,1,1,0,0,7],[2,10,1,1,1,0,9],
+  [3,6,0,0,0,0,0],[3,7,0,0,0,0,1],[3,8,0,0,0,0,3],[3,9,1,0,0,0,5],[3,10,1,1,0,0,8],[3,7,0,0,0,1,4],[3,8,0,0,0,1,6],[3,9,1,0,0,1,8],
+  [4,6,0,0,0,0,0],[4,7,0,0,0,0,1],[4,8,0,0,0,0,3],[4,9,1,0,0,0,5],[4,10,1,1,0,0,8],[4,7,0,0,0,1,4],[4,8,0,0,0,1,6],[4,9,1,0,0,1,8]
+].map(([w, n, f, m, p, a, d]) => ({ w, n, f, m, p, a, d }));
+const COLS_CAMISA = ['#D7263D','#2FB03C','#E0479E','#1E8BE0','#7B3FE4','#F07A12','#0F7FB5','#A50044'];
+function nomCastell(c){ let t = (c.w === 1 ? 'pilar de ' : c.w + ' de ') + c.n;
+  const s = [c.f && 'folre', c.m && 'manilles', c.p && 'puntals'].filter(Boolean);
+  if (s.length) t += ' amb ' + (s.length === 1 ? s[0] : s.slice(0, -1).join(', ') + ' i ' + s[s.length - 1]);
+  if (c.a) t += s.length ? " i l'agulla" : " amb l'agulla";
+  return t; }
+function bossaCastells(n){ for (let r = 0; r < 10; r++) { const b = CASTELLS.filter(x => Math.abs(x.d - n) <= r); if (b.length >= 4) return b; } return CASTELLS; }
+// castells semblants (per a les opcions falses): als nivells baixos canvia l'amplada; després els pisos, el folre o l'agulla
+function semblants(c, niv){ const altres = CASTELLS.filter(x => nomCastell(x) !== nomCastell(c));
+  const punt = x => niv < 3 ? (x.n === c.n ? 0 : 5) + (x.w !== c.w ? 0 : 9) : niv < 6 ? Math.abs(x.n - c.n) * 2 + (x.w === c.w ? 0 : 3) + (x.f !== c.f) + (x.a !== c.a) : Math.abs(x.n - c.n) * 2 + (x.w === c.w ? 0 : 4) + (x.f !== c.f) + (x.m !== c.m) + (x.a !== c.a);
+  return barreja(altres).sort((x, y) => punt(x) - punt(y)).slice(0, 2); }
+// Dibuix d'un castell (SVG) a partir de la seva estructura: {w: gent per pis (1 pilar, 2 torre, 3, 4, 5, 7, 9), n: pisos, f: folre, m: manilles, p: puntals, a: agulla, col: color de la camisa}
+function dibuixaCastell(c){
+  const TINTA = '#1D1B4B', PELL = '#F3C9A2', PANT = '#F4F4F8', FAIXA = '#1D1B4B';
+  const col = c.col || '#D7263D', colFolre = c.colFolre || col;
+  // pisos de baix a dalt: [persones visibles, escala, rol]
+  const pisos = [];
+  if (c.w === 1) for (let i = 0; i < c.n; i++) pisos.push([1, i >= c.n - 1 ? .72 : i >= c.n - 2 ? .82 : 1, i === c.n - 1 ? 'enx' : '']);
+  else if (c.w === 2) { for (let i = 0; i < c.n - 2; i++) pisos.push([2, 1, '']); pisos.push([1, .78, 'acx'], [1, .72, 'enx']); }
+  else { for (let i = 0; i < c.n - 3; i++) pisos.push([c.w, 1, '']); pisos.push([2, .8, 'dos'], [1, .76, 'acx'], [1, .72, 'enx']); }
+  const FW = 16, FH = 30, PAS = 27;         // amplada i alçada d'una persona i distància entre pisos
+  const maxW = Math.max(c.w, 1), ample = Math.max(100, maxW * FW + 78);
+  const baseY = 34 + pisos.length * PAS + 10, H = baseY + 50, cx = ample / 2;
+  let fons = '', mig = '', davant = '';
+  // persona (de cara): cap, camisa, faixa i pantalons; braços a les espatlles dels del costat
+  function persona(x, y, e, camisa, rol){
+    const w = FW * e, h = FH * e, cap = 5.2 * e;
+    let s = `<g>`;
+    s += `<rect x="${x - w/2 + 1}" y="${y + h*.62}" width="${w - 2}" height="${h*.38}" rx="${2*e}" fill="${PANT}" stroke="${TINTA}" stroke-width="1.6"/>`;
+    s += `<rect x="${x - w/2}" y="${y + cap*1.6}" width="${w}" height="${h*.5}" rx="${4*e}" fill="${camisa}" stroke="${TINTA}" stroke-width="1.6"/>`;
+    s += `<rect x="${x - w/2}" y="${y + h*.55}" width="${w}" height="${h*.12}" fill="${FAIXA}"/>`;
+    s += `<circle cx="${x}" cy="${y + cap}" r="${cap}" fill="${PELL}" stroke="${TINTA}" stroke-width="1.6"/>`;
+    if (rol === 'enx' || rol === 'acx' || rol === 'dos') s += `<path d="M${x - cap} ${y + cap*.55} Q${x} ${y - cap*.6} ${x + cap} ${y + cap*.55}" fill="#FF3355" stroke="${TINTA}" stroke-width="1.2"/>`; // casc
+    if (rol === 'enx') s += `<path d="M${x + w*.35} ${y + cap*1.9} L${x + w*.9} ${y - cap*1.4}" stroke="${TINTA}" stroke-width="${5*e}" stroke-linecap="round"/><path d="M${x + w*.35} ${y + cap*1.9} L${x + w*.9} ${y - cap*1.4}" stroke="${camisa}" stroke-width="${3*e}" stroke-linecap="round"/><circle cx="${x + w*.92}" cy="${y - cap*1.6}" r="${2.2*e}" fill="${PELL}" stroke="${TINTA}" stroke-width="1"/>`;
+    return s + '</g>';
+  }
+  // pinya: munt de caps i espatlles a la base
+  const ampPinya = maxW * FW + 56;
+  for (let f = 0; f < 3; f++) {
+    const n = Math.round(ampPinya / 13) - f * 2, y0 = baseY - 4 + f * 12, w0 = (n - 1) * 13;
+    for (let i = 0; i < n; i++) { const x = cx - w0 / 2 + i * 13;
+      fons += `<path d="M${x - 7} ${y0 + 22} Q${x} ${y0 + 6} ${x + 7} ${y0 + 22} Z" fill="${col}" stroke="${TINTA}" stroke-width="1.3"/><circle cx="${x}" cy="${y0 + 4}" r="4.6" fill="${PELL}" stroke="${TINTA}" stroke-width="1.3"/>`; }
+  }
+  // anells de suport (folre al 2n pis, manilles al 3r, puntals al 4t)
+  const anells = []; if (c.f) anells.push([1, 3.2]); if (c.m) anells.push([2, 2.2]); if (c.p) anells.push([3, 1.1]);
+  for (const [pis, extra] of anells) {
+    const y = baseY - (pis + 1) * PAS + 6, n = Math.round(c.w + extra * 2), w0 = (n - 1) * FW * .92;
+    for (let i = 0; i < n; i++) mig += persona(cx - w0 / 2 + i * FW * .92, y, .92, colFolre, '');
+  }
+  // tronc i pom de dalt
+  pisos.forEach(([n, e, rol], k) => {
+    const y = baseY - (k + 1) * PAS, sep = FW * e * .98, w0 = (n - 1) * sep;
+    for (let i = 0; i < n; i++) davant += persona(cx - w0 / 2 + i * sep, y, e, col, rol);
+    if (c.a && n === c.w && c.w >= 3) davant += persona(cx, y + 3, .78, '#FFFFFF', ''); // agulla: el pilar de dins
+  });
+  // els anells (folre, manilles, puntals) queden darrere del tronc perquè es puguin comptar els pisos
+  return `<svg viewBox="0 0 ${ample} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">${fons}${mig}${davant}</svg>`;
+}
+
+
+function targetaCastell(c, nom, lletra){ const d = document.createElement('div'); d.className = 'targeta cast';
+  d.innerHTML = `<div class="dins">${dibuixaCastell(c)}</div>` + (lletra ? `<div class="lletra">${lletra}</div>` : '') + (nom ? `<div class="nom">${nom}</div>` : ''); $('targetes').appendChild(d); return d; }
+function ambColor(c){ return Object.assign({}, c, { col: tria(COLS_CAMISA) }); }
+
+// ---- Preparació de cada tipus ----
+function prepara(){
+  neteja(); const tipus = tipusOrdre[(ronda - 1) % tipusOrdre.length]; actual = { tipus }; $('esc').className = tipus; tempsMax = TEMPS[tipus]; tempsRonda = tempsMax;
+  document.body.classList.toggle('lila', tipus === 'anagrama' || tipus === 'mescastell' || tipus === 'pistes');
+  if (tipus === 'castell') {
+    const c = ambColor(noRep(bossaCastells(nivell), nomCastell)); $('tipus').textContent = 'Quin castell és?'; $('preg').textContent = 'Compta els pisos i fixa\'t en la pinya';
+    targetaCastell(c); actual.resposta = nomCastell(c);
+    const ops = barreja([c, ...semblants(c, nivell)].map(x => ({ t: nomCastell(x), ok: x === c || nomCastell(x) === nomCastell(c) }))); actual.ops = ops;
+    opcions(ops, (o, el) => respon(o.ok, () => revelaOps(ops, el)));
+  } else if (tipus === 'mescastell') {
+    const c = noRep(bossaCastells(nivell), nomCastell), alt = semblants(c, nivell)[0], col = tria(COLS_CAMISA);
+    const okA = Math.random() < .5, A = Object.assign({}, okA ? c : alt, { col }), B = Object.assign({}, okA ? alt : c, { col });
+    $('tipus').textContent = 'Quin és?'; $('preg').textContent = `Quin és el ${nomCastell(c)}?`; actual.resposta = nomCastell(c);
+    const tA = targetaCastell(A, '', 'A'), tB = targetaCastell(B, '', 'B');
+    actual.revela = () => { tA.insertAdjacentHTML('beforeend', `<div class="${okA ? 'ok' : 'ko'}">${okA ? '✓' : '✕'}</div><div class="nom">${nomCastell(A)}</div>`); tB.insertAdjacentHTML('beforeend', `<div class="${okA ? 'ko' : 'ok'}">${okA ? '✕' : '✓'}</div><div class="nom">${nomCastell(B)}</div>`); };
+    tA.style.cursor = tB.style.cursor = 'pointer'; tA.onclick = () => respon(okA, actual.revela); tB.onclick = () => respon(!okA, actual.revela);
+    actual.ops = [{ ok: okA, el: tA }, { ok: !okA, el: tB }];
+  } else if (tipus === 'trivia') {
+    const q = noRep(bossaT(nivell), x => x[0]); $('tipus').textContent = 'Pregunta'; $('preg').textContent = q[0];
+    targetaCastell(ambColor(tria(bossaCastells(nivell))));
+    const ops = barreja(q[1].map((t, i) => ({ t, ok: i === q[2] }))); actual.ops = ops; actual.resposta = q[1][q[2]];
+    opcions(ops, (o, el) => respon(o.ok, () => revelaOps(ops, el)));
+  } else if (tipus === 'anagrama') {
+    const v = noRep(bossaV(nivell), x => x[0]), paraula = v[0].normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-ZÇ·]/g, '').replace(/·/g, '');
+    $('tipus').textContent = 'Vocabulari casteller'; $('preg').textContent = v[1]; actual.resposta = v[0]; actual.v = v; actual.paraula = paraula;
+    const lletres = barreja([...paraula]); $('lletres').style.display = 'flex'; $('lletres').style.setProperty('--n', paraula.length); lletres.forEach((c, i) => { const d = document.createElement('div'); d.className = 'll'; d.textContent = c; d.style.animationDelay = (i * .05) + 's'; $('lletres').appendChild(d); });
+    const altres = barreja(FUT.V.filter(x => x[0] !== v[0])).sort((x, y) => Math.abs(x[0].length - v[0].length) - Math.abs(y[0].length - v[0].length)).slice(0, 3).map(x => ({ t: x[0], ok: false }));
+    const ops = barreja([{ t: v[0], ok: true }, ...altres]); actual.ops = ops;
+    opcions(ops, (o, el) => respon(o.ok, () => { revelaOps(ops, el); revelaParaula(paraula); }));
+  } else if (tipus === 'vf') {
+    const q = noRep(bossaVF(nivell), x => x[0]); $('tipus').textContent = 'Verdader o fals'; actual.ok = q[1]; actual.resposta = q[1] ? 'VERDADER' : 'FALS';
+    const fr = document.createElement('div'); fr.className = 'frase'; fr.innerHTML = '<p></p>'; fr.firstChild.textContent = q[0]; $('targetes').appendChild(fr); actual.frase = fr;
+    $('vf').querySelectorAll('button').forEach(b => b.classList.remove('apagat', 'bona')); $('vf').style.display = 'flex';
+    $('vf').querySelector('.no').onclick = () => respon(!q[1], revelaVF); $('vf').querySelector('.si').onclick = () => respon(q[1], revelaVF);
+  } else { // pistes: quina colla és?
+    const j = noRep(bossaJ(nivell), x => x[0]); $('tipus').textContent = 'Quina colla és?'; $('preg').textContent = 'Cada 2,5 segons, una pista'; actual.resposta = j[0]; actual.j = j; actual.pistes = 0;
+    $('pistes').style.display = 'flex';
+    const mostra = () => { if (actual.pistes >= 5 || bloquejat) return; const d = document.createElement('div'); d.className = 'pista'; d.innerHTML = `<b>${actual.pistes + 1}</b><span>${j[1][actual.pistes]}</span>`; $('pistes').appendChild(d); actual.pistes++; so('clic'); };
+    mostra(); actual.timer = setInterval(mostra, 2500);
+    const altres = barreja(FUT.C.filter(x => x[0] !== j[0])).slice(0, 3).map(x => ({ t: x[0], ok: false }));
+    const ops = barreja([{ t: j[0], ok: true }, ...altres]); actual.ops = ops;
+    opcions(ops, (o, el) => respon(o.ok, () => { revelaOps(ops, el); clearInterval(actual.timer); $('pistes').style.display = 'none'; targetaCastell(Object.assign({}, tria(CASTELLS.filter(x => x.w >= 3 && x.n <= 8)), { col: j[3] }), j[0]); }, o.ok ? (5 - actual.pistes) * 6 : 0));
+  }
+  if (DEMO) setTimeout(bot, 1200);
+}
+function revelaParaula(p){ $('lletres').innerHTML = ''; $('lletres').style.setProperty('--n', p.length); [...p].forEach((c, i) => { const d = document.createElement('div'); d.className = 'll be'; d.textContent = c; d.style.animationDelay = (i * .06) + 's'; $('lletres').appendChild(d); }); }
+function revelaVF(){ const no = $('vf').querySelector('.no'), si = $('vf').querySelector('.si'); (actual.ok ? no : si).classList.add('apagat'); (actual.ok ? si : no).classList.add('bona');
+  if (actual.frase && !actual.frase.querySelector('.veredicte')) actual.frase.insertAdjacentHTML('beforeend', `<div class="veredicte ${actual.ok ? 'v' : 'f'}">${actual.ok ? '✓ Verdader' : '✕ Fals'}</div>`); }
+function respon(ok, revela, extra = 0){
+  if (!viu || bloquejat) return; bloquejat = true; clearInterval(actual.timer); revela();
+  if (ok) { encerts++; encertsNivell++; ratxa++; const mult = ratxa >= 6 ? 3 : ratxa >= 3 ? 2 : 1, g = (10 + extra) * mult + Math.ceil(tempsRonda); punts += g; so(mult > 1 ? 'bonus' : 'ok'); $('punts').innerHTML = `<small>PUNTS</small>${punts}`; }
+  else { ratxa = 0; so('mal'); }
+  setTimeout(novaRonda, ok ? 1500 : 2200);
+}
+function fallaTemps(){ bloquejat = true; clearInterval(actual.timer); if (actual.tipus === 'vf') revelaVF(); else if (actual.tipus === 'mescastell') actual.revela(); else if (actual.tipus === 'anagrama') { revelaOps(actual.ops, null); revelaParaula(actual.paraula); } else if (actual.ops) revelaOps(actual.ops, null); ratxa = 0; so('mal'); setTimeout(novaRonda, 2000); }
+async function novaRonda(){
+  if (quizAcabat) return; if (VIDEO && ronda >= N_VIDEO) return acabaVideo(); if (ronda >= N) return acaba(); ronda++; bloquejat = true;
+  const nou = Math.floor((ronda - 1) / PER);
+  if (nou !== nivell) {
+    if (nivell >= 0) { const estr = encertsNivell >= 10 ? 3 : encertsNivell >= 7 ? 2 : encertsNivell >= 4 ? 1 : 0, bonus = encertsNivell >= 10 ? 100 : encertsNivell >= 8 ? 40 : 0; punts += bonus; $('punts').innerHTML = `<small>PUNTS</small>${punts}`;
+      await pantalla(`NIVELL ${nivell + 1} SUPERAT`, nou + 1, '⭐'.repeat(estr) + '☆'.repeat(3 - estr), `${encertsNivell}/10 encerts` + (bonus ? ` · +${bonus} de bonus` : ''), 3000); }
+    else await pantalla('NIVELL', 1, '', 'Comencem suau…', 1800);
+    nivell = nou; encertsNivell = 0;
+  }
+  $('num').textContent = ronda; bloquejat = false; prepara();
+}
+async function acabaVideo(){ viu = false; $('outro').hidden = false; so('win'); await espera(4200); $('outro').hidden = true; avisa('fi'); if (recorder) await aturaGravacio(); else if (!GRAVA) { $('inici').hidden = false; } }
+// Gravació de la pestanya (Chrome d'escriptori): tria «Aquesta pestanya» i marca «Compartir àudio»
+let recorder = null, trossos = [], streamRec = null;
+async function iniciaGravacio(){ try { streamRec = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true, preferCurrentTab: true, selfBrowserSurface: 'include', surfaceSwitching: 'exclude', systemAudio: 'exclude' });
+    const mime = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm'].find(m => MediaRecorder.isTypeSupported(m));
+    recorder = new MediaRecorder(streamRec, { mimeType: mime, videoBitsPerSecond: 8e6 }); trossos = []; recorder.ondataavailable = e => { if (e.data.size) trossos.push(e.data); }; recorder.start(1000); return true; }
+  catch (e) { alert('No s\'ha pogut gravar: ' + e.message); return false; } }
+function aturaGravacio(){ return new Promise(res => { recorder.onstop = () => { streamRec.getTracks().forEach(t => t.stop()); const blob = new Blob(trossos, { type: recorder.mimeType }), ext = recorder.mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `catquiz-castells-${Date.now()}.${ext}`; a.textContent = `⬇ Descarrega el vídeo (.${ext}, ${(blob.size/1048576).toFixed(1)} MB)`; a.style.cssText = 'display:block;margin-top:2vh;background:#22C55E;color:#fff;font-weight:800;padding:.6em 1.4em;border-radius:999px;text-decoration:none';
+    $('inici').querySelector('div').appendChild(a); $('inici').hidden = false; recorder = null; res(); }; recorder.stop(); }); }
+function pantalla(eti, num, estr, txt, ms){ return new Promise(res => { $('nivellEti').textContent = eti; $('nivellNum').textContent = num; $('nivellEstr').textContent = estr; $('nivellTxt').textContent = txt; $('nivellcapa').hidden = false; so('win'); setTimeout(() => { $('nivellcapa').hidden = true; res(); }, ms); }); }
+function comenca(){ ronda = 0; nivell = -1; punts = 0; encerts = 0; encertsNivell = 0; ratxa = 0; usades.clear(); quizFet = false; quizAcabat = false; $('punts').innerHTML = '<small>PUNTS</small>0'; $('inici').hidden = true; $('final').hidden = true; so('clic'); viu = true; novaRonda(); }
+function acaba(){ viu = false; so('win'); avisa('fi'); const millor = Math.max(Number(localStorage.getItem('catquiz-castells') || 0), punts); localStorage.setItem('catquiz-castells', millor);
+  $('finalTitol').innerHTML = encerts >= 80 ? 'Ets un crack!' : encerts >= 50 ? 'Molt bé!' : 'Continua entrenant!'; $('finalPunts').innerHTML = `<b>${punts}</b> punts · ${encerts}/${N}`; $('finalTxt').textContent = punts >= millor ? 'Nou rècord!' : `El teu rècord és ${millor}.`; $('final').hidden = QUIZ && DEMO; if (DEMO) setTimeout(comenca, 4000); }
+$('btn-inici').onclick = comenca; $('btn-reinici').onclick = comenca;
+// bot per a demos/reels
+async function bot(){ if (!viu) return; if (bloquejat) { setTimeout(bot, 600); return; }
+  if (QUIZ && ronda === 2 && !quizFet) { quizFet = true; avisa('quiz'); await espera(5200); if (!viu || bloquejat) return; }
+  espectPensa('pensant…'); await espera(botPausa()); espectPensa(''); if (!viu || bloquejat) return;
+  const t = actual.tipus;
+  if (t === 'pistes') { const esp = Math.max(300, (3 - actual.pistes) * 2500 + 500); setTimeout(() => { const o = actual.ops.find(x => x.ok); if (o && !bloquejat) o.el.click(); }, esp); }
+  else if (t === 'vf') ((actual.ok !== botFalla()) ? $('vf').querySelector('.si') : $('vf').querySelector('.no')).click();
+  else { const mals = actual.ops.filter(x => !x.ok), o = botFalla() && mals.length ? mals[Math.floor(Math.random()*mals.length)] : actual.ops.find(x => x.ok); if (o) o.el.click(); }
+  if (QUIZ && quizFet && ronda === 2) setTimeout(() => { avisa('fi'); quizAcabat = true; }, 1500);
+}
+if (VIDEO) { const b = $('btn-inici'); b.textContent = GRAVA ? '⏺ Grava el vídeo' : '▶ Reprodueix el vídeo';
+  b.onclick = async () => { if (GRAVA && !(await iniciaGravacio())) return; b.style.visibility = 'hidden'; await espera(3000); comenca(); b.style.visibility = ''; }; }
+else if (DEMO) { $('inici').hidden = true; setTimeout(comenca, 500); }
+if (VIDEO) { $('tornar').style.display = 'none'; $('musica').style.display = 'none'; }
+const btnM = $('musica'); btnM.style.opacity = AUDIO.actiu ? 1 : .5; btnM.onclick = () => { btnM.style.opacity = musicaCommuta() ? 1 : .5; };
+// temporitzador
+let ultim = performance.now();
+(function tic(){ requestAnimationFrame(tic); const ara = performance.now(), dt = Math.min(.5, (ara - ultim) / 1000); ultim = ara;
+  if (viu && !bloquejat && actual && !(window.CQ && CQ.escola)) { tempsRonda -= dt; $('bar').style.transform = `scaleX(${Math.max(0, tempsRonda / tempsMax)})`; if (tempsRonda <= 0) fallaTemps(); } })();
+</script>
+<script>
+// Pantalla completa: s'activa en començar a jugar (cal un toc de l'usuari) i el botó la commuta.
+var ICO_PC = ['<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>', '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>']; // Si el navegador no ho permet (iPhone), no es mostra.
+(function(){
+  var el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen, q = new URLSearchParams(location.search);
+  if (!req || q.has('espectador') || q.has('demo') || q.has('video')) return;
+  var dins = function(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); };
+  var entra = function(){ if (dins()) return; try { var p = req.call(el, { navigationUI: 'hide' }); if (p && p.catch) p.catch(function(){}); } catch (e) {} };
+  var surt = function(){ var x = document.exitFullscreen || document.webkitExitFullscreen; if (x && dins()) try { x.call(document); } catch (e) {} };
+  document.addEventListener('click', function(e){ if (e.target.closest('#btn-inici, #btn-reinici, #btn-diari, .cats .gros, .capa button.gros, .carta button')) entra(); }, true);
+  var b = document.createElement('button'); b.id = 'btn-pc'; b.className = 'pill'; b.type = 'button'; b.title = 'Pantalla completa'; b.setAttribute('aria-label', 'Pantalla completa'); b.innerHTML = ICO_PC[0];
+  b.addEventListener('click', function(e){ e.stopPropagation(); dins() ? surt() : entra(); });
+  var mus = document.getElementById('btn-musica') || document.getElementById('musica');
+  if (mus && mus.parentNode) mus.parentNode.insertBefore(b, mus.nextSibling); else { b.style.cssText = 'position:fixed;top:12px;right:12px;z-index:30'; document.body.appendChild(b); }
+  var upd = function(){ b.innerHTML = ICO_PC[dins() ? 1 : 0]; b.setAttribute('aria-label', dins() ? 'Surt de pantalla completa' : 'Pantalla completa'); b.title = dins() ? 'Surt de pantalla completa' : 'Pantalla completa'; };
+  document.addEventListener('fullscreenchange', upd); document.addEventListener('webkitfullscreenchange', upd);
+})();
+</script>
+</body>
+</html>

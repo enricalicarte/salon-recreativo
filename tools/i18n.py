@@ -107,6 +107,7 @@ ES_CQ = {
  "cq_perdudes": dict(kw="juego de letras en catalán", blurb="Juego de letras en catalán: a la palabra le faltan letras y tienes que escribirlas en orden. Tres errores y se revela; diez niveles, cada vez con más huecos."),
  "cq_sopa": dict(kw="sopa de letras en catalán", blurb="Sopa de letras en catalán: seis palabras de una categoría escondidas en una cuadrícula de 8×8, en horizontal, vertical o diagonal. Arrastra el dedo y encuéntralas todas."),
  "cq_futbol": dict(kw="quiz de fútbol catalán", blurb="¿Cuánto sabes de fútbol catalán? Diez niveles de preguntas sobre el Barça, el Espanyol y el Girona: trivia, «¿quién es?» por pistas, verdadero o falso y «¿quién nació antes?». En catalán."),
+ "cq_castells": dict(kw="quiz de castells humanos", blurb="¿Qué castell es? Un 3 de 9 con folre, un 4 de 8, un pilar de 6… Adivina los castells dibujados, el vocabulario casteller y las collas, en diez niveles. En catalán."),
  "cq_esportistes": dict(kw="quiz de deportistas catalanes", blurb="¿Cuánto sabes de los deportistas catalanes? Setenta campeones de veintitrés deportes: adivina quién es por las pistas, de qué deporte es y quién nació antes, en diez niveles. En catalán."),
 }
 
@@ -118,7 +119,7 @@ CA_CATD = {"puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: tre
            "historias": {"t": "Històries", "d": "Jocs narratius amb calendari, records i misteri."},
            "marca": {"t": "Amb marca", "d": "Jocs fets a mida per a marques i clients."},
            "relax": {"t": "Relax Games", "d": "Divuit racons per desconnectar: aigua, foc, cel i mar, cadascun amb la seva música generativa. Sense punts, sense pressa i sense perdre."},
-           "catquiz": {"t": "CatQuiz Minijocs", "d": "Minijocs de paraules en català i quizzes de futbol i d'esportistes catalans, per jugar i aprendre."}}
+           "catquiz": {"t": "CatQuiz Minijocs", "d": "Minijocs de paraules en català i quizzes de futbol, d'esportistes catalans i de castells, per jugar i aprendre."}}
 
 # Textos fijos de la portada: (castellano, catalán). Cada uno debe aparecer en la fuente.
 CA_UI = [
