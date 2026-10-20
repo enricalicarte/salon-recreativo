@@ -205,7 +205,7 @@ def landing(g0, lang):
 <ul class="rel">{relhtml}</ul>
 </main>
 {footer(p, ca)}
-<script>document.getElementById('go').addEventListener('click',function(){{var f=document.createElement('iframe');f.src='{p}{g['play']}';f.title={json.dumps(g['name'], ensure_ascii=False)};f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope';f.allowFullscreen=true;var s=document.getElementById('stage');s.innerHTML='';s.appendChild(f);try{{if(window.goatcounter&&goatcounter.count)goatcounter.count({{path:'jugar/{g['slug']}',title:{json.dumps(g['name'], ensure_ascii=False)},event:true}})}}catch(x){{}}if(matchMedia('(pointer:coarse)').matches){{try{{var fs=s.requestFullscreen||s.webkitRequestFullscreen;if(fs){{var pr=fs.call(s);if(pr&&pr.catch)pr.catch(function(){{}});}}}}catch(e){{}}}}}});</script>
+<script>document.getElementById('go').addEventListener('click',function(){{var f=document.createElement('iframe');f.src='{p}{g['play']}';f.title={json.dumps(g['name'], ensure_ascii=False)};f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; camera';f.allowFullscreen=true;var s=document.getElementById('stage');s.innerHTML='';s.appendChild(f);try{{if(window.goatcounter&&goatcounter.count)goatcounter.count({{path:'jugar/{g['slug']}',title:{json.dumps(g['name'], ensure_ascii=False)},event:true}})}}catch(x){{}}if(matchMedia('(pointer:coarse)').matches){{try{{var fs=s.requestFullscreen||s.webkitRequestFullscreen;if(fs){{var pr=fs.call(s);if(pr&&pr.catch)pr.catch(function(){{}});}}}}catch(e){{}}}}}});</script>
 {SHARE_JS}
 </body></html>"""
     W(path + 'index.html', page)
