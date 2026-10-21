@@ -82,3 +82,4 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
 .vs small{font-size:11px;font-weight:900;letter-spacing:1.5px;color:#cfd2ff}
 .vs .x{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(18px,5vw,26px);color:#ffd93d}
 .vs .c1 b{color:#35f0ff}.vs .c2 b{color:#ff3d8b}
+.hud .glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(180deg,rgba(40,20,90,.7),rgba(20,8,50,.6))}

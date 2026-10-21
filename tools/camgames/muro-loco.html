@@ -28,7 +28,7 @@
   <div class="sc glass p1"><small id="lab1">PUNTOS</small><div id="score">0</div><div id="lives"></div><div class="pc" id="pc1"></div></div>
   <div class="mid"><div id="pose"></div><div id="combo"></div></div>
   <div class="r col"><div class="sc glass p2" id="sc2" hidden><small>JUGADOR 2</small><div class="s2" id="score2">0</div><div id="lives2"></div><div class="pc" id="pc2"></div></div>
-    <div class="btns"><button class="ib glass" id="recal" title="Recalibrar"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="ib glass" id="snd" title="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="btns"><button class="ib glass" id="recal" title="Recalibrar" aria-label="Recalibrar"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="ib glass" id="snd" title="Sonido" aria-label="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
 </div>
 <div id="fuse"><i></i></div>
 <div id="big"></div>
@@ -273,7 +273,7 @@ function startCalib(keep){
   resume=!!keep;state='calib';calibHold=[0,0];el.panel.classList.add('hide');el.hud.classList.remove('off');
   setPlayers(np===2&&gm2!=='turnos'?2:1);
   audio();music.start();
-  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}
+  wake();
 }
 function pickPose(tier){
   const pool=[];POSES.forEach((p,i)=>{if(p.t<=tier)pool.push(i);});
@@ -359,7 +359,7 @@ function gameOver(){
     el.tag.textContent='¡Fin del programa!';
   }
   el.btn.textContent='JUGAR OTRA VEZ';el.btn.disabled=false;el.panel.classList.remove('hide');
-  if(!$('#back')){const back=document.createElement('button');back.className='btn ghost';back.id='back';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.how.hidden=false;el.npSel.hidden=false;el.m2Sel.hidden=np!==2;setTag();back.remove();};el.btn.after(back);}
+  if(!$('#back')){const back=document.createElement('button');back.className='btn ghost';back.id='back';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.how.hidden=false;el.npSel.hidden=false;el.m2Sel.hidden=np!==2;setTag();if(camOK){demo=false;el.btn.textContent='¡JUGAR!';}back.remove();};el.btn.after(back);}
   if(rec&&top>0){confetti(W*.3,H*.5,60);confetti(W*.7,H*.5,60);sfx.perfect();}
 }
 /* "tú pones el muro": fase de posar y foto */
@@ -369,7 +369,7 @@ function startPosing(now){
 }
 function takePhoto(now){
   const j=bodyJ(0);
-  if(!j||!bodyReady(j)){posT=2.5;bigText('¡Ponte entero en cámara!');$('#big').classList.add('small');return;}
+  if(!j||!bodyReady(j)){posT=2.5;return;}
   const c=calOf(j),k=Math.floor(Math.random()*POSES.length);
   captured={j:j.map(p=>[(p.x-c.cx)/c.S,(p.y-c.cy)/c.S]),a:c,c:POSES[k].c};photoAt=now;cal[0]=c;
   bigText('');$('#big').classList.remove('small');sfx.calib();noise(.12,.3,3000);flashT=.8;flashC='255,255,255';
@@ -400,9 +400,11 @@ function frame(now){
       else{state='play';nextAt=now+1500;setBig(np===2?'¡PREPARAOS!':'¡PREPÁRATE!',1300,now);}
     }
   }else if(state==='posing'){
-    posT+=dt;const left=Math.ceil(3-posT);
-    if(posT<3){bigText(left>0?String(left):'');$('#big').classList.remove('small');}
-    else takePhoto(now);
+    /* la cuenta atrás solo avanza si se ve al jugador entero */
+    if(!bodyReady(bodyJ(0))){bigText(bodyJ(0)?'¡Ponte entero en cámara!':'Jugador '+(poser+1)+', ¡ponte en cámara!');$('#big').classList.add('small');posT=Math.max(0,posT-dt*2);}
+    else{posT+=dt;const left=Math.ceil(3-posT);
+      if(posT<3){bigText(left>0?String(left):'');$('#big').classList.remove('small');}
+      else takePhoto(now);}
   }else if(state==='play'||state==='dying'){
     if(state==='play'&&!wall&&now>=nextAt){
       if(np===2&&gm2==='turnos'&&!captured)startPosing(now);
@@ -444,7 +446,7 @@ function pickM2(m){gm2=m;try{localStorage.setItem('muroloco-m2',m);}catch(e){}fo
 el.npSel.addEventListener('click',e=>{const b=e.target.closest('button');if(b)pickNp(+b.dataset.np);});
 el.m2Sel.addEventListener('click',e=>{const b=e.target.closest('button');if(b)pickM2(b.dataset.m);});
 const q=new URLSearchParams(location.search);if(q.get('np'))np=+q.get('np');if(q.get('modo'))gm2=q.get('modo');
-P=[mkP(0),mkP(1)];pickNp(np===2?2:1);pickM2(TAGS[gm2]?gm2:'doble');
+P=[mkP(0),mkP(1)];pickNp(np===2?2:1);pickM2(['doble','pareja','turnos'].includes(gm2)?gm2:'doble');
 
 /* ---------- botones y arranque ---------- */
 async function onPlay(){
@@ -459,9 +461,10 @@ el.btn.onclick=onPlay;
 el.btnDemo.onclick=()=>{demo=true;audio();goFS();startCalib(false);};
 $('#fs').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else goFS();};
 $('#snd').onclick=()=>{audio();setMute(!muted);};
-$('#recal').onclick=()=>{if(state==='play'||state==='dying'||state==='calib'||state==='posing'){wall=null;captured=null;setPose('');el.fuse.classList.remove('on');startCalib(state!=='calib'&&P[0].score+P[1].score>0||resume);}};
+$('#recal').onclick=()=>{if(state==='play'||state==='calib'||state==='posing'){wall=null;captured=null;setPose('');el.fuse.classList.remove('on');startCalib(state!=='calib'&&P[0].score+P[1].score>0||resume);}};
 addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F')$('#fs').click();if(e.key==='r'||e.key==='R')$('#recal').click();if(e.key==='m'||e.key==='M')$('#snd').click();});
-onResize.push(()=>{sceneKey='';if(wall&&wall.state==='in'){wall=null;el.fuse.classList.remove('on');nextAt=performance.now()+800;}});
+let lastWH=[0,0];
+onResize.push(()=>{sceneKey='';const big=Math.abs(W-lastWH[0])>W*.15||Math.abs(H-lastWH[1])>H*.15;lastWH=[W,H];if(big&&wall&&wall.state==='in'){wall=null;el.fuse.classList.remove('on');nextAt=performance.now()+800;}});
 resize();setMute(muted);
 
 (async function boot(){

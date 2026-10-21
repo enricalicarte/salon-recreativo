@@ -24,7 +24,7 @@
 <div class="hud off" id="hud">
   <div class="sc glass"><small>PUNTOS</small><div id="score">0</div><div id="lives"></div></div>
   <div class="mid"><div id="mbadge" class="glass">TOQUES</div><div id="counter"></div></div>
-  <div class="r"><button class="ib glass" id="snd" title="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <div class="r"><button class="ib glass" id="snd" title="Sonido" aria-label="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
 </div>
 <div id="big"></div>
 <div id="toast"></div>
@@ -61,7 +61,7 @@ const el={score:$('#score'),lives:$('#lives'),mbadge:$('#mbadge'),counter:$('#co
 music.bpm=104;music.prog=[[110,130.8,164.8],[98,123.5,146.8],[87.3,110,130.8],[82.4,103.8,123.5]];
 let gm='toques';try{gm=localStorage.getItem('balonloco-mode')||'toques';}catch(e){}
 let state='menu',mode=demo?'demo':'cam',ball=null,bparts=[],prevP={},curJ=null;
-let score=0,shown=0,lives=3,touches=0,bestTouches=0,streak=0,okCount=0,tries=0,cd=0,lastCd=-1,lastNow=0,noBodyT=0,respawnAt=0,target=null,shot=null,keeper={x:0,dir:1},lastPart='';
+let score=0,shown=0,lives=3,touches=0,totalT=0,bestTouches=0,streak=0,okCount=0,tries=0,cd=0,lastCd=-1,lastNow=0,noBodyT=0,respawnAt=0,target=null,shot=null,keeper={x:0,dir:1},lastPart='';
 let floorY=0,lastFail=0;
 const BR=()=>Math.max(26,Math.min(W,H)*.062);
 const G=()=>H*(gm==='toques'||gm==='control'?1.5:1.8);   /* gravedad suave: el balón flota un poco más */
@@ -223,11 +223,12 @@ function spawnBall(){
   if(gm==='control'){const s=Math.random()<.5?-1:1;ball={x:s<0?-r:W+r,y:H*.35,vx:-s*W*(.42+Math.random()*.12),vy:-H*.5,r,rot:0,state:'live',touches:0};bigText('');}
   else{ball={x:W*(.4+Math.random()*.2),y:-r,vx:(Math.random()-.5)*W*.05,vy:H*.1,r,rot:0,state:'live',touches:0};}
   if(gm==='pases')newTarget();
+  if(gm==='toques')setCounter('0');else if(gm==='control')setCounter('0 / 3');
   tone(880,.08,'triangle',.08);
 }
 function fail(msg){
-  if(!ball||ball.state!=='live')return;
-  ball.state='dead';lives--;streak=0;tries++;shake=.8;flashT=.6;flashC='255,40,70';toast(msg,'bad');sfx.bad();
+  if(!ball||ball.state==='dead'||ball.state==='net')return;
+  ball.state='dead';if(gm==='toques'){if(touches>0)tries++;touches=0;}lives--;streak=0;if(gm!=='toques')tries++;shake=.8;flashT=.6;flashC='255,40,70';toast(msg,'bad');sfx.bad();
   hud();lastFail=performance.now();
   if(lives<=0){state='over';music.stop();setTimeout(gameOver,1300);}
   else respawnAt=performance.now()+1300;
@@ -246,7 +247,7 @@ function touchBall(p,cx,cy){
   b.vx=clamp(off*W*.12+p.vx*.25+(W/2-b.x)*.35,-W*.6,W*.6);
   b.y=Math.min(b.y,cy-(p.r+b.r)*.9);
   const alt=lastPart&&lastPart!==p.id;lastPart=p.id;
-  b.touches++;touches++;bestTouches=Math.max(bestTouches,touches);
+  b.touches++;touches++;totalT++;bestTouches=Math.max(bestTouches,touches);
   const pts=alt?2:1;
   ring(b.x,b.y,alt?'#ffd93d':'#35f0ff',b.r*2.4,8,.35);burst(b.x,b.y,['#fff','#35f0ff','#ffd93d'],10,.7);
   tone(300+Math.min(touches,20)*25,.08,'square',.12);noise(.05,.15,2000);
@@ -268,7 +269,7 @@ function touchBall(p,cx,cy){
 }
 function updateBall(dt,now){
   const b=ball;if(!b)return;
-  if(b.state==='live'||b.state==='pass'||b.state==='done'){
+  if(b.state==='live'||b.state==='pass'||b.state==='done'||b.state==='dead'){
     if(b.state==='pass'){b.t+=dt;}
     const ox=b.x,oy=b.y;
     b.vy+=G()*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.rot+=b.vx*dt/b.r;
@@ -289,7 +290,7 @@ function updateBall(dt,now){
     }
     if(b.state==='pass'){const t=target;if(t&&!t.hit&&Math.hypot(b.x-t.x,b.y-t.y)<t.r+b.r*.5){t.hit=true;b.state='done';success('¡PASE PERFECTO!',100+streak*20,'good',t.x,t.y);setCounter(okCount);respawnAt=now+900;}
       else if(b.t>1.4||b.y>floorY){fail('¡PASE FALLADO!');}}
-    if(b.state==='done'&&b.y>floorY-b.r){b.y=floorY-b.r;b.vy*=-.45;b.vx*=.8;}
+    if((b.state==='done'||b.state==='dead')&&b.y>floorY-b.r){b.y=floorY-b.r;b.vy*=-.45;b.vx*=.8;}
   }else if(b.state==='shot'){
     const s=shot;s.t+=dt;const p=Math.min(1,s.t/s.T),e=1-Math.pow(1-p,2);
     b.x=lerp(s.x0,s.x1,e);b.y=lerp(s.y0,s.y1,e)-Math.sin(Math.PI*p)*H*.12;b.r=s.r0*(1-.72*e);b.rot+=dt*16;
@@ -297,8 +298,8 @@ function updateBall(dt,now){
       const gb=goalBox(),inside=b.x>gb.x&&b.x<gb.x+gb.w&&b.y>gb.y&&b.y<gb.y+gb.h;
       const kx=gb.x+gb.w*(.5+keeper.x*.38),saved=inside&&Math.abs(b.x-kx)<gb.w*.13&&b.y>gb.y+gb.h*.2;
       const corner=inside&&b.y<gb.y+gb.h*.5&&(b.x<gb.x+gb.w*.25||b.x>gb.x+gb.w*.75);
-      if(!inside){b.state='done';b.vx=0;b.vy=0;fail('¡FUERA!');}
-      else if(saved){b.state='done';b.vy=-H*.4;b.vx=(Math.random()-.5)*W*.4;fail('¡PARADA DEL PORTERO!');}
+      if(!inside){b.vx=0;b.vy=0;fail('¡FUERA!');}
+      else if(saved){b.vy=-H*.4;b.vx=(Math.random()-.5)*W*.4;fail('¡PARADA DEL PORTERO!');}
       else{b.state='net';b.t=0;success(corner?'¡GOLAZO POR LA ESCUADRA!':'¡GOOOL!',corner?250+streak*30:120+streak*20,corner?'rainbow':'gold',b.x,b.y);setCounter(okCount);respawnAt=now+1200;}
     }
   }else if(b.state==='net'){b.t+=dt;b.y+=dt*30;}
@@ -330,11 +331,11 @@ function drawSkeleton(){
 
 /* ---------- partida ---------- */
 function startGame(){
-  ball=null;score=0;shown=0;lives=3;touches=0;bestTouches=0;streak=0;okCount=0;tries=0;target=null;shot=null;
+  ball=null;score=0;shown=0;lives=3;touches=0;totalT=0;bestTouches=0;streak=0;okCount=0;tries=0;target=null;shot=null;
   bparts=[];prevP={};dState={x:W/2,foot:0,lift:0,head:0,side:1};
   el.panel.classList.add('hide');el.hud.classList.remove('off');setCounter(gm==='toques'?'0':gm==='control'?'0 / 3':'0');cd=3.2;lastCd=-1;state='count';hud();
   audio();music.start();
-  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}
+  wake();
 }
 function gameOver(){
   el.hud.classList.add('off');bigText('');
@@ -343,11 +344,10 @@ function gameOver(){
   const main=gm==='toques'?['MEJOR SERIE',bestTouches]:['PUNTOS',score];
   el.res.innerHTML='<div class="main"><small>'+main[0]+'</small><b>'+main[1]+'</b>'+(rec&&val>0?'<span class="rec">¡NUEVO RÉCORD!</span>':'')+'</div>'+
     '<div><small>RÉCORD</small><b>'+Math.max(best0,val)+'</b></div>'+
-    (gm==='toques'?'<div><small>PUNTOS</small><b>'+score+'</b></div>':'<div><small>ACIERTOS</small><b>'+okCount+'</b></div>')+
-    '<div><small>INTENTOS</small><b>'+tries+'</b></div><div><small>EFICACIA</small><b>'+(tries?Math.round(100*okCount/tries):0)+'%</b></div>';
+    (gm==='toques'?'<div><small>PUNTOS</small><b>'+score+'</b></div><div><small>SERIES</small><b>'+tries+'</b></div><div><small>TOQUES TOTALES</small><b>'+totalT+'</b></div>'
+      :'<div><small>ACIERTOS</small><b>'+okCount+'</b></div><div><small>INTENTOS</small><b>'+tries+'</b></div><div><small>EFICACIA</small><b>'+(tries?Math.round(100*okCount/tries):0)+'%</b></div>');
   el.btn.textContent='JUGAR OTRA VEZ';el.btn.disabled=false;el.panel.classList.remove('hide');
-  const back=document.createElement('button');back.className='btn ghost';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.modes.hidden=false;el.tag.textContent='Fútbol de verdad: solo valen los pies.';back.remove();};
-  if(!$('#back')){back.id='back';el.btn.after(back);}
+  if(!$('#back')){const back=document.createElement('button');back.className='btn ghost';back.id='back';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.modes.hidden=false;el.tag.textContent='Fútbol de verdad: solo valen los pies.';if(!demo&&camOK){mode='cam';el.btn.textContent='¡A JUGAR!';}back.remove();};el.btn.after(back);}
   if(rec&&val>0){confetti(W*.3,H*.5,60);confetti(W*.7,H*.5,60);sfx.perfect();}
 }
 function frame(now){

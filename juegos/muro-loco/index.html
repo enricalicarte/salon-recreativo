@@ -91,6 +91,7 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
 .vs small{font-size:11px;font-weight:900;letter-spacing:1.5px;color:#cfd2ff}
 .vs .x{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(18px,5vw,26px);color:#ffd93d}
 .vs .c1 b{color:#35f0ff}.vs .c2 b{color:#ff3d8b}
+.hud .glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(180deg,rgba(40,20,90,.7),rgba(20,8,50,.6))}
 
 .mid{justify-self:center;display:flex;flex-direction:column;align-items:center;gap:6px;max-width:58vw}
 #pose{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(20px,5vw,40px);line-height:1.05;padding:8px 22px 9px;border-radius:16px;text-align:center;
@@ -112,7 +113,7 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
   <div class="sc glass p1"><small id="lab1">PUNTOS</small><div id="score">0</div><div id="lives"></div><div class="pc" id="pc1"></div></div>
   <div class="mid"><div id="pose"></div><div id="combo"></div></div>
   <div class="r col"><div class="sc glass p2" id="sc2" hidden><small>JUGADOR 2</small><div class="s2" id="score2">0</div><div id="lives2"></div><div class="pc" id="pc2"></div></div>
-    <div class="btns"><button class="ib glass" id="recal" title="Recalibrar"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="ib glass" id="snd" title="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="btns"><button class="ib glass" id="recal" title="Recalibrar" aria-label="Recalibrar"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="ib glass" id="snd" title="Sonido" aria-label="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
 </div>
 <div id="fuse"><i></i></div>
 <div id="big"></div>
@@ -161,8 +162,12 @@ let muted=false;try{muted=localStorage.getItem('camgames-mute')==='1';}catch(e){
 function audio(){
   if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=muted?0:1;master.connect(ac.destination);
     noiseBuf=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}catch(e){}}
-  if(ac&&ac.state==='suspended')ac.resume();
+  if(ac&&ac.state!=='running'){try{ac.resume();}catch(e){}}
 }
+/* al volver a la pestaña (o tras una llamada en iOS) se reanudan el audio y el bloqueo de pantalla */
+let wakeOn=false;
+function wake(){wakeOn=true;try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;if(ac&&ac.state!=='running'){try{ac.resume();}catch(e){}}if(wakeOn)wake();});
 function setMute(m){muted=m;try{localStorage.setItem('camgames-mute',m?'1':'0');}catch(e){}if(master)master.gain.setTargetAtTime(m?0:1,ac.currentTime,.05);const b=$('#snd');if(b)b.innerHTML=m?ICON_OFF:ICON_ON;}
 const ICON_ON='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
 const ICON_OFF='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -193,7 +198,7 @@ const sfx={
 const music={g:null,next:0,step:0,bpm:116,prog:[[110,130.8,164.8],[87.3,110,130.8],[130.8,164.8,196],[98,123.5,146.8]],lead:true,
   start(){if(!ac||this.g)return;this.g=ac.createGain();this.g.gain.value=0;this.g.gain.linearRampToValueAtTime(.55,ac.currentTime+1);this.g.connect(master);this.next=ac.currentTime+.1;this.step=0;},
   stop(){if(!this.g)return;const g=this.g;g.gain.setTargetAtTime(0,ac.currentTime,.2);setTimeout(()=>{try{g.disconnect();}catch(e){}},800);this.g=null;},
-  tick(){if(!this.g)return;const spb=60/this.bpm/4;while(this.next<ac.currentTime+.15){this.play(this.step,this.next);this.next+=spb;this.step++;}},
+  tick(){if(!this.g)return;const spb=60/this.bpm/4;if(this.next<ac.currentTime-.5)this.next=ac.currentTime;while(this.next<ac.currentTime+.15){this.play(this.step,this.next);this.next+=spb;this.step++;}},
   play(s,t){const b=s%16,ch=this.prog[Math.floor(s/16)%4],d=this.g;
     if(b%4===0){tone(150,.22,'sine',.5,-110,t,d);}
     if(b%2===1)noise(.04,.06,7000,t,d);
@@ -208,10 +213,12 @@ const MP_BASE='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
 const MODEL='https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
 let landmarker=null,camOK=false,demo=new URLSearchParams(location.search).has('demo');
 async function initCamera(){
-  const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:960},height:{ideal:540}},audio:false});
+  /* en móvil se pide menos resolución: la máscara de recorte se calcula píxel a píxel y así va fluido */
+  const small=Math.min(innerWidth,innerHeight)<700||matchMedia('(pointer:coarse)').matches;
+  const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:small?640:960},height:{ideal:small?360:540}},audio:false});
   video.srcObject=stream;video.muted=true;video.playsInline=true;
   await video.play();
-  if(!video.videoWidth)await new Promise(r=>{video.onloadedmetadata=r;});
+  if(!video.videoWidth)await new Promise(r=>{video.onloadedmetadata=r;if(video.readyState>=1)r();setTimeout(r,3000);});
   camOK=true;
 }
 async function initModel(){
@@ -219,10 +226,11 @@ async function initModel(){
   const fileset=await FilesetResolver.forVisionTasks(MP_BASE+'/wasm');
   const mk=delegate=>PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:MODEL,delegate},runningMode:'VIDEO',outputSegmentationMasks:true,numPoses:players,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
   try{landmarker=await mk('GPU');}catch(e){console.warn('GPU no disponible, uso CPU',e);landmarker=await mk('CPU');}
+  try{await landmarker.setOptions({numPoses:players});}catch(e){}   /* por si se eligió 2 jugadores mientras cargaba */
 }
 /* número de jugadores (1 o 2): con dos, el detector busca dos personas y cada una se recorta por su lado */
 let players=1;
-function setPlayers(n){players=n;bodies=[null,null];body=null;if(landmarker){try{landmarker.setOptions({numPoses:n});}catch(e){}}}
+function setPlayers(n){players=n;bodies=[null,null];body=null;if(landmarker){try{const r=landmarker.setOptions({numPoses:n});if(r&&r.catch)r.catch(()=>{});}catch(e){}}}
 
 /* ---------- recorte de los jugadores y auras de neón ---------- */
 const mCvs=[mkCanvas(2,2),mkCanvas(2,2)],mCxs=mCvs.map(c=>c.getContext('2d')),mImgs=[null,null];
@@ -238,7 +246,7 @@ function useMask(res){
     if(pCv.width!==vw||pCv.height!==vh){pCv.width=vw;pCv.height=vh;}
     let w=0,h=0;auraOn=[false,false];
     ms.forEach((m,i)=>{
-      const slot=maskSlot[i];if(slot==null||slot>1)return;
+      const slot=maskSlot[i];if(slot==null||slot<0||slot>1)return;
       w=m.width;h=m.height;const f=m.getAsFloat32Array(),c=mCvs[slot],x=mCxs[slot];
       if(c.width!==w||c.height!==h){c.width=w;c.height=h;mImgs[slot]=x.createImageData(w,h);}
       const u=new Uint32Array(mImgs[slot].data.buffer);
@@ -255,7 +263,7 @@ function useMask(res){
     for(let k=0;k<2;k++){if(!auraOn[k])continue;mCx.globalCompositeOperation=first?'copy':'lighter';mCx.drawImage(mCvs[k],0,0);first=false;}
     mCx.globalCompositeOperation='source-over';
     pCx.globalCompositeOperation='copy';pCx.drawImage(video,0,0,vw,vh);
-    pCx.globalCompositeOperation='destination-in';pCx.filter='blur(1.5px)';pCx.drawImage(mCv,0,0,vw,vh);pCx.filter='none';
+    pCx.globalCompositeOperation='destination-in';if(!lowFx)pCx.filter='blur(1.5px)';pCx.drawImage(mCv,0,0,vw,vh);pCx.filter='none';
     pCx.globalCompositeOperation='source-over';
     segOK=true;segAt=performance.now();
   }catch(e){}
@@ -671,7 +679,7 @@ function startCalib(keep){
   resume=!!keep;state='calib';calibHold=[0,0];el.panel.classList.add('hide');el.hud.classList.remove('off');
   setPlayers(np===2&&gm2!=='turnos'?2:1);
   audio();music.start();
-  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}
+  wake();
 }
 function pickPose(tier){
   const pool=[];POSES.forEach((p,i)=>{if(p.t<=tier)pool.push(i);});
@@ -757,7 +765,7 @@ function gameOver(){
     el.tag.textContent='¡Fin del programa!';
   }
   el.btn.textContent='JUGAR OTRA VEZ';el.btn.disabled=false;el.panel.classList.remove('hide');
-  if(!$('#back')){const back=document.createElement('button');back.className='btn ghost';back.id='back';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.how.hidden=false;el.npSel.hidden=false;el.m2Sel.hidden=np!==2;setTag();back.remove();};el.btn.after(back);}
+  if(!$('#back')){const back=document.createElement('button');back.className='btn ghost';back.id='back';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.how.hidden=false;el.npSel.hidden=false;el.m2Sel.hidden=np!==2;setTag();if(camOK){demo=false;el.btn.textContent='¡JUGAR!';}back.remove();};el.btn.after(back);}
   if(rec&&top>0){confetti(W*.3,H*.5,60);confetti(W*.7,H*.5,60);sfx.perfect();}
 }
 /* "tú pones el muro": fase de posar y foto */
@@ -767,7 +775,7 @@ function startPosing(now){
 }
 function takePhoto(now){
   const j=bodyJ(0);
-  if(!j||!bodyReady(j)){posT=2.5;bigText('¡Ponte entero en cámara!');$('#big').classList.add('small');return;}
+  if(!j||!bodyReady(j)){posT=2.5;return;}
   const c=calOf(j),k=Math.floor(Math.random()*POSES.length);
   captured={j:j.map(p=>[(p.x-c.cx)/c.S,(p.y-c.cy)/c.S]),a:c,c:POSES[k].c};photoAt=now;cal[0]=c;
   bigText('');$('#big').classList.remove('small');sfx.calib();noise(.12,.3,3000);flashT=.8;flashC='255,255,255';
@@ -798,9 +806,11 @@ function frame(now){
       else{state='play';nextAt=now+1500;setBig(np===2?'¡PREPARAOS!':'¡PREPÁRATE!',1300,now);}
     }
   }else if(state==='posing'){
-    posT+=dt;const left=Math.ceil(3-posT);
-    if(posT<3){bigText(left>0?String(left):'');$('#big').classList.remove('small');}
-    else takePhoto(now);
+    /* la cuenta atrás solo avanza si se ve al jugador entero */
+    if(!bodyReady(bodyJ(0))){bigText(bodyJ(0)?'¡Ponte entero en cámara!':'Jugador '+(poser+1)+', ¡ponte en cámara!');$('#big').classList.add('small');posT=Math.max(0,posT-dt*2);}
+    else{posT+=dt;const left=Math.ceil(3-posT);
+      if(posT<3){bigText(left>0?String(left):'');$('#big').classList.remove('small');}
+      else takePhoto(now);}
   }else if(state==='play'||state==='dying'){
     if(state==='play'&&!wall&&now>=nextAt){
       if(np===2&&gm2==='turnos'&&!captured)startPosing(now);
@@ -842,7 +852,7 @@ function pickM2(m){gm2=m;try{localStorage.setItem('muroloco-m2',m);}catch(e){}fo
 el.npSel.addEventListener('click',e=>{const b=e.target.closest('button');if(b)pickNp(+b.dataset.np);});
 el.m2Sel.addEventListener('click',e=>{const b=e.target.closest('button');if(b)pickM2(b.dataset.m);});
 const q=new URLSearchParams(location.search);if(q.get('np'))np=+q.get('np');if(q.get('modo'))gm2=q.get('modo');
-P=[mkP(0),mkP(1)];pickNp(np===2?2:1);pickM2(TAGS[gm2]?gm2:'doble');
+P=[mkP(0),mkP(1)];pickNp(np===2?2:1);pickM2(['doble','pareja','turnos'].includes(gm2)?gm2:'doble');
 
 /* ---------- botones y arranque ---------- */
 async function onPlay(){
@@ -857,9 +867,10 @@ el.btn.onclick=onPlay;
 el.btnDemo.onclick=()=>{demo=true;audio();goFS();startCalib(false);};
 $('#fs').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else goFS();};
 $('#snd').onclick=()=>{audio();setMute(!muted);};
-$('#recal').onclick=()=>{if(state==='play'||state==='dying'||state==='calib'||state==='posing'){wall=null;captured=null;setPose('');el.fuse.classList.remove('on');startCalib(state!=='calib'&&P[0].score+P[1].score>0||resume);}};
+$('#recal').onclick=()=>{if(state==='play'||state==='calib'||state==='posing'){wall=null;captured=null;setPose('');el.fuse.classList.remove('on');startCalib(state!=='calib'&&P[0].score+P[1].score>0||resume);}};
 addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F')$('#fs').click();if(e.key==='r'||e.key==='R')$('#recal').click();if(e.key==='m'||e.key==='M')$('#snd').click();});
-onResize.push(()=>{sceneKey='';if(wall&&wall.state==='in'){wall=null;el.fuse.classList.remove('on');nextAt=performance.now()+800;}});
+let lastWH=[0,0];
+onResize.push(()=>{sceneKey='';const big=Math.abs(W-lastWH[0])>W*.15||Math.abs(H-lastWH[1])>H*.15;lastWH=[W,H];if(big&&wall&&wall.state==='in'){wall=null;el.fuse.classList.remove('on');nextAt=performance.now()+800;}});
 resize();setMute(muted);
 
 (async function boot(){

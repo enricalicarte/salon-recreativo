@@ -26,8 +26,12 @@ let muted=false;try{muted=localStorage.getItem('camgames-mute')==='1';}catch(e){
 function audio(){
   if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=muted?0:1;master.connect(ac.destination);
     noiseBuf=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;}catch(e){}}
-  if(ac&&ac.state==='suspended')ac.resume();
+  if(ac&&ac.state!=='running'){try{ac.resume();}catch(e){}}
 }
+/* al volver a la pestaña (o tras una llamada en iOS) se reanudan el audio y el bloqueo de pantalla */
+let wakeOn=false;
+function wake(){wakeOn=true;try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;if(ac&&ac.state!=='running'){try{ac.resume();}catch(e){}}if(wakeOn)wake();});
 function setMute(m){muted=m;try{localStorage.setItem('camgames-mute',m?'1':'0');}catch(e){}if(master)master.gain.setTargetAtTime(m?0:1,ac.currentTime,.05);const b=$('#snd');if(b)b.innerHTML=m?ICON_OFF:ICON_ON;}
 const ICON_ON='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
 const ICON_OFF='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -58,7 +62,7 @@ const sfx={
 const music={g:null,next:0,step:0,bpm:116,prog:[[110,130.8,164.8],[87.3,110,130.8],[130.8,164.8,196],[98,123.5,146.8]],lead:true,
   start(){if(!ac||this.g)return;this.g=ac.createGain();this.g.gain.value=0;this.g.gain.linearRampToValueAtTime(.55,ac.currentTime+1);this.g.connect(master);this.next=ac.currentTime+.1;this.step=0;},
   stop(){if(!this.g)return;const g=this.g;g.gain.setTargetAtTime(0,ac.currentTime,.2);setTimeout(()=>{try{g.disconnect();}catch(e){}},800);this.g=null;},
-  tick(){if(!this.g)return;const spb=60/this.bpm/4;while(this.next<ac.currentTime+.15){this.play(this.step,this.next);this.next+=spb;this.step++;}},
+  tick(){if(!this.g)return;const spb=60/this.bpm/4;if(this.next<ac.currentTime-.5)this.next=ac.currentTime;while(this.next<ac.currentTime+.15){this.play(this.step,this.next);this.next+=spb;this.step++;}},
   play(s,t){const b=s%16,ch=this.prog[Math.floor(s/16)%4],d=this.g;
     if(b%4===0){tone(150,.22,'sine',.5,-110,t,d);}
     if(b%2===1)noise(.04,.06,7000,t,d);
@@ -73,10 +77,12 @@ const MP_BASE='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
 const MODEL='https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
 let landmarker=null,camOK=false,demo=new URLSearchParams(location.search).has('demo');
 async function initCamera(){
-  const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:960},height:{ideal:540}},audio:false});
+  /* en móvil se pide menos resolución: la máscara de recorte se calcula píxel a píxel y así va fluido */
+  const small=Math.min(innerWidth,innerHeight)<700||matchMedia('(pointer:coarse)').matches;
+  const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:small?640:960},height:{ideal:small?360:540}},audio:false});
   video.srcObject=stream;video.muted=true;video.playsInline=true;
   await video.play();
-  if(!video.videoWidth)await new Promise(r=>{video.onloadedmetadata=r;});
+  if(!video.videoWidth)await new Promise(r=>{video.onloadedmetadata=r;if(video.readyState>=1)r();setTimeout(r,3000);});
   camOK=true;
 }
 async function initModel(){
@@ -84,10 +90,11 @@ async function initModel(){
   const fileset=await FilesetResolver.forVisionTasks(MP_BASE+'/wasm');
   const mk=delegate=>PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:MODEL,delegate},runningMode:'VIDEO',outputSegmentationMasks:true,numPoses:players,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
   try{landmarker=await mk('GPU');}catch(e){console.warn('GPU no disponible, uso CPU',e);landmarker=await mk('CPU');}
+  try{await landmarker.setOptions({numPoses:players});}catch(e){}   /* por si se eligió 2 jugadores mientras cargaba */
 }
 /* número de jugadores (1 o 2): con dos, el detector busca dos personas y cada una se recorta por su lado */
 let players=1;
-function setPlayers(n){players=n;bodies=[null,null];body=null;if(landmarker){try{landmarker.setOptions({numPoses:n});}catch(e){}}}
+function setPlayers(n){players=n;bodies=[null,null];body=null;if(landmarker){try{const r=landmarker.setOptions({numPoses:n});if(r&&r.catch)r.catch(()=>{});}catch(e){}}}
 
 /* ---------- recorte de los jugadores y auras de neón ---------- */
 const mCvs=[mkCanvas(2,2),mkCanvas(2,2)],mCxs=mCvs.map(c=>c.getContext('2d')),mImgs=[null,null];
@@ -103,7 +110,7 @@ function useMask(res){
     if(pCv.width!==vw||pCv.height!==vh){pCv.width=vw;pCv.height=vh;}
     let w=0,h=0;auraOn=[false,false];
     ms.forEach((m,i)=>{
-      const slot=maskSlot[i];if(slot==null||slot>1)return;
+      const slot=maskSlot[i];if(slot==null||slot<0||slot>1)return;
       w=m.width;h=m.height;const f=m.getAsFloat32Array(),c=mCvs[slot],x=mCxs[slot];
       if(c.width!==w||c.height!==h){c.width=w;c.height=h;mImgs[slot]=x.createImageData(w,h);}
       const u=new Uint32Array(mImgs[slot].data.buffer);
@@ -120,7 +127,7 @@ function useMask(res){
     for(let k=0;k<2;k++){if(!auraOn[k])continue;mCx.globalCompositeOperation=first?'copy':'lighter';mCx.drawImage(mCvs[k],0,0);first=false;}
     mCx.globalCompositeOperation='source-over';
     pCx.globalCompositeOperation='copy';pCx.drawImage(video,0,0,vw,vh);
-    pCx.globalCompositeOperation='destination-in';pCx.filter='blur(1.5px)';pCx.drawImage(mCv,0,0,vw,vh);pCx.filter='none';
+    pCx.globalCompositeOperation='destination-in';if(!lowFx)pCx.filter='blur(1.5px)';pCx.drawImage(mCv,0,0,vw,vh);pCx.filter='none';
     pCx.globalCompositeOperation='source-over';
     segOK=true;segAt=performance.now();
   }catch(e){}

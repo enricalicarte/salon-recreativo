@@ -84,6 +84,8 @@ p,li{color:#d6d1ee}
 .stage .bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 video::-webkit-media-controls,video::-webkit-media-controls-start-playback-button,video::-webkit-media-controls-overlay-play-button{display:none!important;-webkit-appearance:none}
 .stage .go{position:absolute;inset:0;display:grid;place-items:center;border:0;cursor:pointer;color:#07060f;background:center/cover}
+.stage .xfs{display:none;position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));z-index:5;padding:8px 14px;border-radius:999px;border:0;background:rgba(7,6,15,.75);color:#ffd23f;font:800 14px/1 'Nunito',system-ui,sans-serif;cursor:pointer}
+.stage:fullscreen .xfs,.stage:-webkit-full-screen .xfs{display:block}
 .go span{background:#ffd23f;font:700 1.1rem 'Unbounded',system-ui;padding:16px 34px;border-radius:99px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
 .tags{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}.tags li{border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:3px 12px;font-size:.85rem;color:#a79fcb}
 .tags li.age{color:#fff;border-color:#ffd23f}
@@ -193,7 +195,7 @@ def landing(g0, lang):
 <nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="{p}{'ca/' if ca else ''}">{'Inici' if ca else 'Inicio'}</a> › <a href="{p}{'ca/' if ca else ''}#{ {'cosmico': 'trilogia', 'invierno': 'saga-invierno', 'entrenos': 'saga-entrenos'}.get(g['cat'], 'sec-' + g['cat']) }">{e(cat)}</a> › {e(g['name'])}</nav>
 <h1>{e(g['name'])}</h1>
 <p class="lead">{e(g['blurb'])}</p>
-<div class="stage" id="stage">{vid}<button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(7,6,15,.25),rgba(7,6,15,.25)){'' if hm else ',url(' + p + 'img/' + g['slug'] + '.jpg)'}" aria-label="{'Juga a' if ca else 'Jugar a'} {e(g['name'])}"><span>▶ {'Juga' if ca else 'Jugar'}</span></button></div>
+<div class="stage" id="stage">{vid}<button class="xfs" id="xfs" type="button" aria-label="Salir de pantalla completa">✕ {'Tanca' if ca else 'Cerrar'}</button><button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(7,6,15,.25),rgba(7,6,15,.25)){'' if hm else ',url(' + p + 'img/' + g['slug'] + '.jpg)'}" aria-label="{'Juga a' if ca else 'Jugar a'} {e(g['name'])}"><span>▶ {'Juga' if ca else 'Jugar'}</span></button></div>
 <noscript><p><a href="{p}{g['play']}">{'Obre' if ca else 'Abrir'} {e(g['name'])}</a></p></noscript>
 {share_bar(ca)}
 <p><a href="{p}{g['play']}" target="_blank" rel="noopener">{'Obrir en una pestanya nova' if ca else 'Abrir en una pestaña nueva'} ↗</a></p>
@@ -205,7 +207,7 @@ def landing(g0, lang):
 <ul class="rel">{relhtml}</ul>
 </main>
 {footer(p, ca)}
-<script>document.getElementById('go').addEventListener('click',function(){{var f=document.createElement('iframe');f.src='{p}{g['play']}';f.title={json.dumps(g['name'], ensure_ascii=False)};f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; camera';f.allowFullscreen=true;var s=document.getElementById('stage');s.innerHTML='';s.appendChild(f);try{{if(window.goatcounter&&goatcounter.count)goatcounter.count({{path:'jugar/{g['slug']}',title:{json.dumps(g['name'], ensure_ascii=False)},event:true}})}}catch(x){{}}if(matchMedia('(pointer:coarse)').matches){{try{{var fs=s.requestFullscreen||s.webkitRequestFullscreen;if(fs){{var pr=fs.call(s);if(pr&&pr.catch)pr.catch(function(){{}});}}}}catch(e){{}}}}}});</script>
+<script>document.getElementById('go').addEventListener('click',function(){{var f=document.createElement('iframe');f.src='{p}{g['play']}';f.title={json.dumps(g['name'], ensure_ascii=False)};f.allow='fullscreen; autoplay; gamepad; accelerometer; gyroscope; camera';f.allowFullscreen=true;var s=document.getElementById('stage'),x=document.getElementById('xfs');s.innerHTML='';s.appendChild(x);s.appendChild(f);x.onclick=function(){{try{{(document.exitFullscreen||document.webkitExitFullscreen).call(document);}}catch(e){{}}}};f.addEventListener('load',function(){{try{{var w=f.contentWindow,E=w.Element.prototype,fs=function(){{var r=s.requestFullscreen||s.webkitRequestFullscreen;return r.call(s);}};E.requestFullscreen=fs;E.webkitRequestFullscreen=fs;w.document.exitFullscreen=function(){{return document.exitFullscreen();}};Object.defineProperty(w.document,'fullscreenElement',{{get:function(){{return document.fullscreenElement?w.document.documentElement:null;}},configurable:true}});}}catch(e){{}}}});try{{if(window.goatcounter&&goatcounter.count)goatcounter.count({{path:'jugar/{g['slug']}',title:{json.dumps(g['name'], ensure_ascii=False)},event:true}})}}catch(x){{}}if(matchMedia('(pointer:coarse)').matches){{try{{var fs=s.requestFullscreen||s.webkitRequestFullscreen;if(fs){{var pr=fs.call(s);if(pr&&pr.catch)pr.catch(function(){{}});}}}}catch(e){{}}}}}});</script>
 {SHARE_JS}
 </body></html>"""
     W(path + 'index.html', page)

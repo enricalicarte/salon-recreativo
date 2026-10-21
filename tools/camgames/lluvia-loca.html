@@ -30,7 +30,7 @@
   <div class="sc glass p1"><small id="lab1">PUNTOS</small><div id="score">0</div><div id="lives"></div><div class="pc" id="pc1"></div></div>
   <div class="tm" id="tm"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" class="tb"/><circle id="rp" cx="50" cy="50" r="44" pathLength="100" class="tf"/></svg><b id="time" class="disp">60</b><div id="combo"></div></div>
   <div class="r col"><div class="sc glass p2" id="sc2" hidden><small>JUGADOR 2</small><div class="s2" id="score2">0</div><div id="lives2"></div><div class="pc" id="pc2"></div></div>
-    <div class="btns"><button class="ib glass" id="snd" title="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="btns"><button class="ib glass" id="snd" title="Sonido" aria-label="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
 </div>
 <div id="big"></div>
 <div id="toast"></div>
@@ -154,7 +154,7 @@ const bodyOf=pi=>mode==='demo'?demoJ[pi]:(bodies[pi]&&bodies[pi].j);
 let spr={},sprKey='';
 function sprite(t,owner){
   const s=size(),k=s+'|'+DPR;if(k!==sprKey){spr={};sprKey=k;}
-  const key=t.e+(owner>=0?owner:'');if(spr[key])return spr[key];
+  const key=t.k+t.e+(owner>=0?owner:'');if(spr[key])return spr[key];
   const R=s*(t.k==='mega'?1.05:.62),pad=s*.4,D=(R+pad)*2,c=mkCanvas(D*DPR,D*DPR),g=c.getContext('2d');
   g.scale(DPR,DPR);g.translate(D/2,D/2);
   const col=owner>=0?PC[owner]:RIM[t.k];
@@ -421,16 +421,17 @@ function endGame(title){
     }
     el.msg.textContent='';
     el.btn.textContent='JUGAR OTRA VEZ';el.btn.disabled=false;el.panel.classList.remove('hide');el.hud.classList.add('off');
-    if(!$('#back')){const back=document.createElement('button');back.className='btn ghost';back.id='back';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.how.hidden=false;el.npSel.hidden=false;el.m2Sel.hidden=np!==2;setTag();back.remove();};el.btn.after(back);}
+    if(!$('#back')){const back=document.createElement('button');back.className='btn ghost';back.id='back';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.how.hidden=false;el.npSel.hidden=false;el.m2Sel.hidden=np!==2;setTag();if(!demo&&camOK){mode='cam';el.btn.textContent='¡JUGAR!';}back.remove();};el.btn.after(back);}
     if(rec&&top>0){confetti(W*.3,H*.4,60);confetti(W*.7,H*.4,60);sfx.perfect();}
   },1300);
 }
 function startGame(){
   items=[];parts=[];pops=[];rings=[];P=[mkP(0),mkP(1)];timeLeft=ROUND;elapsed=0;spawnT=.6;spawnSide=0;megaT=6;shake=0;flashT=0;last10=false;lastGrabBy=[-1e9,-1e9];zapGlow=[0,0];
   dh=[[{x:W*.2,y:H*.6},{x:W*.36,y:H*.6}],[{x:W*.64,y:H*.6},{x:W*.8,y:H*.6}]];if(np===1)dh[0]=[{x:W*.38,y:H*.6},{x:W*.62,y:H*.6}];trails={};
+  if(mode==='cam')setPlayers(np);
   setAura();el.panel.classList.add('hide');el.hud.classList.remove('off');cd=3.2;lastCd=-1;state='count';hud();
   audio();music.start();music.bpm=116;
-  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}
+  wake();
 }
 
 /* ---------- bucle de juego ---------- */
@@ -446,6 +447,7 @@ function update(dt,now){
     it.y+=it.vy*k*dt;it.x+=it.vx*k*dt;it.rot+=it.spin*dt;it.ph+=dt;
     if(it.p>=0&&np===2&&gm2==='duelo'){const[x0,x1]=zone(it.p);if(it.x<x0){it.x=x0;it.vx=Math.abs(it.vx);}if(it.x>x1){it.x=x1;it.vx=-Math.abs(it.vx);}}
     if(it.t.k==='mega'){
+      if(it.y>H+it.s){it.dead=true;const p=P[0];if(p.combo>0){p.combo=0;setAura();hud();}pop(it.x,H-60,'✗','#ff8a8a',.8);continue;}
       /* hace falta una mano de cada jugador a la vez */
       const near=[false,false];for(const h of hands)if(Math.hypot(it.x-h.x,it.y-h.y)<h.r+it.s*.4)near[h.p]=true;
       it.touch=near[0]&&near[1]?3:near[0]?1:near[1]?2:0;
@@ -457,6 +459,7 @@ function update(dt,now){
       if(versus()&&P[h.p].out)continue;
       if(Math.hypot(it.x-h.x,it.y-h.y)<h.r+it.s*.35){grab(it,h,now);break;}
     }
+    if(state!=='play')break;
     if(!it.dead&&it.y>H+it.s){
       it.dead=true;
       if(it.t.k==='fruit'||it.t.k==='gold'||it.t.k==='mega'){const p=P[solo()?0:Math.max(0,it.p)];if(p.combo>0){p.combo=0;setAura();hud();tone(200,.18,'sine',.08,-60);}pop(it.x,H-60,'✗','#ff8a8a',.8);}
@@ -467,7 +470,7 @@ function update(dt,now){
   if(timeLeft<=10&&!last10){last10=true;toast('¡ÚLTIMOS 10!','bad');music.bpm=132;}
   if(timeLeft<=0){timeLeft=0;endGame('¡Tiempo!');}
   if(mode==='cam'){
-    for(let pi=0;pi<np;pi++)noBodyT[pi]=bodies[pi]?0:noBodyT[pi]+dt;
+    for(let pi=0;pi<np;pi++)noBodyT[pi]=bodies[pi]||(versus()&&P[pi].out)?0:noBodyT[pi]+dt;
     const msg=np===1?(noBodyT[0]>.8?'¡No te veo!':''):noBodyT[0]>.8&&noBodyT[1]>.8?'¡No os veo!':noBodyT[0]>.8?'Jugador 1, ¡no te veo!':noBodyT[1]>.8?'Jugador 2, ¡no te veo!':'';
     if(msg){bigText(msg);$('#big').classList.toggle('small',np===2);}else if(/veo/.test($('#big').textContent)){bigText('');$('#big').classList.remove('small');}
   }
@@ -542,7 +545,7 @@ function pickM2(m){gm2=m;try{localStorage.setItem('lluvialoca-m2',m);}catch(e){}
 el.npSel.addEventListener('click',e=>{const b=e.target.closest('button');if(b)pickNp(+b.dataset.np);});
 el.m2Sel.addEventListener('click',e=>{const b=e.target.closest('button');if(b)pickM2(b.dataset.m);});
 const q=new URLSearchParams(location.search);if(q.get('np'))np=+q.get('np');if(q.get('modo'))gm2=q.get('modo');
-P=[mkP(0),mkP(1)];pickNp(np===2?2:1);pickM2(TAGS[gm2]?gm2:'duelo');
+P=[mkP(0),mkP(1)];pickNp(np===2?2:1);pickM2(['duelo','coop','ataque'].includes(gm2)?gm2:'duelo');
 
 /* ---------- botones y arranque ---------- */
 async function onPlay(){

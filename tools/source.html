@@ -1719,6 +1719,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(refresh);
 
 /* ---------- Visor ---------- */
 const st=$('#stage'),fr=$('#stFrame');
+const LANGQ=new Set(['paradon']);
 let lastFocus=null;
 let curG=null,stagePushed=false;
 /* cargar el juego sin añadir entradas al historial (así «atrás» vuelve a la ficha) */
@@ -1760,6 +1761,8 @@ function openGame(src,title,from){
   clearInterval(hookT);hookT=setInterval(()=>{if(st.hidden){clearInterval(hookT);return;}hookFrame();},250);
   if(iphone&&!standalone&&!window.claude)setTimeout(()=>{if(!st.hidden)iosSheet(false);},1400);
   curG=GAMES.find(g=>g.play===src)||null;
+  /* los juegos que entienden ?lang= se abren en el idioma de la web */
+  if(curG&&LANGQ.has(curG.id))src+=(src.includes('?')?'&':'?')+'lang='+LANG;
   if(curG){recent=[curG.id].concat(recent.filter(id=>id!==curG.id)).slice(0,12);store.set('recent',recent);stat('jugar/'+curG.slug,curG.name);
     store.set('plays',(store.get('plays',0)|0)+1);}
   syncStageFav();$('#stShare').hidden=!curG||!!window.claude&&!navigator.share;$('#stFav').hidden=!curG;$('#sPop').hidden=true;

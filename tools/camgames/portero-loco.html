@@ -26,7 +26,7 @@
 <div class="hud off" id="hud">
   <div class="sc glass"><small>PARADAS</small><div id="score">0</div><div id="lives"></div></div>
   <div class="mid"><div class="board glass" id="board"></div><div id="combo"></div></div>
-  <div class="r"><button class="ib glass" id="snd" title="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <div class="r"><button class="ib glass" id="snd" title="Sonido" aria-label="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
 </div>
 <div id="big"></div>
 <div id="toast"></div>
@@ -52,7 +52,7 @@ const el={score:$('#score'),lives:$('#lives'),board:$('#board'),combo:$('#combo'
 music.bpm=120;music.prog=[[98,123.5,146.8],[130.8,164.8,196],[110,138.6,164.8],[146.8,185,220]];
 const GOALS_MAX=3;
 let state='menu',mode=demo?'demo':'cam',shots=[],hands=[],curJ=null,trails=[];
-let saves=0,shown=0,goals=0,combo=0,bestCombo=0,n=0,nextShot=0,cd=0,lastCd=-1,lastNow=0,noBodyT=0,history=[],cheerUntil=0,best=0,rippleT=0,rippleX=0,rippleY=0;
+let saves=0,score=0,shown=0,goals=0,combo=0,bestCombo=0,n=0,nextShot=0,cd=0,lastCd=-1,lastNow=0,noBodyT=0,history=[],cheerUntil=0,best=0,rippleT=0,rippleX=0,rippleY=0;
 let dh=[{x:0,y:0},{x:0,y:0}];
 try{best=+localStorage.getItem('porteroloco-best')||0;}catch(e){}
 const ballMax=()=>Math.max(30,Math.min(W,H)*.085);
@@ -177,7 +177,7 @@ function shotPos(s){
   return{x,y,r:ballMax()*(.12+.88*Math.pow(p,1.5))};
 }
 function save(s,h,body){
-  s.state='saved';combo++;bestCombo=Math.max(bestCombo,combo);saves++;history.push('s');
+  s.state='saved';combo++;bestCombo=Math.max(bestCombo,combo);saves++;history.push('s');score+=100+combo*10;
   const far=curJ?Math.hypot(s.x-(curJ[1].x+curJ[2].x)/2,s.y-(curJ[1].y+curJ[2].y)/2)>Math.hypot(curJ[1].x-curJ[2].x,curJ[1].y-curJ[2].y)*1.9:false;
   const ox=h?h.x:s.x,oy=h?h.y:s.y,a=Math.atan2(s.y-oy,s.x-ox)||-Math.PI/2;
   s.vx=Math.cos(a)*900+(s.x-W/2)*1.5;s.vy=-700-Math.random()*400;
@@ -187,7 +187,7 @@ function save(s,h,body){
   if(far||s.gold||s.zone==='escuadra'){confetti(W*.1,H*.9,40);confetti(W*.9,H*.9,40);}
   flashT=.45;flashC=s.gold?'255,220,90':'150,255,190';cheerUntil=performance.now()+1600;shake=.4;
   (far||s.gold||s.zone==='escuadra')?sfx.perfect():sfx.ok();tone(120,.12,'square',.25,-60);noise(.08,.25,1200);
-  if(s.gold)saves+=2;else if(s.zone==='escuadra')saves+=1;
+  if(s.gold)score+=300;else if(s.zone==='escuadra')score+=100;
   el.score.classList.remove('bump');void el.score.offsetWidth;el.score.classList.add('bump');
   hud();
 }
@@ -265,18 +265,18 @@ function drawSkeleton(){
 
 /* ---------- partida ---------- */
 function startGame(){
-  shots=[];parts=[];pops=[];rings=[];saves=0;shown=0;goals=0;combo=0;bestCombo=0;n=0;history=[];shake=0;flashT=0;trails=[];
+  shots=[];parts=[];pops=[];rings=[];saves=0;score=0;shown=0;goals=0;combo=0;bestCombo=0;n=0;history=[];shake=0;flashT=0;trails=[];
   dh=[{x:W*.4,y:H*.55},{x:W*.6,y:H*.55}];
   el.panel.classList.add('hide');el.hud.classList.remove('off');cd=3.2;lastCd=-1;state='count';nextShot=0;hud();
   audio();music.start();
-  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}
+  wake();
 }
 function gameOver(){
   el.hud.classList.add('off');bigText('');
   const rec=saves>best;if(rec){best=saves;try{localStorage.setItem('porteroloco-best',best);}catch(e){}}
   el.how.hidden=true;el.res.hidden=false;el.tag.textContent='¡Final del partido!';el.msg.textContent='';
   el.res.innerHTML='<div class="main"><small>PARADAS</small><b>'+saves+'</b>'+(rec&&saves>0?'<span class="rec">¡NUEVO RÉCORD!</span>':'')+'</div>'+
-    '<div><small>RÉCORD</small><b>'+best+'</b></div><div><small>MEJOR RACHA</small><b>x'+bestCombo+'</b></div><div><small>DISPAROS</small><b>'+n+'</b></div><div><small>EFICACIA</small><b>'+(n?Math.round(100*(n-goals)/n):0)+'%</b></div>';
+    '<div><small>PUNTOS</small><b>'+score+'</b></div><div><small>RÉCORD</small><b>'+best+'</b></div><div><small>MEJOR RACHA</small><b>x'+bestCombo+'</b></div><div><small>DISPAROS</small><b>'+n+'</b></div><div><small>EFICACIA</small><b>'+(n?Math.round(100*(n-goals)/n):0)+'%</b></div>';
   el.btn.textContent='JUGAR OTRA VEZ';el.btn.disabled=false;el.panel.classList.remove('hide');
   if(rec&&saves>0){confetti(W*.3,H*.5,60);confetti(W*.7,H*.5,60);sfx.perfect();}
 }
@@ -325,6 +325,7 @@ async function onPlay(){
 }
 el.btn.onclick=onPlay;
 el.btnDemo.onclick=()=>{mode='touch';audio();goFS();startGame();};
+el.btn.addEventListener('click',()=>{if(!demo&&camOK)mode='cam';},true);
 $('#fs').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else goFS();};
 $('#snd').onclick=()=>{audio();setMute(!muted);};
 addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F')$('#fs').click();if(e.key==='m'||e.key==='M')$('#snd').click();});
