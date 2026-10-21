@@ -41,9 +41,9 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
 #toast.bad{color:#ff5c6c;text-shadow:0 0 24px rgba(255,60,90,.8),0 4px 0 rgba(20,8,50,.6)}
 #toast.rainbow{background:linear-gradient(90deg,#ff3d8b,#ffd93d,#5dff9a,#35f0ff,#b05cff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 rgba(20,8,50,.6)) drop-shadow(0 0 20px rgba(255,255,255,.5))}
 /* menú y resultados */
-.panel{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(20,8,60,.35),rgba(5,3,20,.78));z-index:10;padding:20px;transition:opacity .35s}
+.panel{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow-y:auto;background:radial-gradient(ellipse at center,rgba(20,8,60,.35),rgba(5,3,20,.78));z-index:10;padding:20px;transition:opacity .35s}
 .panel.hide{opacity:0;pointer-events:none}
-.card{max-width:520px;width:100%;text-align:center;padding:26px 24px 22px;border-radius:28px}
+.card{max-width:520px;width:100%;text-align:center;padding:26px 24px 22px;border-radius:28px;margin:auto}
 .logo{margin:0 0 4px;font-family:"Lilita One",system-ui,sans-serif;font-weight:400;white-space:nowrap;font-size:clamp(46px,12.5vw,92px);line-height:.9;letter-spacing:1px;transform:rotate(-3deg)}
 .logo span{display:block;background:linear-gradient(180deg,#fff 0%,#ffe6f3 40%,#ff3d8b 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 0 #3a0a3a) drop-shadow(0 0 26px rgba(255,61,139,.7))}
 .logo span+span{background:linear-gradient(180deg,#fff 0%,#c9fbff 40%,#18c8e8 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 6px 0 #082a4a) drop-shadow(0 0 26px rgba(53,240,255,.7));margin-left:.4em}
@@ -66,6 +66,31 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
 .panel small.note{display:block;margin-top:12px;color:#a9acd9;font-size:12px;line-height:1.4}
 @media (max-height:640px){.card{padding:16px 20px 14px}.logo{font-size:clamp(44px,11vh,80px)}.tag{margin-top:6px}.how{margin:8px 0 0}.how span{padding:4px 8px;font-size:12px}#msg{margin:4px 0 8px}.btn{padding:11px 16px;margin:6px 0}.panel small.note{margin-top:6px}.stats{margin:8px 0 10px;gap:6px}.stats div{padding:6px}}
 [hidden]{display:none!important}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px}
+.modes button{pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:16px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;cursor:pointer;font:inherit;transition:transform .1s,border-color .2s,background .2s}
+.modes button b{font-family:"Lilita One",system-ui,sans-serif;font-weight:400;font-size:clamp(18px,4.4vw,22px);letter-spacing:.5px}
+.modes button span{font-size:12px;font-weight:800;color:#cfd2ff}
+.modes button i{font-style:normal;font-size:24px;line-height:1}
+.modes button.on{border-color:#ffd93d;background:linear-gradient(180deg,rgba(255,217,61,.25),rgba(255,149,0,.12));box-shadow:0 0 20px rgba(255,200,0,.35);transform:translateY(-2px)}
+.modes.np{grid-template-columns:1fr 1fr}
+.modes.np button b{font-size:clamp(16px,4vw,20px)}
+.modes.three{grid-template-columns:repeat(3,1fr)}
+.modes.three button span{font-size:11px}
+.sc.p1 #score,.sc.p1 .s2{text-shadow:0 0 18px rgba(53,240,255,.8),0 3px 0 rgba(20,8,50,.6)}
+.sc.p2{justify-self:end;text-align:right}.sc.p2 .s2{text-shadow:0 0 18px rgba(255,61,139,.8),0 3px 0 rgba(20,8,50,.6);color:#ffd6e8}
+.sc .s2{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(28px,6vw,46px);line-height:1}
+.sc .pc{font-family:"Lilita One",system-ui,sans-serif;font-size:12px;letter-spacing:1px;color:#5dff9a;min-height:14px;margin-top:2px}
+.sc .pc.fever{color:#ffd93d}
+.sc.out{opacity:.45;filter:grayscale(1)}
+.r.col{flex-direction:column;align-items:flex-end}
+.r.col .btns{display:flex;gap:8px}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:12px 0 6px}
+.vs div{padding:12px 8px;border-radius:18px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14)}
+.vs div.win{border-color:#ffd93d;background:linear-gradient(180deg,rgba(255,217,61,.25),rgba(255,149,0,.1));box-shadow:0 0 24px rgba(255,200,0,.4)}
+.vs b{display:block;font-family:"Lilita One",system-ui,sans-serif;font-weight:400;font-size:clamp(34px,9vw,56px);line-height:1}
+.vs small{font-size:11px;font-weight:900;letter-spacing:1.5px;color:#cfd2ff}
+.vs .x{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(18px,5vw,26px);color:#ffd93d}
+.vs .c1 b{color:#35f0ff}.vs .c2 b{color:#ff3d8b}
 
 .logo span{background:linear-gradient(180deg,#fff 0%,#eaffea 40%,#3ddc84 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 6px 0 #0a3a1a) drop-shadow(0 0 26px rgba(61,220,132,.7))}
 .logo span+span{background:linear-gradient(180deg,#fff 0%,#fff3c4 40%,#ffb300 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 6px 0 #4a2a00) drop-shadow(0 0 26px rgba(255,179,0,.7))}
@@ -187,39 +212,52 @@ async function initCamera(){
 async function initModel(){
   const {PoseLandmarker,FilesetResolver}=await import(MP_BASE+'/vision_bundle.mjs');
   const fileset=await FilesetResolver.forVisionTasks(MP_BASE+'/wasm');
-  const mk=delegate=>PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:MODEL,delegate},runningMode:'VIDEO',outputSegmentationMasks:true,numPoses:1,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
+  const mk=delegate=>PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:MODEL,delegate},runningMode:'VIDEO',outputSegmentationMasks:true,numPoses:players,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
   try{landmarker=await mk('GPU');}catch(e){console.warn('GPU no disponible, uso CPU',e);landmarker=await mk('CPU');}
 }
+/* número de jugadores (1 o 2): con dos, el detector busca dos personas y cada una se recorta por su lado */
+let players=1;
+function setPlayers(n){players=n;bodies=[null,null];body=null;if(landmarker){try{landmarker.setOptions({numPoses:n});}catch(e){}}}
 
-/* ---------- recorte del jugador y aura de neón ---------- */
-const mCv=mkCanvas(2,2),mCx=mCv.getContext('2d');
-const pCv=mkCanvas(2,2),pCx=pCv.getContext('2d');
-const aCv=mkCanvas(2,2),aCx=aCv.getContext('2d');
-let segOK=false,segAt=0,mImg=null,auraCol='#35f0ff';
+/* ---------- recorte de los jugadores y auras de neón ---------- */
+const mCvs=[mkCanvas(2,2),mkCanvas(2,2)],mCxs=mCvs.map(c=>c.getContext('2d')),mImgs=[null,null];
+const mCv=mkCanvas(2,2),mCx=mCv.getContext('2d');          /* máscara combinada */
+const pCv=mkCanvas(2,2),pCx=pCv.getContext('2d');          /* vídeo recortado */
+const aCvs=[mkCanvas(2,2),mkCanvas(2,2)],aCxs=aCvs.map(c=>c.getContext('2d'));   /* aura por jugador */
+let segOK=false,segAt=0,auraCol='#35f0ff',auraCol2='#ff3d8b',maskSlot=[0,1],auraOn=[false,false];
 function useMask(res){
   const ms=res&&res.segmentationMasks;
   if(!ms||!ms.length)return;
   try{
-    const m=ms[0],w=m.width,h=m.height,f=m.getAsFloat32Array();
-    if(mCv.width!==w||mCv.height!==h){mCv.width=w;mCv.height=h;mImg=mCx.createImageData(w,h);}
-    const u=new Uint32Array(mImg.data.buffer);
-    for(let i=0;i<f.length;i++){const v=f[i];const a=v<.3?0:v>.7?255:((v-.3)*637)|0;u[i]=(a<<24)|0xffffff;}
-    mCx.putImageData(mImg,0,0);
     const vw=video.videoWidth,vh=video.videoHeight;
     if(pCv.width!==vw||pCv.height!==vh){pCv.width=vw;pCv.height=vh;}
+    let w=0,h=0;auraOn=[false,false];
+    ms.forEach((m,i)=>{
+      const slot=maskSlot[i];if(slot==null||slot>1)return;
+      w=m.width;h=m.height;const f=m.getAsFloat32Array(),c=mCvs[slot],x=mCxs[slot];
+      if(c.width!==w||c.height!==h){c.width=w;c.height=h;mImgs[slot]=x.createImageData(w,h);}
+      const u=new Uint32Array(mImgs[slot].data.buffer);
+      for(let k=0;k<f.length;k++){const v=f[k];const a=v<.3?0:v>.7?255:((v-.3)*637)|0;u[k]=(a<<24)|0xffffff;}
+      x.putImageData(mImgs[slot],0,0);auraOn[slot]=true;
+      const ac2=aCvs[slot],ax=aCxs[slot],aw=Math.max(32,w>>2),ah=Math.max(18,h>>2);
+      if(ac2.width!==aw||ac2.height!==ah){ac2.width=aw;ac2.height=ah;}
+      ax.globalCompositeOperation='copy';ax.filter='blur(3px)';ax.drawImage(c,0,0,aw,ah);ax.filter='none';
+      ax.globalCompositeOperation='source-in';ax.fillStyle=slot?auraCol2:auraCol;ax.fillRect(0,0,aw,ah);ax.globalCompositeOperation='source-over';
+    });
+    if(!w)return;
+    if(mCv.width!==w||mCv.height!==h){mCv.width=w;mCv.height=h;}
+    mCx.globalCompositeOperation='copy';let first=true;
+    for(let k=0;k<2;k++){if(!auraOn[k])continue;mCx.globalCompositeOperation=first?'copy':'lighter';mCx.drawImage(mCvs[k],0,0);first=false;}
+    mCx.globalCompositeOperation='source-over';
     pCx.globalCompositeOperation='copy';pCx.drawImage(video,0,0,vw,vh);
     pCx.globalCompositeOperation='destination-in';pCx.filter='blur(1.5px)';pCx.drawImage(mCv,0,0,vw,vh);pCx.filter='none';
     pCx.globalCompositeOperation='source-over';
-    const aw=Math.max(32,w>>2),ah=Math.max(18,h>>2);
-    if(aCv.width!==aw||aCv.height!==ah){aCv.width=aw;aCv.height=ah;}
-    aCx.globalCompositeOperation='copy';aCx.filter='blur(3px)';aCx.drawImage(mCv,0,0,aw,ah);aCx.filter='none';
-    aCx.globalCompositeOperation='source-in';aCx.fillStyle=auraCol;aCx.fillRect(0,0,aw,ah);aCx.globalCompositeOperation='source-over';
     segOK=true;segAt=performance.now();
   }catch(e){}
   finally{for(const m of ms){try{m.close();}catch(e){}}}
 }
 function coverMap(){const vw=video.videoWidth||16,vh=video.videoHeight||9,s=Math.max(W/vw,H/vh);return{vw,vh,s,ox:(W-vw*s)/2,oy:(H-vh*s)/2};}
-/* dibuja al jugador recortado (espejado) con aura; si no hay máscara, la cámara entera atenuada */
+/* dibuja a los jugadores recortados (espejados) con su aura; si no hay máscara, la cámara entera atenuada */
 function drawPlayer(now,dim){
   if(!camOK||video.readyState<2)return false;
   const m=coverMap(),cut=segOK&&now-segAt<1500;
@@ -227,7 +265,7 @@ function drawPlayer(now,dim){
   if(cut){
     ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.75+.2*Math.sin(now/220);
     const g=1.035,cx=m.ox+m.vw*m.s/2,cy=m.oy+m.vh*m.s/2;
-    ctx.drawImage(aCv,cx-(m.vw*m.s*g)/2,cy-(m.vh*m.s*g)/2,m.vw*m.s*g,m.vh*m.s*g);
+    for(let k=0;k<2;k++)if(auraOn[k])ctx.drawImage(aCvs[k],cx-(m.vw*m.s*g)/2,cy-(m.vh*m.s*g)/2,m.vw*m.s*g,m.vh*m.s*g);
     ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
     ctx.drawImage(pCv,m.ox,m.oy,m.vw*m.s,m.vh*m.s);
   }else ctx.drawImage(video,m.ox,m.oy,m.vw*m.s,m.vh*m.s);
@@ -238,21 +276,39 @@ function drawPlayer(now,dim){
 
 /* ---------- articulaciones: 0 nariz, 1/2 hombros, 3/4 codos, 5/6 muñecas, 7/8 caderas, 9/10 rodillas, 11/12 tobillos (I/D) ---------- */
 const KJ=[0,11,12,13,14,15,16,23,24,25,26,27,28];
-let body=null,lastVT=-1;
+let bodies=[null,null],body=null,lastVT=-1;
+function toScreen(lm,m){return KJ.map(i=>{const l=lm[i];return{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)};});}
+function feet(lm,m){return[29,30,31,32].map(i=>{const l=lm[i];return l?{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)}:{x:0,y:0,v:0};});}
+function smooth(prev,out,fo){
+  if(!prev)return{j:out,f:fo,lost:0};
+  prev.lost=0;prev.j=prev.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));
+  prev.f=(prev.f||fo).map((o,i)=>({x:o.x+(fo[i].x-o.x)*.8,y:o.y+(fo[i].y-o.y)*.8,v:fo[i].v}));return prev;
+}
+const hipX=j=>(j[7].x+j[8].x)/2;
 function detect(now){
   if(demo||!landmarker||!camOK||video.readyState<2||video.currentTime===lastVT)return;
   lastVT=video.currentTime;
   let res;try{res=landmarker.detectForVideo(video,now);}catch(e){return;}
+  const m=coverMap(),lms=(res&&res.landmarks)||[];
+  const dets=lms.slice(0,2).map(lm=>({j:toScreen(lm,m),f:feet(lm,m)}));
+  /* asignación a jugador 1 (izquierda) / 2 (derecha), siguiendo a cada uno por dónde estaba */
+  const slotOf=new Array(dets.length).fill(-1);
+  if(players===1){if(dets.length)slotOf[0]=0;}
+  else if(dets.length===2){
+    const x0=hipX(dets[0].j),x1=hipX(dets[1].j);let swap=x0>x1;
+    if(bodies[0]&&bodies[1]){const a=Math.abs(x0-hipX(bodies[0].j))+Math.abs(x1-hipX(bodies[1].j)),b=Math.abs(x1-hipX(bodies[0].j))+Math.abs(x0-hipX(bodies[1].j));swap=b<a;}
+    slotOf[0]=swap?1:0;slotOf[1]=swap?0:1;
+  }else if(dets.length===1){
+    const x=hipX(dets[0].j);let best=-1,bd=W*.3;
+    for(let k=0;k<2;k++)if(bodies[k]&&bodies[k].lost<30){const d=Math.abs(x-hipX(bodies[k].j));if(d<bd){bd=d;best=k;}}
+    slotOf[0]=best>=0?best:(x<W/2?0:1);
+  }
+  maskSlot=slotOf;
   useMask(res);
-  const lm=res&&res.landmarks&&res.landmarks[0];
-  if(!lm){if(body&&++body.lost>20)body=null;return;}
-  const m=coverMap();
-  const out=KJ.map(i=>{const l=lm[i];return{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)};});
-  /* pies: talones (29/30) y puntas (31/32), con menos suavizado para que respondan rápido */
-  const fo=[29,30,31,32].map(i=>{const l=lm[i];return l?{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)}:{x:0,y:0,v:0};});
-  if(!body)body={j:out,f:fo,lost:0};
-  else{body.lost=0;body.j=body.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));
-    body.f=(body.f||fo).map((o,i)=>({x:o.x+(fo[i].x-o.x)*.8,y:o.y+(fo[i].y-o.y)*.8,v:fo[i].v}));}
+  const seen=[false,false];
+  dets.forEach((d,i)=>{const k=slotOf[i];if(k<0)return;bodies[k]=smooth(bodies[k],d.j,d.f);seen[k]=true;});
+  for(let k=0;k<2;k++)if(!seen[k]&&bodies[k]&&++bodies[k].lost>20)bodies[k]=null;
+  body=bodies[0];
 }
 
 /* ---------- efectos: partículas, ondas, textos, destello, temblor ---------- */

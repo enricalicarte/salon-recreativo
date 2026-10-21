@@ -82,39 +82,52 @@ async function initCamera(){
 async function initModel(){
   const {PoseLandmarker,FilesetResolver}=await import(MP_BASE+'/vision_bundle.mjs');
   const fileset=await FilesetResolver.forVisionTasks(MP_BASE+'/wasm');
-  const mk=delegate=>PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:MODEL,delegate},runningMode:'VIDEO',outputSegmentationMasks:true,numPoses:1,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
+  const mk=delegate=>PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:MODEL,delegate},runningMode:'VIDEO',outputSegmentationMasks:true,numPoses:players,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
   try{landmarker=await mk('GPU');}catch(e){console.warn('GPU no disponible, uso CPU',e);landmarker=await mk('CPU');}
 }
+/* número de jugadores (1 o 2): con dos, el detector busca dos personas y cada una se recorta por su lado */
+let players=1;
+function setPlayers(n){players=n;bodies=[null,null];body=null;if(landmarker){try{landmarker.setOptions({numPoses:n});}catch(e){}}}
 
-/* ---------- recorte del jugador y aura de neón ---------- */
-const mCv=mkCanvas(2,2),mCx=mCv.getContext('2d');
-const pCv=mkCanvas(2,2),pCx=pCv.getContext('2d');
-const aCv=mkCanvas(2,2),aCx=aCv.getContext('2d');
-let segOK=false,segAt=0,mImg=null,auraCol='#35f0ff';
+/* ---------- recorte de los jugadores y auras de neón ---------- */
+const mCvs=[mkCanvas(2,2),mkCanvas(2,2)],mCxs=mCvs.map(c=>c.getContext('2d')),mImgs=[null,null];
+const mCv=mkCanvas(2,2),mCx=mCv.getContext('2d');          /* máscara combinada */
+const pCv=mkCanvas(2,2),pCx=pCv.getContext('2d');          /* vídeo recortado */
+const aCvs=[mkCanvas(2,2),mkCanvas(2,2)],aCxs=aCvs.map(c=>c.getContext('2d'));   /* aura por jugador */
+let segOK=false,segAt=0,auraCol='#35f0ff',auraCol2='#ff3d8b',maskSlot=[0,1],auraOn=[false,false];
 function useMask(res){
   const ms=res&&res.segmentationMasks;
   if(!ms||!ms.length)return;
   try{
-    const m=ms[0],w=m.width,h=m.height,f=m.getAsFloat32Array();
-    if(mCv.width!==w||mCv.height!==h){mCv.width=w;mCv.height=h;mImg=mCx.createImageData(w,h);}
-    const u=new Uint32Array(mImg.data.buffer);
-    for(let i=0;i<f.length;i++){const v=f[i];const a=v<.3?0:v>.7?255:((v-.3)*637)|0;u[i]=(a<<24)|0xffffff;}
-    mCx.putImageData(mImg,0,0);
     const vw=video.videoWidth,vh=video.videoHeight;
     if(pCv.width!==vw||pCv.height!==vh){pCv.width=vw;pCv.height=vh;}
+    let w=0,h=0;auraOn=[false,false];
+    ms.forEach((m,i)=>{
+      const slot=maskSlot[i];if(slot==null||slot>1)return;
+      w=m.width;h=m.height;const f=m.getAsFloat32Array(),c=mCvs[slot],x=mCxs[slot];
+      if(c.width!==w||c.height!==h){c.width=w;c.height=h;mImgs[slot]=x.createImageData(w,h);}
+      const u=new Uint32Array(mImgs[slot].data.buffer);
+      for(let k=0;k<f.length;k++){const v=f[k];const a=v<.3?0:v>.7?255:((v-.3)*637)|0;u[k]=(a<<24)|0xffffff;}
+      x.putImageData(mImgs[slot],0,0);auraOn[slot]=true;
+      const ac2=aCvs[slot],ax=aCxs[slot],aw=Math.max(32,w>>2),ah=Math.max(18,h>>2);
+      if(ac2.width!==aw||ac2.height!==ah){ac2.width=aw;ac2.height=ah;}
+      ax.globalCompositeOperation='copy';ax.filter='blur(3px)';ax.drawImage(c,0,0,aw,ah);ax.filter='none';
+      ax.globalCompositeOperation='source-in';ax.fillStyle=slot?auraCol2:auraCol;ax.fillRect(0,0,aw,ah);ax.globalCompositeOperation='source-over';
+    });
+    if(!w)return;
+    if(mCv.width!==w||mCv.height!==h){mCv.width=w;mCv.height=h;}
+    mCx.globalCompositeOperation='copy';let first=true;
+    for(let k=0;k<2;k++){if(!auraOn[k])continue;mCx.globalCompositeOperation=first?'copy':'lighter';mCx.drawImage(mCvs[k],0,0);first=false;}
+    mCx.globalCompositeOperation='source-over';
     pCx.globalCompositeOperation='copy';pCx.drawImage(video,0,0,vw,vh);
     pCx.globalCompositeOperation='destination-in';pCx.filter='blur(1.5px)';pCx.drawImage(mCv,0,0,vw,vh);pCx.filter='none';
     pCx.globalCompositeOperation='source-over';
-    const aw=Math.max(32,w>>2),ah=Math.max(18,h>>2);
-    if(aCv.width!==aw||aCv.height!==ah){aCv.width=aw;aCv.height=ah;}
-    aCx.globalCompositeOperation='copy';aCx.filter='blur(3px)';aCx.drawImage(mCv,0,0,aw,ah);aCx.filter='none';
-    aCx.globalCompositeOperation='source-in';aCx.fillStyle=auraCol;aCx.fillRect(0,0,aw,ah);aCx.globalCompositeOperation='source-over';
     segOK=true;segAt=performance.now();
   }catch(e){}
   finally{for(const m of ms){try{m.close();}catch(e){}}}
 }
 function coverMap(){const vw=video.videoWidth||16,vh=video.videoHeight||9,s=Math.max(W/vw,H/vh);return{vw,vh,s,ox:(W-vw*s)/2,oy:(H-vh*s)/2};}
-/* dibuja al jugador recortado (espejado) con aura; si no hay máscara, la cámara entera atenuada */
+/* dibuja a los jugadores recortados (espejados) con su aura; si no hay máscara, la cámara entera atenuada */
 function drawPlayer(now,dim){
   if(!camOK||video.readyState<2)return false;
   const m=coverMap(),cut=segOK&&now-segAt<1500;
@@ -122,7 +135,7 @@ function drawPlayer(now,dim){
   if(cut){
     ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.75+.2*Math.sin(now/220);
     const g=1.035,cx=m.ox+m.vw*m.s/2,cy=m.oy+m.vh*m.s/2;
-    ctx.drawImage(aCv,cx-(m.vw*m.s*g)/2,cy-(m.vh*m.s*g)/2,m.vw*m.s*g,m.vh*m.s*g);
+    for(let k=0;k<2;k++)if(auraOn[k])ctx.drawImage(aCvs[k],cx-(m.vw*m.s*g)/2,cy-(m.vh*m.s*g)/2,m.vw*m.s*g,m.vh*m.s*g);
     ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
     ctx.drawImage(pCv,m.ox,m.oy,m.vw*m.s,m.vh*m.s);
   }else ctx.drawImage(video,m.ox,m.oy,m.vw*m.s,m.vh*m.s);
@@ -133,21 +146,39 @@ function drawPlayer(now,dim){
 
 /* ---------- articulaciones: 0 nariz, 1/2 hombros, 3/4 codos, 5/6 muñecas, 7/8 caderas, 9/10 rodillas, 11/12 tobillos (I/D) ---------- */
 const KJ=[0,11,12,13,14,15,16,23,24,25,26,27,28];
-let body=null,lastVT=-1;
+let bodies=[null,null],body=null,lastVT=-1;
+function toScreen(lm,m){return KJ.map(i=>{const l=lm[i];return{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)};});}
+function feet(lm,m){return[29,30,31,32].map(i=>{const l=lm[i];return l?{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)}:{x:0,y:0,v:0};});}
+function smooth(prev,out,fo){
+  if(!prev)return{j:out,f:fo,lost:0};
+  prev.lost=0;prev.j=prev.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));
+  prev.f=(prev.f||fo).map((o,i)=>({x:o.x+(fo[i].x-o.x)*.8,y:o.y+(fo[i].y-o.y)*.8,v:fo[i].v}));return prev;
+}
+const hipX=j=>(j[7].x+j[8].x)/2;
 function detect(now){
   if(demo||!landmarker||!camOK||video.readyState<2||video.currentTime===lastVT)return;
   lastVT=video.currentTime;
   let res;try{res=landmarker.detectForVideo(video,now);}catch(e){return;}
+  const m=coverMap(),lms=(res&&res.landmarks)||[];
+  const dets=lms.slice(0,2).map(lm=>({j:toScreen(lm,m),f:feet(lm,m)}));
+  /* asignación a jugador 1 (izquierda) / 2 (derecha), siguiendo a cada uno por dónde estaba */
+  const slotOf=new Array(dets.length).fill(-1);
+  if(players===1){if(dets.length)slotOf[0]=0;}
+  else if(dets.length===2){
+    const x0=hipX(dets[0].j),x1=hipX(dets[1].j);let swap=x0>x1;
+    if(bodies[0]&&bodies[1]){const a=Math.abs(x0-hipX(bodies[0].j))+Math.abs(x1-hipX(bodies[1].j)),b=Math.abs(x1-hipX(bodies[0].j))+Math.abs(x0-hipX(bodies[1].j));swap=b<a;}
+    slotOf[0]=swap?1:0;slotOf[1]=swap?0:1;
+  }else if(dets.length===1){
+    const x=hipX(dets[0].j);let best=-1,bd=W*.3;
+    for(let k=0;k<2;k++)if(bodies[k]&&bodies[k].lost<30){const d=Math.abs(x-hipX(bodies[k].j));if(d<bd){bd=d;best=k;}}
+    slotOf[0]=best>=0?best:(x<W/2?0:1);
+  }
+  maskSlot=slotOf;
   useMask(res);
-  const lm=res&&res.landmarks&&res.landmarks[0];
-  if(!lm){if(body&&++body.lost>20)body=null;return;}
-  const m=coverMap();
-  const out=KJ.map(i=>{const l=lm[i];return{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)};});
-  /* pies: talones (29/30) y puntas (31/32), con menos suavizado para que respondan rápido */
-  const fo=[29,30,31,32].map(i=>{const l=lm[i];return l?{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)}:{x:0,y:0,v:0};});
-  if(!body)body={j:out,f:fo,lost:0};
-  else{body.lost=0;body.j=body.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));
-    body.f=(body.f||fo).map((o,i)=>({x:o.x+(fo[i].x-o.x)*.8,y:o.y+(fo[i].y-o.y)*.8,v:fo[i].v}));}
+  const seen=[false,false];
+  dets.forEach((d,i)=>{const k=slotOf[i];if(k<0)return;bodies[k]=smooth(bodies[k],d.j,d.f);seen[k]=true;});
+  for(let k=0;k<2;k++)if(!seen[k]&&bodies[k]&&++bodies[k].lost>20)bodies[k]=null;
+  body=bodies[0];
 }
 
 /* ---------- efectos: partículas, ondas, textos, destello, temblor ---------- */

@@ -64,16 +64,22 @@ function scoreBody(j,w){
   }
   return got/tot;
 }
-/* cuerpo virtual para el modo demo (sin cámara) */
-function demoJoints(now){
-  const c=cal||{cx:W/2,cy:H*.52,S:H*.62};
-  let tg=null,b=0;
-  if(wall&&wall.state==='in'){tg=wall.pose.j;const u=clamp((wall.t-.3)/.5,0,1);b=u*u*(3-2*u);}
-  const bad=wall&&wall.idx%5===4;
+/* cuerpo virtual para el modo demo: parte de la postura neutra y va hacia la pose objetivo (blend 0..1) */
+function demoBodyAt(now,c,target,blend,bad,seed){
+  seed=seed||0;
   return NEUTRAL.map((nj,i)=>{
     let x=nj[0],y=nj[1];
-    if(tg){x+=(tg[i][0]-x)*b;y+=(tg[i][1]-y)*b;if(bad&&STRICT.includes(i)){x+=.25*b*(i%2?1:-1);y-=.1*b;}}
-    x+=Math.sin(now/310+i*1.7)*.012;y+=Math.cos(now/270+i*2.3)*.012;
+    if(target){x+=(target[i][0]-x)*blend;y+=(target[i][1]-y)*blend;if(bad&&STRICT.includes(i)){x+=.25*blend*(i%2?1:-1);y-=.1*blend;}}
+    x+=Math.sin(now/310+i*1.7+seed)*.012;y+=Math.cos(now/270+i*2.3+seed)*.012;
     return{x:c.cx+x*c.S,y:c.cy+y*c.S,v:1};
   });
 }
+/* poses en pareja: [cuerpo izquierdo, cuerpo derecho] y separación entre caderas (en unidades S) */
+const PAIRS=[
+  {n:'¡CORAZÓN!',c:['#7a1f4a','#ff3d8b'],gap:1.1,j:[mk({3:[-.06,-.82],5:[.42,-1.0],4:[.3,-.15],6:[.5,.1]}),mk({4:[.06,-.82],6:[-.42,-1.0],3:[-.3,-.15],5:[-.5,.1]})]},
+  {n:'PUENTE',c:['#0b5a7a','#1fc8e8'],gap:1.1,j:[mk({4:[.3,-.75],6:[.55,-1.0],3:[-.2,-.2],5:[-.25,.02]}),mk({3:[-.3,-.75],5:[-.55,-1.0],4:[.2,-.2],6:[.25,.02]})]},
+  {n:'¡CHOCA ESOS CINCO!',c:['#1f6a3a','#3ddc84'],gap:1.15,j:[mk({4:[.32,-.42],6:[.57,-.44],3:[-.2,-.3],5:[-.12,-.12]}),mk({3:[-.32,-.42],5:[-.57,-.44],4:[.2,-.3],6:[.12,-.12]})]},
+  {n:'ESTRELLA DOBLE',c:['#3b1fa8','#8a2cff'],gap:1.35,j:[POSES[0].j,POSES[0].j]},
+  {n:'LA Y A DÚO',c:['#7a4a0b','#ffb300'],gap:1.0,j:[POSES[3].j,POSES[3].j]},
+  {n:'TECHITO',c:['#4a1f7a','#b05cff'],gap:1.0,j:[mk({4:[.3,-.7],6:[.5,-.95],3:[-.3,-.7],5:[-.5,-.95]}),mk({4:[.3,-.7],6:[.5,-.95],3:[-.3,-.7],5:[-.5,-.95]})]}
+];

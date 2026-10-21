@@ -605,10 +605,10 @@
    "cat": "camara",
    "name": "Lluvia Loca",
    "note": "Coge la fruta con las manos",
-   "blurb": "Juego con la cámara del móvil o del ordenador: ponte delante y atrapa con las manos la fruta y las monedas que caen del cielo, sin tocar las bombas. Partidas de un minuto con combos, corazones y relojes de cámara lenta. Sin cámara se juega con el dedo o el ratón.",
+   "blurb": "Juego con la cámara, para 1 o 2 jugadores: atrapa con las manos la fruta y las monedas que caen del cielo, sin tocar las bombas, en partidas de un minuto con combos y frenesí. A dos, elige duelo a pantalla partida, equipo con sandías gigantes que hay que coger entre los dos, o ataque, donde cada uno coge su color y puede mandarle tormentas de bombas al otro.",
    "tags": [
     "Cámara",
-    "Muévete",
+    "1-2 jugadores",
     "1 minuto"
    ],
    "play": "juegos/lluvia-loca/index.html"
@@ -620,11 +620,11 @@
    "cat": "camara",
    "name": "Muro Loco",
    "note": "Pon el cuerpo en la forma del hueco",
-   "blurb": "Juego de poses con cámara: se acerca un muro con un hueco con forma de cuerpo y tienes que colocarte igual para atravesarlo. Estrella, avión, flamenco, sentadilla y más, cada vez más rápido. La cámara detecta tu postura en el propio dispositivo y la imagen no sale de él.",
+   "blurb": "Juego de poses con cámara, para 1 o 2 jugadores: se acerca un muro con un hueco con forma de cuerpo y tienes que colocarte igual para atravesarlo, cada vez más rápido. A dos, muro doble con un hueco para cada uno, poses en pareja como el corazón o el puente, o «tú pones el muro»: uno hace una pose, foto, y el otro la copia.",
    "tags": [
     "Cámara",
     "Poses",
-    "Para toda la familia"
+    "1-2 jugadores"
    ],
    "play": "juegos/muro-loco/index.html"
   },

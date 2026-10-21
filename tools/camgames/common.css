@@ -32,9 +32,9 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
 #toast.bad{color:#ff5c6c;text-shadow:0 0 24px rgba(255,60,90,.8),0 4px 0 rgba(20,8,50,.6)}
 #toast.rainbow{background:linear-gradient(90deg,#ff3d8b,#ffd93d,#5dff9a,#35f0ff,#b05cff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 rgba(20,8,50,.6)) drop-shadow(0 0 20px rgba(255,255,255,.5))}
 /* menú y resultados */
-.panel{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(20,8,60,.35),rgba(5,3,20,.78));z-index:10;padding:20px;transition:opacity .35s}
+.panel{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow-y:auto;background:radial-gradient(ellipse at center,rgba(20,8,60,.35),rgba(5,3,20,.78));z-index:10;padding:20px;transition:opacity .35s}
 .panel.hide{opacity:0;pointer-events:none}
-.card{max-width:520px;width:100%;text-align:center;padding:26px 24px 22px;border-radius:28px}
+.card{max-width:520px;width:100%;text-align:center;padding:26px 24px 22px;border-radius:28px;margin:auto}
 .logo{margin:0 0 4px;font-family:"Lilita One",system-ui,sans-serif;font-weight:400;white-space:nowrap;font-size:clamp(46px,12.5vw,92px);line-height:.9;letter-spacing:1px;transform:rotate(-3deg)}
 .logo span{display:block;background:linear-gradient(180deg,#fff 0%,#ffe6f3 40%,#ff3d8b 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 0 #3a0a3a) drop-shadow(0 0 26px rgba(255,61,139,.7))}
 .logo span+span{background:linear-gradient(180deg,#fff 0%,#c9fbff 40%,#18c8e8 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 6px 0 #082a4a) drop-shadow(0 0 26px rgba(53,240,255,.7));margin-left:.4em}
@@ -57,3 +57,28 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
 .panel small.note{display:block;margin-top:12px;color:#a9acd9;font-size:12px;line-height:1.4}
 @media (max-height:640px){.card{padding:16px 20px 14px}.logo{font-size:clamp(44px,11vh,80px)}.tag{margin-top:6px}.how{margin:8px 0 0}.how span{padding:4px 8px;font-size:12px}#msg{margin:4px 0 8px}.btn{padding:11px 16px;margin:6px 0}.panel small.note{margin-top:6px}.stats{margin:8px 0 10px;gap:6px}.stats div{padding:6px}}
 [hidden]{display:none!important}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px}
+.modes button{pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:16px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#fff;cursor:pointer;font:inherit;transition:transform .1s,border-color .2s,background .2s}
+.modes button b{font-family:"Lilita One",system-ui,sans-serif;font-weight:400;font-size:clamp(18px,4.4vw,22px);letter-spacing:.5px}
+.modes button span{font-size:12px;font-weight:800;color:#cfd2ff}
+.modes button i{font-style:normal;font-size:24px;line-height:1}
+.modes button.on{border-color:#ffd93d;background:linear-gradient(180deg,rgba(255,217,61,.25),rgba(255,149,0,.12));box-shadow:0 0 20px rgba(255,200,0,.35);transform:translateY(-2px)}
+.modes.np{grid-template-columns:1fr 1fr}
+.modes.np button b{font-size:clamp(16px,4vw,20px)}
+.modes.three{grid-template-columns:repeat(3,1fr)}
+.modes.three button span{font-size:11px}
+.sc.p1 #score,.sc.p1 .s2{text-shadow:0 0 18px rgba(53,240,255,.8),0 3px 0 rgba(20,8,50,.6)}
+.sc.p2{justify-self:end;text-align:right}.sc.p2 .s2{text-shadow:0 0 18px rgba(255,61,139,.8),0 3px 0 rgba(20,8,50,.6);color:#ffd6e8}
+.sc .s2{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(28px,6vw,46px);line-height:1}
+.sc .pc{font-family:"Lilita One",system-ui,sans-serif;font-size:12px;letter-spacing:1px;color:#5dff9a;min-height:14px;margin-top:2px}
+.sc .pc.fever{color:#ffd93d}
+.sc.out{opacity:.45;filter:grayscale(1)}
+.r.col{flex-direction:column;align-items:flex-end}
+.r.col .btns{display:flex;gap:8px}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:12px 0 6px}
+.vs div{padding:12px 8px;border-radius:18px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14)}
+.vs div.win{border-color:#ffd93d;background:linear-gradient(180deg,rgba(255,217,61,.25),rgba(255,149,0,.1));box-shadow:0 0 24px rgba(255,200,0,.4)}
+.vs b{display:block;font-family:"Lilita One",system-ui,sans-serif;font-weight:400;font-size:clamp(34px,9vw,56px);line-height:1}
+.vs small{font-size:11px;font-weight:900;letter-spacing:1.5px;color:#cfd2ff}
+.vs .x{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(18px,5vw,26px);color:#ffd93d}
+.vs .c1 b{color:#35f0ff}.vs .c2 b{color:#ff3d8b}
