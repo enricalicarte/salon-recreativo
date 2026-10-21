@@ -527,13 +527,13 @@ function drawScene(now){
 }
 
 /* ---------- portería del fondo (modo chutes) ---------- */
-function goalBox(){const w=W*.34,h=H*.15,x=W/2-w/2,y=hz-h+H*.01;return{x,y,w,h};}
+function goalBox(){const w=Math.min(W*(W<H?.92:.66),H*1.5),h=Math.min(H*.32,w*.42),x=W/2-w/2,y=hz-h+H*.02;return{x,y,w,h};}
 function drawGoal(now){
   const g=goalBox();
   ctx.save();ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;
-  for(let x=g.x;x<=g.x+g.w;x+=10){ctx.beginPath();ctx.moveTo(x,g.y);ctx.lineTo(x,g.y+g.h);ctx.stroke();}
-  for(let y=g.y;y<=g.y+g.h;y+=10){ctx.beginPath();ctx.moveTo(g.x,y);ctx.lineTo(g.x+g.w,y);ctx.stroke();}
-  ctx.strokeStyle='#fff';ctx.lineWidth=6;ctx.lineCap='square';ctx.beginPath();ctx.moveTo(g.x,g.y+g.h);ctx.lineTo(g.x,g.y);ctx.lineTo(g.x+g.w,g.y);ctx.lineTo(g.x+g.w,g.y+g.h);ctx.stroke();
+  for(let x=g.x;x<=g.x+g.w;x+=Math.max(10,g.w/40)){ctx.beginPath();ctx.moveTo(x,g.y);ctx.lineTo(x,g.y+g.h);ctx.stroke();}
+  for(let y=g.y;y<=g.y+g.h;y+=Math.max(10,g.w/40)){ctx.beginPath();ctx.moveTo(g.x,y);ctx.lineTo(g.x+g.w,y);ctx.stroke();}
+  ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(6,g.w*.014);ctx.lineCap='square';ctx.beginPath();ctx.moveTo(g.x,g.y+g.h);ctx.lineTo(g.x,g.y);ctx.lineTo(g.x+g.w,g.y);ctx.lineTo(g.x+g.w,g.y+g.h);ctx.stroke();
   /* escuadras */
   for(const sx of[g.x+g.w*.12,g.x+g.w*.88]){const r=g.h*.28,a=.6+.4*Math.sin(now/200);ctx.strokeStyle='rgba(255,217,61,'+a+')';ctx.lineWidth=3;ctx.setLineDash([6,5]);ctx.beginPath();ctx.arc(sx,g.y+g.h*.28,r,0,7);ctx.stroke();ctx.setLineDash([]);}
   /* portero rival */
