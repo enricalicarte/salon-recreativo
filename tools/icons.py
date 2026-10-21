@@ -1151,6 +1151,52 @@ def _(I):
               f'<text x="{x}" y="{y+13}" text-anchor="middle" font-size="38" {FONT} fill="{"#fff" if on else INK}">{ch}</text>')
     sparkle(I, 440, 120, 18, '#fff'); sparkle(I, 70, 150, 14, '#ffd23f')
 
+@icon('lluvia-loca')
+def _(I):
+    bg(I, '#6a4bff', '#1b0f4a', '#35f0ff', .10)
+    # niño con los brazos arriba
+    I.add(f'<path d="M196 522 Q196 330 256 318 Q316 330 316 522Z" {st("#ff3d8b")}/>')
+    arms = 'M214 372 Q196 300 166 250 M298 372 Q316 300 346 250'
+    I.add(f'<path d="{arms}" stroke="{INK}" stroke-width="40" fill="none" stroke-linecap="round"/><path d="{arms}" stroke="#ffd2a8" stroke-width="26" fill="none" stroke-linecap="round"/>')
+    I.add(f'<circle cx="256" cy="282" r="58" {st("#ffd2a8")}/><path d="M200 270 Q206 214 256 216 Q308 214 312 268 Q290 244 256 246 Q222 244 200 270Z" fill="#5a3214" stroke="{INK}" stroke-width="6"/>')
+    eyes(I, 256, 290, .9, 22); smile(I, 256, 312, .8, True)
+    # manos de neón
+    for x in (160, 352):
+        I.add(f'<circle cx="{x}" cy="236" r="58" fill="#35f0ff" opacity=".22"/><circle cx="{x}" cy="236" r="58" fill="none" stroke="#35f0ff" stroke-width="9"/>')
+    # manzana atrapada
+    I.add(f'<path d="M160 214 Q136 196 124 222 Q114 262 160 270 Q206 262 196 222 Q184 196 160 214Z" {st("#ff3b3b", 7)}/><path d="M160 214 Q162 196 172 186" stroke="{INK}" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M168 196 Q186 180 196 194 Q180 204 168 196Z" fill="#4fc35a" stroke="{INK}" stroke-width="4"/>')
+    shine(I, 142, 226, 9, 6, -30, .6)
+    # moneda en la otra mano
+    I.add(f'<circle cx="352" cy="236" r="34" {st("#ffd23f", 7)}/><circle cx="352" cy="236" r="22" fill="none" stroke="#c98a00" stroke-width="5"/><path d="{star5(352, 236, 13)}" fill="#c98a00"/>')
+    # lo que sigue cayendo
+    I.add(f'<path d="M84 70 Q120 120 170 104 Q130 128 92 96 Z" {st("#ffe14d", 6)}/>')
+    I.add(f'<path d="M262 56 Q228 56 232 84 Q240 112 262 122 Q284 112 292 84 Q296 56 262 56Z" {st("#ff3d5a", 6)}/><circle cx="252" cy="80" r="3" fill="#ffe14d"/><circle cx="272" cy="78" r="3" fill="#ffe14d"/><circle cx="262" cy="98" r="3" fill="#ffe14d"/><path d="M248 58 L262 44 L276 58" stroke="#4fc35a" stroke-width="8" fill="none" stroke-linecap="round"/>')
+    I.add(f'<circle cx="420" cy="118" r="40" {st("#2b2440")}/><rect x="410" y="66" width="20" height="16" rx="4" fill="#6b6f80" stroke="{INK}" stroke-width="5"/><path d="M420 66 Q424 46 440 40" stroke="{INK}" stroke-width="5" fill="none"/>')
+    sparkle(I, 444, 36, 14, '#ffb300'); shine(I, 406, 104, 10, 6, -30, .5)
+    I.add(f'<circle cx="60" cy="300" r="22" {st("#ffd23f", 6)}/>')
+    sparkle(I, 470, 300, 14); sparkle(I, 330, 70, 10, '#35f0ff')
+
+@icon('muro-loco')
+def _(I):
+    bg(I, '#2a1f7a', '#0b0730', '#ff3d8b', .08)
+    # muro de ladrillos
+    I.add(f'<rect x="34" y="40" width="444" height="432" rx="24" fill="{I.lg("#8a2cff", "#ff3d8b")}" stroke="{INK}" stroke-width="10"/>')
+    rows = ''.join(f'<path d="M40 {y} H472" stroke="#fff" stroke-opacity=".18" stroke-width="4"/>' for y in range(94, 472, 54))
+    cols = ''.join(f'<path d="M{x + (27 if r % 2 else 0)} {40 + r*54} v54" stroke="#fff" stroke-opacity=".18" stroke-width="4"/>' for r in range(8) for x in range(94, 470, 74))
+    I.add(rows + cols)
+    # hueco con forma de estrella humana
+    seg = [(256, 140, 256, 140), (256, 186, 256, 300), (256, 200, 152, 120), (256, 200, 360, 120), (256, 300, 176, 420), (256, 300, 336, 420)]
+    def path(w, c, o=1):
+        return ''.join(f'<path d="M{a} {b} L{c2} {d}" stroke="{c}" stroke-width="{w}" stroke-linecap="round" opacity="{o}"/>' for a, b, c2, d in seg)
+    I.add(path(92, '#35f0ff', .35) + path(76, '#35f0ff') + path(62, '#0e0a2e'))
+    I.add('<circle cx="256" cy="140" r="44" fill="#35f0ff"/><circle cx="256" cy="140" r="37" fill="#0e0a2e"/>')
+    # jugador en el hueco
+    I.add(path(16, '#5dff9a'))
+    I.add('<circle cx="256" cy="140" r="22" fill="none" stroke="#5dff9a" stroke-width="10"/>')
+    for x, y in ((152, 120), (360, 120), (176, 420), (336, 420)):
+        I.add(f'<circle cx="{x}" cy="{y}" r="11" fill="#fff"/>')
+    sparkle(I, 430, 450, 18, '#ffd23f'); sparkle(I, 76, 300, 14); sparkle(I, 452, 220, 10, '#35f0ff')
+
 @icon('bloques-neon')
 def _(I):
     bg(I, '#3a2fa8', '#14205e', '#ff6ad0', .10)

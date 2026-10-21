@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Muro Loco</title>
+<style>
+:root{--neon:#35f0ff;--pink:#ff3d8b;--yellow:#ffd93d;--green:#5dff9a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;background:#05050f;overflow:hidden;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+#stage{position:fixed;left:0;top:0;width:100vw;height:100dvh;display:block}
+#cam{position:fixed;right:0;bottom:0;width:2px;height:2px;opacity:.01;pointer-events:none}
+.hud{position:fixed;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;padding:max(12px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left));pointer-events:none;z-index:5}
+.hud .l,.hud .r{min-width:90px}.hud .r{display:flex;gap:8px;justify-content:flex-end}
+#score{font-size:clamp(26px,6vw,44px);font-weight:900;line-height:1;text-shadow:0 0 14px var(--neon)}
+#lives{font-size:clamp(20px,4.5vw,30px);color:var(--pink);letter-spacing:2px;text-shadow:0 0 10px var(--pink)}
+.hud .c{text-align:center;flex:1}
+#pose{font-size:clamp(20px,5.5vw,42px);font-weight:900;letter-spacing:1px;color:var(--yellow);text-shadow:0 0 16px #ff9d00,0 3px 0 #0008}
+#combo{font-size:clamp(14px,3.4vw,22px);font-weight:800;color:var(--green);min-height:1.2em}
+.ib{pointer-events:auto;width:44px;height:44px;border-radius:12px;border:2px solid #fff4;background:#0008;color:#fff;font-size:20px;cursor:pointer}
+#big{position:fixed;left:0;right:0;top:42%;text-align:center;font-weight:900;font-size:clamp(28px,8vw,72px);text-shadow:0 0 22px var(--neon),0 4px 0 #0009;pointer-events:none;z-index:6;transform:translateY(-50%)}
+#toast{position:fixed;left:0;right:0;bottom:14%;text-align:center;font-weight:900;font-size:clamp(26px,7vw,60px);pointer-events:none;z-index:6;opacity:0;transition:opacity .25s,transform .25s;text-shadow:0 4px 0 #0009}
+#toast.on{opacity:1;transform:scale(1.08)}
+.panel{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#1b0f4acc,#05050fee);z-index:10;padding:20px}
+.panel.hide{display:none}
+.card{max-width:520px;width:100%;text-align:center}
+h1{margin:0 0 6px;font-size:clamp(44px,13vw,92px);font-weight:900;line-height:.95;letter-spacing:-1px;text-shadow:0 0 30px var(--pink)}
+h1 span{color:var(--neon);text-shadow:0 0 30px var(--neon)}
+#msg{font-size:clamp(16px,3.8vw,20px);margin:10px 0 18px;color:#dfe3ff;min-height:2.6em}
+.btn{display:block;width:100%;padding:16px 20px;margin:8px 0;border:0;border-radius:16px;font-size:clamp(20px,5vw,26px);font-weight:900;color:#10102a;background:linear-gradient(180deg,#ffe66b,#ffb300);box-shadow:0 6px 0 #a56a00,0 0 30px #ffb30088;cursor:pointer}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #a56a00}
+.btn:disabled{filter:grayscale(.8);opacity:.6;cursor:wait}
+.btn.ghost{background:#fff1;color:#fff;box-shadow:none;border:2px solid #fff4;font-size:18px;padding:12px}
+small{display:block;margin-top:14px;color:#9aa0d0;font-size:13px;line-height:1.4}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<video id="cam" playsinline muted autoplay></video>
+
+<div class="hud">
+  <div class="l"><div id="score">0</div><div id="lives"></div></div>
+  <div class="c"><div id="pose"></div><div id="combo"></div></div>
+  <div class="r"><button class="ib" id="recal" title="Recalibrar">&#8635;</button><button class="ib" id="fs" title="Pantalla completa">&#9974;</button></div>
+</div>
+<div id="big"></div>
+<div id="toast"></div>
+
+<div id="panel" class="panel">
+  <div class="card">
+    <h1>MURO<br><span>LOCO</span></h1>
+    <p id="msg">Cargando detector de poses…</p>
+    <button class="btn" id="btn" disabled>Cargando…</button>
+    <button class="btn ghost" id="btnDemo" hidden>Probar sin cámara (demo)</button>
+    <small>Ponte de pie a 2 metros de la pantalla, de frente, y que se te vea entero.<br>El vídeo se procesa en tu dispositivo y no se envía a ningún sitio.</small>
+  </div>
+</div>
+<script type="module">
+/* ===== Muro Loco · base: lienzo, audio, cámara y MediaPipe ===== */
+const $=s=>document.querySelector(s);
+const cv=$('#stage'),ctx=cv.getContext('2d'),video=$('#cam');
+let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(window.devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);}
+addEventListener('resize',resize);resize();
+
+/* --- audio --- */
+let ac=null;
+function audio(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();}
+function beep(f,d=.12,type='sine',vol=.15,slide=0){if(!ac)return;const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide),t+d);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d);}
+const sfx={
+  ok(){beep(660,.1,'triangle');setTimeout(()=>beep(990,.14,'triangle'),90);},
+  perfect(){[660,880,1320].forEach((f,i)=>setTimeout(()=>beep(f,.15,'triangle',.18),i*80));},
+  bad(){beep(180,.4,'sawtooth',.2,-100);},
+  tick(){beep(1200,.03,'square',.05);},
+  calib(){beep(520,.08,'triangle');setTimeout(()=>beep(780,.12,'triangle'),80);}
+};
+
+/* --- cámara y modelo --- */
+const MP_BASE='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+const MODEL='https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+let landmarker=null,camOK=false,demo=new URLSearchParams(location.search).has('demo');
+async function initCamera(){
+  const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}},audio:false});
+  video.srcObject=stream;video.muted=true;video.playsInline=true;
+  await video.play();
+  if(!video.videoWidth)await new Promise(r=>{video.onloadedmetadata=r;});
+  camOK=true;
+}
+async function initModel(){
+  const {PoseLandmarker,FilesetResolver}=await import(MP_BASE+'/vision_bundle.mjs');
+  const fileset=await FilesetResolver.forVisionTasks(MP_BASE+'/wasm');
+  const mk=delegate=>PoseLandmarker.createFromOptions(fileset,{baseOptions:{modelAssetPath:MODEL,delegate},runningMode:'VIDEO',numPoses:1,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
+  try{landmarker=await mk('GPU');}catch(e){console.warn('GPU no disponible, uso CPU',e);landmarker=await mk('CPU');}
+}
+
+/* --- articulaciones: 0 nariz, 1/2 hombros, 3/4 codos, 5/6 muñecas, 7/8 caderas, 9/10 rodillas, 11/12 tobillos (I/D) --- */
+const KJ=[0,11,12,13,14,15,16,23,24,25,26,27,28];
+let body=null,lastVT=-1;
+function coverMap(){const vw=video.videoWidth||16,vh=video.videoHeight||9,s=Math.max(W/vw,H/vh);return{vw,vh,s,ox:(W-vw*s)/2,oy:(H-vh*s)/2};}
+function detect(now){
+  if(demo||!landmarker||!camOK||video.readyState<2||video.currentTime===lastVT)return;
+  lastVT=video.currentTime;
+  let res;try{res=landmarker.detectForVideo(video,now);}catch(e){return;}
+  const lm=res&&res.landmarks&&res.landmarks[0];
+  if(!lm){if(body&&++body.lost>20)body=null;return;}
+  const m=coverMap();
+  const out=KJ.map(i=>{const l=lm[i];return{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)};});
+  if(!body)body={j:out,lost:0};
+  else{body.lost=0;body.j=body.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));}
+}
+
+/* ===== Poses, formas del hueco y puntuación ===== */
+/* Coordenadas en unidades S (altura nariz→tobillo), origen en el centro de las caderas, y hacia abajo */
+const NEUTRAL=[[0,-.55],[-.13,-.40],[.13,-.40],[-.16,-.17],[.16,-.17],[-.17,.04],[.17,.04],[-.07,0],[.07,0],[-.08,.22],[.08,.22],[-.09,.45],[.09,.45]];
+const mk=o=>{const p=NEUTRAL.map(a=>a.slice());for(const k in o)p[k]=o[k];return p;};
+const POSES=[
+  {n:'¡ESTRELLA!',t:1,c:['#3b1fa8','#8a2cff'],j:mk({3:[-.33,-.50],4:[.33,-.50],5:[-.55,-.64],6:[.55,-.64],9:[-.17,.22],10:[.17,.22],11:[-.30,.45],12:[.30,.45]})},
+  {n:'AVIÓN',t:1,c:['#0b5a7a','#1fc8e8'],j:mk({3:[-.34,-.40],4:[.34,-.40],5:[-.60,-.40],6:[.60,-.40]})},
+  {n:'MANOS ARRIBA',t:1,c:['#7a1f4a','#ff3d8b'],j:mk({3:[-.17,-.62],4:[.17,-.62],5:[-.17,-.88],6:[.17,-.88]})},
+  {n:'LA Y',t:1,c:['#1f6a3a','#3ddc84'],j:mk({3:[-.25,-.55],4:[.25,-.55],5:[-.40,-.78],6:[.40,-.78]})},
+  {n:'MANOS A LA CABEZA',t:2,c:['#7a4a0b','#ffb300'],j:mk({3:[-.24,-.52],4:[.24,-.52],5:[-.07,-.63],6:[.07,-.63]})},
+  {n:'GALLINA',t:2,c:['#4a1f7a','#b05cff'],j:mk({3:[-.36,-.28],4:[.36,-.28],5:[-.21,-.42],6:[.21,-.42]})},
+  {n:'BRAZO IZQ. ARRIBA',t:2,c:['#0b3a7a','#3d8bff'],j:mk({3:[-.17,-.62],5:[-.17,-.88]})},
+  {n:'BRAZO DER. ARRIBA',t:2,c:['#7a0b2a','#ff5c6c'],j:mk({4:[.17,-.62],6:[.17,-.88]})},
+  {n:'GUERRERO',t:2,c:['#5a2a0b','#ff7a1f'],j:mk({3:[-.22,-.56],4:[.22,-.56],5:[-.30,-.80],6:[.30,-.80],9:[-.20,.22],10:[.20,.22],11:[-.34,.45],12:[.34,.45]})},
+  {n:'FLAMENCO',t:3,c:['#0b6a6a','#1fe8c8'],j:mk({3:[-.34,-.40],4:[.34,-.40],5:[-.60,-.40],6:[.60,-.40],9:[-.09,.04],11:[-.09,.21]})},
+  {n:'SENTADILLA',t:3,c:['#3a3a0b','#d4e81f'],j:mk({0:[0,-.34],1:[-.13,-.20],2:[.13,-.20],3:[-.25,-.02],4:[.25,-.02],5:[-.13,-.14],6:[.13,-.14],7:[-.08,.20],8:[.08,.20],9:[-.27,.33],10:[.27,.33],11:[-.23,.45],12:[.23,.45]})},
+  {n:'DIAGONAL',t:3,c:['#6a0b5a','#e81fc8'],j:mk({3:[-.17,-.62],5:[-.17,-.88],4:[.34,-.36],6:[.60,-.30],10:[.17,.22],12:[.30,.45]})}
+];
+/* segmentos del hueco: [articulación A, articulación B, radio] */
+const SEG=[[1,2,.09],[7,8,.09],[1,3,.085],[3,5,.085],[2,4,.085],[4,6,.085],[7,9,.09],[9,11,.09],[8,10,.09],[10,12,.09]];
+const WT=[1.5,1,1,1,1,1.5,1.5,1,1,1,1,1.5,1.5];       /* peso por articulación */
+const STRICT=[3,4,5,6,9,10,11,12];                       /* además de caber, deben acercarse a su sitio */
+const PASS=.88,PERFECT=.97;                              /* umbrales de acierto */
+const mid=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+function shapes(pts,S){
+  const sm=mid(pts[1],pts[2]),hm=mid(pts[7],pts[8]);
+  const L=[[sm,hm,.17],[pts[0],sm,.075],[pts[0],pts[0],.115]];
+  for(const[a,b,r]of SEG)L.push([pts[a],pts[b],r]);
+  return L.map(([a,b,r])=>[a.x,a.y,b.x,b.y,r*S]);
+}
+function dSeg(px,py,x1,y1,x2,y2){const dx=x2-x1,dy=y2-y1,l=dx*dx+dy*dy;let t=l?((px-x1)*dx+(py-y1)*dy)/l:0;t=Math.max(0,Math.min(1,t));return Math.hypot(px-(x1+t*dx),py-(y1+t*dy));}
+function inShape(px,py,sh,m){for(const s of sh)if(dSeg(px,py,s[0],s[1],s[2],s[3])<=s[4]+m)return true;return false;}
+function strokeCap(g,s,w){g.lineWidth=w;g.beginPath();if(s[0]===s[2]&&s[1]===s[3])g.arc(s[0],s[1],w/2,0,7);else{g.moveTo(s[0],s[1]);g.lineTo(s[2],s[3]);}g.stroke();}
+
+/* puntuación 0..1 del cuerpo j frente al muro w; rellena w.ok con el acierto por articulación */
+function scoreBody(j,w){
+  const S=w.S;let got=0,tot=0;w.ok=[];
+  for(let i=0;i<13;i++){
+    const p=j[i],t=w.pts[i];
+    let ok=p.v>.3&&inShape(p.x,p.y,w.sh,.03*S);
+    if(ok&&STRICT.includes(i))ok=Math.hypot(p.x-t.x,p.y-t.y)<=.25*S;
+    w.ok[i]=ok;tot+=WT[i];if(ok)got+=WT[i];
+  }
+  return got/tot;
+}
+
+/* construye un muro: textura con el hueco recortado y brillo neón */
+function makeWall(pose,a,D){
+  const pts=pose.j.map(([x,y])=>({x:a.cx+x*a.S,y:a.cy+y*a.S}));
+  const sh=shapes(pts,a.S);
+  const wc=document.createElement('canvas');wc.width=Math.round(W);wc.height=Math.round(H);
+  const g=wc.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,pose.c[0]);gr.addColorStop(1,pose.c[1]);
+  g.fillStyle=gr;g.fillRect(0,0,W,H);
+  g.strokeStyle='rgba(255,255,255,.13)';g.lineWidth=2;
+  const bh=H/9,bw=W/6;
+  for(let r=0;r<10;r++){const y=r*bh;g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke();for(let c=0;c<8;c++){const x=(c+(r%2?.5:0))*bw;g.beginPath();g.moveTo(x,y);g.lineTo(x,y+bh);g.stroke();}}
+  g.strokeStyle='#fff';g.lineWidth=10;g.strokeRect(5,5,W-10,H-10);
+  g.lineCap='round';g.lineJoin='round';
+  g.strokeStyle='#35f0ff';g.shadowColor='#35f0ff';g.shadowBlur=26;
+  for(const s of sh)strokeCap(g,s,s[4]*2+16);
+  g.shadowBlur=0;g.globalCompositeOperation='destination-out';g.strokeStyle='#000';
+  for(const s of sh)strokeCap(g,s,s[4]*2);
+  return{pose,pts,sh,img:wc,S:a.S,D,t:0,start:0,max:0,ok:[],state:'in',rt:0};
+}
+
+/* ===== Estado, demo y dibujo ===== */
+let state='loading',cal=null,wall=null,nextAt=0,score=0,lives=3,combo=0,n=0,lastPose=-1,shake=0,flashC='255,40,70',flashT=0,calibHold=0,lastNow=0,resume=false,bigUntil=0,toastTO=0;
+let best=0;try{best=+localStorage.getItem('muroloco-best')||0;}catch(e){}
+const el={score:$('#score'),lives:$('#lives'),pose:$('#pose'),combo:$('#combo'),big:$('#big'),toast:$('#toast'),panel:$('#panel'),msg:$('#msg'),btn:$('#btn'),btnDemo:$('#btnDemo')};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function hud(){el.score.textContent=score;el.lives.textContent='♥'.repeat(Math.max(0,lives))+'♡'.repeat(Math.max(0,3-lives));el.combo.textContent=combo>1?'COMBO x'+combo:'';}
+function toast(t,c){el.toast.textContent=t;el.toast.style.color=c;el.toast.classList.add('on');clearTimeout(toastTO);toastTO=setTimeout(()=>el.toast.classList.remove('on'),1000);}
+function setBig(t,ms,now){el.big.textContent=t;bigUntil=ms?now+ms:0;}
+
+/* cuerpo virtual para el modo demo (sin cámara) */
+function demoJoints(now){
+  const c=cal||{cx:W/2,cy:H*.52,S:H*.62};
+  let tg=null,b=0;
+  if(wall&&wall.state==='in'){tg=wall.pose.j;const u=clamp((wall.t-.3)/.5,0,1);b=u*u*(3-2*u);}
+  const bad=wall&&wall.idx%5===4;
+  return NEUTRAL.map((nj,i)=>{
+    let x=nj[0],y=nj[1];
+    if(tg){x+=(tg[i][0]-x)*b;y+=(tg[i][1]-y)*b;if(bad&&STRICT.includes(i)){x+=.25*b*(i%2?1:-1);y-=.1*b;}}
+    x+=Math.sin(now/310+i*1.7)*.012;y+=Math.cos(now/270+i*2.3)*.012;
+    return{x:c.cx+x*c.S,y:c.cy+y*c.S,v:1};
+  });
+}
+
+/* fondo: vídeo espejado + túnel */
+function drawBg(now){
+  if(!demo&&camOK&&video.readyState>=2){
+    const m=coverMap();ctx.save();ctx.translate(W,0);ctx.scale(-1,1);ctx.drawImage(video,m.ox,m.oy,m.vw*m.s,m.vh*m.s);ctx.restore();
+    ctx.fillStyle='rgba(6,6,24,.12)';ctx.fillRect(0,0,W,H);
+  }else{const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#10083a');g.addColorStop(1,'#241060');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);}
+  ctx.save();ctx.strokeStyle='rgba(120,160,255,.16)';ctx.lineWidth=2;
+  for(let i=0;i<14;i++){const a=i/14*Math.PI*2+now/9000;ctx.beginPath();ctx.moveTo(W/2+Math.cos(a)*40,H/2+Math.sin(a)*40);ctx.lineTo(W/2+Math.cos(a)*W,H/2+Math.sin(a)*W);ctx.stroke();}
+  const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.8);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,10,.55)');
+  ctx.fillStyle=v;ctx.fillRect(0,0,W,H);ctx.restore();
+}
+
+/* muro: perspectiva z de 5 a 1 (escala 1/z) */
+function drawWall(now){
+  if(!wall)return;
+  let s,al=1;
+  if(wall.state==='in')s=1/(5-4*Math.min(1,wall.t));
+  else{const u=clamp((now-wall.rt)/800,0,1);if(wall.state==='pass'){s=1+u*2.4;al=1-u;}else{s=1+u*.15;al=1-u;}}
+  if(al<=0)return;
+  ctx.save();ctx.globalAlpha=al;ctx.translate(W/2,H/2);ctx.scale(s,s);ctx.translate(-W/2,-H/2);ctx.drawImage(wall.img,0,0,W,H);ctx.restore();
+}
+
+/* esqueleto del jugador */
+const BONES=[[1,2],[1,3],[3,5],[2,4],[4,6],[1,7],[2,8],[7,8],[7,9],[9,11],[8,10],[10,12]];
+function drawBody(j){
+  if(!j)return;
+  const S=cal?cal.S:H*.6;
+  const evalOn=wall&&wall.state==='in'&&wall.t>=.93&&wall.ok.length;
+  ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.strokeStyle='#5dff9a';ctx.shadowColor='#5dff9a';ctx.shadowBlur=14;ctx.lineWidth=Math.max(5,S*.03);
+  if(demo){  /* sin cámara real se dibuja el cuerpo virtual; con cámara te ves a ti */
+    for(const[a,b]of BONES){if(j[a].v<.3||j[b].v<.3)continue;ctx.beginPath();ctx.moveTo(j[a].x,j[a].y);ctx.lineTo(j[b].x,j[b].y);ctx.stroke();}
+    ctx.beginPath();ctx.arc(j[0].x,j[0].y,S*.07,0,7);ctx.stroke();
+  }
+  ctx.shadowBlur=0;
+  j.forEach((p,i)=>{if(p.v<.3)return;if(!demo&&!evalOn)return;ctx.fillStyle=evalOn?(wall.ok[i]?'#5dff9a':'#ff3d5a'):'#fff';ctx.beginPath();ctx.arc(p.x,p.y,Math.max(6,S*.028),0,7);ctx.fill();});
+  ctx.restore();
+}
+
+/* silueta guía para calibrar */
+function drawGuide(){
+  const a={cx:W/2,cy:H*.55,S:H*.64};
+  const p=NEUTRAL.map(([x,y])=>({x:a.cx+x*a.S,y:a.cy+y*a.S}));
+  ctx.save();ctx.lineCap='round';ctx.strokeStyle='rgba(53,240,255,.8)';ctx.setLineDash([14,12]);ctx.lineWidth=5;ctx.shadowColor='#35f0ff';ctx.shadowBlur=12;
+  for(const[i,k]of BONES){ctx.beginPath();ctx.moveTo(p[i].x,p[i].y);ctx.lineTo(p[k].x,p[k].y);ctx.stroke();}
+  ctx.beginPath();ctx.arc(p[0].x,p[0].y,a.S*.07,0,7);ctx.stroke();ctx.restore();
+}
+
+/* ===== Flujo de juego ===== */
+function goFS(){const e=document.documentElement,f=e.requestFullscreen||e.webkitRequestFullscreen;if(f&&!document.fullscreenElement){try{const p=f.call(e);if(p&&p.catch)p.catch(()=>{});}catch(x){}}}
+function newGame(){score=0;lives=3;combo=0;n=0;lastPose=-1;wall=null;el.pose.textContent='';hud();}
+function bodyReady(j){
+  if(!j)return false;
+  for(const p of j)if(p.v<.5||p.x<W*.02||p.x>W*.98||p.y<H*.02||p.y>H*.985)return false;
+  const S=(j[11].y+j[12].y)/2-j[0].y;return S>H*.4&&S<H*.86;
+}
+function takeCal(j){const hm=mid(j[7],j[8]);cal={cx:hm.x,cy:hm.y,S:(j[11].y+j[12].y)/2-j[0].y};}
+function startCalib(keep){
+  resume=!!keep;state='calib';calibHold=0;el.panel.classList.add('hide');el.toast.classList.remove('on');
+  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').catch(()=>{});}catch(e){}
+}
+function spawnWall(now){
+  const tier=Math.min(3,1+Math.floor(n/4));
+  const pool=[];POSES.forEach((p,i)=>{if(p.t<=tier)pool.push(i);});
+  let k;do{k=pool[Math.floor(Math.random()*pool.length)];}while(k===lastPose&&pool.length>1);
+  lastPose=k;
+  const a={cx:cal.cx,cy:cal.cy,S:cal.S},j=demo?null:(body&&body.j);
+  if(j&&bodyReady(j))a.cx=clamp(mid(j[7],j[8]).x,W*.3,W*.7);
+  wall=makeWall(POSES[k],a,Math.max(2.7,5.4-n*.12));
+  wall.start=now;wall.idx=n;n++;
+  el.pose.textContent=POSES[k].n;sfx.tick();
+}
+function resolve(now){
+  const s=wall.max;
+  if(s>=PASS){
+    combo++;const perfect=s>=PERFECT,pts=Math.round(s*100)+(perfect?50:0)+combo*10;score+=pts;
+    wall.state='pass';toast((perfect?'¡PERFECTO! +':'¡BIEN! +')+pts,perfect?'#ffd93d':'#5dff9a');perfect?sfx.perfect():sfx.ok();
+  }else{
+    combo=0;lives--;wall.state='fail';shake=1;flashC='255,40,70';flashT=1;toast('¡CHOCASTE!','#ff5c6c');sfx.bad();
+  }
+  wall.rt=now;nextAt=now+1300;hud();
+  if(lives<=0){state='dying';setTimeout(gameOver,1000);}
+}
+function gameOver(){
+  state='over';wall=null;el.pose.textContent='';el.big.textContent='';
+  if(score>best){best=score;try{localStorage.setItem('muroloco-best',best);}catch(e){}}
+  el.msg.textContent='Puntos: '+score+'  ·  Récord: '+best;
+  el.btn.textContent='JUGAR OTRA VEZ';el.btn.disabled=false;el.panel.classList.remove('hide');
+}
+
+/* ===== Bucle principal ===== */
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min(.1,(now-lastNow)/1000);lastNow=now;
+  detect(now);
+  const j=demo?demoJoints(now):(body&&body.j);
+  ctx.save();
+  if(shake>0){ctx.translate((Math.random()-.5)*shake*24,(Math.random()-.5)*shake*24);shake=Math.max(0,shake-dt*3);}
+  drawBg(now);
+
+  if(state==='calib'){
+    drawGuide();
+    const ok=bodyReady(j);
+    calibHold=ok?calibHold+dt:Math.max(0,calibHold-dt*2);
+    el.big.textContent=!j?'No te veo… ponte frente a la cámara':ok?'¡Quieto!':'Aléjate hasta que se te vea entero';
+    ctx.fillStyle='rgba(255,255,255,.18)';ctx.fillRect(W*.2,H-30,W*.6,8);
+    ctx.fillStyle='#35f0ff';ctx.fillRect(W*.2,H-30,W*.6*Math.min(1,calibHold/1.6),8);
+    if(calibHold>=1.6){
+      takeCal(j);sfx.calib();
+      if(!resume)newGame();else wall=null;
+      state='play';nextAt=now+1500;setBig('¡PREPÁRATE!',1300,now);
+    }
+  }else if(state==='play'||state==='dying'){
+    if(state==='play'&&!wall&&now>=nextAt)spawnWall(now);
+    if(wall&&wall.state==='in'){
+      wall.t=(now-wall.start)/(wall.D*1000);
+      if(wall.t>=.93&&j){const s=scoreBody(j,wall);if(s>wall.max)wall.max=s;}
+      if(wall.t>=1)resolve(now);
+    }else if(wall&&state==='play'&&now-wall.rt>900){wall=null;el.pose.textContent='';}
+    if(!j&&wall&&wall.state==='in')el.big.textContent='¡No te veo!';
+    else if(bigUntil&&now>bigUntil)setBig('',0,now);
+    else if(!bigUntil&&el.big.textContent==='¡No te veo!')el.big.textContent='';
+  }
+
+  drawWall(now);
+  drawBody(j);
+  if(wall&&wall.state==='in'){
+    ctx.fillStyle='rgba(255,255,255,.18)';ctx.fillRect(W*.1,H-30,W*.8,8);
+    ctx.fillStyle=wall.t>.93?'#5dff9a':'#ffd93d';ctx.fillRect(W*.1,H-30,W*.8*Math.min(1,wall.t),8);
+  }
+  ctx.restore();
+  if(flashT>0){ctx.fillStyle='rgba('+flashC+','+(flashT*.4)+')';ctx.fillRect(0,0,W,H);flashT=Math.max(0,flashT-dt*2.2);}
+}
+
+/* ===== Botones y arranque ===== */
+async function onPlay(){
+  audio();goFS();
+  if(!demo&&!camOK){
+    try{el.btn.disabled=true;el.btn.textContent='Abriendo cámara…';await initCamera();}
+    catch(e){console.error(e);el.msg.textContent='No he podido abrir la cámara. Permite el acceso en el navegador o prueba el modo demo.';el.btn.disabled=false;el.btn.textContent='Reintentar';el.btnDemo.hidden=false;return;}
+  }
+  el.btn.disabled=false;startCalib(false);
+}
+el.btn.onclick=onPlay;
+el.btnDemo.onclick=()=>{demo=true;audio();goFS();startCalib(false);};
+$('#fs').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else goFS();};
+$('#recal').onclick=()=>{if(state==='play'||state==='dying'||state==='calib'){wall=null;el.pose.textContent='';startCalib(state!=='calib'&&score>0||resume);}};
+addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F')$('#fs').click();if(e.key==='r'||e.key==='R')$('#recal').click();});
+
+(async function boot(){
+  hud();requestAnimationFrame(frame);
+  if(demo){el.msg.textContent='Modo demo: sin cámara, un cuerpo virtual juega solo.';el.btn.textContent='VER DEMO';el.btn.disabled=false;state='menu';return;}
+  try{await initModel();el.msg.textContent='¡Listo! Te pediré la cámara y haremos una calibración rápida.';el.btn.textContent='JUGAR';el.btn.disabled=false;state='menu';}
+  catch(e){console.error(e);el.msg.textContent='No he podido cargar el detector de poses (¿sin conexión?).';el.btn.textContent='Reintentar';el.btn.disabled=false;el.btn.onclick=()=>location.reload();el.btnDemo.hidden=false;}
+})();
+</script>
+</body>
+</html>

@@ -111,8 +111,8 @@ ES_CQ = {
  "cq_esportistes": dict(kw="quiz de deportistas catalanes", blurb="¿Cuánto sabes de los deportistas catalanes? Setenta campeones de veintitrés deportes: adivina quién es por las pistas, de qué deporte es y quién nació antes, en diez niveles. En catalán."),
 }
 
-CA_CATS = {"cosmico": "Còsmic", "invierno": "Alta Temporada", "entrenos": "Entrenaments", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "puzles": "Trencaclosques", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
-CA_CATD = {"puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: trencaclosques per pensar una mica, encaixar peces i batre el teu rècord."}, "accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
+CA_CATS = {"camara": "Amb càmera", "cosmico": "Còsmic", "invierno": "Alta Temporada", "entrenos": "Entrenaments", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "puzles": "Trencaclosques", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
+CA_CATD = {"camara": {"t": "Amb càmera", "d": "El teu cos és el comandament: posa't davant de la càmera i mou-te per jugar. La imatge es processa al teu dispositiu i no s'envia enlloc."}, "puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: trencaclosques per pensar una mica, encaixar peces i batre el teu rècord."}, "accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
            "deporte": {"t": "Esport", "d": "Futbol 7, Kings League i unes olimpíades de granja per als més petits."},
            "ritmo": {"t": "Ritme", "d": "Notes que cauen, guitarres i cabines de DJ: música per tocar amb els dits."},
            "motor": {"t": "Motor", "d": "Karts, monster trucks, motos, curses de neó i muntanyes russes de porquets."},
@@ -125,6 +125,7 @@ CA_CATD = {"puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: tre
 CA_UI = [
  ('<a href="#trilogia">Saga cósmica</a>', '<a href="#trilogia">Saga còsmica</a>'),
  ('<a href="#saga-entrenos">Entrenamientos</a><a href="#sec-accion">Acción</a>', '<a href="#saga-entrenos">Entrenaments</a><a href="#sec-accion">Acció</a>'),
+ ('<a class="x" href="#sec-camara">Con cámara</a>', '<a class="x" href="#sec-camara">Amb càmera</a>'),
  ('<a class="x" href="#sec-puzles">Puzles</a>', '<a class="x" href="#sec-puzles">Trencaclosques</a>'),
  ('<a class="x" href="#sec-ritmo">Ritmo</a>', '<a class="x" href="#sec-ritmo">Ritme</a>'),
  ('>Entrenamientos</h2>', '>Entrenaments</h2>'),

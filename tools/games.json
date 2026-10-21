@@ -569,6 +569,36 @@
    "play": "juegos/cabina/index.html"
   },
   {
+   "id": "lluvialoca",
+   "slug": "lluvia-loca",
+   "kw": "juego con cámara para moverse",
+   "cat": "camara",
+   "name": "Lluvia Loca",
+   "note": "Coge la fruta con las manos",
+   "blurb": "Juego con la cámara del móvil o del ordenador: ponte delante y atrapa con las manos la fruta y las monedas que caen del cielo, sin tocar las bombas. Partidas de un minuto con combos, corazones y relojes de cámara lenta. Sin cámara se juega con el dedo o el ratón.",
+   "tags": [
+    "Cámara",
+    "Muévete",
+    "1 minuto"
+   ],
+   "play": "juegos/lluvia-loca/index.html"
+  },
+  {
+   "id": "muroloco",
+   "slug": "muro-loco",
+   "kw": "juego de poses con cámara",
+   "cat": "camara",
+   "name": "Muro Loco",
+   "note": "Pon el cuerpo en la forma del hueco",
+   "blurb": "Juego de poses con cámara: se acerca un muro con un hueco con forma de cuerpo y tienes que colocarte igual para atravesarlo. Estrella, avión, flamenco, sentadilla y más, cada vez más rápido. La cámara detecta tu postura en el propio dispositivo y la imagen no sale de él.",
+   "tags": [
+    "Cámara",
+    "Poses",
+    "Para toda la familia"
+   ],
+   "play": "juegos/muro-loco/index.html"
+  },
+  {
    "id": "crucigiro",
    "slug": "crucigiro",
    "kw": "juego de palabras con rueda de letras",
@@ -1357,6 +1387,10 @@
   "puzles": {
    "n": "Puzles",
    "c": "#c26bff"
+  },
+  "camara": {
+   "n": "Con cámara",
+   "c": "#ff3d8b"
   }
  },
  "CATD": {
@@ -1403,6 +1437,10 @@
   "puzles": {
    "t": "Puzles",
    "d": "Palabras, bloques y torres: puzles para pensar un poco, encajar piezas y batir tu récord."
+  },
+  "camara": {
+   "t": "Con cámara",
+   "d": "Tu cuerpo es el mando: ponte delante de la cámara y muévete para jugar. La imagen se procesa en tu dispositivo y no se envía a ningún sitio."
   }
  }
 }

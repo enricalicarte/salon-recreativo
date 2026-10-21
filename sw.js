@@ -1,5 +1,5 @@
 /* Salón Recreativo: service worker. Portada y recursos básicos disponibles sin conexión; los juegos se guardan al jugarlos. */
-const V='sr-2026-10-20',CORE=['./','assets/fonts.css','assets/lenis.min.js','manifest.webmanifest','icons/icon-192.png'];
+const V='sr-2026-10-21',CORE=['./','assets/fonts.css','assets/lenis.min.js','manifest.webmanifest','icons/icon-192.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{

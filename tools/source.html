@@ -470,7 +470,7 @@ body.iph #stFull{display:inline-flex!important;padding:10px 12px}
   <div class="in">
     <a class="brand" href="#"><i></i>ALICA GAMES STUDIO</a>
     <nav aria-label="Secciones">
-      <a href="#trilogia">Saga cósmica</a><a href="#saga-invierno">Alta Temporada</a><a href="#saga-entrenos">Entrenamientos</a><a href="#sec-accion">Acción</a><a class="x" href="#sec-puzles">Puzles</a><a class="x" href="#sec-ritmo">Ritmo</a><a class="x" href="#sec-motor">Motor</a><a class="x" href="#sec-relax">Relax</a><a class="x" href="#sec-catquiz">CatQuiz</a>
+      <a href="#trilogia">Saga cósmica</a><a href="#saga-invierno">Alta Temporada</a><a href="#saga-entrenos">Entrenamientos</a><a href="#sec-accion">Acción</a><a class="x" href="#sec-camara">Con cámara</a><a class="x" href="#sec-puzles">Puzles</a><a class="x" href="#sec-ritmo">Ritmo</a><a class="x" href="#sec-motor">Motor</a><a class="x" href="#sec-relax">Relax</a><a class="x" href="#sec-catquiz">CatQuiz</a>
     </nav>
     <div class="acts"><!--LNG--><button class="vbtn" type="button" data-vtoggle aria-label="Cambiar de vista"><svg class="ico i-grid" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="2"/><rect x="15" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="11" width="6" height="6" rx="1.5"/><rect x="3" y="15" width="6" height="6" rx="1.5"/><rect x="11" y="19" width="10" height="2" rx="1"/></svg><svg class="ico i-rows" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/></svg></button><button class="srch" type="button" data-find aria-label="Buscar juegos"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="l">Buscar</span><kbd>/</kbd></button>
     <button class="rnd" type="button" data-random><span class="l">Jugar a uno al azar</span><span class="s">Al azar ▶</span></button></div>
@@ -609,12 +609,13 @@ const CATS={
   historias:{n:'Historias',c:'#ffb23e'},
   motor:{n:'Motor',c:'#ff7a45'},
   accion:{n:'Acción',c:'#3cc3ff'},
+  camara:{n:'Con cámara',c:'#ff3d8b'},
   puzles:{n:'Puzles',c:'#c26bff'},
   marca:{n:'Con marca',c:'#e8e04a'},
   relax:{n:'Relax',c:'#6ef0b0'},
   catquiz:{n:'CatQuiz',c:'#ffb23e'}
 };
-const CATD={"puzles": {t: "Puzles", d: "Palabras, bloques y torres: puzles para pensar un poco, encajar piezas y batir tu récord."}, "entrenos": {t: "Entrenamientos", d: "Sesiones de entrenamiento en 3D para niños: calentamiento, técnica, fuerza, boxeo, yoga y estiramientos."}, "invierno": {t: "Alta Temporada", d: "La saga de invierno: deportes de nieve con campeonatos, rivales y medallas."}, "accion": {t: "Acción", d: "Puntería, peleas, combates aéreos, plataformas con espada y carreras sin fin: partidas para poner a prueba tus reflejos."}, "deporte": {t: "Deporte", d: "Fútbol 7, Kings League, surf en olas gigantes, skate en el parque y en el halfpipe, y unas olimpiadas de granja para los más peques."}, "ritmo": {t: "Ritmo", d: "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."}, "motor": {t: "Motor", d: "Karts, motos con loopings, monster trucks, carreras de neón, especialistas que salen volando, montañas rusas de cerditos y un taller para lavar y repintar coches."}, "historias": {t: "Historias", d: "Juegos narrativos con calendario, recuerdos y misterio."}, "marca": {t: "Con marca", d: "Juegos hechos a medida para marcas y clientes."}, "relax": {t: "Relax Games", d: "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."}, "catquiz": {t: "CatQuiz Minijocs", d: "Minijuegos de palabras en catalán y quizzes de fútbol y deportistas catalanes, para jugar y aprender."}};
+const CATD={"camara": {t: "Con cámara", d: "Tu cuerpo es el mando: ponte delante de la cámara y muévete para jugar. La imagen se procesa en tu dispositivo y no se envía a ningún sitio."}, "puzles": {t: "Puzles", d: "Palabras, bloques y torres: puzles para pensar un poco, encajar piezas y batir tu récord."}, "entrenos": {t: "Entrenamientos", d: "Sesiones de entrenamiento en 3D para niños: calentamiento, técnica, fuerza, boxeo, yoga y estiramientos."}, "invierno": {t: "Alta Temporada", d: "La saga de invierno: deportes de nieve con campeonatos, rivales y medallas."}, "accion": {t: "Acción", d: "Puntería, peleas, combates aéreos, plataformas con espada y carreras sin fin: partidas para poner a prueba tus reflejos."}, "deporte": {t: "Deporte", d: "Fútbol 7, Kings League, surf en olas gigantes, skate en el parque y en el halfpipe, y unas olimpiadas de granja para los más peques."}, "ritmo": {t: "Ritmo", d: "Notas que caen, guitarras y cabinas de DJ: música para tocar con los dedos."}, "motor": {t: "Motor", d: "Karts, motos con loopings, monster trucks, carreras de neón, especialistas que salen volando, montañas rusas de cerditos y un taller para lavar y repintar coches."}, "historias": {t: "Historias", d: "Juegos narrativos con calendario, recuerdos y misterio."}, "marca": {t: "Con marca", d: "Juegos hechos a medida para marcas y clientes."}, "relax": {t: "Relax Games", d: "Dieciocho rincones para desconectar: agua, fuego, cielo y mar, cada uno con su propia música generativa. Sin puntos, sin prisa y sin perder."}, "catquiz": {t: "CatQuiz Minijocs", d: "Minijuegos de palabras en catalán y quizzes de fútbol y deportistas catalanes, para jugar y aprender."}};
 /* play: ruta del juego dentro de esta web. url: enlace externo (solo si no hay archivos). */
 const GAMES=[
   {id:'rutacosmica',kw:"juego de naves espaciales",tri:1,cat:'cosmico',name:'Ruta Cósmica',note:'Antes de apuntar hay que llegar',
@@ -733,6 +734,12 @@ const GAMES=[
   {id:'cabina',kw:"app de DJ online",cat:'ritmo',name:'Cabina',
    blurb:"App de DJ para niños y principiantes: profesional por dentro y fácil por fuera, casi un juego. Mezcla canciones en el móvil, en horizontal y a pantalla completa.",
    tags:["DJ", "Música", "Para niños"],play:'juegos/cabina/index.html'},
+  {id:'lluvialoca',kw:"juego con cámara para moverse",cat:'camara',name:'Lluvia Loca',note:"Coge la fruta con las manos",
+   blurb:"Juego con la cámara del móvil o del ordenador: ponte delante y atrapa con las manos la fruta y las monedas que caen del cielo, sin tocar las bombas. Partidas de un minuto con combos, corazones y relojes de cámara lenta. Sin cámara se juega con el dedo o el ratón.",
+   tags:["Cámara", "Muévete", "1 minuto"],play:'juegos/lluvia-loca/index.html'},
+  {id:'muroloco',kw:"juego de poses con cámara",cat:'camara',name:'Muro Loco',note:"Pon el cuerpo en la forma del hueco",
+   blurb:"Juego de poses con cámara: se acerca un muro con un hueco con forma de cuerpo y tienes que colocarte igual para atravesarlo. Estrella, avión, flamenco, sentadilla y más, cada vez más rápido. La cámara detecta tu postura en el propio dispositivo y la imagen no sale de él.",
+   tags:["Cámara", "Poses", "Para toda la familia"],play:'juegos/muro-loco/index.html'},
   {id:'crucigiro',kw:"juego de palabras con rueda de letras",cat:'puzles',name:'Crucigiro',note:'Une letras y completa el crucigrama',
    blurb:"Crucigrama de palabras en castellano: gira la rueda de letras, únelas con el dedo y rellena las casillas. Doscientos niveles en ocho temas, palabras extra que dan monedas y pistas para revelar letras cuando te atascas.",
    tags:["Palabras", "Crucigrama", "200 niveles"],play:'juegos/crucigiro/index.html'},
@@ -790,9 +797,9 @@ const GAMES=[
 
 /* ---------- Datos de uso: edad, partidas cortas, móvil, novedades ---------- */
 const AGE={olimpiadas:3,aventura:3,towerstack:3,miramar:16};               // por defecto +7; relax +3
-const SHORT=new Set(['crucigiro','loopingloco','stu','bloquesneon','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
-const MOB=new Set(['boxeokids','yogakids','estirakids','crucigiro','loopingloco','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
-const NEW=new Set(['cq_castells','cq_roda','cq_pronoms','cq_esportistes','boxeokids','yogakids','estirakids','crucigiro','loopingloco','cq_futbol','cq_barbarismes','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
+const SHORT=new Set(['lluvialoca','muroloco','crucigiro','loopingloco','stu','bloquesneon','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
+const MOB=new Set(['lluvialoca','muroloco','boxeokids','yogakids','estirakids','crucigiro','loopingloco','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
+const NEW=new Set(['lluvialoca','muroloco','cq_castells','cq_roda','cq_pronoms','cq_esportistes','boxeokids','yogakids','estirakids','crucigiro','loopingloco','cq_futbol','cq_barbarismes','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
 const ageOf=g=>AGE[g.id]||(g.cat==='relax'?3:7);
 const EMAIL='';
 
@@ -1500,7 +1507,7 @@ const favs=new Set(store.get('favs',[]).filter(id=>GAMES.some(g=>g.id===id)));
 let recent=store.get('recent',[]).filter(id=>GAMES.some(g=>g.id===id&&g.play));
 /* Analítica sin cookies (GoatCounter): solo si la página la carga */
 function stat(p,t){try{if(window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:p,title:t||p,event:true});}catch(e){}}
-const MEDIA=new Set(/*MEDIA*/["alas-de-acero", "anguera-superstars", "aura-battle", "aventura-porc", "bloques-neon", "boxeo-kids", "cabina", "car-revamp", "catquiz-accents", "catquiz-anagrama", "catquiz-barbarismes", "catquiz-com-es-diu-en-catala", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-pronoms-febles", "catquiz-quiz-d-esportistes", "catquiz-quiz-de-futbol", "catquiz-roda-de-paraules", "catquiz-sopa-de-lletres", "ciudadela-de-arena", "constructor-cosmico", "cosmic-guitar", "crucigiro", "cube-runner", "drop-in", "el-gran-descenso", "el-gran-salto", "estiramientos-kids", "fifa-11-kids", "halfpipe", "hotel-miramar", "l-ultim-estiu", "la-gran-pirueta", "looping-loco", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "neon-coast", "ola-perfecta", "olimpiadas-de-la-granja", "paradon-cosmico", "plan-de-fuerza", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "stu-el-especialista", "suo-shop-rush", "supernova-guitar", "tecnica-individual", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally", "yoga-kids"]/*/MEDIA*/);
+const MEDIA=new Set(/*MEDIA*/["alas-de-acero", "anguera-superstars", "aura-battle", "aventura-porc", "bloques-neon", "boxeo-kids", "cabina", "car-revamp", "catquiz-accents", "catquiz-anagrama", "catquiz-barbarismes", "catquiz-com-es-diu-en-catala", "catquiz-l-intrus", "catquiz-lletres-perdudes", "catquiz-motle", "catquiz-penjat-3d", "catquiz-pronoms-febles", "catquiz-quiz-d-esportistes", "catquiz-quiz-de-castells", "catquiz-quiz-de-futbol", "catquiz-roda-de-paraules", "catquiz-sopa-de-lletres", "ciudadela-de-arena", "constructor-cosmico", "cosmic-guitar", "crucigiro", "cube-runner", "drop-in", "el-gran-descenso", "el-gran-salto", "estiramientos-kids", "fifa-11-kids", "halfpipe", "hotel-miramar", "l-ultim-estiu", "la-gran-pirueta", "lluvia-loca", "looping-loco", "martin-leyenda-del-rock", "mnac-rush", "monster-smash", "moto-fury", "muro-loco", "neon-coast", "ola-perfecta", "olimpiadas-de-la-granja", "paradon-cosmico", "plan-de-fuerza", "porrazo-party", "relax-arrecife-de-coral", "relax-aurora-boreal", "relax-bola-de-nieve", "relax-cometa-al-viento", "relax-constelaciones", "relax-cristal-de-lluvia", "relax-estanque-de-koi", "relax-farolillos-del-lago", "relax-hoguera-nocturna", "relax-isla-jardin", "relax-jardin-zen", "relax-orbitas-musicales", "relax-pesca-al-atardecer", "relax-pompas-musicales", "relax-rana-y-luciernagas", "relax-velero-entre-islas", "relax-vuelo-del-amanecer", "ruta-cosmica", "stu-el-especialista", "suo-shop-rush", "supernova-guitar", "tecnica-individual", "tiradora-cosmica", "tiro-limpio", "tower-stack", "turbo-kart-rally", "yoga-kids"]/*/MEDIA*/);
 
 /* ---------- Muro de portadas del hero ---------- */
 (function(){
@@ -1568,7 +1575,7 @@ function makeCard(g,idx){
   return el;
 }
 const secGrids={},secEls={};
-['accion','puzles','deporte','ritmo','motor','historias','marca','relax','catquiz'].forEach(k=>{
+['accion','camara','puzles','deporte','ritmo','motor','historias','marca','relax','catquiz'].forEach(k=>{
   if(!GAMES.some(g=>g.cat===k&&!g.tri))return;
   const n=GAMES.filter(g=>g.cat===k&&!g.tri).length;
   const sec=document.createElement('section');sec.className='band sec';sec.id='sec-'+k;sec.style.setProperty('--c',CATS[k].c);
@@ -1633,7 +1640,7 @@ if(!reduce&&'IntersectionObserver' in window){
 
 /* ---------- Navegación de secciones ---------- */
 const chips=$('#chips');
-const present=['accion','puzles','deporte','ritmo','motor','historias','marca','relax','catquiz'].filter(k=>secEls[k]);
+const present=['accion','camara','puzles','deporte','ritmo','motor','historias','marca','relax','catquiz'].filter(k=>secEls[k]);
 chips.innerHTML='<button class="fchip" type="button" data-find><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'+T.search+'</button><a href="#trilogia" style="--c:#9a8cff" data-k="trilogia">'+T.saga+' <small>5</small></a><a href="#saga-invierno" style="--c:#7cc8ff" data-k="saga-invierno">Alta Temporada <small>3</small></a><a href="#saga-entrenos" style="--c:#a3e635" data-k="saga-entrenos">Entrenamientos <small>3</small></a>'+present.map(k=>{
   const n=gridCards.filter(e=>e.dataset.cat===k).length;
   return '<a href="#sec-'+k+'" data-k="'+k+'" style="--c:'+CATS[k].c+'">'+esc(CATS[k].n)+' <small>'+n+'</small></a>';
@@ -1844,7 +1851,7 @@ renderMine();
   function paintSc(cv){const g=GAMES.find(x=>x.id===cv.dataset.sc),sc=g&&sceneOf(g);if(!sc)return;const W=cv.closest('.gv-card')?600:360,H=cv.closest('.gv-card')?375:360;cv.width=W;cv.height=H;const c=cv.getContext('2d'),k=H/375;c.setTransform(k,0,0,k,(W-600*k)/2,0);try{sc(c,600,375,2.2);}catch(e){}}
   function hoverVids(root){root.querySelectorAll('.tile').forEach(t=>{const v=t.querySelector('video');if(!v)return;
     t.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!reduce)playVid(v);});t.addEventListener('pointerleave',()=>stopVid(v));});}
-  const BIG=new Set(['crucigiro','loopingloco','stu','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
+  const BIG=new Set(['muroloco','crucigiro','loopingloco','stu','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
   const tile=(g,cls)=>{const c=CATS[g.cat],m=MEDIA.has(g.slug),big=/big/.test(cls||'');
     const media=!big?'<img src="icons/games/'+g.slug+'.svg" alt="" loading="lazy" decoding="async">'+(m?'<video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':''):m?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
     const inner=media+(NEW.has(g.id)?'<span class="sp" title="'+T.nw+'" aria-hidden="true">✦</span>':'')+'<span class="tn">'+esc(g.name)+'</span>';
@@ -1859,7 +1866,7 @@ renderMine();
     small.forEach((g,i)=>{if(i%step===0&&b<big.length){out.push([big[b],b===0?'big xl':'big'+(b%2?' r':'')]);b++;}out.push([g,'']);});
     /* la parrilla mezclada de vídeos e iconos ya no se muestra: solo las filas por saga y categoría */
     grid.innerHTML='';grid.hidden=true;grid.parentNode.hidden=true;
-    const order=['cosmico','invierno','entrenos'].concat(['accion','puzles','deporte','ritmo','motor','historias','marca','relax','catquiz']);
+    const order=['cosmico','invierno','entrenos'].concat(['accion','camara','puzles','deporte','ritmo','motor','historias','marca','relax','catquiz']);
     bands.innerHTML=order.map(k=>{const list=all.filter(g=>g.cat===k);if(!list.length)return '';
       const t=k==='cosmico'?T.saga:(CATD[k]?CATD[k].t:CATS[k].n);
       return '<section class="mz-band" style="--c:'+CATS[k].c+'"><div class="in"><h2><i></i>'+esc(t)+'<small>'+list.length+'</small><button type="button" data-goto="'+(k==='cosmico'?'trilogia':k==='invierno'?'saga-invierno':k==='entrenos'?'saga-entrenos':'sec-'+k)+'">'+(LANG==='ca'?'Veure-ho tot':'Ver todos')+' ›</button></h2><div class="mz-row" data-lenis-prevent>'+list.map(g=>tile(g,'')).join('')+'</div></div></section>';}).join('');

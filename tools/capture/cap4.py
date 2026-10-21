@@ -104,6 +104,7 @@ def capture(b, slug):
     for st in cfg.get('setup', []): do(pg, st)
     cdp = ctx.new_cdp_session(pg)
     pg.evaluate('__vt.start()')
+    cdp.send('Page.captureScreenshot', {'format': 'jpeg', 'quality': 10})  # un fotograma real para que el bucle rAF pase al tiempo virtual (si no, los 'skip' no avanzan)
     rec = Rec(pg, cdp, fd)
     for st in cfg.get('intro', []):
         if st[0] == 'press': rec.capture = False; do(pg, st, rec); rec.capture = True
