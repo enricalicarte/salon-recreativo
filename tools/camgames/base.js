@@ -143,8 +143,11 @@ function detect(now){
   if(!lm){if(body&&++body.lost>20)body=null;return;}
   const m=coverMap();
   const out=KJ.map(i=>{const l=lm[i];return{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)};});
-  if(!body)body={j:out,lost:0};
-  else{body.lost=0;body.j=body.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));}
+  /* pies: talones (29/30) y puntas (31/32), con menos suavizado para que respondan rápido */
+  const fo=[29,30,31,32].map(i=>{const l=lm[i];return l?{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)}:{x:0,y:0,v:0};});
+  if(!body)body={j:out,f:fo,lost:0};
+  else{body.lost=0;body.j=body.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));
+    body.f=(body.f||fo).map((o,i)=>({x:o.x+(fo[i].x-o.x)*.8,y:o.y+(fo[i].y-o.y)*.8,v:fo[i].v}));}
 }
 
 /* ---------- efectos: partículas, ondas, textos, destello, temblor ---------- */

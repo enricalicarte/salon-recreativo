@@ -97,9 +97,9 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
 <div id="panel" class="panel">
   <div class="card glass">
     <h1 class="logo"><span>BALÓN</span><span>LOCO</span></h1>
-    <div class="tag" id="tag">Fútbol con tu cuerpo: pies, rodillas y cabeza.</div>
+    <div class="tag" id="tag">Fútbol de verdad: solo valen los pies.</div>
     <div class="modes" id="modes">
-      <button data-m="toques" class="on"><i>🦶</i><b>TOQUES</b><span>Que no caiga al suelo</span></button>
+      <button data-m="toques" class="on"><i>🦶</i><b>TOQUES</b><span>Que no caiga, solo pies</span></button>
       <button data-m="pases"><i>🤝</i><b>PASES</b><span>Pásala al compañero</span></button>
       <button data-m="chutes"><i>🥅</i><b>CHUTES</b><span>Gol por la escuadra</span></button>
       <button data-m="control"><i>🎯</i><b>CONTROL</b><span>Para el centro y 3 toques</span></button>
@@ -108,7 +108,7 @@ html,body{margin:0;height:100%;background:#07051a;overflow:hidden;color:#fff;fon
     <p id="msg">Cargando detector de poses…</p>
     <button class="btn" id="btn" disabled>Cargando…</button>
     <button class="btn ghost" id="btnDemo" hidden>Jugar sin cámara (ratón o dedo)</button>
-    <small class="note">Ponte de pie a 2–3 m para que se te vea entero, pies incluidos. Las manos no valen: ¡es fútbol!<br>El vídeo se procesa en tu dispositivo y no se envía a ningún sitio.</small>
+    <small class="note">Ponte de pie a 2–3 m y que se te vean bien los pies (mejor con zapatillas y buena luz). Solo cuentan los pies.<br>El vídeo se procesa en tu dispositivo y no se envía a ningún sitio.</small>
   </div>
 </div>
 <script type="module">
@@ -257,8 +257,11 @@ function detect(now){
   if(!lm){if(body&&++body.lost>20)body=null;return;}
   const m=coverMap();
   const out=KJ.map(i=>{const l=lm[i];return{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)};});
-  if(!body)body={j:out,lost:0};
-  else{body.lost=0;body.j=body.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));}
+  /* pies: talones (29/30) y puntas (31/32), con menos suavizado para que respondan rápido */
+  const fo=[29,30,31,32].map(i=>{const l=lm[i];return l?{x:W-(m.ox+l.x*m.vw*m.s),y:m.oy+l.y*m.vh*m.s,v:Math.min(l.visibility??1,l.presence??1)}:{x:0,y:0,v:0};});
+  if(!body)body={j:out,f:fo,lost:0};
+  else{body.lost=0;body.j=body.j.map((o,i)=>({x:o.x+(out[i].x-o.x)*.55,y:o.y+(out[i].y-o.y)*.55,v:out[i].v}));
+    body.f=(body.f||fo).map((o,i)=>({x:o.x+(fo[i].x-o.x)*.8,y:o.y+(fo[i].y-o.y)*.8,v:fo[i].v}));}
 }
 
 /* ---------- efectos: partículas, ondas, textos, destello, temblor ---------- */
@@ -358,8 +361,8 @@ let gm='toques';try{gm=localStorage.getItem('balonloco-mode')||'toques';}catch(e
 let state='menu',mode=demo?'demo':'cam',ball=null,bparts=[],prevP={},curJ=null;
 let score=0,shown=0,lives=3,touches=0,bestTouches=0,streak=0,okCount=0,tries=0,cd=0,lastCd=-1,lastNow=0,noBodyT=0,respawnAt=0,target=null,shot=null,keeper={x:0,dir:1},lastPart='';
 let floorY=0,lastFail=0;
-const BR=()=>Math.max(22,Math.min(W,H)*.055);
-const G=()=>H*2.1;
+const BR=()=>Math.max(26,Math.min(W,H)*.062);
+const G=()=>H*(gm==='toques'||gm==='control'?1.5:1.8);   /* gravedad suave: el balón flota un poco más */
 const bestKey=()=>'balonloco-best-'+gm;
 function getBest(){try{return +localStorage.getItem(bestKey())||0;}catch(e){return 0;}}
 
@@ -385,7 +388,7 @@ function demoBody(dt){
   const hipY=H*.6,S=H*.36,P=(x,y)=>({x,y,v:1});
   let lift=0,head=0;
   if(b&&b.state==='live'&&b.vy>0){
-    const useHead=touches%6===5&&b.y<H*.32;
+    const useHead=false;
     if(useHead)head=clamp(1-(H*.2-b.y)/(H*.1),0,1);
     else if(b.y>H*.5)lift=clamp((b.y-H*.5)/(H*.25),0,1);
     if(b.y<H*.4)dState.side=b.x<cx?-1:1;
@@ -402,26 +405,35 @@ function demoBody(dt){
   return[P(cx,hipY-S*.92-hd),P(cx-S*.2,hipY-S*.7),P(cx+S*.2,hipY-S*.7),P(cx-S*.32,hipY-S*.42),P(cx+S*.32,hipY-S*.42),P(cx-S*.36,hipY-S*.16),P(cx+S*.36,hipY-S*.16),
     P(cx-S*.1,hipY),P(cx+S*.1,hipY),kneeL,kneeR,ankL,ankR];
 }
-/* partes del cuerpo que tocan el balón */
+/* solo cuentan los pies: un segmento talón→punta con radio generoso */
+let feetSeen=0,floorT=0;
 function getParts(dt){
   const out=[];curJ=null;
-  if(mode==='touch'){let i=0;for(const p of ptrs.values())out.push({id:'p'+(i++),x:p.x,y:p.y,r:Math.max(H*.07,40),kind:'pie'});}
+  if(mode==='touch'){let i=0;for(const p of ptrs.values())out.push({id:'p'+(i++),x:p.x,y:p.y,ax:p.x-30,ay:p.y,bx:p.x+30,by:p.y,r:Math.max(H*.06,36),kind:'pie'});}
   else{
     const j=mode==='demo'?demoBody(dt):(body&&body.j);
     if(j){curJ=j;
       const sh=Math.hypot(j[1].x-j[2].x,j[1].y-j[2].y)||H*.15,ex=(a,b,k)=>({x:a.x+(a.x-b.x)*k,y:a.y+(a.y-b.y)*k});
-      const add=(id,p,r,kind,v)=>{if(v>=.3)out.push({id,x:p.x,y:p.y,r,kind});};
-      add('pI',ex(j[11],j[9],.3),sh*.42,'pie',j[11].v);add('pD',ex(j[12],j[10],.3),sh*.42,'pie',j[12].v);
-      add('rI',j[9],sh*.36,'rodilla',j[9].v);add('rD',j[10],sh*.36,'rodilla',j[10].v);
-      add('ca',{x:j[0].x,y:j[0].y-sh*.12},sh*.5,'cabeza',j[0].v);
-      add('pe',{x:(j[1].x+j[2].x)/2,y:(j[1].y+j[2].y)/2+sh*.35},sh*.5,'pecho',Math.min(j[1].v,j[2].v));
-      if(mode!=='demo'){add('mI',ex(j[5],j[3],.2),sh*.28,'mano',j[5].v);add('mD',ex(j[6],j[4],.2),sh*.28,'mano',j[6].v);}
+      const f=mode==='cam'&&body&&body.f;
+      for(const sd of[0,1]){
+        const ank=j[11+sd],kn=j[9+sd];
+        let heel,toe;
+        if(f&&f[sd].v>.25&&f[2+sd].v>.25){heel=f[sd];toe=f[2+sd];}
+        else if(ank.v>.25){heel=ank;toe=ex(ank,kn,.32);toe={x:toe.x+(sd?1:-1)*sh*.12,y:toe.y};}
+        else continue;
+        const r=Math.max(sh*.32,H*.04);
+        out.push({id:sd?'pD':'pI',x:(heel.x+toe.x)/2,y:(heel.y+toe.y)/2,ax:heel.x,ay:heel.y,bx:toe.x,by:toe.y,r,kind:'pie'});
+      }
     }
   }
-  for(const p of out){const q=prevP[p.id];p.vx=q?(p.x-q.x)/Math.max(dt,.016):0;p.vy=q?(p.y-q.y)/Math.max(dt,.016):0;if(q){p.vx=lerp(q.vx||0,p.vx,.5);p.vy=lerp(q.vy||0,p.vy,.5);}p.cool=q?q.cool:0;}
+  for(const p of out){const q=prevP[p.id];p.vx=q?(p.x-q.x)/Math.max(dt,.016):0;p.vy=q?(p.y-q.y)/Math.max(dt,.016):0;if(q){p.vx=lerp(q.vx||0,p.vx,.6);p.vy=lerp(q.vy||0,p.vy,.6);}p.cool=q?q.cool:0;}
   prevP={};for(const p of out)prevP[p.id]={x:p.x,y:p.y,vx:p.vx,vy:p.vy,cool:Math.max(0,(p.cool||0)-dt)};
+  /* el suelo está a la altura de tus pies */
+  if(mode==='cam'&&out.length){feetSeen=0;const fy=Math.max(...out.map(p=>Math.max(p.ay,p.by)+p.r*.4));floorT=clamp(fy,H*.7,H*.97);floorY=lerp(floorY,floorT,Math.min(1,dt*2));}
+  else if(mode==='cam')feetSeen+=dt;
   return out;
 }
+function segDist(px,py,p){const dx=p.bx-p.ax,dy=p.by-p.ay,l=dx*dx+dy*dy;let t=l?((px-p.ax)*dx+(py-p.ay)*dy)/l:0;t=clamp(t,0,1);const cx=p.ax+dx*t,cy=p.ay+dy*t;return{d:Math.hypot(px-cx,py-cy),cx,cy};}
 
 /* ---------- cancha urbana de neón ---------- */
 let city=null,sceneKey='',hz=0;
@@ -523,36 +535,32 @@ function success(msg,pts,cls,x,y){
   toast(msg,cls||'good');confetti(x,y,35);ring(x,y,'#5dff9a',BR()*4,12,.6);sfx.perfect();flashT=.4;flashC='150,255,190';
   el.score.classList.remove('bump');void el.score.offsetWidth;el.score.classList.add('bump');
 }
-const KIND={pie:['¡TOQUE!',1],rodilla:['¡RODILLA!',1],cabeza:['¡CABEZA!',2],pecho:['¡PECHO!',1]};
-function touchBall(p){
-  const b=ball,dx=b.x-p.x,dy=b.y-p.y,d=Math.hypot(dx,dy)||1;
-  if(p.kind==='mano'){if(mode!=='touch'){fail('¡MANO!');}return;}
-  const g=G(),up=clamp(Math.max(0,-p.vy)/(H*2.5),0,1);
-  /* altura del vuelo: según la parte y la fuerza del golpe, sin salir de la pantalla */
-  const apex=clamp(b.y-H*((p.kind==='cabeza'?.2:p.kind==='pecho'?.18:.32)+up*.18),H*.1,b.y-H*.08);
-  const vmin=Math.sqrt(2*g*(b.y-apex));
-  let vy=-vmin;
-  let vx=dx/d*W*.35+p.vx*.35;
-  if(p.kind==='pecho')vx*=.4;
-  b.vy=vy;b.vx=clamp(vx,-W*.9,W*.9);
-  b.y=p.y-(p.r+b.r)*(dy<0?1:.2)-1;
-  b.touches++;touches++;lastPart=p.kind;bestTouches=Math.max(bestTouches,touches);
-  const [lab,pts]=KIND[p.kind]||KIND.pie;
-  ring(b.x,b.y,p.kind==='cabeza'?'#ffd93d':'#35f0ff',b.r*2.4,8,.35);burst(b.x,b.y,['#fff','#35f0ff','#ffd93d'],10,.7);
+function touchBall(p,cx,cy){
+  const b=ball,g=G(),up=clamp(Math.max(0,-p.vy)/(H*2),0,1);
+  /* altura del vuelo según la fuerza del pie, sin salir de la pantalla */
+  const apex=clamp(b.y-H*(.3+up*.2),H*.1,b.y-H*.1);
+  b.vy=-Math.sqrt(2*g*(b.y-apex));
+  const off=clamp((b.x-cx)/(p.r+b.r),-1,1);
+  b.vx=clamp(off*W*.12+p.vx*.25+(W/2-b.x)*.35,-W*.6,W*.6);
+  b.y=Math.min(b.y,cy-(p.r+b.r)*.9);
+  const alt=lastPart&&lastPart!==p.id;lastPart=p.id;
+  b.touches++;touches++;bestTouches=Math.max(bestTouches,touches);
+  const pts=alt?2:1;
+  ring(b.x,b.y,alt?'#ffd93d':'#35f0ff',b.r*2.4,8,.35);burst(b.x,b.y,['#fff','#35f0ff','#ffd93d'],10,.7);
   tone(300+Math.min(touches,20)*25,.08,'square',.12);noise(.05,.15,2000);
   if(gm==='toques'){
-    score+=pts;setCounter(touches);pop(b.x,b.y-b.r*1.6,p.kind==='pie'?'+'+pts:lab+' +'+pts,p.kind==='cabeza'?'#ffd93d':'#fff',p.kind==='pie'?.8:.9);
+    score+=pts;setCounter(touches);pop(b.x,b.y-b.r*1.6,alt?'¡CAMBIO DE PIE! +2':'+1',alt?'#ffd93d':'#fff',alt?.8:.8);
     if(touches%10===0){toast(touches+' TOQUES','gold');confetti(W/2,H*.3,40);sfx.perfect();}
   }else if(gm==='control'){
-    setCounter(b.touches+' / 3');pop(b.x,b.y-b.r*1.6,b.touches===1?'¡CONTROL!':lab,'#ffffff',.85);
+    setCounter(b.touches+' / 3');pop(b.x,b.y-b.r*1.6,b.touches===1?'¡CONTROL!':'¡TOQUE!','#ffffff',.85);
     if(b.touches>=3){b.state='done';success('¡CONTROLADA!',100+streak*20,'gold',b.x,b.y);respawnAt=performance.now()+900;}
   }else if(gm==='pases'){
-    const t=target;if(t&&Math.sign(t.x-b.x)===t.side){
+    const t=target,dir=Math.sign((b.x-cx)+p.vx*.05)||1;if(t&&dir===t.side){
       /* ayuda: trayectoria parabólica hacia el compañero */
       const T=.75,ddx=t.x-b.x,ddy=t.y-b.y;b.vx=ddx/T;b.vy=(ddy-.5*g*T*T)/T;b.state='pass';b.T=T;b.t=0;
     }
   }else if(gm==='chutes'){
-    const gb=goalBox(),side=clamp(dx/(p.r+b.r)+p.vx/(W*1.2),-1.2,1.2),up=clamp(-p.vy/(H*2.2)+.35,0,1);
+    const gb=goalBox(),side=clamp((b.x-cx)/(p.r+b.r)*.8+p.vx/(W*1.1),-1.15,1.15),up=clamp(-p.vy/(H*1.8)+.4,0,1);
     shot={x0:b.x,y0:b.y,x1:gb.x+gb.w*(.5+side*.5),y1:gb.y+gb.h*(1-up*.95),t:0,T:.6,r0:b.r};b.state='shot';sfx.whoosh();tone(110,.15,'sine',.4,-50);
   }
 }
@@ -560,9 +568,14 @@ function updateBall(dt,now){
   const b=ball;if(!b)return;
   if(b.state==='live'||b.state==='pass'||b.state==='done'){
     if(b.state==='pass'){b.t+=dt;}
+    const ox=b.x,oy=b.y;
     b.vy+=G()*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.rot+=b.vx*dt/b.r;
+    /* ayuda suave: el balón que baja se acerca un poco al pie más cercano */
+    if(b.state==='live'&&b.vy>0&&b.y>H*.45&&bparts.length){const q=bparts.reduce((a,c)=>Math.abs(c.x-b.x)<Math.abs(a.x-b.x)?c:a);b.x+=clamp(q.x-b.x,-W*.25,W*.25)*Math.min(1,dt*1.6);}
     if(b.state==='live'){
-      for(const p of bparts){if(p.cool>0)continue;if(Math.hypot(b.x-p.x,b.y-p.y)<p.r+b.r){const rel=(b.vy-p.vy);if(rel>-H*.2||p.kind==='mano'){touchBall(p);prevP[p.id].cool=.22;break;}}}
+      let hit=false;
+      for(let k=1;k<=4&&!hit;k++){const px=lerp(ox,b.x,k/4),py=lerp(oy,b.y,k/4);
+        for(const p of bparts){if(p.cool>0)continue;const c=segDist(px,py,p);if(c.d<p.r+b.r&&(b.vy-p.vy)>-H*.3){b.x=px;b.y=py;touchBall(p,c.cx,c.cy);prevP[p.id].cool=.25;hit=true;break;}}}
       if(b.x<b.r&&b.vx<0&&gm!=='control'){b.x=b.r;b.vx*=-.7;}if(b.x>W-b.r&&b.vx>0&&gm!=='control'){b.x=W-b.r;b.vx*=-.7;}
       if(gm==='control'&&b.touches>0){if(b.x<b.r){b.x=b.r;b.vx*=-.7;}if(b.x>W-b.r){b.x=W-b.r;b.vx*=-.7;}}
       if(b.y>floorY-b.r){b.y=floorY-b.r;noise(.1,.2,400);
@@ -599,10 +612,11 @@ function drawBallAll(now){
 }
 function drawParts(now){
   if(!bparts.length)return;
-  ctx.save();ctx.globalCompositeOperation='lighter';
-  for(const p of bparts){if(p.kind==='mano')continue;const c=p.kind==='cabeza'?'#ffd93d':p.kind==='pie'?'#35f0ff':'#b05cff',s=p.r*1.25;ctx.globalAlpha=p.kind==='pie'?.6:.35;ctx.drawImage(tintDot(c),p.x-s,p.y-s,s*2,s*2);}
-  ctx.restore();
-  for(const p of bparts){if(p.kind!=='pie')continue;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(now/300);ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=3;ctx.setLineDash([p.r*.4,p.r*.3]);ctx.beginPath();ctx.arc(0,0,p.r*.8,0,7);ctx.stroke();ctx.restore();}
+  for(const p of bparts){
+    ctx.save();ctx.globalCompositeOperation='lighter';const s2=p.r*1.6;ctx.globalAlpha=.55;ctx.drawImage(tintDot(p.id==='pI'?'#35f0ff':'#ff9500'),p.x-s2,p.y-s2,s2*2,s2*2);ctx.restore();
+    ctx.save();ctx.lineCap='round';ctx.strokeStyle=p.id==='pI'?'#35f0ff':'#ff9500';ctx.globalAlpha=.9;ctx.lineWidth=p.r*.9;
+    ctx.beginPath();ctx.moveTo(p.ax,p.ay);ctx.lineTo(p.bx,p.by);ctx.stroke();ctx.lineWidth=3;ctx.strokeStyle='#fff';ctx.stroke();ctx.restore();
+  }
 }
 function drawSkeleton(){
   const j=curJ;if(!j||mode!=='demo')return;
@@ -630,7 +644,7 @@ function gameOver(){
     (gm==='toques'?'<div><small>PUNTOS</small><b>'+score+'</b></div>':'<div><small>ACIERTOS</small><b>'+okCount+'</b></div>')+
     '<div><small>INTENTOS</small><b>'+tries+'</b></div><div><small>EFICACIA</small><b>'+(tries?Math.round(100*okCount/tries):0)+'%</b></div>';
   el.btn.textContent='JUGAR OTRA VEZ';el.btn.disabled=false;el.panel.classList.remove('hide');
-  const back=document.createElement('button');back.className='btn ghost';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.modes.hidden=false;el.tag.textContent='Fútbol con tu cuerpo: pies, rodillas y cabeza.';back.remove();};
+  const back=document.createElement('button');back.className='btn ghost';back.textContent='Cambiar de modo';back.onclick=()=>{el.res.hidden=true;el.modes.hidden=false;el.tag.textContent='Fútbol de verdad: solo valen los pies.';back.remove();};
   if(!$('#back')){back.id='back';el.btn.after(back);}
   if(rec&&val>0){confetti(W*.3,H*.5,60);confetti(W*.7,H*.5,60);sfx.perfect();}
 }
@@ -647,7 +661,8 @@ function frame(now){
     if(c!==lastCd){lastCd=c;if(c>0){bigText(String(c));sfx.count(1);}else{bigText('¡A JUGAR!');sfx.count(0);}}
     if(cd<=-.6){bigText('');state='play';spawnBall();}
   }else if(state==='play'){
-    if(mode==='cam'){noBodyT=curJ?0:noBodyT+dt;if(noBodyT>.8)bigText('¡No te veo!');else if($('#big').textContent==='¡No te veo!')bigText('');}
+    if(mode==='cam'){noBodyT=curJ?0:noBodyT+dt;const msg=noBodyT>.8?'¡No te veo!':feetSeen>.8?'¡Que se te vean los pies!':'';
+      if(msg){bigText(msg);$('#big').classList.add('small');}else if(/No te veo|pies/.test($('#big').textContent)){bigText('');$('#big').classList.remove('small');}}
   }
   if(state==='play'||state==='over')updateBall(dt,now);
   keeper.x+=keeper.dir*dt*(.5+okCount*.03);if(Math.abs(keeper.x)>1){keeper.x=Math.sign(keeper.x);keeper.dir*=-1;}
