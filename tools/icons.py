@@ -1197,6 +1197,57 @@ def _(I):
         I.add(f'<circle cx="{x}" cy="{y}" r="11" fill="#fff"/>')
     sparkle(I, 430, 450, 18, '#ffd23f'); sparkle(I, 76, 300, 14); sparkle(I, 452, 220, 10, '#35f0ff')
 
+def fball(I, x, y, r, rot=0):
+    I.add(f'<g transform="translate({x} {y}) rotate({rot})"><circle r="{r}" {st("#ffffff", 7)}/>'
+          + f'<path d="{star5(0, 0, r*.36, r*.36*.81, -90)}" fill="{INK}" opacity="0"/>'
+          + ''.join(f'<path d="M{r*.36*math.cos(math.radians(-90+72*i)):.1f} {r*.36*math.sin(math.radians(-90+72*i)):.1f}" />' for i in range(5))
+          + '<path d="' + 'M' + ' L'.join(f'{r*.34*math.cos(math.radians(-90+72*i)):.1f} {r*.34*math.sin(math.radians(-90+72*i)):.1f}' for i in range(5)) + f'Z" fill="{INK}"/>'
+          + ''.join('<path d="' + 'M' + ' L'.join(f'{(r*.98*math.cos(math.radians(-54+72*k))+r*.2*math.cos(math.radians(-54+72*k+72*i))):.1f} {(r*.98*math.sin(math.radians(-54+72*k))+r*.2*math.sin(math.radians(-54+72*k+72*i))):.1f}' for i in range(5)) + f'Z" fill="{INK}"/>' for k in range(5))
+          + f'<circle r="{r}" fill="none" stroke="{INK}" stroke-width="7"/></g>')
+    shine(I, x - r*.35, y - r*.42, r*.3, r*.14, -30, .55)
+
+def glove(I, x, y, s, rot, col):
+    I.add(f'<g transform="translate({x} {y}) rotate({rot}) scale({s})">'
+          + ''.join(f'<rect x="{fx-6}" y="{fy}" width="12" height="{fh}" rx="6" {st(col, 5)}/>' for fx, fy, fh in ((-21, -46, 34), (-7, -54, 40), (7, -53, 38), (20, -45, 32)))
+          + f'<rect x="-28" y="-24" width="56" height="50" rx="16" {st(col, 5)}/><rect x="-44" y="-10" width="14" height="30" rx="7" transform="rotate(-35 -37 5)" {st(col, 5)}/>'
+          + f'<rect x="-27" y="22" width="54" height="14" rx="3" fill="{INK}"/><rect x="-27" y="25" width="54" height="4" fill="#fff"/></g>')
+
+@icon('portero-loco')
+def _(I):
+    bg(I, '#2a3a9a', '#0a0f3a', '#ffffff', .08)
+    I.add('<rect x="0" y="300" width="512" height="212" fill="#24a044"/>' + ''.join(f'<rect x="{x}" y="300" width="60" height="212" fill="#1f8a3a"/>' for x in range(0, 512, 120)))
+    # gradas con público
+    import random; R = random.Random(7)
+    I.add('<rect x="0" y="90" width="512" height="200" fill="#1a1440"/>' + ''.join(f'<rect x="{R.randint(0,510)}" y="{R.randint(96,284)}" width="5" height="6" fill="{R.choice(["#ff3d5a","#fff","#35a0ff","#ffd93d"])}" opacity=".6"/>' for _ in range(260)))
+    # portería y red
+    I.add('<g opacity=".35" stroke="#fff" stroke-width="2">' + ''.join(f'<path d="M{x} 70 L{x+300} 470"/><path d="M{x+300} 70 L{x} 470"/>' for x in range(-260, 520, 34)) + '</g>')
+    I.add(f'<path d="M40 470 V64 H472 V470" fill="none" stroke="{INK}" stroke-width="30" stroke-linejoin="round"/><path d="M40 470 V64 H472 V470" fill="none" stroke="#f4f6fb" stroke-width="18" stroke-linejoin="round"/>')
+    glove(I, 170, 300, 2.1, -18, '#2fd67a'); glove(I, 360, 250, 2.1, 22, '#ff7a1f')
+    fball(I, 300, 190, 70, 20)
+    sparkle(I, 410, 130, 22, '#ffd93d'); sparkle(I, 110, 160, 16); sparkle(I, 230, 120, 12, '#ffd93d')
+    I.add('<path d="M330 120 L362 92 M340 150 L384 136 M300 108 L306 70" stroke="#fff" stroke-width="8" stroke-linecap="round"/>')
+
+@icon('balon-loco')
+def _(I):
+    bg(I, '#7a2a9a', '#1a0b4a', '#ff9500', .1)
+    import random; R = random.Random(3)
+    x = 0
+    while x < 512:
+        w = R.randint(40, 80); h = R.randint(90, 200)
+        I.add(f'<rect x="{x}" y="{330-h}" width="{w}" height="{h+2}" fill="#140a34"/>' + ''.join(f'<rect x="{x+6+k*12}" y="{330-h+10+m*16}" width="5" height="7" fill="#ffd678" opacity=".8"/>' for k in range((w-8)//12) for m in range((h-14)//16) if R.random() < .3))
+        x += w + 4
+    I.add('<rect x="0" y="330" width="512" height="182" fill="#3a2a8a"/><ellipse cx="256" cy="430" rx="190" ry="54" fill="none" stroke="#ffd93d" stroke-width="8"/>')
+    # pierna que toca el balón
+    I.add(f'<path d="M150 512 L210 400 L300 392" fill="none" stroke="{INK}" stroke-width="58" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<path d="M150 512 L210 400 L300 392" fill="none" stroke="#ff9500" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<path d="M272 372 Q330 360 350 388 Q356 410 330 414 L272 414 Z" {st("#35f0ff", 7)}/>')
+    fball(I, 300, 230, 80, -15)
+    I.add('<path d="M300 330 Q300 340 300 350" stroke="#fff" stroke-width="6" stroke-dasharray="4 10" stroke-linecap="round"/>')
+    for k, (x, y) in enumerate(((200, 200), (400, 210), (300, 120))):
+        I.add(f'<path d="M{x} {y} Q{(x+300)/2} {y-30} 300 230" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round" opacity=".7"/>')
+    sparkle(I, 410, 120, 22, '#ffd93d'); sparkle(I, 120, 110, 16, '#35f0ff'); sparkle(I, 440, 300, 12)
+    I.add(f'<text x="420" y="90" text-anchor="middle" font-size="64" {FONT} fill="#ffd93d" stroke="{INK}" stroke-width="6" paint-order="stroke">12</text>')
+
 @icon('bloques-neon')
 def _(I):
     bg(I, '#3a2fa8', '#14205e', '#ff6ad0', .10)

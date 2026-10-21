@@ -13,6 +13,14 @@ def route(r):
         f=NM+'/three164/'+m.group(1).split('?')[0]
         if os.path.exists(f): return r.fulfill(path=f,content_type='application/javascript')
         return r.fulfill(status=404,body='')
+    if '/__local/' in u:
+        return r.fulfill(path=NM+'/@fontsource/'+u.split('/__local/')[1],content_type='font/woff2')
+    if 'fonts.googleapis.com/css2' in u and ('Lilita' in u or 'Nunito' in u):
+        css=''
+        if 'Lilita' in u: css+="@font-face{font-family:'Lilita One';font-weight:400;src:url(https://fonts.gstatic.com/__local/lilita-one/files/lilita-one-latin-400-normal.woff2) format('woff2')}"
+        if 'Nunito' in u:
+            for w in (700,800,900): css+="@font-face{font-family:'Nunito';font-weight:%d;src:url(https://fonts.gstatic.com/__local/nunito/files/nunito-latin-%d-normal.woff2) format('woff2')}"%(w,w)
+        return r.fulfill(status=200,body=css,content_type='text/css')
     if 'fonts.googleapis' in u or 'fonts.gstatic' in u or 'googletagmanager' in u or 'google-analytics' in u:
         return r.fulfill(status=200,body='',content_type='text/css')
     if u.startswith('http://localhost'): return r.continue_()

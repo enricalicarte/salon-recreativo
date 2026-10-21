@@ -241,8 +241,8 @@ HUBS = [
          'Partidas cortas para pensar un poco y batir tu récord. Funcionan en móvil y ordenador, gratis y sin anuncios.'],
   pick=lambda g: g['cat'] == 'puzles'),
  dict(slug='juegos-con-camara', lang='es', title='Juegos con cámara online gratis | Salón Recreativo', h1='Juegos con cámara',
-  desc='Juegos con cámara online gratis: atrapa fruta con las manos y atraviesa muros poniendo el cuerpo en la forma del hueco. Para móvil y PC, sin descargas ni anuncios.',
-  intro=['Juegos para jugar moviendo el cuerpo delante de la cámara del móvil o del ordenador: atrapa con las manos lo que cae del cielo o colócate en la postura exacta para atravesar el muro.',
+  desc='Juegos con cámara online gratis: atrapa fruta con las manos, atraviesa muros con tu cuerpo, para penaltis de portero y haz toques con el balón. Para móvil y PC, sin descargas ni anuncios.',
+  intro=['Juegos para jugar moviendo el cuerpo delante de la cámara del móvil o del ordenador: atrapa con las manos lo que cae del cielo, colócate en la postura exacta para atravesar el muro, para los disparos como un portero o haz toques, pases y chutes con el balón.',
          'La cámara detecta tu postura en tu propio dispositivo: la imagen no se graba ni se envía a ningún sitio. Funcionan gratis y sin anuncios.'],
   pick=lambda g: g['cat'] == 'camara'),
 ]

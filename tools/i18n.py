@@ -112,7 +112,7 @@ ES_CQ = {
 }
 
 CA_CATS = {"camara": "Amb càmera", "cosmico": "Còsmic", "invierno": "Alta Temporada", "entrenos": "Entrenaments", "deporte": "Esport", "ritmo": "Ritme", "historias": "Històries", "motor": "Motor", "accion": "Acció", "puzles": "Trencaclosques", "marca": "Amb marca", "relax": "Relax", "catquiz": "CatQuiz"}
-CA_CATD = {"camara": {"t": "Amb càmera", "d": "El teu cos és el comandament: posa't davant de la càmera i mou-te per jugar. La imatge es processa al teu dispositiu i no s'envia enlloc."}, "puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: trencaclosques per pensar una mica, encaixar peces i batre el teu rècord."}, "accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
+CA_CATD = {"camara": {"t": "Amb càmera", "d": "El teu cos és el comandament: atrapa fruita, travessa murs, atura penals i fes tocs posant-te davant de la càmera i mou-te per jugar. La imatge es processa al teu dispositiu i no s'envia enlloc."}, "puzles": {"t": "Trencaclosques", "d": "Paraules, blocs i torres: trencaclosques per pensar una mica, encaixar peces i batre el teu rècord."}, "accion": {"t": "Acció", "d": "Punteria, baralles, curses i reflexos. Partides ràpides per jugar amb una mà."},
            "deporte": {"t": "Esport", "d": "Futbol 7, Kings League i unes olimpíades de granja per als més petits."},
            "ritmo": {"t": "Ritme", "d": "Notes que cauen, guitarres i cabines de DJ: música per tocar amb els dits."},
            "motor": {"t": "Motor", "d": "Karts, monster trucks, motos, curses de neó i muntanyes russes de porquets."},

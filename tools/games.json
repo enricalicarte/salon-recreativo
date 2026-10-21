@@ -569,6 +569,36 @@
    "play": "juegos/cabina/index.html"
   },
   {
+   "id": "porteroloco",
+   "slug": "portero-loco",
+   "kw": "juego de portero con cámara",
+   "cat": "camara",
+   "name": "Portero Loco",
+   "note": "Para los disparos con tus manos",
+   "blurb": "Juego de portero con la cámara: ponte bajo los palos y para con las manos los disparos que llegan desde el punto de penalti. Tiros rasos, vaselinas, efecto y cañonazos cada vez más rápidos, guantes de neón y un estadio que celebra cada parada. Tres goles y se acaba el partido.",
+   "tags": [
+    "Cámara",
+    "Fútbol",
+    "Portero"
+   ],
+   "play": "juegos/portero-loco/index.html"
+  },
+  {
+   "id": "balonloco",
+   "slug": "balon-loco",
+   "kw": "juego de toques de balón con cámara",
+   "cat": "camara",
+   "name": "Balón Loco",
+   "note": "Toques, pases, chutes y control",
+   "blurb": "Fútbol con tu propio cuerpo delante de la cámara: haz toques con pies, rodillas y cabeza sin que el balón toque el suelo, pásala al compañero, chuta por la escuadra a una portería con portero o controla los centros que te llegan. Cuatro modos en una cancha urbana de neón.",
+   "tags": [
+    "Cámara",
+    "Fútbol",
+    "4 modos"
+   ],
+   "play": "juegos/balon-loco/index.html"
+  },
+  {
    "id": "lluvialoca",
    "slug": "lluvia-loca",
    "kw": "juego con cámara para moverse",
@@ -1440,7 +1470,7 @@
   },
   "camara": {
    "t": "Con cámara",
-   "d": "Tu cuerpo es el mando: ponte delante de la cámara y muévete para jugar. La imagen se procesa en tu dispositivo y no se envía a ningún sitio."
+   "d": "Tu cuerpo es el mando: atrapa fruta, atraviesa muros, para penaltis y haz toques delante de la cámara y muévete para jugar. La imagen se procesa en tu dispositivo y no se envía a ningún sitio."
   }
  }
 }
