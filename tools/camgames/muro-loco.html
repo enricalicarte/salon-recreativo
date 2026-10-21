@@ -9,6 +9,9 @@
 <style>
 /*CSS*/
 .mid{justify-self:center;display:flex;flex-direction:column;align-items:center;gap:6px;max-width:58vw}
+#poseBox{display:flex;align-items:center;gap:10px}
+#poseIco{width:56px;height:72px;border-radius:12px;background:rgba(20,8,50,.55);border:2px solid rgba(255,255,255,.25);display:none}
+#poseBox.on #poseIco{display:block;animation:bigpop .4s cubic-bezier(.2,1.6,.4,1)}
 #pose{font-family:"Lilita One",system-ui,sans-serif;font-size:clamp(20px,5vw,40px);line-height:1.05;padding:8px 22px 9px;border-radius:16px;text-align:center;
   background:linear-gradient(180deg,#ffe96b,#ffb300);color:#2a1200;box-shadow:0 6px 0 #a35200,0 0 30px rgba(255,190,0,.6),inset 0 2px 0 rgba(255,255,255,.7);transform:scale(0);transition:transform .35s cubic-bezier(.2,1.6,.4,1)}
 #pose.on{transform:scale(1) rotate(-2deg)}
@@ -26,7 +29,7 @@
 
 <div class="hud off" id="hud">
   <div class="sc glass p1"><small id="lab1">PUNTOS</small><div id="score">0</div><div id="lives"></div><div class="pc" id="pc1"></div></div>
-  <div class="mid"><div id="pose"></div><div id="combo"></div></div>
+  <div class="mid"><div id="poseBox"><canvas id="poseIco" width="88" height="112"></canvas><div id="pose"></div></div><div id="combo"></div></div>
   <div class="r col"><div class="sc glass p2" id="sc2" hidden><small>JUGADOR 2</small><div class="s2" id="score2">0</div><div id="lives2"></div><div class="pc" id="pc2"></div></div>
     <div class="btns"><button class="ib glass" id="recal" title="Recalibrar" aria-label="Recalibrar"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="ib glass" id="snd" title="Sonido" aria-label="Sonido"></button><button class="ib glass" id="fs" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
 </div>
@@ -79,7 +82,21 @@ function hud(){
     el.combo.className='';$('.sc.p1').classList.toggle('out',p0.out);el.sc2.classList.toggle('out',p1.out);
   }else{el.pc1.textContent='';el.combo.textContent='COMBO x'+p0.combo;el.combo.className=p0.combo>1?'on':'';$('.sc.p1').classList.remove('out');}
 }
-function setPose(t){if(t){el.pose.textContent=t;el.pose.classList.remove('on');void el.pose.offsetWidth;el.pose.classList.add('on');}else el.pose.classList.remove('on');}
+function setPose(t,poses){
+  const box=$('#poseBox');
+  if(t){el.pose.textContent=t;el.pose.classList.remove('on');void el.pose.offsetWidth;el.pose.classList.add('on');box.classList.toggle('on',!!(poses&&poses.length));if(poses&&poses.length)drawPoseIcon(poses);}
+  else{el.pose.classList.remove('on');box.classList.remove('on');}
+}
+/* monigote de la pose en la tarjeta del HUD (una o dos figuras) */
+function drawPoseIcon(poses){
+  const c=$('#poseIco'),g=c.getContext('2d'),n=poses.length;c.width=88*n;c.style.width=(56*n)+'px';
+  g.clearRect(0,0,c.width,c.height);
+  poses.forEach((pj,k)=>{const cx=44+k*88,cy=58,S=46;
+    const P=pj.map(([x,y])=>[cx+x*S,cy+y*S]);
+    g.lineCap='round';g.lineJoin='round';g.strokeStyle=n===2?PC[k]:'#ffd93d';g.lineWidth=7;g.shadowColor=g.strokeStyle;g.shadowBlur=6;
+    g.beginPath();for(const[a,b]of BONES){g.moveTo(P[a][0],P[a][1]);g.lineTo(P[b][0],P[b][1]);}g.stroke();
+    g.beginPath();g.arc(P[0][0],P[0][1]-S*.05,S*.13,0,7);g.fillStyle=g.strokeStyle;g.fill();});
+}
 function setBig(t,ms,now){bigText(t);bigUntil=ms?now+ms:0;}
 const bodyJ=pi=>{if(np===2&&gm2==='turnos')pi=0;return demo?demoJ[pi]:(bodies[pi]&&bodies[pi].j);};
 let demoJ=[null,null];
@@ -183,6 +200,7 @@ function drawWall(now){
     ctx.save();ctx.translate(W/2,H/2);ctx.rotate(wob);
     const sb=s*.93;ctx.save();ctx.scale(sb,sb);ctx.translate(-W/2,-H/2);ctx.drawImage(wall.back,0,0,W,H);ctx.restore();
     ctx.scale(s,s);ctx.translate(-W/2,-H/2);ctx.drawImage(wall.img,0,0,W,H);drawBulbs(now,wall.fr);
+    drawHoleBones(now);
     if(wall.t>=.93){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.25+.2*Math.sin(now/60);ctx.lineWidth=10;
       for(const h of wall.holes){if(!h.ok.length)continue;ctx.strokeStyle=h.max>=passFor()?'#5dff9a':'#ff3d5a';for(const sg of h.sh)strokeCap(ctx,sg,sg[4]*2+10);}
       ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';}
@@ -203,6 +221,32 @@ function drawShards(dt){
   shards=shards.filter(s=>s.life>0&&s.y<H+s.h*2);
   for(const s of shards){ctx.save();ctx.globalAlpha=Math.min(1,s.life*2);ctx.translate(s.x,s.y);ctx.rotate(s.rot);ctx.scale(1+.2*(1-s.life),1+.2*(1-s.life));
     ctx.drawImage(s.img,s.sx,s.sy,s.w,s.h,-s.w/2,-s.h/2,s.w,s.h);ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=2;ctx.strokeRect(-s.w/2,-s.h/2,s.w,s.h);ctx.restore();}
+}
+
+/* esqueleto dentro del hueco del muro (coordenadas del muro, se escala con él) */
+function drawHoleBones(now){
+  for(const h of wall.holes){
+    const p=h.pts;ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=h.col;ctx.globalAlpha=.55;ctx.lineWidth=Math.max(5,h.S*.035);ctx.setLineDash([h.S*.06,h.S*.05]);ctx.lineDashOffset=-now/40;
+    ctx.beginPath();for(const[a,b]of BONES){ctx.moveTo(p[a].x,p[a].y);ctx.lineTo(p[b].x,p[b].y);}ctx.stroke();
+    ctx.setLineDash([]);ctx.beginPath();ctx.arc(p[0].x,p[0].y,h.S*.07,0,7);ctx.stroke();ctx.restore();
+  }
+}
+/* fantasma de la pose justo donde tiene que ponerse cada jugador: se ve desde que aparece el muro,
+   con anillos en manos y pies, y se vuelve verde en las partes que ya encajan */
+function drawGhosts(now){
+  if(!wall||wall.state!=='in')return;
+  const u=Math.min(1,wall.t),a=.35+.35*(1-u)+.15*Math.sin(now/200);
+  for(const h of wall.holes){
+    const p=h.pts,ev=wall.t>=.93&&h.ok.length;
+    ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.globalAlpha=a;
+    ctx.strokeStyle=h.col;ctx.lineWidth=Math.max(10,h.S*.06);ctx.globalCompositeOperation='lighter';
+    ctx.beginPath();for(const[i,k]of BONES){ctx.moveTo(p[i].x,p[i].y);ctx.lineTo(p[k].x,p[k].y);}ctx.moveTo(p[0].x+h.S*.09,p[0].y);ctx.arc(p[0].x,p[0].y,h.S*.09,0,7);ctx.stroke();
+    ctx.globalCompositeOperation='source-over';ctx.globalAlpha=Math.min(1,a+.3);
+    ctx.setLineDash([h.S*.05,h.S*.04]);ctx.lineDashOffset=-now/30;ctx.lineWidth=3;ctx.strokeStyle='#fff';ctx.stroke();ctx.setLineDash([]);
+    for(const i of STRICT){const q=p[i],ok=ev&&h.ok[i];ctx.lineWidth=4;ctx.strokeStyle=ok?'#5dff9a':'#fff';ctx.beginPath();ctx.arc(q.x,q.y,h.S*.07*(1+.12*Math.sin(now/150)),0,7);ctx.stroke();
+      if(ok){ctx.fillStyle='rgba(93,255,154,.35)';ctx.fill();}}
+    ctx.restore();
+  }
 }
 
 /* ---------- jugadores: esqueleto de la demo, puntos de acierto y siluetas guía ---------- */
@@ -282,30 +326,30 @@ function pickPose(tier){
 }
 function spawnWall(now){
   const tier=Math.min(3,1+Math.floor(n/4));
-  let holes,name,col,D=Math.max(2.7,5.4-n*.12);
+  let holes,name,col,icons,D=Math.max(2.7,5.4-n*.12);
   if(np===2&&gm2==='doble'){
     holes=[];const names=[];
     for(let pi=0;pi<2;pi++){if(P[pi].out)continue;const k=pickPose(tier),j=bodyJ(pi),a={...cal[pi]};
       if(j&&bodyReady(j))a.cx=clamp(mid(j[7],j[8]).x,W*(pi?.52:.12),W*(pi?.88:.48));
       holes.push({pi,pose:POSES[k].j,a});names.push('J'+(pi+1)+': '+POSES[k].n);col=POSES[k].c;}
-    name=names.join('  ·  ');
+    name=names.join('  ·  ');icons=holes.map(h=>h.pose);
   }else if(np===2&&gm2==='pareja'){
     const k=Math.floor(Math.random()*PAIRS.length),pp=PAIRS[k];
     const S=(cal[0].S+cal[1].S)/2,j0=bodyJ(0),j1=bodyJ(1);
     const x0=j0&&bodyReady(j0)?mid(j0[7],j0[8]).x:cal[0].cx,x1=j1&&bodyReady(j1)?mid(j1[7],j1[8]).x:cal[1].cx;
     const midx=clamp((x0+x1)/2,W*.35,W*.65),gap=pp.gap*S;
     holes=[{pi:0,pose:pp.j[0],a:{cx:midx-gap/2,cy:cal[0].cy,S:cal[0].S}},{pi:1,pose:pp.j[1],a:{cx:midx+gap/2,cy:cal[1].cy,S:cal[1].S}}];
-    name=pp.n;col=pp.c;D=Math.max(3.2,6-n*.12);
+    name=pp.n;col=pp.c;D=Math.max(3.2,6-n*.12);icons=pp.j;
   }else if(np===2&&gm2==='turnos'){
     const cp=1-poser,j=bodyJ(0),a=j&&bodyReady(j)?calOf(j):cal[0];
-    holes=[{pi:cp,pose:captured.j,a}];name='J'+(cp+1)+': ¡COPIA LA POSE DE J'+(poser+1)+'!';col=captured.c;D=4.5;
+    holes=[{pi:cp,pose:captured.j,a}];name='J'+(cp+1)+': ¡COPIA LA POSE DE J'+(poser+1)+'!';col=captured.c;D=4.5;icons=[captured.j];
   }else{
     const k=pickPose(tier),j=bodyJ(0),a={...cal[0]};
     if(j&&bodyReady(j))a.cx=clamp(mid(j[7],j[8]).x,W*.3,W*.7);
-    holes=[{pi:0,pose:POSES[k].j,a}];name=POSES[k].n;col=POSES[k].c;
+    holes=[{pi:0,pose:POSES[k].j,a}];name=POSES[k].n;col=POSES[k].c;icons=[POSES[k].j];
   }
   wall=makeWall(holes,D,col);wall.start=now;wall.idx=n;n++;
-  setPose(name);sfx.tick();el.fuse.classList.add('on');
+  setPose(name,icons);sfx.tick();el.fuse.classList.add('on');
 }
 function scoreHoles(now){
   for(const h of wall.holes){const j=bodyJ(h.pi);if(!j)continue;const s=scoreBody(j,h);if(s>h.max)h.max=s;}
@@ -429,6 +473,7 @@ function frame(now){
   if(!demo)drawPlayer(now,.15);
   if(state==='calib')for(let pi=0;pi<nb;pi++)drawGuide(now,pi,prog[pi]);
   drawWall(now);
+  drawGhosts(now);
   for(let pi=0;pi<nb;pi++)drawBody(bodyJ(pi),np===2&&gm2==='turnos'?(wall?wall.holes[0].pi:poser):pi,now);
   drawCaptured(now);
   drawShards(dt);
