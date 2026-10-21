@@ -48,6 +48,7 @@
 /*INC:_ball.js*/
 
 /* =================== PORTERO LOCO =================== */
+wantHands=true;
 const el={score:$('#score'),lives:$('#lives'),board:$('#board'),combo:$('#combo'),panel:$('#panel'),msg:$('#msg'),btn:$('#btn'),btnDemo:$('#btnDemo'),hud:$('#hud'),res:$('#res'),how:$('#how'),tag:$('#tag')};
 music.bpm=120;music.prog=[[98,123.5,146.8],[130.8,164.8,196],[110,138.6,164.8],[146.8,185,220]];
 const GOALS_MAX=3;
@@ -89,7 +90,7 @@ function getHands(dt){
   curJ=j;
   const sh=Math.hypot(j[1].x-j[2].x,j[1].y-j[2].y)||H*.2;
   const r=clamp(sh*.55,H*.075,H*.14);
-  for(const[w,e]of[[5,3],[6,4]]){const wr=j[w],eb=j[e];if(wr.v<.3)continue;out.push({x:wr.x+(wr.x-eb.x)*.3,y:wr.y+(wr.y-eb.y)*.3,r,a:Math.atan2(wr.y-eb.y,wr.x-eb.x)+Math.PI/2});}
+  for(const k of[0,1]){const h=handOf(j,k,mode==='cam'?bodies[0]:null,r);if(!h)continue;const wr=j[5+k],eb=j[3+k];out.push({x:h.x,y:h.y,r:h.r,a:Math.atan2(wr.y-eb.y,wr.x-eb.x)+Math.PI/2});}
   return out;
 }
 

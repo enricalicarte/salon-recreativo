@@ -53,6 +53,7 @@
 /*BASE*/
 
 /* =================== LLUVIA LOCA =================== */
+wantHands=true;
 const TYPES=[
   {e:'🍎',k:'fruit',pts:10,w:30,j:'#ff3b3b'},{e:'🍌',k:'fruit',pts:10,w:24,j:'#ffe14d'},{e:'🍓',k:'fruit',pts:10,w:24,j:'#ff2d55'},{e:'🍉',k:'fruit',pts:15,w:14,j:'#ff5c7a'},
   {e:'🪙',k:'gold',pts:50,w:9,j:'#ffd93d'},{e:'❤️',k:'heart',pts:0,w:2.5,j:'#ff3d8b'},{e:'⏳',k:'slow',pts:0,w:2.5,j:'#35f0ff'}
@@ -144,7 +145,7 @@ function getHands(dt){
     if(!j)continue;
     const sh=Math.hypot(j[1].x-j[2].x,j[1].y-j[2].y)||H*.2;
     const r=clamp(sh*.5,H*.07,H*.13);
-    [[5,3],[6,4]].forEach(([w,e],k)=>{const wr=j[w],eb=j[e];if(wr.v<.3)return;out.push({id:pi*2+k,p:pi,x:wr.x+(wr.x-eb.x)*.25,y:wr.y+(wr.y-eb.y)*.25,r});});
+    for(const k of[0,1]){const h=handOf(j,k,mode==='cam'?bodies[pi]:null,r);if(h)out.push({id:pi*2+k,p:pi,x:h.x,y:h.y,r:h.r});}
   }
   return out;
 }
