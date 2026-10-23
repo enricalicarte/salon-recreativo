@@ -63,6 +63,23 @@ h1{margin:0;font-size:clamp(40px,12vw,76px);line-height:.92;font-weight:900;font
 .how{margin-top:14px;font-size:clamp(11px,3vw,13px);color:#b9abf0;line-height:1.4}
 #final{font-size:clamp(64px,22vw,130px);font-weight:900;color:#ffe14a;line-height:1;text-shadow:0 5px 0 #c2185b,-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000}
 .st{font-size:clamp(14px,4vw,19px);font-weight:700;margin:8px 0 18px;color:#e9e0ff}
+#vs div.gone{opacity:.45;text-decoration:line-through}
+#vsLobby .lcode{font-weight:900;font-size:clamp(13px,3.6vw,16px);color:#cfc4ff;margin:2px 0 8px}
+#vsLobby .lcode b{display:block;font-size:clamp(34px,11vw,54px);letter-spacing:.18em;color:#ffd23f;text-shadow:0 4px 0 #a35b00;line-height:1.1}
+#vsList{display:flex;flex-direction:column;gap:6px;margin:0 0 12px;text-align:left}
+#vsList .pl{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.18);border-radius:14px;padding:6px 12px}
+#vsList .pl.me{border-color:#ffd23f}
+#vsList .pl .em{font-size:24px}
+#vsList .pl b{flex:1;font-size:clamp(14px,4vw,17px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#vsList .pl i{font-style:normal;font-weight:800;font-size:clamp(11px,3.2vw,13px);color:#cfc4ff;white-space:nowrap}
+#vsList .pl.empty{justify-content:center;color:#cfc4ff;font-weight:700;font-size:13px;border-style:dashed}
+#vsLobby .lname{align-items:center}
+#vsLobby .lname label{font-weight:900;font-size:14px}
+#vsP #vsLobby .lname input{font-size:clamp(16px,4.6vw,20px);letter-spacing:0;text-transform:none;width:11ch}
+#vsLobby .ch.lock{opacity:.55;pointer-events:none}
+#vsLobby .chs{margin-bottom:12px}
+#vsGo.off{filter:grayscale(.8);opacity:.7;font-size:clamp(15px,4.2vw,20px)}
+#vsLobby input:disabled{opacity:.6}
 </style>
 </head>
 <body>
@@ -84,22 +101,29 @@ h1{margin:0;font-size:clamp(40px,12vw,76px);line-height:.92;font-weight:900;font
     <div class="sub">¡Bolos de pista loca! Elige a tu jugador</div>
     <div class="chs" id="chs"></div>
     <button class="big" id="bPlay">¡JUGAR!</button><br>
-    <button class="big alt" id="bVs" style="margin:14px 0 0">👥 2 JUGADORES (2 móviles)</button>
+    <button class="big alt" id="bVs" style="margin:14px 0 0">👥 MULTIJUGADOR · 2 a 4 móviles</button>
     <div class="how" id="how"></div>
   </div>
 </div>
 
 <div id="vsP" class="ov hidden">
   <div class="card">
-    <div class="sub" style="font-size:clamp(18px,5vw,26px);margin:0">👥 Partida a 2 móviles</div>
-    <div class="sub" id="vsInfo">Cada uno juega en su móvil, por turnos. Vale con wifi distintos o datos móviles.</div>
+    <div class="sub" style="font-size:clamp(18px,5vw,26px);margin:0">👥 Multijugador</div>
+    <div class="sub" id="vsInfo">De 2 a 4 jugadores, cada uno en su móvil y por turnos. Vale con wifi distintos o datos móviles.</div>
     <div id="vsStart">
       <button class="big" id="vsCreate">CREAR SALA</button>
       <div class="sub">— o —</div>
       <div class="row"><input id="vsIn" maxlength="4" placeholder="CÓDIGO" autocomplete="off" autocapitalize="characters"><button class="big alt" id="vsJoin" style="margin:0">UNIRME</button></div>
     </div>
-    <div id="vsHost" class="hidden"><div class="sub">Dile a tu rival este código:</div><div id="vsCode">----</div></div>
-    <button class="big alt" id="vsBack" style="margin:14px 0 0">Atrás</button>
+    <div id="vsLobby" class="hidden">
+      <div class="lcode">Código de la sala <b id="vsLCode">----</b></div>
+      <div id="vsList"></div>
+      <div class="row lname"><label for="vsName">Tu nombre</label><input id="vsName" maxlength="12" autocomplete="off" placeholder="Nombre"></div>
+      <div class="chs" id="vsChs"></div>
+      <button class="big" id="vsReady">¡LISTO!</button>
+      <button class="big" id="vsGo">Esperando jugadores…</button>
+    </div>
+    <button class="big alt" id="vsBack" style="margin:14px 0 0">Salir</button>
   </div>
 </div>
 
@@ -900,20 +924,21 @@ function startGame(){
   G.rolls=[];G.fRolls=[];G.frame=1;G.over=false;G.strikes=0;G.spares=0;S.streak=0;S.hype=0;setStreak(0);
   boardMsg='';boardMsgT=0;
   resetPins(true);S.standing=10;
-  if(V.on){V.spec=false;V.throws=[];V.rolls=[];V.oppStreak=0;V.turn=0;V.opp.rolls=[];V.opp.over=false;V.txts=[];V.last=Date.now();$('wait').classList.add('hidden');}
+  if(V.on){V.spec=false;V.throws=[];V.rolls=[];V.txts=[];V.myStreak=0;V.myTurnShown=false;$('wait').classList.add('hidden');}
   buildFrames();renderFrames();
   $('menu').classList.add('hidden');$('end').classList.add('hidden');$('vsP').classList.add('hidden');
   after(600,nextOrWait);
   S.state='intro';S.camMode='aim';
 }
 function nextOrWait(){
+  if(V.on&&V.phase==='game'&&!V.throws.length&&allOver()){endGame();return;}
   if(V.on&&(V.throws.length||V.turn!==V.me)){
     ball.active=false;ball.mesh.visible=false;S.state='wait';S.camMode='aim';
     setHint('');$('power').classList.add('hidden');
-    $('waitT').textContent='⏳ Turno de '+V.oppName()+'…'+(V.oppTxt?'  ('+V.oppTxt+')':'');$('wait').classList.remove('hidden');
+    $('waitT').textContent='⏳ Turno de '+V.oppName()+'…';$('wait').classList.remove('hidden');
     renderVS();
     if(V.throws.length)specStart(V.throws.shift());
-  }else{$('wait').classList.add('hidden');newBall();}
+  }else{$('wait').classList.add('hidden');if(V.on&&V.phase==='game'&&!V.myTurnShown&&V.players.length>1){V.myTurnShown=true;showMsg('¡TU TURNO!');}newBall();}
 }
 function newBall(){
   ball.active=false;ball.done=false;ball.gutter=false;ball.pit=false;ball.hit=false;ball.vx=ball.vz=ball.vy=0;ball.spin=0;
@@ -1084,32 +1109,116 @@ function buildMenu(){
   $('how').innerHTML=isTouch?'👆 Arrastra para colocar la bola<br>⚡ Gesto rápido hacia arriba = lanzar (más rápido = más velocidad)<br>↩️ Curva el gesto para dar efecto':'🖱️ Arrastra y lanza con un gesto rápido hacia arriba<br>⌨️ O ← → para mover, mantén ESPACIO para la fuerza, Q/E = efecto';
 }
 
-/* ============================ 2 JUGADORES (WebRTC / PeerJS) ============================ */
-const V={on:false,me:0,turn:0,peer:null,conn:null,opp:{rolls:[],over:false,char:0},txts:[],spec:false,throws:[],rolls:[],oppStreak:0,myStreak:0,oppTxt:'',last:0,
-  oppName(){const c=CHARS[V.opp.char]||CHARS[0];return c.n;}};
+/* ============================ MULTIJUGADOR (2 a 4 móviles · WebRTC / PeerJS) ============================ */
+/* El anfitrión crea la sala y hace de centralita: recibe los mensajes de cada jugador y los reenvía al resto.
+   Antes de jugar hay una SALA DE ESPERA: cada uno elige nombre y personaje y marca «¡Listo!»; el anfitrión empieza
+   cuando todos están listos. En la partida se juega por turnos de una tirada (frame) cada uno, como en una bolera real,
+   y los demás ven el lanzamiento en directo en su móvil. */
+const MAXP=4;
+const V={on:false,host:false,me:0,turn:0,peer:null,conn:null,conns:[],code:'',phase:'off',players:[],opp:{char:0},
+  txts:[],spec:false,throws:[],rolls:[],myStreak:0,ready:false,
+  oppName(){const p=V.players[V.turn];return p?p.name:'Rival';}};
+const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let myName='';try{myName=(localStorage.getItem('strikeparty_name')||'').slice(0,12);}catch(e){}
+function totalOf(r){let t=0;scoreFrames(r||[]).forEach(f=>{if(f.t!=null)t=f.t;});return t;}
+function rollsOf(i){return i===V.me?G.rolls:(V.players[i]&&V.players[i].rolls)||[];}
 function renderVS(){
-  const el=$('vs');if(!V.on){el.classList.add('hidden');return;}
-  const sc=scoreFrames(V.opp.rolls);let ot=0;sc.forEach(f=>{if(f.t!=null)ot=f.t;});
-  const mc=CHARS[charIdx],oc=CHARS[V.opp.char]||CHARS[0],myTurn=V.turn===V.me&&!G.over;
-  el.innerHTML='<div class="me'+(myTurn?' turn':'')+'">'+mc.e+' Tú '+currentTotal()+(myTurn?' ◀':'')+'</div><div class="'+((!myTurn&&!(G.over&&V.opp.over))?'turn':'')+'">'+oc.e+' '+oc.n+' '+ot+'</div>';
+  const el=$('vs');if(!V.on||V.phase!=='game'){el.classList.add('hidden');return;}
+  el.innerHTML=V.players.map((p,i)=>{const c=CHARS[p.c]||CHARS[0],t=V.turn===i&&!p.over;
+    return '<div class="'+(i===V.me?'me ':'')+(t?'turn':'')+(p.left?' gone':'')+'">'+c.e+' '+esc(i===V.me?'Tú':p.name)+' '+totalOf(rollsOf(i))+(t?' ◀':'')+'</div>';}).join('');
   el.classList.remove('hidden');
 }
-function vsSend(o){try{if(V.conn&&V.conn.open)V.conn.send(o);}catch(e){}}
+/* ---- red ---- */
+function vsSend(o){
+  o.from=V.me;
+  if(V.host)V.conns.forEach(c=>{try{if(c&&c.open)c.send(o);}catch(e){}});
+  else{try{if(V.conn&&V.conn.open)V.conn.send(o);}catch(e){}}
+}
+function hostRelay(m,except){V.conns.forEach((c,i)=>{if(c&&c!==except){try{if(c.open)c.send(m);}catch(e){}}});}
+function seatOfConn(c){return V.players.findIndex(p=>p.conn===c);}
+/* ---- sala de espera ---- */
+function lobbyData(){return V.players.map(p=>({name:p.name,c:p.c,ready:!!p.ready,left:!!p.left}));}
+function hostLobby(){
+  V.players.forEach((p,i)=>{if(p.conn&&p.conn.open){try{p.conn.send({t:'lobby',you:i,code:V.code,players:lobbyData()});}catch(e){}}});
+  renderLobby();
+}
+function showLobby(){
+  V.phase='lobby';V.ready=false;abortSpec();gen++;
+  resetPins(false);boardMsgT=0;G.rolls=[];G.frame=1;G.over=false;buildFrames();renderFrames();
+  ball.active=false;ball.mesh.visible=true;ball.mesh.scale.setScalar(1);ball.mesh.position.set(0,.5,9.45);$('bAgain').textContent='OTRA VEZ';
+  $('menu').classList.add('hidden');$('end').classList.add('hidden');$('vs').classList.add('hidden');$('wait').classList.add('hidden');
+  $('vsP').classList.remove('hidden');$('vsStart').classList.add('hidden');$('vsLobby').classList.remove('hidden');
+  S.state='menu';S.camMode='menu';
+  if(!$('vsName').value)$('vsName').value=myName||CHARS[charIdx].n;
+  buildLobbyChars();renderLobby();
+}
+function buildLobbyChars(){
+  const el=$('vsChs');el.innerHTML='';
+  CHARS.forEach((c,i)=>{
+    const b=document.createElement('button');b.className='ch'+(i===charIdx?' sel':'');
+    b.innerHTML='<span class="em">'+c.e+'</span><b>'+c.n+'</b><small>'+c.d+'</small>';
+    b.onclick=()=>{if(V.ready)return;initAudio();sClick();charIdx=i;buildBowler();makeBallMesh();ball.mesh.position.set(0,.5,9.45);
+      [...el.children].forEach((x,k)=>x.classList.toggle('sel',k===i));sendPick();};
+    el.appendChild(b);
+  });
+}
+function sendPick(){
+  const name=($('vsName').value||'').trim().slice(0,12)||CHARS[charIdx].n;
+  myName=name;try{localStorage.setItem('strikeparty_name',name);}catch(e){}
+  if(V.host){const p=V.players[0];p.name=name;p.c=charIdx;p.ready=V.ready;hostLobby();}
+  else vsSend({t:'pick',name,c:charIdx,ready:V.ready});
+}
+function renderLobby(){
+  if(V.phase!=='lobby')return;
+  $('vsLCode').textContent=V.code||'----';
+  const ps=V.players.filter(p=>!p.left);
+  $('vsList').innerHTML=V.players.map((p,i)=>p.left?'':'<div class="pl'+(i===V.me?' me':'')+'"><span class="em">'+(CHARS[p.c]||CHARS[0]).e+'</span><b>'+esc(p.name)+(i===V.me?' (tú)':'')+'</b><i>'+(i===0?'Anfitrión':p.ready?'✅ ¡Listo!':'Eligiendo…')+'</i></div>').join('')
+    +(ps.length<MAXP?'<div class="pl empty">'+(ps.length<2?'Esperando jugadores… comparte el código':'Puede entrar alguien más (máx. '+MAXP+')')+'</div>':'');
+  $('vsName').disabled=V.ready;
+  [...$('vsChs').children].forEach(b=>b.classList.toggle('lock',V.ready));
+  const rb=$('vsReady'),go=$('vsGo');
+  if(V.host){
+    rb.classList.add('hidden');go.classList.remove('hidden');
+    const others=ps.filter((p,i)=>V.players.indexOf(p)!==0),allR=others.length>=1&&others.every(p=>p.ready);
+    go.disabled=!allR;go.classList.toggle('off',!allR);
+    go.textContent=others.length<1?'Esperando jugadores…':allR?'¡EMPEZAR PARTIDA! ('+ps.length+')':'Esperando a que estén listos…';
+  }else{
+    go.classList.add('hidden');rb.classList.remove('hidden');
+    rb.textContent=V.ready?'✓ ¡LISTO! (cambiar)':'¡LISTO!';rb.classList.toggle('alt',V.ready);
+  }
+  vsInfo(V.host?'Cada jugador elige nombre y personaje y pulsa «¡Listo!». Cuando estén todos, empieza tú.':(V.ready?'Esperando a que el anfitrión empiece la partida…':'Elige tu nombre y tu personaje y pulsa «¡Listo!».'));
+}
+/* ---- partida ---- */
+function nextSeat(from){
+  const n=V.players.length;
+  for(let k=1;k<=n;k++){const i=(from+k)%n,p=V.players[i];if(p&&!p.over&&!p.left)return i;}
+  return -1;
+}
+function allOver(){return V.players.every(p=>p.over||p.left);}
+function vsBegin(list){
+  V.players=list.map(p=>({name:p.name,c:p.c|0,rolls:[],over:false,left:!!p.left,streak:0,txt:'',conn:p.conn||null}));
+  V.phase='game';V.turn=V.players.findIndex(p=>!p.left);if(V.turn<0)V.turn=0;
+  charIdx=V.players[V.me].c;buildBowler();makeBallMesh();
+  $('vsP').classList.add('hidden');startGame();
+}
 function vsPass(over){
-  V.turn=1-V.me;
-  vsSend({t:'pass',rolls:G.rolls.slice(),over:!!over,txt:V.txts.join(' · ')});
+  const p=V.players[V.me];p.rolls=G.rolls.slice();p.over=!!over;p.streak=S.streak;
+  const next=nextSeat(V.me);V.turn=next<0?V.me:next;V.myTurnShown=false;
+  vsSend({t:'pass',rolls:p.rolls,over:p.over,txt:V.txts.join(' · '),streak:S.streak,next});
   V.txts=[];renderVS();
 }
 function vsLocalDone(){
   vsPass(true);
-  if(V.opp.over)endGame();else nextOrWait();
+  if(allOver())endGame();else nextOrWait();
 }
 function vsEndText(tot){
-  const sc=scoreFrames(V.opp.rolls);let ot=0;sc.forEach(f=>{if(f.t!=null)ot=f.t;});
-  const w=tot>ot?'🏆 ¡HAS GANADO!':tot<ot?'¡Gana '+V.oppName()+'!':'¡EMPATE!';
-  $('endT').textContent=w;
-  $('endS').innerHTML='Tú: <b>'+tot+'</b> · '+V.oppName()+': <b>'+ot+'</b><br>Strikes: <b>'+G.strikes+'</b> · Spares: <b>'+G.spares+'</b>';
-  S.endHappy=tot>=ot;$('bAgain').textContent='REVANCHA';
+  const rk=V.players.map((p,i)=>({i,p,t:i===V.me?tot:totalOf(p.rolls)})).filter(o=>!o.p.left||o.p.rolls.length).sort((a,b)=>b.t-a.t);
+  const top=rk[0],tie=rk.length>1&&rk[1].t===top.t;
+  $('endT').textContent=tie&&rk.filter(o=>o.t===top.t).some(o=>o.i===V.me)?'¡EMPATE!':top.i===V.me?'🏆 ¡HAS GANADO!':'¡Gana '+top.p.name+'!';
+  const med=['🥇','🥈','🥉','4º'];
+  $('endS').innerHTML=rk.map((o,k)=>(med[k]||'')+' '+(CHARS[o.p.c]||CHARS[0]).e+' '+(o.i===V.me?'<b>Tú</b>':esc(o.p.name))+': <b>'+o.t+'</b>').join('<br>')
+    +'<br><small>Tus strikes: <b>'+G.strikes+'</b> · spares: <b>'+G.spares+'</b></small>';
+  S.endHappy=top.i===V.me;$('bAgain').textContent='VOLVER A LA SALA';
   $('wait').classList.add('hidden');
 }
 function vsApplyMask(k){
@@ -1120,10 +1229,11 @@ function vsApplyMask(k){
   });
 }
 function specStart(m){
-  V.spec=true;V.myStreak=S.streak;S.streak=V.oppStreak|0;setStreak(S.streak);
-  if(V.opp.char!==charIdx){buildBowler();makeBallMesh();}
+  const p=V.players[m.from]||V.players[V.turn];
+  V.spec=true;V.specFrom=m.from;V.opp={char:p.c};V.myStreak=S.streak;S.streak=p.streak|0;setStreak(S.streak);
+  buildBowler();makeBallMesh();
   newBall();setHint('');
-  $('waitT').textContent='👀 Lanza '+V.oppName();$('wait').classList.remove('hidden');
+  $('waitT').textContent='👀 Lanza '+p.name;$('wait').classList.remove('hidden');
   ball.x=m.x;ball.mesh.scale.setScalar(1);pseed=m.seed>>>0;
   ball.vz=m.vz;ball.vx=m.vx;ball.spin=m.spin;ball.vy=0;ball.y=Math.max(ball.y,.5);ball.active=true;
   S.state='rolling';S.camMode='follow';S.rollT=0;S.settle=0;
@@ -1132,13 +1242,69 @@ function specStart(m){
   S.shake=.12+Math.abs(m.vz)/120;
 }
 function vsSpecEnd(){
-  V.spec=false;V.oppStreak=S.streak;S.streak=V.myStreak|0;setStreak(S.streak);
-  if(V.opp.char!==charIdx){buildBowler();makeBallMesh();}
+  const p=V.players[V.specFrom];if(p)p.streak=S.streak;
+  V.spec=false;S.streak=V.myStreak|0;setStreak(S.streak);
+  buildBowler();makeBallMesh();
+}
+function abortSpec(){
+  const was=V.spec;V.spec=false;V.throws=[];V.rolls=[];
+  if(was){buildBowler();makeBallMesh();S.streak=V.myStreak|0;setStreak(S.streak);}
+  return was;
+}
+function onLeft(i){
+  const p=V.players[i];if(!p||p.left)return;
+  p.left=true;p.over=true;
+  if(V.phase==='lobby'){renderLobby();return;}
+  showMsg((p.name||'Un jugador')+' se ha ido');
+  if(V.turn===i){
+    abortSpec();gen++;resetPins(true);S.standing=10;
+    const nx=nextSeat(i);
+    if(nx<0){endGame();return;}
+    V.turn=nx;nextOrWait();
+  }else if(allOver()&&S.state==='wait'){endGame();return;}
+  renderVS();
+}
+/* ---- mensajes ---- */
+function vsHandle(m){
+  if(!m||!m.t)return;
+  if(m.t==='lobby'){V.me=m.you;V.code=m.code||V.code;V.players=m.players.map(p=>({name:p.name,c:p.c,ready:p.ready,left:p.left}));
+    if(V.phase!=='lobby')showLobby();else renderLobby();return;}
+  if(m.t==='lobbyshow'){showLobby();return;}
+  if(m.t==='start'){vsBegin(m.players);return;}
+  if(m.t==='full'){V.on=false;vsInfo(m.why||'La sala está llena.');return;}
+  if(V.phase!=='game')return;
+  if(m.t==='throw'){V.throws.push(m);if(S.state==='wait')nextOrWait();}
+  else if(m.t==='roll'){V.rolls.push(m);if(S.state==='specwait'){S.state='rolling';finishRoll();}}
+  else if(m.t==='pass'){
+    const p=V.players[m.from];if(p){p.rolls=m.rolls||[];p.over=!!m.over;p.txt=m.txt||'';p.streak=m.streak|0;}
+    if(m.next>=0)V.turn=m.next;
+    if(S.state==='wait'&&!V.throws.length)nextOrWait();
+    renderVS();
+  }
+  else if(m.t==='left')onLeft(m.seat);
+}
+/* el anfitrión recibe de un jugador */
+function hostOnData(conn,m){
+  if(!m||!m.t)return;
+  const i=seatOfConn(conn);if(i<0)return;m.from=i;
+  if(m.t==='pick'){const p=V.players[i];p.name=String(m.name||'').slice(0,12)||CHARS[m.c|0].n;p.c=clamp(m.c|0,0,CHARS.length-1);p.ready=!!m.ready;hostLobby();return;}
+  if(m.t==='tolobby'){if(V.phase==='game')hostToLobby();return;}
+  hostRelay(m,conn);vsHandle(m);
+}
+function hostToLobby(){
+  V.players=V.players.filter(p=>!p.left&&(p===V.players[0]||p.conn&&p.conn.open));
+  V.players.forEach(p=>{p.ready=false;p.rolls=[];p.over=false;});
+  V.conns=V.players.map(p=>p.conn);V.me=0;
+  V.players.forEach(p=>{if(p.conn&&p.conn.open){try{p.conn.send({t:'lobbyshow'});}catch(e){}}});
+  showLobby();hostLobby();
+}
+function vsToLobby(){
+  if(V.host)hostToLobby();else{vsSend({t:'tolobby'});}
 }
 function vsLeave(){
-  V.on=false;$('vs').classList.add('hidden');$('wait').classList.add('hidden');$('bAgain').textContent='OTRA VEZ';
-  try{if(V.conn)V.conn.close();}catch(e){}try{if(V.peer)V.peer.destroy();}catch(e){}
-  V.conn=null;V.peer=null;
+  V.on=false;V.phase='off';V.host=false;$('vs').classList.add('hidden');$('wait').classList.add('hidden');$('bAgain').textContent='OTRA VEZ';
+  try{if(V.conn)V.conn.close();}catch(e){}V.conns.forEach(c=>{try{if(c)c.close();}catch(e){}});try{if(V.peer)V.peer.destroy();}catch(e){}
+  V.conn=null;V.peer=null;V.conns=[];V.players=[];abortSpec();
 }
 function vsInfo(t){$('vsInfo').textContent=t;}
 function vsLoadLib(cb){
@@ -1149,35 +1315,20 @@ function vsLoadLib(cb){
     const sc=document.createElement('script');sc.src=urls[i++];sc.onload=()=>cb(!!window.Peer);sc.onerror=next;document.head.appendChild(sc);
   })();
 }
-function vsWire(conn){
-  V.conn=conn;
-  conn.on('data',m=>{
-    if(!m||!m.t)return;
-    if(m.t==='hello'){V.opp.char=m.c|0;}
-    else if(m.t==='start'){V.on=true;startGame();}
-    else if(m.t==='again'){if(Date.now()-V.last>1500)startGame();}
-    else if(m.t==='throw'){V.throws.push(m);if(S.state==='wait')nextOrWait();}
-    else if(m.t==='roll'){V.rolls.push(m);if(S.state==='specwait'){S.state='rolling';finishRoll();}}
-    else if(m.t==='pass'){
-      V.opp.rolls=m.rolls||[];V.opp.over=!!m.over;V.oppTxt=m.txt||'';V.turn=V.me;
-      if(G.over&&V.opp.over){endGame();return;}
-      if(S.state==='wait'&&!V.throws.length){showMsg('¡TU TURNO!');newBall();$('wait').classList.add('hidden');}
-      renderVS();
-    }
-  });
-  conn.on('close',()=>{
-    if(!V.on)return;
-    V.on=false;$('vs').classList.add('hidden');$('wait').classList.add('hidden');
-    showMsg('Rival desconectado');
-    const was=V.spec;V.spec=false;V.throws=[];V.rolls=[];
-    if(was){buildBowler();makeBallMesh();S.streak=V.myStreak|0;setStreak(S.streak);}
-    if(S.state==='wait'||S.state==='specwait'||(was&&S.state==='rolling'))newBall();
-  });
+function lostHost(){
+  if(!V.on)return;
+  const wasGame=V.phase==='game';
+  V.on=false;V.phase='off';$('vs').classList.add('hidden');$('wait').classList.add('hidden');$('bAgain').textContent='OTRA VEZ';
+  if(!wasGame){$('vsLobby').classList.add('hidden');$('vsStart').classList.remove('hidden');vsInfo('Se ha cerrado la sala. Crea una nueva o únete con otro código.');return;}
+  showMsg('Se ha cerrado la sala');
+  const was=abortSpec();
+  if(!G.over&&(S.state==='wait'||S.state==='specwait'||(was&&S.state==='rolling')))newBall();
+  else if(G.over)endGame();
 }
 function vsOpenPanel(){
   $('menu').classList.add('hidden');$('vsP').classList.remove('hidden');
-  $('vsStart').classList.remove('hidden');$('vsHost').classList.add('hidden');
-  vsInfo('Cada uno juega en su móvil, por turnos. Vale con wifi distintos o datos móviles.');
+  $('vsStart').classList.remove('hidden');$('vsLobby').classList.add('hidden');
+  vsInfo('De 2 a '+MAXP+' jugadores, cada uno en su móvil y por turnos. Vale con wifi distintos o datos móviles.');
 }
 function vsCreate(attempt){
   vsInfo('Conectando…');
@@ -1187,20 +1338,26 @@ function vsCreate(attempt){
     let peer;try{peer=new Peer('strikeparty-'+code,window.SP_PEER_OPTS||{});}catch(e){vsInfo('Error al crear la sala.');return;}
     V.peer=peer;
     peer.on('open',()=>{
-      $('vsCode').textContent=code;$('vsStart').classList.add('hidden');$('vsHost').classList.remove('hidden');
-      vsInfo('Esperando a tu rival…');
+      V.on=true;V.host=true;V.me=0;V.code=code;V.conns=[null];
+      V.players=[{name:($('vsName').value||myName||CHARS[charIdx].n).slice(0,12),c:charIdx,ready:true,conn:null}];
+      showLobby();hostLobby();
     });
     peer.on('error',e=>{
       if(e&&e.type==='unavailable-id'&&(attempt||0)<4){try{peer.destroy();}catch(_){}vsCreate((attempt||0)+1);}
-      else vsInfo('Error de conexión ('+(e&&e.type||'?')+'). Inténtalo de nuevo.');
+      else if(V.phase!=='game')vsInfo('Error de conexión ('+(e&&e.type||'?')+'). Inténtalo de nuevo.');
     });
     peer.on('connection',conn=>{
-      if(V.conn&&V.conn.open){conn.close();return;}
-      vsWire(conn);
       conn.on('open',()=>{
-        conn.send({t:'hello',c:charIdx});
-        V.on=true;V.me=0;vsInfo('¡Rival conectado! Empieza la partida…');
-        setTimeout(()=>{vsSend({t:'start'});startGame();},900);
+        const n=V.players.filter(p=>!p.left).length;
+        if(V.phase!=='lobby'||n>=MAXP){try{conn.send({t:'full',why:V.phase!=='lobby'?'La partida ya ha empezado. Espera a la siguiente.':'La sala está llena (máximo '+MAXP+').'});}catch(e){}setTimeout(()=>{try{conn.close();}catch(e){}},400);return;}
+        V.players.push({name:'Jugador '+(V.players.length+1),c:(V.players.length)%CHARS.length,ready:false,conn});V.conns.push(conn);
+        sClick();hostLobby();
+      });
+      conn.on('data',m=>hostOnData(conn,m));
+      conn.on('close',()=>{
+        const i=seatOfConn(conn);if(i<0)return;
+        if(V.phase==='lobby'){V.players.splice(i,1);V.conns.splice(i,1);hostLobby();return;}
+        if(V.phase==='game'){hostRelay({t:'left',seat:i,from:0},conn);onLeft(i);}
       });
     });
   });
@@ -1215,14 +1372,16 @@ function vsJoin(){
     V.peer=peer;let done=false;
     const fail=m=>{if(done)return;done=true;vsInfo(m);try{peer.destroy();}catch(_){}};
     const to=setTimeout(()=>fail('No se encuentra la sala. Revisa el código (o puede que tu red bloquee la conexión).'),22000);
-    peer.on('error',e=>fail(e&&e.type==='peer-unavailable'?'No existe esa sala. Revisa el código.':'Error de conexión ('+(e&&e.type||'?')+').'));
+    peer.on('error',e=>{if(!V.on)fail(e&&e.type==='peer-unavailable'?'No existe esa sala. Revisa el código.':'Error de conexión ('+(e&&e.type||'?')+').');});
     peer.on('open',()=>{
       const conn=peer.connect('strikeparty-'+code,{reliable:true});
-      vsWire(conn);
+      V.conn=conn;V.code=code;
+      conn.on('data',vsHandle);
+      conn.on('close',lostHost);
       conn.on('open',()=>{
-        clearTimeout(to);done=true;V.on=true;V.me=1;
-        conn.send({t:'hello',c:charIdx});
-        vsInfo('¡Conectado! Esperando a que empiece…');
+        clearTimeout(to);done=true;V.on=true;V.host=false;
+        vsInfo('¡Conectado! Entrando en la sala…');
+        setTimeout(()=>{V.ready=false;sendPick();},300);
       });
     });
   });
@@ -1230,13 +1389,23 @@ function vsJoin(){
 $('bVs').onclick=()=>{initAudio();sClick();goFull();vsOpenPanel();};
 $('vsCreate').onclick=()=>{initAudio();sClick();vsCreate(0);};
 $('vsJoin').onclick=()=>{initAudio();sClick();vsJoin();};
-$('vsBack').onclick=()=>{sClick();vsLeave();$('vsP').classList.add('hidden');$('menu').classList.remove('hidden');};
+$('vsIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('vsJoin').click();});
+$('vsName').addEventListener('change',()=>{if(V.on&&V.phase==='lobby')sendPick();});
+$('vsReady').onclick=()=>{initAudio();sClick();V.ready=!V.ready;sendPick();renderLobby();};
+$('vsGo').onclick=()=>{
+  if(!V.host||$('vsGo').disabled)return;initAudio();sClick();sendPick();
+  const list=V.players.filter(p=>!p.left);V.players=list;V.conns=list.map(p=>p.conn);
+  const data=list.map(p=>({name:p.name,c:p.c}));
+  list.forEach((p,i)=>{if(p.conn&&p.conn.open){try{p.conn.send({t:'lobby',you:i,code:V.code,players:lobbyData()});p.conn.send({t:'start',players:data});}catch(e){}}});
+  V.me=0;vsBegin(list.map(p=>({name:p.name,c:p.c,conn:p.conn})));
+};
+$('vsBack').onclick=()=>{sClick();vsLeave();$('vsP').classList.add('hidden');$('menu').classList.remove('hidden');S.state='menu';S.camMode='menu';};
 function goFull(){
   const d=document.documentElement;
   try{(d.requestFullscreen||d.webkitRequestFullscreen||d.msRequestFullscreen||function(){}).call(d);}catch(e){}
 }
 $('bPlay').onclick=()=>{initAudio();sClick();goFull();startGame();};
-$('bAgain').onclick=()=>{sClick();if(V.on&&V.conn){try{V.conn.send({t:'again'});}catch(e){}}startGame();};
+$('bAgain').onclick=()=>{sClick();if(V.on&&V.phase==='game'){$('bAgain').textContent='Volviendo…';vsToLobby();return;}startGame();};
 $('bMenu').onclick=()=>{sClick();vsLeave();$('end').classList.add('hidden');$('menu').classList.remove('hidden');S.state='menu';S.camMode='menu';resetPins(false);boardMsgT=0;G.rolls=[];G.frame=1;G.over=false;buildFrames();renderFrames();ball.mesh.visible=true;ball.mesh.scale.setScalar(1);ball.mesh.position.set(0,.5,9.45);};
 $('bFs').onclick=()=>{initAudio();if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else goFull();};
 $('bSnd').onclick=()=>{initAudio();muted=!muted;if(master)master.gain.value=muted?0:.8;$('bSnd').textContent=muted?'🔇':'🔊';};
