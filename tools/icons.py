@@ -1434,8 +1434,24 @@ def _(I):
     shine(I, 192, 408, 8, 5, -30, .9)
     sparkle(I, 440, 300, 16); sparkle(I, 60, 120, 14)
 
+
+@icon('catquiz-party')
+def _(I):
+    cq_bg(I, '#c06bff', '#5b2be0')
+    # tres mòbils amb les respostes de colors
+    for x, y, r, c in ((128, 300, -12, '#ff4fd8'), (384, 300, 12, '#38e8ff'), (256, 268, 0, '#ffd24a')):
+        g = f'<g transform="translate({x} {y}) rotate({r})">'
+        g += f'<rect x="-78" y="-140" width="156" height="280" rx="26" {st("#1d1442")}/><rect x="-64" y="-118" width="128" height="232" rx="14" fill="#2e2080"/>'
+        g += f'<rect x="-54" y="-104" width="108" height="34" rx="10" fill="{c}"/>'
+        for k, (cx, cy, cc) in enumerate(((-28, -40, '#e8357f'), (28, -40, '#e0a800'), (-28, 22, '#1ba8d6'), (28, 22, '#f07a12'))):
+            g += f'<rect x="{cx-24}" y="{cy-24}" width="48" height="48" rx="10" fill="{cc}"/>'
+        g += '</g>'
+        I.add(g)
+    I.add(f'<path d="M206 92 L226 132 L256 100 L286 132 L306 92 L298 150 H214Z" {st("#ffd24a", 7)}/>')
+    sparkle(I, 70, 120, 18); sparkle(I, 450, 110, 16); sparkle(I, 440, 460, 12)
+
 # CatQuiz: la mascota gata asoma en la esquina
-for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
+for _s in ['catquiz-party','catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
 
 

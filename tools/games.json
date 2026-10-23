@@ -1119,6 +1119,26 @@
    "play": "juegos/relax/index.html#rana"
   },
   {
+   "id": "cq_party",
+   "slug": "catquiz-party",
+   "kw": "quiz en català multijugador",
+   "cat": "catquiz",
+   "name": "CatQuiz Party",
+   "blurb": "Quiz en català per jugar amb la colla, de 2 a 8, cada un amb el seu mòbil: tothom respon la mateixa pregunta a la vegada i qui encerta més ràpid suma més punts. Barbarismes, pronoms febles, accents, futbol, esportistes i castells.",
+   "tags": [
+    "Multijugador",
+    "2-8 mòbils",
+    "Català"
+   ],
+   "pal": [
+    "#1b1448",
+    "#3b2a8f",
+    "#ffd23f",
+    "🎉"
+   ],
+   "play": "juegos/catquiz/jocs/party.html"
+  },
+  {
    "id": "cq_motle",
    "slug": "catquiz-motle",
    "kw": "Wordle en català",

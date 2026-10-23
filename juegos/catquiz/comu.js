@@ -17,7 +17,7 @@
   var m = location.pathname.match(/jocs\/([a-z]+)\.html/);
   var JOC = m ? m[1] : '';
   var NOMS = { motle: 'Motle', penjat: 'Penjat 3D', anagrama: 'Anagrama', perdudes: 'Lletres perdudes', sopa: 'Sopa de lletres', roda: 'Roda de paraules',
-    accents: 'Accents!', catala: 'Com es diu en català?', barbarismes: 'Barbarismes', pronoms: 'Pronoms febles', intrus: "L'intrús", futbol: 'Quiz de futbol', esportistes: "Quiz d'esportistes", castells: 'Quiz de castells' };
+    accents: 'Accents!', catala: 'Com es diu en català?', barbarismes: 'Barbarismes', pronoms: 'Pronoms febles', intrus: "L'intrús", futbol: 'Quiz de futbol', esportistes: "Quiz d'esportistes", castells: 'Quiz de castells', party: 'CatQuiz Party' };
   var AMB_REPTE = ['accents', 'catala', 'barbarismes', 'pronoms', 'intrus', 'perdudes', 'motle'];
   var WEB = 'https://www.catquiz.cat';
 

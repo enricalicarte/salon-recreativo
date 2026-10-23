@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SDE8LXDNP9');
+</script>
+<script src="../comu.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2E2080">
+<title>CatQuiz Party · CatQuiz Minijocs</title>
+<meta name="description" content="Quiz en català per jugar amb la colla, cada un amb el seu mòbil: barbarismes, pronoms febles, accents, futbol, esportistes i castells. Qui encerta més ràpid, guanya.">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="party-dades.js"></script>
+<style>
+:root{--vidre:rgba(24,20,70,.55);--vora:rgba(150,170,255,.45);--glow:0 0 18px rgba(120,160,255,.45);--groc:#FFD24A;--cian:#5CF0FF;--verd1:#6CEB5A;--verd2:#2FB03C;--rosa:#FF4FD8;--ko1:#FF6B8A;--ko2:#E0294F}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{position:fixed;inset:0;height:100%;overflow:hidden;font-family:'Roboto',system-ui,sans-serif;color:#fff;background:linear-gradient(170deg,#4A2FB5 0%,#2E2080 45%,#1A1650 100%);user-select:none;-webkit-user-select:none;touch-action:manipulation;overscroll-behavior:none}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 22%,rgba(255,255,255,.9) 0 1.5px,transparent 2px),radial-gradient(circle at 72% 12%,rgba(255,255,255,.8) 0 1.2px,transparent 2px),radial-gradient(circle at 88% 64%,rgba(255,255,255,.7) 0 1.6px,transparent 2.2px),radial-gradient(circle at 34% 78%,rgba(255,255,255,.75) 0 1.2px,transparent 2px),radial-gradient(circle at 58% 46%,rgba(255,255,255,.5) 0 1px,transparent 1.6px),radial-gradient(circle at 8% 60%,rgba(255,255,255,.6) 0 1.3px,transparent 2px),radial-gradient(circle at 48% 92%,rgba(255,255,255,.6) 0 1.1px,transparent 1.8px),radial-gradient(circle at 92% 30%,rgba(255,255,255,.5) 0 1px,transparent 1.6px)}
+.cubs{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.cubs i{position:absolute;border-radius:10px;opacity:.16;animation:flota 14s ease-in-out infinite;border:1.5px solid rgba(255,255,255,.5)}
+@keyframes flota{50%{transform:translateY(-26px) rotate(25deg)}}
+.pant{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));overflow-y:auto;z-index:2}
+.pant[hidden]{display:none}
+.caixa{width:min(480px,100%);background:linear-gradient(180deg,rgba(60,44,140,.92),rgba(26,22,80,.96));border:1.5px solid var(--vora);border-radius:28px;box-shadow:0 0 40px rgba(110,140,255,.35),0 20px 40px rgba(0,0,0,.45);padding:24px 20px;text-align:center;margin:auto}
+h1{font-weight:900;font-size:clamp(34px,10vw,48px);letter-spacing:.04em;line-height:1;text-transform:uppercase;text-shadow:0 0 14px rgba(255,255,255,.45),0 3px 0 rgba(0,0,0,.35)}
+h1 em{display:block;font-style:normal;color:var(--groc);text-shadow:0 0 18px rgba(255,210,74,.65),0 3px 0 rgba(0,0,0,.35)}
+h2{font-weight:900;font-size:24px;letter-spacing:.02em;margin-bottom:6px}
+p{color:#D9D6FF;font-weight:500;font-size:16px;line-height:1.4;margin:12px 0 16px}
+.eti{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#C9B6FF;margin:14px 0 6px}
+button{font-family:inherit;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:20px;color:#fff;background:linear-gradient(180deg,var(--verd1),var(--verd2));border:3px solid rgba(255,255,255,.55);border-radius:999px;padding:12px 28px;box-shadow:0 6px 0 #1E7F2C,0 0 22px rgba(92,230,100,.55);text-shadow:0 2px 0 rgba(0,0,0,.3);cursor:pointer;margin:5px;transition:transform .08s,box-shadow .08s;touch-action:manipulation}
+button:active{transform:translateY(5px);box-shadow:0 1px 0 #1E7F2C}
+button.acc{background:linear-gradient(180deg,#FFB24A,#F0781A);box-shadow:0 6px 0 #A64E0E,0 0 22px rgba(255,160,60,.5)}
+button.vid{background:var(--vidre);border:1.5px solid var(--vora);box-shadow:var(--glow);font-size:15px;padding:9px 18px}
+button:disabled{filter:grayscale(.8);opacity:.6;cursor:default}
+input{font-family:inherit;font-weight:700;font-size:20px;color:#fff;background:rgba(255,255,255,.1);border:1.5px solid var(--vora);border-radius:16px;padding:10px 14px;text-align:center;width:100%;max-width:260px;outline:none;box-shadow:var(--glow);user-select:text;-webkit-user-select:text}
+input:focus{border-color:var(--cian)}
+input::placeholder{color:rgba(255,255,255,.45)}
+input:disabled{opacity:.6}
+#codiIn{text-transform:uppercase;letter-spacing:.2em;width:8ch;font-size:24px}
+.fila{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap}
+.fila button{margin:0}
+.codi{font-weight:900;font-size:clamp(44px,14vw,64px);letter-spacing:.2em;color:var(--groc);text-shadow:0 0 22px rgba(255,210,74,.7),0 3px 0 rgba(0,0,0,.35);line-height:1.05}
+.jug{display:flex;flex-direction:column;gap:6px;margin:10px 0;text-align:left}
+.jug div{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1.5px solid var(--vora);border-radius:16px;padding:6px 12px}
+.jug div.jo{border-color:var(--groc)}
+.jug .av{font-size:24px}
+.jug b{flex:1;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jug em{font-style:normal;font-size:13px;font-weight:700;color:#C9B6FF;white-space:nowrap}
+.jug div.buit{justify-content:center;border-style:dashed;color:#C9B6FF;font-size:14px;font-weight:600}
+.avs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;max-width:330px;margin:0 auto}
+.avs button{font-size:24px;padding:6px 0;margin:0;border-radius:14px;background:rgba(255,255,255,.08);border:1.5px solid var(--vora);box-shadow:none;text-shadow:none}
+.avs button.sel{background:rgba(255,210,74,.25);border-color:var(--groc);box-shadow:0 0 14px rgba(255,210,74,.6)}
+.avs.bloc{opacity:.55;pointer-events:none}
+.temes{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.temes button{font-size:13px;letter-spacing:0;text-transform:none;padding:7px 12px;margin:0;background:var(--vidre);border:1.5px solid var(--vora);box-shadow:none}
+.temes button.sel{background:linear-gradient(180deg,#A06BFF,#6A3FD8);border-color:rgba(255,255,255,.7);box-shadow:0 0 14px rgba(160,107,255,.7)}
+.temes.nomes button{pointer-events:none}
+.tria{font-weight:700;font-size:16px}
+/* joc */
+#joc{justify-content:flex-start;gap:10px}
+.hud{width:min(560px,100%);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pill{background:var(--vidre);border:1.5px solid var(--vora);box-shadow:var(--glow),inset 0 1px 0 rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-weight:700;font-size:16px;white-space:nowrap}
+.pill.pts{color:var(--groc)}
+.barra{width:min(560px,100%);height:10px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden}
+.barra i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--cian),var(--verd1));border-radius:999px;transform-origin:left;transition:background .3s}
+.barra.poc i{background:linear-gradient(90deg,#FF9A2E,var(--ko1))}
+.cat{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#C9B6FF;margin-top:6px}
+.preg{width:min(560px,100%);background:linear-gradient(180deg,rgba(110,70,255,.9),rgba(70,40,190,.9));border:1.5px solid rgba(190,170,255,.6);box-shadow:0 0 28px rgba(140,110,255,.55),0 10px 24px rgba(0,0,0,.35);border-radius:24px;padding:16px 18px;text-align:center}
+.preg .tip{font-weight:900;font-size:clamp(20px,5.6vw,26px);text-shadow:0 2px 0 rgba(0,0,0,.3)}
+.preg .cos{margin-top:10px;font-weight:600;font-size:clamp(17px,4.8vw,21px);line-height:1.35;color:#F0ECFF}
+.preg .cos:empty{display:none}
+.preg .cos .gran{font-weight:900;font-size:clamp(24px,7vw,32px);color:var(--groc)}
+.forat{display:inline-block;min-width:3.2em;border-bottom:3px solid #38E8FF;color:#38E8FF;text-align:center}
+.preg .ok{color:var(--verd1);font-weight:900}
+.pistes{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;text-align:left}
+.pistes li{background:var(--vidre);border:1.5px solid var(--vora);border-radius:14px;padding:7px 12px;font-size:16px}
+.pistes li b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--groc);color:#2A1B00;font-size:13px;margin-right:8px}
+.ops{width:min(560px,100%);display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.ops.c1{grid-template-columns:1fr}
+.op{position:relative;display:flex;align-items:center;gap:12px;text-align:left;text-transform:none;letter-spacing:0;font-size:clamp(17px,4.6vw,21px);padding:14px 14px;margin:0;min-height:68px;border-radius:20px;border:2px solid rgba(255,255,255,.55);background:var(--c);box-shadow:0 5px 0 rgba(0,0,0,.35),0 0 18px color-mix(in srgb,var(--c) 60%,transparent);text-shadow:0 2px 0 rgba(0,0,0,.3);overflow-wrap:anywhere}
+.op b{flex:0 0 auto;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);color:#1E1850;font-size:17px;text-shadow:none}
+.op:active{transform:translateY(4px)}
+.op.fora{opacity:.35;filter:grayscale(.6)}
+.op.triat{outline:4px solid #fff;outline-offset:2px}
+.op.be{background:linear-gradient(180deg,var(--verd1),var(--verd2));opacity:1;filter:none}
+.op.ko{background:linear-gradient(180deg,var(--ko1),var(--ko2))}
+.op .n{position:absolute;right:10px;top:-10px;background:#fff;color:#1E1850;border-radius:999px;font-size:13px;padding:2px 8px;text-shadow:none;font-weight:900}
+.estat{min-height:30px;font-weight:700;font-size:17px;color:#E6DEFF;text-align:center}
+.banda{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%) scale(.6);opacity:0;z-index:5;pointer-events:none;text-align:center;transition:all .35s cubic-bezier(.2,1.6,.4,1);width:min(92vw,460px)}
+.banda.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banda div{display:inline-block;font-weight:900;font-size:clamp(26px,8vw,40px);padding:14px 26px;border-radius:24px;border:2px solid rgba(255,255,255,.7);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.banda .be{background:linear-gradient(180deg,var(--verd1),var(--verd2))}
+.banda .ko{background:linear-gradient(180deg,var(--ko1),var(--ko2))}
+.banda small{display:block;font-size:16px;font-weight:700;margin-top:4px;opacity:.95}
+.compte{font-weight:900;font-size:min(40vw,200px);color:var(--groc);text-shadow:0 0 40px rgba(255,210,74,.75),0 8px 0 rgba(0,0,0,.4);line-height:1}
+.class{display:flex;flex-direction:column;gap:6px;margin:12px 0;text-align:left}
+.class div{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1.5px solid var(--vora);border-radius:16px;padding:8px 12px;transition:transform .4s}
+.class div.jo{border-color:var(--groc);background:rgba(255,210,74,.12)}
+.class .pos{font-weight:900;width:28px;text-align:center}
+.class .av{font-size:24px}
+.class b{flex:1;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.class .p{font-weight:900;color:var(--groc)}
+.class .g{font-size:13px;font-weight:700;color:var(--verd1);min-width:44px;text-align:right}
+.podi{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:16px 0 6px}
+.podi div{display:flex;flex-direction:column;align-items:center;gap:4px;width:30%}
+.podi .av{font-size:36px}
+.podi b{font-size:15px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.podi i{display:block;width:100%;border-radius:14px 14px 0 0;border:1.5px solid var(--vora);background:var(--vidre);font-style:normal;font-weight:900;font-size:24px;padding-top:6px}
+.podi .p1 i{height:110px;background:linear-gradient(180deg,rgba(255,210,74,.55),rgba(255,210,74,.15))}
+.podi .p2 i{height:80px;background:linear-gradient(180deg,rgba(220,220,255,.45),rgba(220,220,255,.12))}
+.podi .p3 i{height:60px;background:linear-gradient(180deg,rgba(255,150,80,.45),rgba(255,150,80,.12))}
+.podi small{font-weight:700;color:var(--groc)}
+.conf{position:fixed;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+.conf i{position:absolute;top:-20px;width:10px;height:14px;border-radius:3px;animation:cau linear forwards}
+@keyframes cau{to{transform:translateY(110vh) rotate(720deg)}}
+@media (min-height:760px){.op{min-height:84px}}
+@media (max-height:560px){.preg{padding:10px 14px}.preg .cos{margin-top:6px}.op{min-height:52px;padding:9px 12px}.caixa{padding:16px}}
+</style>
+</head>
+<body>
+<div class="cubs" id="cubs"></div>
+
+<!-- inici -->
+<section class="pant" id="inici">
+  <div class="caixa">
+    <h1>CatQuiz<em>Party</em></h1>
+    <p>Preguntes en català per jugar amb la colla, cada un amb el seu mòbil. Tothom respon la mateixa pregunta a la vegada: qui encerta més ràpid, guanya més punts.</p>
+    <button id="bCrea">Crea una sala</button>
+    <div class="eti">o entra amb un codi</div>
+    <div class="fila"><input id="codiIn" maxlength="4" placeholder="CODI" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="acc" id="bEntra">Entra</button></div>
+    <p class="estat" id="infoIni" style="margin:10px 0 0">De 2 a 8 jugadors · Wi-Fi diferents o dades mòbils</p>
+    <button class="vid" id="bSol" style="margin-top:8px">Prova-ho sol</button>
+  </div>
+</section>
+
+<!-- sala -->
+<section class="pant" id="sala" hidden>
+  <div class="caixa">
+    <div class="eti" style="margin-top:0" id="salaEti">Codi de la sala</div>
+    <div class="codi" id="codi">----</div>
+    <div class="jug" id="jug"></div>
+    <div class="eti">El teu nom</div>
+    <input id="nom" maxlength="12" autocomplete="off" spellcheck="false" placeholder="Nom">
+    <div class="eti">El teu personatge</div>
+    <div class="avs" id="avs"></div>
+    <div class="eti">Tema</div>
+    <div class="temes" id="temes"></div>
+    <div class="eti">Preguntes</div>
+    <div class="temes" id="nq"></div>
+    <p class="estat" id="infoSala"></p>
+    <button id="bLlest">Estic llest!</button>
+    <button id="bComença">Comença la partida</button><br>
+    <button class="vid" id="bSurt">Surt</button>
+  </div>
+</section>
+
+<!-- joc -->
+<section class="pant" id="joc" hidden>
+  <div class="hud"><span class="pill" id="num">1/10</span><span class="pill" id="temps">20</span><span class="pill pts" id="pts">0</span></div>
+  <div class="barra" id="barra"><i id="barraI"></i></div>
+  <div class="cat" id="cat"></div>
+  <div class="preg"><div class="tip" id="tip"></div><div class="cos" id="cos"></div></div>
+  <div class="ops" id="ops"></div>
+  <div class="estat" id="estat"></div>
+</section>
+
+<!-- compte enrere -->
+<section class="pant" id="compte" hidden><div class="eti" id="compteT" style="font-size:16px">Preparats?</div><div class="compte" id="compteN">3</div></section>
+
+<!-- classificació entre preguntes -->
+<section class="pant" id="rank" hidden>
+  <div class="caixa"><h2 id="rankT">Classificació</h2><div class="class" id="rankL"></div><p class="estat" id="rankS" style="margin:0"></p></div>
+</section>
+
+<!-- final -->
+<section class="pant" id="final" hidden>
+  <div class="caixa">
+    <h2 id="finT">Resultat final</h2>
+    <div class="podi" id="podi"></div>
+    <div class="class" id="finL"></div>
+    <button id="bTorna">Torna a la sala</button><br>
+    <button class="vid" id="bFi">Surt</button>
+  </div>
+</section>
+
+<div class="banda" id="banda"></div>
+<div class="conf" id="conf"></div>
+
+<script>
+'use strict';
+/* ===================== DADES I PREGUNTES ===================== */
+const D = window.PARTY_DADES;
+const $ = id => document.getElementById(id);
+const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const barreja = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const tria = a => a[Math.floor(Math.random() * a.length)];
+const AVS = ['🐱','🐶','🦊','🐸','🐼','🐵','🦁','🐧','🐙','🦄','🐢','🐝'];
+const COLS = ['#E8357F','#E0A800','#1BA8D6','#F07A12'];
+const LLETRES = ['A','B','C','D'];
+const TEMES = [
+  { id: 'tot', n: '🎲 Barreja de tot', src: ['barb','pron','par','acc','fut','esp','cas'] },
+  { id: 'llengua', n: '📝 Llengua catalana', src: ['barb','pron','par','acc'] },
+  { id: 'barb', n: 'Barbarismes', src: ['barb'] },
+  { id: 'pron', n: 'Pronoms febles', src: ['pron'] },
+  { id: 'par', n: 'Com es diu en català?', src: ['par'] },
+  { id: 'acc', n: 'Accents', src: ['acc'] },
+  { id: 'fut', n: '⚽ Futbol', src: ['fut'] },
+  { id: 'esp', n: '🏅 Esportistes', src: ['esp'] },
+  { id: 'cas', n: 'Castells', src: ['cas'] },
+];
+const NQ = [10, 15, 20];
+const NOM_FONT = { barb: 'Barbarismes', pron: 'Pronoms febles', par: 'Com es diu en català?', acc: 'Accents', fut: 'Futbol', esp: 'Esportistes', cas: 'Castells' };
+
+// --- d'Accents! (mateixa lògica que el joc): variants falses d'una paraula
+const VALIDES = new Set(D.val), VOC = { a: ['a','à'], e: ['e','è','é'], i: ['i','í'], o: ['o','ò','ó'], u: ['u','ú'] };
+const sense = w => w.normalize('NFD').replace(/[̀́]/g, '').normalize('NFC');
+const timbre = w => w.replace(/é/g, 'è');
+function variants(w){ const base = sense(w), out = new Set([base]);
+  for (let i = 0; i < base.length; i++) { const v = VOC[base[i]]; if (!v) continue; for (const a of v) out.add(base.slice(0, i) + a + base.slice(i + 1)); }
+  out.delete(w); return [...out].filter(x => !VALIDES.has(x) && timbre(x) !== timbre(w)); }
+const durAcc = w => { let s = 0; if (/[èòéó]/.test(w)) s += 2; if (/[àèìòùáéíóú].*[àèìòùáéíóú]/.test(w)) s += 1; s += Math.max(0, w.length - 5) * .4; return s; };
+// --- de Com es diu en català? (mateixa lògica que el joc): el castellanisme «catalanitzat»
+function barbaritza(w){
+  let x = w.toLowerCase().trim();
+  const R = [[/ción$/,'ció'],[/sión$/,'sió'],[/ón$/,'ó'],[/ado$/,'at'],[/ada$/,'ada'],[/ido$/,'it'],[/illo$/,'ill'],[/illa$/,'illa'],[/ero$/,'er'],[/ería$/,'eria'],[/ía$/,'ia'],[/eo$/,'eu'],[/ete$/,'et'],[/ote$/,'ot'],[/ar$/,'ar'],[/([^aeiou])o$/,'$1o']];
+  for (const [re, r] of R) if (re.test(x)) { x = x.replace(re, r); break; }
+  return x.replace(/ñ/g,'ny').replace(/ch/g,'tx').replace(/á/g,'à').replace(/é/g,'è').replace(/í/g,'i').replace(/ú/g,'u').replace(/z/g,'ç').replace(/ç([ei])/g,'c$1');
+}
+// --- frases amb forat (Barbarismes i Pronoms febles)
+function forat(ini, fi){ const a = ini && !/[\s\-']$/.test(ini) ? ini + ' ' : ini, z = /^[\s.,;:?!]/.test(fi) ? fi : ' ' + fi; return esc(a) + '<span class="forat">?</span>' + esc(z); }
+function junta(ini, t, fi){ let a = ini, z = fi; if (/'$/.test(t)) z = z.replace(/^\s+/, ''); if (/^'/.test(t)) a = a.replace(/\s+$/, ''); else if (a && !/[\s\-']$/.test(a)) a += ' '; if (!/^[\s.,;:?!]/.test(z) && !/'$/.test(t)) z = ' ' + z; return esc(a) + '<span class="ok">' + esc(t) + '</span>' + esc(z); }
+function ambOps(q, bona, altres){ const ops = barreja([bona, ...altres]); q.ops = ops; q.ok = ops.indexOf(bona); return q; }
+
+// Cada font: llista d'elements amb dificultat (0 fàcil … 1 difícil) i una funció que en fa la pregunta
+function fonts(){
+  const F = {};
+  F.barb = D.barb.map(x => ({ d: x[5] / 9, k: 'barb' + x[0] + x[2], f: () => ambOps({ tip: 'Quina paraula hi va?', cos: forat(x[0], x[1]), sol: junta(x[0], x[2], x[1]), lim: 20 }, x[2], [x[3], x[4]]) }));
+  F.pron = D.pron.map(x => ({ d: x[5] / 9, k: 'pron' + x[0] + x[2], f: () => ambOps({ tip: 'Quin pronom hi va?', cos: forat(x[0], x[1]), sol: junta(x[0], x[2], x[1]), lim: 20 }, x[2], [x[3], x[4]]) }));
+  F.par = D.par.map((p, idx) => ({ d: (p[2] - 1) / 9, k: 'par' + p[0], f: () => {
+    const fals = barbaritza(p[0]); const veins = D.par.slice(Math.max(0, idx - 8), idx + 9).filter(x => x[1] !== p[1] && x[1] !== fals).map(x => x[1]);
+    const dis = []; if (fals && fals !== p[1].toLowerCase()) dis.push(fals);
+    for (const v of barreja(veins)) { if (dis.length >= 2) break; if (!dis.includes(v)) dis.push(v); }
+    while (dis.length < 2) { const r = tria(D.par)[1]; if (r !== p[1] && !dis.includes(r)) dis.push(r); }
+    return ambOps({ tip: 'Com es diu en català?', cos: '<span class="gran">«' + esc(p[0]) + '»</span>', lim: 15 }, p[1], dis); } }));
+  const maxA = Math.max(...D.acc.map(durAcc)) || 1;
+  F.acc = D.acc.filter(w => variants(w).length >= 2).map(w => ({ d: durAcc(w) / maxA, k: 'acc' + w, f: () => ambOps({ tip: "Com s'escriu?", cos: 'Tria la forma correcta', lim: 12 }, w, barreja(variants(w)).slice(0, 2)) }));
+  const trivia = (src, nom) => [
+    ...src.T.map(q => ({ d: q[3] / 9, k: nom + 'T' + q[0], f: () => ambOps({ tip: q[0], cos: '', lim: 20 }, q[1][q[2]], q[1].filter((_, i) => i !== q[2])) })),
+    ...src.VF.map(q => ({ d: q[2] / 9, k: nom + 'VF' + q[0], f: () => ({ tip: 'Verdader o fals?', cos: esc(q[0]), ops: ['Verdader', 'Fals'], ok: q[1] ? 0 : 1, lim: 12 }) })),
+  ];
+  const qui = (src, nom) => src.J.map(j => ({ d: j[2] / 9, k: nom + 'J' + j[0], f: () => {
+    const mateix = src.J.filter(x => x[0] !== j[0] && x[3] === j[3]), altres = src.J.filter(x => x[0] !== j[0] && x[3] !== j[3]);
+    const dis = barreja(mateix).slice(0, 3).map(x => x[0]); for (const x of barreja(altres)) { if (dis.length >= 3) break; dis.push(x[0]); }
+    return ambOps({ tip: 'Qui és?', cos: '<ul class="pistes">' + j[1].slice(0, 3).map((t, i) => '<li><b>' + (i + 1) + '</b>' + esc(t) + '</li>').join('') + '</ul>', lim: 25 }, j[0], dis); } }));
+  F.fut = [...trivia(D.fut, 'fut'), ...qui(D.fut, 'fut')];
+  F.esp = [...trivia(D.esp, 'esp'), ...qui(D.esp, 'esp')];
+  F.cas = [...trivia(D.cas, 'cas'), ...D.cas.V.map(v => ({ d: v[2] / 9, k: 'casV' + v[0], f: () => {
+    const al = barreja(D.cas.V.filter(x => x[0] !== v[0])).sort((x, y) => Math.abs(x[0].length - v[0].length) - Math.abs(y[0].length - v[0].length)).slice(0, 3).map(x => x[0]);
+    return ambOps({ tip: 'Vocabulari casteller', cos: esc(v[1]), lim: 20 }, v[0], al); } }))];
+  return F;
+}
+// N preguntes de les fonts triades, de més fàcils a més difícils, alternant fonts
+function fesPreguntes(tema, n){
+  const F = fonts(), srcs = (TEMES.find(t => t.id === tema) || TEMES[0]).src, usats = new Set(), out = [];
+  let ordre = []; while (ordre.length < n) ordre = ordre.concat(barreja(srcs));
+  for (let i = 0; i < n; i++) {
+    const s = ordre[i], obj = Math.min(1, i / Math.max(1, n - 1) * .85 + Math.random() * .15);
+    const cand = barreja(F[s].filter(e => !usats.has(e.k))).sort((a, b) => Math.abs(a.d - obj) - Math.abs(b.d - obj)).slice(0, 6);
+    const e = tria(cand.length ? cand : F[s]); usats.add(e.k);
+    const q = e.f(); q.cat = NOM_FONT[s]; out.push(q);
+  }
+  return out;
+}
+
+/* ===================== SO ===================== */
+let AC = null;
+function so(f0, f1, dur, tipus, vol){ try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state !== 'running') AC.resume();
+  const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime; o.type = tipus || 'square'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  g.gain.setValueAtTime((vol || .12) * (window.CQ && CQ.efectes === false ? 0 : 1), t); g.gain.exponentialRampToValueAtTime(.001, t + dur); o.connect(g).connect(AC.destination); o.start(t); o.stop(t + dur + .02); } catch (e) {} }
+const SO = { ok: () => { so(660, 1320, .14); setTimeout(() => so(990, 1980, .16), 110); }, ko: () => so(220, 90, .35, 'sawtooth'), tic: () => so(900, 900, .05, 'sine', .08), clic: () => so(520, 520, .05), win: () => { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => so(f, f * 1.01, .25, 'triangle', .15), i * 140)); } };
+
+/* ===================== PANTALLES ===================== */
+const PANTS = ['inici','sala','joc','compte','rank','final'];
+function mostra(id){ PANTS.forEach(p => $(p).hidden = p !== id); }
+(function cubs(){ const c = $('cubs'), cl = ['#FF4F6D','#FF9A2E','#FFD24A','#4EE06A','#38E8FF','#4F7CFF','#A06BFF','#FF4FD8'];
+  for (let i = 0; i < 12; i++) { const e = document.createElement('i'), s = 24 + Math.random() * 60; e.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;background:${cl[i % 8]};animation-delay:${-Math.random() * 14}s;transform:rotate(${Math.random() * 90}deg)`; c.appendChild(e); } })();
+function banda(html, ms){ const b = $('banda'); b.innerHTML = html; b.classList.add('on'); clearTimeout(banda.t); banda.t = setTimeout(() => b.classList.remove('on'), ms || 1800); }
+function confeti(n){ const c = $('conf'), cl = ['#FFD24A','#6CEB5A','#38E8FF','#FF4FD8','#FF9A2E','#A06BFF'];
+  for (let i = 0; i < n; i++) { const e = document.createElement('i'); e.style.cssText = `left:${Math.random() * 100}%;background:${tria(cl)};animation-duration:${2 + Math.random() * 2.5}s;animation-delay:${Math.random() * .8}s`; c.appendChild(e); setTimeout(() => e.remove(), 5500); } }
+
+/* ===================== XARXA (PeerJS) ===================== */
+const MAXP = 8, PREFIX = 'catquizparty-';
+const P = { on: false, host: false, sol: false, me: 0, peer: null, conn: null, code: '', fase: 'inici', jug: [], llest: false, tema: 'tot', n: 10,
+  qs: [], i: -1, t0: 0, resp: null, respostes: {}, timer: null, seq: null, tot: [], ratxa: [] };
+let meuNom = '', meuAv = 0;
+try { meuNom = (localStorage.getItem('catquiz-party-nom') || '').slice(0, 12); meuAv = +(localStorage.getItem('catquiz-party-av') || 0) % AVS.length; } catch (e) {}
+function envia(o){ o.from = P.me;
+  if (P.host) P.jug.forEach(j => { if (j.conn && j.conn.open) { try { j.conn.send(o); } catch (e) {} } });
+  else { try { if (P.conn && P.conn.open) P.conn.send(o); } catch (e) {} } }
+function info(id, t){ $(id).textContent = t; }
+function carregaPeer(cb){
+  if (window.Peer) return cb(true);
+  const urls = window.CQ_PEER_URLS || ['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js'];
+  let i = 0; (function seg(){ if (i >= urls.length) return cb(false); const s = document.createElement('script'); s.src = urls[i++]; s.onload = () => cb(!!window.Peer); s.onerror = seg; document.head.appendChild(s); })();
+}
+/* ---- sala ---- */
+function dadesSala(){ return P.jug.map(j => ({ nom: j.nom, av: j.av, llest: !!j.llest })); }
+function difonSala(){ P.jug.forEach((j, i) => { if (j.conn && j.conn.open) { try { j.conn.send({ t: 'sala', tu: i, codi: P.code, tema: P.tema, n: P.n, jug: dadesSala() }); } catch (e) {} } }); pintaSala(); }
+function obreSala(){
+  P.fase = 'sala'; P.llest = false; clearTimeout(P.seq); clearInterval(P.timer); mostra('sala');
+  if (!$('nom').value) $('nom').value = meuNom || 'Jugador';
+  pintaSala();
+}
+function tria_(){ const nom = ($('nom').value || '').trim().slice(0, 12) || 'Jugador'; meuNom = nom;
+  try { localStorage.setItem('catquiz-party-nom', nom); localStorage.setItem('catquiz-party-av', meuAv); } catch (e) {}
+  if (P.host) { const j = P.jug[0]; j.nom = nom; j.av = meuAv; difonSala(); } else envia({ t: 'tria', nom, av: meuAv, llest: P.llest }); }
+function pintaSala(){
+  if (P.fase !== 'sala') return;
+  $('salaEti').textContent = P.sol ? 'Partida d\'entrenament' : 'Codi de la sala';
+  $('codi').textContent = P.sol ? '🎯' : (P.code || '----');
+  $('jug').innerHTML = P.jug.map((j, i) => '<div class="' + (i === P.me ? 'jo' : '') + '"><span class="av">' + AVS[j.av | 0] + '</span><b>' + esc(j.nom) + (i === P.me ? ' (tu)' : '') + '</b><em>' + (i === 0 ? (P.sol ? 'Tu sol' : 'Amfitrió') : j.llest ? '✅ Llest' : 'Triant…') + '</em></div>').join('')
+    + (!P.sol && P.jug.length < MAXP ? '<div class="buit">' + (P.jug.length < 2 ? 'Esperant jugadors… Digues el codi als altres' : 'Encara hi pot entrar algú més (màxim ' + MAXP + ')') + '</div>' : '');
+  const av = $('avs'); av.innerHTML = AVS.map((a, i) => '<button data-a="' + i + '" class="' + (i === meuAv ? 'sel' : '') + '">' + a + '</button>').join('');
+  av.querySelectorAll('button').forEach(b => b.onclick = () => { SO.clic(); meuAv = +b.dataset.a; tria_(); pintaSala(); });
+  av.classList.toggle('bloc', P.llest); $('nom').disabled = P.llest;
+  const tm = $('temes'), nq = $('nq');
+  if (P.host) {
+    tm.classList.remove('nomes'); nq.classList.remove('nomes');
+    tm.innerHTML = TEMES.map(t => '<button data-t="' + t.id + '" class="' + (t.id === P.tema ? 'sel' : '') + '">' + esc(t.n) + '</button>').join('');
+    nq.innerHTML = NQ.map(n => '<button data-n="' + n + '" class="' + (n === P.n ? 'sel' : '') + '">' + n + '</button>').join('');
+    tm.querySelectorAll('button').forEach(b => b.onclick = () => { SO.clic(); P.tema = b.dataset.t; difonSala(); });
+    nq.querySelectorAll('button').forEach(b => b.onclick = () => { SO.clic(); P.n = +b.dataset.n; difonSala(); });
+  } else {
+    const t = TEMES.find(x => x.id === P.tema) || TEMES[0];
+    tm.classList.add('nomes'); nq.classList.add('nomes');
+    tm.innerHTML = '<button class="sel">' + esc(t.n) + '</button>'; nq.innerHTML = '<button class="sel">' + P.n + '</button>';
+  }
+  const bl = $('bLlest'), bc = $('bComença');
+  if (P.host) {
+    bl.hidden = true; bc.hidden = false;
+    const altres = P.jug.slice(1), tots = altres.every(j => j.llest), pot = P.sol || (altres.length >= 1 && tots);
+    bc.disabled = !pot; bc.textContent = P.sol ? 'Comença' : altres.length < 1 ? 'Esperant jugadors…' : tots ? 'Comença la partida (' + P.jug.length + ')' : 'Esperant que estiguin llestos…';
+    info('infoSala', P.sol ? 'Tria el tema i quantes preguntes vols.' : 'Cada jugador tria nom i personatge i prem «Estic llest!». Tu tries el tema i comences.');
+  } else {
+    bc.hidden = true; bl.hidden = false; bl.textContent = P.llest ? '✓ Llest (canvia)' : 'Estic llest!'; bl.classList.toggle('acc', P.llest);
+    info('infoSala', P.llest ? 'Esperant que l\'amfitrió comenci la partida…' : 'Tria el teu nom i el teu personatge i prem «Estic llest!».');
+  }
+}
+/* ---- partida (l'amfitrió marca el ritme) ---- */
+function comença(){
+  if (!P.host || $('bComença').disabled) return; SO.clic(); tria_();
+  P.qs = fesPreguntes(P.tema, P.n);
+  const jug = P.jug.map(j => ({ nom: j.nom, av: j.av }));
+  P.jug.forEach((j, i) => { if (j.conn && j.conn.open) { try { j.conn.send({ t: 'sala', tu: i, codi: P.code, tema: P.tema, n: P.n, jug: dadesSala() }); j.conn.send({ t: 'inici', qs: P.qs, jug }); } catch (e) {} } });
+  inicia(P.qs, jug);
+  P.seq = setTimeout(() => hostPregunta(0), 3400);
+}
+function inicia(qs, jug){
+  P.qs = qs; P.i = -1; P.fase = 'joc';
+  jug.forEach((q, i) => { const j = P.jug[i] || (P.jug[i] = {}); j.nom = q.nom; j.av = q.av | 0; j.fora = false; });
+  P.jug.length = jug.length; P.tot = jug.map(() => 0); P.ratxa = jug.map(() => 0);
+  $('pts').textContent = '0'; compteEnrere();
+}
+function compteEnrere(){ mostra('compte'); let n = 3; $('compteN').textContent = n; $('compteT').textContent = 'Preparats?'; SO.tic();
+  const t = setInterval(() => { n--; if (n > 0) { $('compteN').textContent = n; SO.tic(); } else { clearInterval(t); $('compteN').textContent = 'Som-hi!'; } }, 1000); }
+function hostPregunta(i){
+  P.respostes = {}; envia({ t: 'q', i }); pregunta(i);
+  clearTimeout(P.seq); P.seq = setTimeout(() => hostRevela(i), (P.qs[i].lim + .6) * 1000);
+}
+function pregunta(i){
+  P.i = i; P.resp = null; const q = P.qs[i]; mostra('joc');
+  $('num').textContent = (i + 1) + '/' + P.qs.length; $('cat').textContent = q.cat;
+  $('tip').textContent = q.tip; $('cos').innerHTML = q.cos;
+  const ops = $('ops'); ops.className = 'ops' + (q.ops.length === 3 || q.ops.some(o => o.length > 16) ? ' c1' : '');
+  ops.innerHTML = q.ops.map((o, k) => '<button class="op" data-k="' + k + '" style="--c:' + COLS[k] + '"><b>' + LLETRES[k] + '</b><span>' + esc(o) + '</span></button>').join('');
+  ops.querySelectorAll('.op').forEach(b => b.onclick = () => respon(+b.dataset.k));
+  $('estat').textContent = ''; P.t0 = performance.now();
+  const bar = $('barraI'), lim = q.lim * 1000; let ultim = -1; $('barra').classList.remove('poc');
+  clearInterval(P.timer); P.timer = setInterval(() => {
+    const t = performance.now() - P.t0, r = Math.max(0, 1 - t / lim), s = Math.ceil(r * q.lim);
+    bar.style.transform = 'scaleX(' + r + ')'; $('temps').textContent = s; $('barra').classList.toggle('poc', s <= 5);
+    if (s !== ultim && s <= 5 && s > 0 && P.resp == null) SO.tic(); ultim = s;
+    if (r <= 0) { clearInterval(P.timer); if (P.resp == null) { tanca(); $('estat').textContent = '⏰ S\'ha acabat el temps'; } }
+  }, 50);
+}
+function tanca(){ $('ops').querySelectorAll('.op').forEach(b => b.disabled = true); }
+function respon(k){
+  if (P.resp != null || P.fase !== 'joc') return; const ms = performance.now() - P.t0; if (ms > P.qs[P.i].lim * 1000) return;
+  P.resp = k; SO.clic(); tanca();
+  $('ops').querySelectorAll('.op').forEach(b => { b.classList.toggle('triat', +b.dataset.k === k); b.classList.toggle('fora', +b.dataset.k !== k); });
+  $('estat').textContent = P.jug.length > 1 ? 'Resposta enviada! Esperant els altres…' : 'Resposta enviada!';
+  if (P.host) rebResposta(0, P.i, k, ms); else envia({ t: 'a', i: P.i, k, ms: Math.round(ms) });
+}
+function rebResposta(seat, i, k, ms){
+  if (!P.host || i !== P.i || P.respostes[seat]) return;
+  P.respostes[seat] = { k, ms };
+  const actius = P.jug.map((j, s) => s).filter(s => !P.jug[s].fora), n = actius.filter(s => P.respostes[s]).length;
+  envia({ t: 'n', n, de: actius.length }); mostraN(n, actius.length);
+  if (n >= actius.length) { clearTimeout(P.seq); P.seq = setTimeout(() => hostRevela(i), 500); }
+}
+function mostraN(n, de){ if (P.resp != null && de > 1) $('estat').textContent = 'Han respost ' + n + ' de ' + de + '…'; }
+function hostRevela(i){
+  if (P.i !== i || P.fase !== 'joc') return;
+  const q = P.qs[i], guany = {}, tries = {};
+  P.jug.forEach((j, s) => { const r = P.respostes[s]; tries[s] = r ? r.k : -1;
+    if (r && r.k === q.ok) { P.ratxa[s]++; guany[s] = Math.round(1000 * (1 - .5 * Math.min(1, r.ms / (q.lim * 1000)))) + Math.min(5, P.ratxa[s] - 1) * 50; }
+    else { P.ratxa[s] = 0; guany[s] = 0; }
+    P.tot[s] += guany[s]; });
+  const m = { t: 'rev', i, tries, guany, tot: P.tot.slice(), ratxa: P.ratxa.slice() };
+  envia(m); revela(m);
+  const ultima = i >= P.qs.length - 1;
+  clearTimeout(P.seq); P.seq = setTimeout(() => { if (ultima) { const f = { t: 'fi', tot: P.tot.slice() }; envia(f); final(f); } else { envia({ t: 'rank' }); rànquing(); P.seq = setTimeout(() => hostPregunta(i + 1), P.jug.length < 2 ? 300 : 3800); } }, P.jug.length < 2 ? 2400 : 3200);
+}
+function revela(m){
+  clearInterval(P.timer); tanca(); const q = P.qs[m.i]; P.tot = m.tot; P.ratxa = m.ratxa;
+  const cont = q.ops.map(() => 0); Object.values(m.tries).forEach(k => { if (k >= 0) cont[k]++; });
+  $('ops').querySelectorAll('.op').forEach(b => { const k = +b.dataset.k; b.classList.remove('fora');
+    b.classList.toggle('be', k === q.ok); b.classList.toggle('ko', k === P.resp && k !== q.ok); if (k !== q.ok && k !== P.resp) b.classList.add('fora');
+    if (P.jug.length > 1) b.insertAdjacentHTML('beforeend', '<span class="n">' + cont[k] + '</span>'); });
+  if (q.sol) $('cos').innerHTML = q.sol;
+  const g = m.guany[P.me] | 0, r = m.ratxa[P.me] | 0;
+  $('pts').textContent = m.tot[P.me] | 0;
+  if (P.resp === q.ok) { SO.ok(); banda('<div class="be">✓ Correcte!<small>+' + g + (r >= 2 ? ' · 🔥 ' + r + ' seguides' : '') + '</small></div>', 2600); }
+  else { SO.ko(); banda('<div class="ko">' + (P.resp == null ? '⏰ Sense resposta' : '✕ Incorrecte') + '<small>Era «' + esc(q.ops[q.ok]) + '»</small></div>', 2600); }
+  $('estat').textContent = '';
+}
+function ordre(){ return P.jug.map((j, s) => ({ s, j, p: P.tot[s] | 0 })).filter(o => !o.j.fora || o.p > 0).sort((a, b) => b.p - a.p); }
+function filaClass(o, pos, g){ return '<div class="' + (o.s === P.me ? 'jo' : '') + '"><span class="pos">' + pos + '</span><span class="av">' + AVS[o.j.av | 0] + '</span><b>' + esc(o.s === P.me ? 'Tu' : o.j.nom) + (o.j.fora ? ' <small>(ha marxat)</small>' : '') + '</b>' + (g != null ? '<span class="g">' + (g ? '+' + g : '') + '</span>' : '') + '<span class="p">' + o.p + '</span></div>'; }
+const ordinal = n => n === 1 ? '1r' : n === 2 ? '2n' : n === 3 ? '3r' : n === 4 ? '4t' : n + 'è';
+function rànquing(){
+  if (P.jug.length < 2) { return; }
+  mostra('rank'); const o = ordre(), q = P.i + 1, tot = P.qs.length;
+  $('rankT').textContent = 'Classificació';
+  $('rankL').innerHTML = o.slice(0, 8).map((x, k) => filaClass(x, o.filter(y => y.p > x.p).length + 1, null)).join('');
+  const jo = o.find(x => x.s === P.me), pj = jo ? o.filter(y => y.p > jo.p).length + 1 : 0, falten = tot - q;
+  $('rankS').textContent = (pj === 1 ? '👑 Vas primer! · ' : pj > 1 ? 'Vas ' + ordinal(pj) + ' · ' : '') + (falten === 1 ? 'Queda l\'última pregunta!' : 'Falten ' + falten + ' preguntes');
+}
+function final(m){
+  P.fase = 'final'; clearInterval(P.timer); P.tot = m.tot; mostra('final');
+  const o = ordre(), pos = x => o.filter(y => y.p > x.p).length + 1, jo = o.find(x => x.s === P.me);
+  const primer = o.filter(x => pos(x) === 1);
+  $('finT').textContent = P.jug.length < 2 ? 'Has fet ' + (P.tot[0] | 0) + ' punts!' : primer.length > 1 && primer.some(x => x.s === P.me) ? 'Empat al primer lloc!' : jo && pos(jo) === 1 ? '🏆 Has guanyat!' : 'Guanya ' + (primer[0] ? primer[0].j.nom : '') + '!';
+  const top = o.slice(0, 3), ord = [top[1], top[0], top[2]], cl = ['p2', 'p1', 'p3'];
+  $('podi').innerHTML = P.jug.length < 2 ? '' : ord.map((x, k) => x ? '<div class="' + cl[k] + '"><span class="av">' + AVS[x.j.av | 0] + '</span><b>' + esc(x.s === P.me ? 'Tu' : x.j.nom) + '</b><small>' + x.p + '</small><i>' + pos(x) + '</i></div>' : '<div></div>').join('');
+  $('finL').innerHTML = o.map(x => filaClass(x, pos(x), null)).join('');
+  $('bTorna').textContent = P.sol ? 'Torna a jugar' : 'Torna a la sala';
+  if (jo && pos(jo) === 1) { SO.win(); confeti(120); } else SO.win();
+}
+/* ---- missatges ---- */
+function reb(m){
+  if (!m || !m.t) return;
+  if (m.t === 'sala') { P.me = m.tu; P.code = m.codi || P.code; P.tema = m.tema; P.n = m.n;
+    const ant = P.jug; P.jug = m.jug.map((q, i) => Object.assign(ant[i] || {}, { nom: q.nom, av: q.av | 0, llest: q.llest }));
+    if (P.fase !== 'sala' && P.fase !== 'joc') obreSala(); else pintaSala(); return; }
+  if (m.t === 'obresala') { obreSala(); return; }
+  if (m.t === 'ple') { P.on = false; info('infoIni', m.per || 'La sala és plena.'); return; }
+  if (m.t === 'inici') { inicia(m.qs, m.jug); return; }
+  if (m.t === 'q') { pregunta(m.i); return; }
+  if (m.t === 'n') { mostraN(m.n, m.de); return; }
+  if (m.t === 'rev') { revela(m); return; }
+  if (m.t === 'rank') { rànquing(); return; }
+  if (m.t === 'fi') { final(m); return; }
+  if (m.t === 'fora') { const j = P.jug[m.seat]; if (j) j.fora = true; return; }
+}
+function hostReb(conn, m){
+  const s = P.jug.findIndex(j => j.conn === conn); if (s < 0 || !m || !m.t) return;
+  if (m.t === 'tria') { const j = P.jug[s]; j.nom = String(m.nom || '').slice(0, 12) || 'Jugador'; j.av = (m.av | 0) % AVS.length; j.llest = !!m.llest; difonSala(); return; }
+  if (m.t === 'a') { rebResposta(s, m.i, m.k | 0, +m.ms || 0); return; }
+  if (m.t === 'tornasala') { if (P.fase === 'final') tornaSala(); return; }
+}
+function tornaSala(){
+  if (!P.host) { envia({ t: 'tornasala' }); $('bTorna').textContent = 'Tornant…'; return; }
+  P.jug = P.jug.filter((j, i) => i === 0 || (!j.fora && j.conn && j.conn.open)); P.jug.forEach(j => j.llest = false); P.me = 0;
+  P.jug.forEach(j => { if (j.conn && j.conn.open) { try { j.conn.send({ t: 'obresala' }); } catch (e) {} } });
+  obreSala(); difonSala();
+}
+function marxa(s){ const j = P.jug[s]; if (!j || j.fora) return; j.fora = true;
+  if (P.fase === 'sala') { P.jug.splice(s, 1); difonSala(); return; }
+  envia({ t: 'fora', seat: s }); banda('<div class="ko">' + esc(j.nom) + '<small>ha marxat de la partida</small></div>', 1600);
+  if (P.fase === 'joc' && P.i >= 0) { const actius = P.jug.map((x, k) => k).filter(k => !P.jug[k].fora); if (actius.every(k => P.respostes[k])) { clearTimeout(P.seq); P.seq = setTimeout(() => hostRevela(P.i), 400); } } }
+function creaSala(intent){
+  info('infoIni', 'Connectant…');
+  carregaPeer(ok => {
+    if (!ok) { info('infoIni', 'No s\'ha pogut carregar el mode en línia. Revisa la connexió.'); return; }
+    const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ', code = [0, 1, 2, 3].map(() => L[Math.floor(Math.random() * L.length)]).join('');
+    let peer; try { peer = new Peer(PREFIX + code, window.CQ_PEER_OPTS || {}); } catch (e) { info('infoIni', 'Error en crear la sala.'); return; }
+    P.peer = peer;
+    peer.on('open', () => { P.on = true; P.host = true; P.sol = false; P.me = 0; P.code = code; P.jug = [{ nom: meuNom || 'Jugador', av: meuAv, llest: true, conn: null }]; obreSala(); difonSala(); });
+    peer.on('error', e => { if (e && e.type === 'unavailable-id' && (intent || 0) < 4) { try { peer.destroy(); } catch (_) {} creaSala((intent || 0) + 1); } else if (P.fase === 'inici') info('infoIni', 'Error de connexió (' + (e && e.type || '?') + '). Torna-ho a provar.'); });
+    peer.on('connection', conn => {
+      conn.on('open', () => {
+        if (P.fase !== 'sala' || P.jug.length >= MAXP) { try { conn.send({ t: 'ple', per: P.fase !== 'sala' ? 'La partida ja ha començat. Espera la propera.' : 'La sala és plena (màxim ' + MAXP + ').' }); } catch (e) {} setTimeout(() => { try { conn.close(); } catch (e) {} }, 400); return; }
+        P.jug.push({ nom: 'Jugador ' + (P.jug.length + 1), av: P.jug.length % AVS.length, llest: false, conn }); SO.clic(); difonSala(); });
+      conn.on('data', m => hostReb(conn, m));
+      conn.on('close', () => { const s = P.jug.findIndex(j => j.conn === conn); if (s >= 0) marxa(s); });
+    });
+  });
+}
+function entra(){
+  const code = ($('codiIn').value || '').trim().toUpperCase(); if (code.length !== 4) { info('infoIni', 'Escriu el codi de 4 lletres.'); return; }
+  info('infoIni', 'Connectant…');
+  carregaPeer(ok => {
+    if (!ok) { info('infoIni', 'No s\'ha pogut carregar el mode en línia. Revisa la connexió.'); return; }
+    let peer; try { peer = new Peer(window.CQ_PEER_OPTS || {}); } catch (e) { info('infoIni', 'Error de connexió.'); return; }
+    P.peer = peer; let fet = false; const falla = t => { if (fet) return; fet = true; info('infoIni', t); try { peer.destroy(); } catch (_) {} };
+    const to = setTimeout(() => falla('No es troba la sala. Revisa el codi (o potser la xarxa bloqueja la connexió).'), 22000);
+    peer.on('error', e => { if (!P.on) falla(e && e.type === 'peer-unavailable' ? 'No hi ha cap sala amb aquest codi.' : 'Error de connexió (' + (e && e.type || '?') + ').'); });
+    peer.on('open', () => { const conn = peer.connect(PREFIX + code, { reliable: true }); P.conn = conn; P.code = code;
+      conn.on('data', reb); conn.on('close', perdHost);
+      conn.on('open', () => { clearTimeout(to); fet = true; P.on = true; P.host = false; P.sol = false; info('infoIni', 'Connectat! Entrant a la sala…'); setTimeout(() => { P.llest = false; tria_(); }, 300); }); });
+  });
+}
+function perdHost(){ if (!P.on) return; P.on = false; clearTimeout(P.seq); clearInterval(P.timer); P.fase = 'inici'; mostra('inici'); info('infoIni', 'S\'ha tancat la sala. Crea\'n una de nova o entra amb un altre codi.'); }
+function surt(){ P.on = false; P.host = false; P.sol = false; clearTimeout(P.seq); clearInterval(P.timer);
+  try { if (P.conn) P.conn.close(); } catch (e) {} P.jug.forEach(j => { try { if (j.conn) j.conn.close(); } catch (e) {} }); try { if (P.peer) P.peer.destroy(); } catch (e) {}
+  P.conn = null; P.peer = null; P.jug = []; P.fase = 'inici'; mostra('inici'); info('infoIni', 'De 2 a 8 jugadors · Wi-Fi diferents o dades mòbils'); }
+function sol(){ P.on = true; P.host = true; P.sol = true; P.me = 0; P.code = ''; P.jug = [{ nom: meuNom || 'Jugador', av: meuAv, llest: true, conn: null }]; obreSala(); }
+
+$('bCrea').onclick = () => { SO.clic(); creaSala(0); };
+$('bEntra').onclick = () => { SO.clic(); entra(); };
+$('codiIn').addEventListener('keydown', e => { if (e.key === 'Enter') entra(); });
+$('bSol').onclick = () => { SO.clic(); sol(); };
+$('nom').addEventListener('change', () => { if (P.fase === 'sala') tria_(); });
+$('bLlest').onclick = () => { SO.clic(); P.llest = !P.llest; tria_(); pintaSala(); };
+$('bComença').onclick = comença;
+$('bSurt').onclick = () => { SO.clic(); surt(); };
+$('bFi').onclick = () => { SO.clic(); surt(); };
+$('bTorna').onclick = () => { SO.clic(); if (P.sol) { obreSala(); } else tornaSala(); };
+addEventListener('keydown', e => { if (P.fase === 'joc' && P.resp == null && /^[1-4a-dA-D]$/.test(e.key)) { const k = /\d/.test(e.key) ? +e.key - 1 : 'abcd'.indexOf(e.key.toLowerCase()); if (k < P.qs[P.i].ops.length) respon(k); } });
+</script>
+</body>
+</html>
