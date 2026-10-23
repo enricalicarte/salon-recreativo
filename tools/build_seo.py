@@ -444,3 +444,14 @@ self.addEventListener('fetch',e=>{
 });
 """)
 print('ok', len(play), 'juegos')
+
+# ---- comprobación final: que el JavaScript de la portada no tenga errores de sintaxis ----
+if __name__ == '__main__':
+    import shutil, subprocess, sys as _sys
+    if shutil.which('node'):
+        _chk = "const s=require('fs').readFileSync(process.argv[1],'utf8');let bad=0;for(const m of s.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)){try{new Function(m[1])}catch(e){console.log('ERROR JS en la portada:',e.message);bad=1}}process.exit(bad)"
+        for _f in ('index.html', 'tools/source.html'):
+            _p = os.path.join(ROOT if 'ROOT' in globals() else os.path.dirname(os.path.dirname(os.path.abspath(__file__))), _f)
+            if os.path.exists(_p) and subprocess.run(['node', '-e', _chk, _p]).returncode:
+                print('¡OJO! Error de sintaxis en', _f); _sys.exit(1)
+        print('JS de la portada OK')
