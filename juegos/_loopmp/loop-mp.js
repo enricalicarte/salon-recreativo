@@ -1,3 +1,4 @@
+/* © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este código en otros sitios sin permiso escrito. */
 /* Looping Loco · carrera multijugador de 2 a 4 móviles (WebRTC / PeerJS)
    Mismo nivel para todos (la pista sale de la misma semilla), cada uno con su vehículo, salida a la vez y los
    demás como fantasmas en la pista. Cada piloto tiene 3 intentos; gana quien más puntos hace al llegar a la meta.

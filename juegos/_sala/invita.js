@@ -1,3 +1,4 @@
+/* © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este código en otros sitios sin permiso escrito. */
 /* Invitar a una sala multijugador: WhatsApp con el código y un enlace que entra directo en la sala.
    SalaInvita.monta(elemento, ()=>código, 'Nombre del juego', 'es'|'ca') pone los botones debajo del código.
    SalaInvita.alEntrar(fn) llama a fn(código) si la página se abrió con ?sala=XXXX. */

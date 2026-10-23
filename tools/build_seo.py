@@ -312,7 +312,7 @@ simple('aviso-legal', 'Aviso legal | Salón Recreativo', 'Aviso legal del Salón
 <h2>Objeto</h2>
 <p>El Salón Recreativo es una colección de minijuegos que se juegan gratis en el navegador. El acceso es libre y no requiere registro.</p>
 <h2>Propiedad intelectual</h2>
-<p>Los juegos, los textos, los gráficos, la música y el código de este sitio pertenecen a su titular o se usan con permiso, salvo las marcas de terceros que aparecen en los juegos hechos para clientes (como SÛO, MNAC, PB Anguera o Kings League), que pertenecen a sus respectivos dueños. No está permitido copiar, redistribuir ni explotar comercialmente los juegos sin autorización.</p>
+<p>Los juegos, los textos, los gráficos, la música y el código de este sitio pertenecen a su titular o se usan con permiso, salvo las marcas de terceros que aparecen en los juegos hechos para clientes (como SÛO, MNAC, PB Anguera o Kings League), que pertenecen a sus respectivos dueños. No está permitido copiar, redistribuir ni explotar comercialmente los juegos, publicarlos o insertarlos (por ejemplo, dentro de un iframe) en otros sitios web, ni reutilizar total o parcialmente su código fuente sin autorización expresa y por escrito del titular. Que el código sea visible en el navegador o en el repositorio público no supone ninguna licencia de uso.</p>
 <h2>Responsabilidad</h2>
 <p>El titular procura que los juegos funcionen correctamente, pero no garantiza la ausencia de errores ni la disponibilidad continua del servicio. Los enlaces a sitios externos se ofrecen como referencia; el titular no responde de su contenido.</p>
 <h2>Menores</h2>
@@ -444,6 +444,10 @@ self.addEventListener('fetch',e=>{
 });
 """)
 print('ok', len(play), 'juegos')
+
+# ---- protección: bloqueo de dominio y aviso de autoría en todas las páginas y juegos ----
+import importlib.util as _ilu
+_sp = _ilu.spec_from_file_location('protege', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'protege.py')); _pm = _ilu.module_from_spec(_sp); _sp.loader.exec_module(_pm); _pm.run(BASE)
 
 # ---- comprobación final: que el JavaScript de la portada no tenga errores de sintaxis ----
 if __name__ == '__main__':

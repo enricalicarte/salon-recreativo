@@ -1,3 +1,4 @@
+/* © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este código en otros sitios sin permiso escrito. */
 /* Moto Fury y Monster Smash · carrera multijugador de 2 a 4 móviles (WebRTC / PeerJS)
    El mismo mundo y la misma carrera (la pista sale de la misma semilla), salida a la vez con la cuenta atrás
    del juego y los vehículos de los demás como fantasmas en la pista. Gana el mejor tiempo hasta la meta.

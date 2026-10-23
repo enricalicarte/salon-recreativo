@@ -1,3 +1,4 @@
+/* © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este código en otros sitios sin permiso escrito. */
 /* Duelo de guitarras · multijugador de 2 a 4 móviles (WebRTC / PeerJS)
    Se añade al final de Martín, Supernova Guitar y Cosmic Guitar. Usa las funciones del juego
    (SLOTS, slotSong, startSong, endSession, show, loadMp3, DEC, S, diff…), que comparten el ámbito global.

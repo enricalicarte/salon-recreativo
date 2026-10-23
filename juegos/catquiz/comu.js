@@ -1,3 +1,4 @@
+/* © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este código en otros sitios sin permiso escrito. */
 /* CatQuiz · codi comú a la portada i a tots els jocs
    - Consentiment de galetes: Google Analytics només es carrega si s'accepta
    - Repte del dia (?repte): preguntes iguals per a tothom, resultat per compartir

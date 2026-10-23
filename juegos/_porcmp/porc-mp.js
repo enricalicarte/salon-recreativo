@@ -1,3 +1,4 @@
+/* © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este código en otros sitios sin permiso escrito. */
 /* Aventura Porc · multijugador de 2 a 4 móviles (WebRTC / PeerJS)
    Todos montan en la MISMA atracción y nivel, con los MISMOS obstáculos (la vía se genera con la misma semilla),
    salen a la vez y ven en directo los puntos y las vidas de los demás. Gana quien más puntos hace.
