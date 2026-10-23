@@ -4,6 +4,7 @@
    El juego expone window.__porc y llama a window.__porcMP.fin() al acabar (meta o sin vidas). */
 (function(){
 'use strict';
+const __invSrc=(document.currentScript&&document.currentScript.src)||'';function conInvita(cb){if(window.SalaInvita)return cb();const s=document.createElement('script');s.src=new URL('../_sala/invita.js',__invSrc||location.href).href;s.onload=cb;document.head.appendChild(s);}
 const A=()=>window.__porc;
 const MAXP=4,PREFIX='aventuraporc-';
 const $p=id=>document.getElementById(id);
@@ -221,5 +222,6 @@ $p('pmpRev').onclick=volver;
 $p('pmpSal1').onclick=()=>sal();
 $p('pmpSal2').onclick=()=>sal();
 $p('pmpSal3').onclick=()=>{sal();try{A().toMenu();}catch(e){}};
+conInvita(()=>{SalaInvita.monta($p('pmpCod'),()=>M.code,'Aventura Porc','es');SalaInvita.alEntrar(c=>{abre('pmpIni');$p('pmpCodIn').value=c;unirse();},2500);});
 window.__porcMP={fin,activo:()=>M.fase==='juego',estado:M};
 })();

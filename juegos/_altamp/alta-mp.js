@@ -5,6 +5,7 @@
    El juego expone window.__alta (puente) y llama a window.__altaMP en initTour, showResult, nextRound y showFinal. */
 (function(){
 'use strict';
+const __invSrc=(document.currentScript&&document.currentScript.src)||'';function conInvita(cb){if(window.SalaInvita)return cb();const s=document.createElement('script');s.src=new URL('../_sala/invita.js',__invSrc||location.href).href;s.onload=cb;document.head.appendChild(s);}
 const A=()=>window.__alta;
 const MAXP=4;
 const $m=id=>document.getElementById(id);
@@ -227,5 +228,6 @@ $m('mpListo').onclick=()=>{M.listo=!M.listo;elige();pinta();};
 $m('mpEmp').onclick=empieza;
 $m('mpSal1').onclick=()=>{sal();};
 $m('mpSal2').onclick=()=>{sal();};
+conInvita(()=>{const nom=(document.title||'Alta Temporada').split(/ [—|·-] /)[0].trim();SalaInvita.monta($m('mpCod'),()=>M.code,nom,'es');SalaInvita.alEntrar(c=>{abre('mpIni');$m('mpCodIn').value=c;unirse();},2500);});
 window.__altaMP={activo,rivales:()=>M.riv,ronda,espera:()=>{const e=espera();if(e){refresca();}return e;},final,volver,estado:M};
 })();

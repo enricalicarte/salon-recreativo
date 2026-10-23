@@ -154,6 +154,7 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 @media (max-height:480px){.panel{padding:10px 14px}.panel h2{font-size:20px!important}.stars{font-size:22px}table{font-size:12px;margin:2px 0 6px}td,th{padding:0 4px}.panel p{margin:2px 0 4px;font-size:13px}.panel .btn.big{font-size:15px;padding:6px 14px}}
 .pbtns{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}.pbtns .btn{flex:0 0 auto}
 </style>
+<script src="../_sala/invita.js"></script>
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -1162,6 +1163,7 @@ function mpShowLobby(){
   if(state!=='title'){state='title';showUI(false);$('banner').classList.remove('on');$('power').style.opacity=0;$('hint').style.opacity=0;buildHole(MP.first||0);setPal(MP.first||0)}
   if(!$('mpLobby'))mpPanel();else $('dim').classList.add('on');
   $('mpStart').style.display='none';$('mpLobby').style.display='';
+  if(window.SalaInvita)SalaInvita.monta($('mpCode'),()=>MP.code,'Kauai Minigolf','es');
   if(!$('mpName').value)$('mpName').value=mpName||'Jugador';
   mpRender();
 }
@@ -1363,6 +1365,7 @@ function mpLeave(){
   MP.conn=null;MP.peer=null;MP.players=[];mpClearGhosts();mpBoard(false);return was;
 }
 $('bMp').onclick=mpOpen;
+if(window.SalaInvita)SalaInvita.alEntrar(c=>{mpOpen();$('mpIn').value=c;mpJoin();},2500);
 
 /* ============ arranque ============ */
 setPal(0,true);cam.fov=56;

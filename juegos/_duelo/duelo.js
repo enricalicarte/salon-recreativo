@@ -5,6 +5,7 @@
    Todos tocan la misma canción a la vez, cada uno en su móvil, con el marcador de los rivales en directo. */
 (function(){
 'use strict';
+const __invSrc=(document.currentScript&&document.currentScript.src)||'';function conInvita(cb){if(window.SalaInvita)return cb();const s=document.createElement('script');s.src=new URL('../_sala/invita.js',__invSrc||location.href).href;s.onload=cb;document.head.appendChild(s);}
 const G=window.__guitar||{};const MAXP=4,GAME=(location.pathname.match(/juegos\/([^/]+)\//)||[,'guitar'])[1],PREFIX='guitarduel-'+GAME.replace(/[^a-z]/g,'')+'-';
 const $d=id=>document.getElementById(id);
 const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -279,5 +280,6 @@ $d('dRev').onclick=volverSala;
 $d('dSalir1').onclick=()=>{sal();};
 $d('dSalir2').onclick=()=>{sal();};
 $d('dSalir3').onclick=()=>{sal();try{G.endSession();G.show('menu');}catch(e){}};
+conInvita(()=>{const nom=(document.title||'Guitarra').split(/ [—|·-] /)[0].trim();SalaInvita.monta($d('dCod'),()=>D.code,nom,'es');SalaInvita.alEntrar(c=>{try{G.initAudio();}catch(e){}abre('dIni');$d('dCodIn').value=c;unirse();},1500);});
 window.__duelo=D;
 })();

@@ -81,6 +81,7 @@ h1{margin:0;font-size:clamp(40px,12vw,76px);line-height:.92;font-weight:900;font
 #vsGo.off{filter:grayscale(.8);opacity:.7;font-size:clamp(15px,4.2vw,20px)}
 #vsLobby input:disabled{opacity:.6}
 </style>
+<script src="../_sala/invita.js"></script>
 </head>
 <body>
 <div id="top"><div id="frames"></div></div>
@@ -1399,6 +1400,7 @@ $('vsGo').onclick=()=>{
   list.forEach((p,i)=>{if(p.conn&&p.conn.open){try{p.conn.send({t:'lobby',you:i,code:V.code,players:lobbyData()});p.conn.send({t:'start',players:data});}catch(e){}}});
   V.me=0;vsBegin(list.map(p=>({name:p.name,c:p.c,conn:p.conn})));
 };
+if(window.SalaInvita){SalaInvita.monta($('vsLCode').parentNode,()=>V.code,'Strike Party','es');SalaInvita.alEntrar(c=>{try{initAudio();}catch(e){}vsOpenPanel();$('vsIn').value=c;vsJoin();},1500);}
 $('vsBack').onclick=()=>{sClick();vsLeave();$('vsP').classList.add('hidden');$('menu').classList.remove('hidden');S.state='menu';S.camMode='menu';};
 function goFull(){
   const d=document.documentElement;

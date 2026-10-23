@@ -120,6 +120,7 @@ input:disabled{opacity:.6}
 @media (min-height:760px){.op{min-height:84px}}
 @media (max-height:560px){.preg{padding:10px 14px}.preg .cos{margin-top:6px}.op{min-height:52px;padding:9px 12px}.caixa{padding:16px}}
 </style>
+<script src="../../_sala/invita.js"></script>
 </head>
 <body>
 <div class="cubs" id="cubs"></div>
@@ -520,6 +521,7 @@ function surt(){ P.on = false; P.host = false; P.sol = false; clearTimeout(P.seq
   P.conn = null; P.peer = null; P.jug = []; P.fase = 'inici'; mostra('inici'); info('infoIni', 'De 2 a 8 jugadors · Wi-Fi diferents o dades mòbils'); }
 function sol(){ P.on = true; P.host = true; P.sol = true; P.me = 0; P.code = ''; P.jug = [{ nom: meuNom || 'Jugador', av: meuAv, llest: true, conn: null }]; obreSala(); }
 
+if (window.SalaInvita) { SalaInvita.monta($('codi'), () => P.sol ? '' : P.code, 'CatQuiz Party', 'ca'); SalaInvita.alEntrar(c => { $('codiIn').value = c; entra(); }); }
 $('bCrea').onclick = () => { SO.clic(); creaSala(0); };
 $('bEntra').onclick = () => { SO.clic(); entra(); };
 $('codiIn').addEventListener('keydown', e => { if (e.key === 'Enter') entra(); });
