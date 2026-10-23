@@ -430,6 +430,7 @@ body.v-mosaic.v-game #mzHead,body.v-mosaic.v-game #tusalon,body.v-mosaic.v-game 
 .stage.imm .imm-fs{position:absolute;z-index:5;right:12px;top:calc(14px + env(safe-area-inset-top,0px));display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:var(--bg);cursor:pointer}
 .imm-fs{display:none}.imm-fs svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2}
 @media (pointer:coarse){.stage.imm .imm-fs{display:none}}
+body.iph .stage.imm .imm-fs{display:grid!important}
 /* pie */
 .flinks{display:flex;flex-wrap:wrap;gap:8px 18px;margin:26px 0 0!important;font-size:.9rem}
 .flinks a{color:var(--mute);text-decoration:none}.flinks a:hover{color:#fff;text-decoration:underline}
@@ -1780,7 +1781,7 @@ function openGame(src,title,from){
   if(!fine){try{const fs=st.requestFullscreen||st.webkitRequestFullscreen;if(fs){const pr=fs.call(st,{navigationUI:'hide'});if(pr&&pr.catch)pr.catch(()=>{});}}catch(e){}}
   $('#stTitle').textContent=title||'';
   $('#stOpen').href=src;
-  st.classList.toggle('imm',document.body.classList.contains('v-mosaic'));
+  st.classList.add('imm'); /* siempre a pantalla completa con la pestaña para volver, en Salón y en Mosaico */
   if(st.classList.contains('imm')){try{history.pushState({stage:1},'');stagePushed=true;}catch(e){}}
   st.hidden=false;document.documentElement.style.overflow='hidden';if(lenis)lenis.stop();
   const hostEl=from&&from.closest?from.closest('.card,.tile,.mini'):null,cv=hostEl?(hostEl.querySelector('.cover,.mt')||hostEl):null;
