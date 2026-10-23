@@ -1182,7 +1182,7 @@ function buildTourList(){
 }
 function openTours(){P.mode='menu';document.body.classList.add('inmenu');buildTourList();showOnly('tour');}
 function startTour(i){
-  ensureAudio();goFull();closeInfo();ti=i;T=TOURS[i];initTour();sgApply(ti);SG.venue(ti);
+  ensureAudio();goFull();closeInfo();ti=i;T=TOURS[i];initTour();if(window.__altaMP&&__altaMP.activo())S=__altaMP.rivales();sgApply(ti);SG.venue(ti);
   P.round=1;P.rounds=T.rounds;P.results=[];
   document.body.classList.remove('inmenu');showOnly('');
   resetJump();flash(T.name,'#f7f2e4');
@@ -1207,6 +1207,7 @@ function onAction(){
   }
 }
 function nextRound(){
+  if(window.__altaMP&&__altaMP.espera())return;
   if(P.round>=P.rounds){showFinal();return;}
   P.round++;resetJump();
 }
@@ -1254,7 +1255,7 @@ $('tourInfo').addEventListener('click',openInfo);
 $('againBtn').addEventListener('click',()=>startTour(ti));
 $('toursBtn').addEventListener('click',openTours);
 $('nextTourBtn').addEventListener('click',()=>startTour(ti+1));
-function finalPrimary(){const pass=standings(T.rounds).findIndex(x=>x.you)<3;if(pass&&ti+1<TOURS.length)startTour(ti+1);else startTour(ti);}
+function finalPrimary(){if(window.__altaMP&&__altaMP.activo()){__altaMP.volver();return;}const pass=standings(T.rounds).findIndex(x=>x.you)<3;if(pass&&ti+1<TOURS.length)startTour(ti+1);else startTour(ti);}
 $('nextBtn').addEventListener('click',nextRound);
 if('ontouchstart' in window||navigator.maxTouchPoints>0)document.body.classList.add('touch');
 window.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')document.body.classList.add('touch');},{once:true});
@@ -1404,12 +1405,13 @@ function showResult(){
   $('rJudges').textContent='Jueces: '+r.judges.map(j=>fmt(j)).join(' · ');
   $('nextBtn').textContent=P.round>=P.rounds?'Ver clasificación final ▶':'Siguiente salto ▶';
   $('result').classList.add('show');
+  if(window.__altaMP)__altaMP.ronda(P.round,P.result);
 }
 function showFinal(){
   document.body.classList.add('inmenu');
   const st=standings(T.rounds),me=st.findIndex(x=>x.you)+1,pass=me<=3;
   const last=ti+1>=TOURS.length;
-  if(pass){
+  if(pass&&!(window.__altaMP&&__altaMP.activo())){
     if(!PROG.medals[ti]||me<PROG.medals[ti])PROG.medals[ti]=me;
     if(!last)PROG.unlocked=Math.max(PROG.unlocked,ti+1);
     jset('gs_prog',PROG);
@@ -1424,7 +1426,7 @@ function showFinal(){
   $('nextTourBtn').hidden=!(pass&&!last);
   $('againBtn').textContent=pass?'Repetir torneo':'Reintentar torneo';
   SG.final(ti,pass,last,'salto');
-  showOnly('final');updateBestLabel();
+  showOnly('final');updateBestLabel();if(window.__altaMP)__altaMP.final();
   P.mode='slide';
   sfx.ok();setTimeout(()=>sfx.cheer(pass?0.8:0.3),200);crowdU.uCheer.value=1;
   if(pass)for(let i=0;i<(me===1?6:3);i++)setTimeout(()=>firework(P.x+rnd(-30,50)),i*420);
@@ -1600,7 +1602,9 @@ P.y=RY(0);jmp.position.set(0,P.y,0);
 camera.position.copy(camPos);
 SG.ui({game:'salto',seenKey:'sg_saga_salto'});
 requestAnimationFrame(frame);
+window.__alta={kind:'salto',get P(){return P;},get T(){return T;},get ti(){return ti;},TOURS,startTour,standings,openHome,openTours,fmtTot:x=>fmt(x)+' pts'};
 window.__ready=true;
 </script>
+<script src="../_altamp/alta-mp.js"></script>
 </body>
 </html>
