@@ -1374,6 +1374,66 @@ def _(I):
     I.add(f'<circle cx="400" cy="120" r="54" {st("#ffd23f")}/><text x="400" y="150" text-anchor="middle" font-size="84" {FONT} fill="{INK}">?</text>')
     sparkle(I, 110, 110, 18)
 
+
+# ===================== MINIGOLF Y BOLOS =====================
+def pin(I, x, y, s=1, rot=0):
+    """Bolo blanco con dos franjas rojas."""
+    I.add(f'<g transform="translate({x} {y}) rotate({rot}) scale({s})">'
+          f'<path d="M0 -92 C16 -92 20 -76 16 -62 C12 -50 10 -42 14 -30 C30 -6 34 22 26 46 C20 62 12 70 0 70 C-12 70 -20 62 -26 46 C-34 22 -30 -6 -14 -30 C-10 -42 -12 -50 -16 -62 C-20 -76 -16 -92 0 -92Z" {st(I.lg("#ffffff", "#dfe2f2", 0, 0, 1, 0), 7)}/>'
+          f'<path d="M-15 -52 Q0 -46 15 -52 M-13 -42 Q0 -36 13 -42" stroke="#ff3d5a" stroke-width="7" fill="none" stroke-linecap="round"/>'
+          f'<ellipse cx="-8" cy="-74" rx="4" ry="9" fill="#fff" opacity=".9"/><ellipse cx="-12" cy="14" rx="5" ry="22" fill="#fff" opacity=".8"/></g>')
+
+@icon('strike-party')
+def _(I):
+    bg(I, '#5b2bd8', '#160a3d', '#ff4fd8', .12)
+    stars_bg(I, 12, seed=21)
+    # arcos de neón
+    for r, c in ((210, '#ff4fd8'), (180, '#3df2ff'), (150, '#ffe14d')):
+        I.add(f'<path d="M{256-r} 300 A{r} {r} 0 0 1 {256+r} 300" fill="none" stroke="{c}" stroke-width="12" opacity=".85"/>'
+              f'<path d="M{256-r} 300 A{r} {r} 0 0 1 {256+r} 300" fill="none" stroke="{c}" stroke-width="30" opacity=".18"/>')
+    # pista en perspectiva
+    I.add(f'<path d="M206 270 H306 L470 522 H42Z" fill="{I.lg("#ffe3b8", "#e8a86a")}" stroke="{INK}" stroke-width="9"/>'
+          f'<path d="M226 270 L150 522 M286 270 L362 522" stroke="#c98a4e" stroke-width="4" opacity=".6"/>'
+          f'<path d="M196 270 L30 522 M316 270 L482 522" stroke="#3df2ff" stroke-width="10"/>')
+    # bolos saliendo volando
+    pin(I, 256, 236, .55, 0); pin(I, 214, 228, .52, -38); pin(I, 300, 222, .5, 34)
+    pin(I, 150, 170, .5, -70); pin(I, 366, 160, .52, 64); pin(I, 268, 120, .46, 160)
+    for x, y in ((190, 150), (330, 110), (230, 90), (400, 220), (110, 230)): sparkle(I, x, y, 14, '#ffe14d')
+    # bola con brillo y estela
+    I.add('<path d="M256 470 Q248 400 254 330" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" opacity=".35"/>')
+    I.add(f'<circle cx="256" cy="420" r="70" {st(I.rg("#fff27a", "#ff7a1a", .35, .3, .85))}/>')
+    I.add(f'<circle cx="236" cy="398" r="9" fill="{INK}"/><circle cx="262" cy="390" r="9" fill="{INK}"/><circle cx="254" cy="416" r="9" fill="{INK}"/>')
+    shine(I, 226, 378, 22, 12, -30, .7)
+    sparkle(I, 440, 90, 20); sparkle(I, 80, 110, 14)
+
+@icon('kauai-minigolf')
+def _(I):
+    bg(I, '#9df2ff', '#1aa7d8', '#ffffff', .12)
+    # avioneta con pancarta
+    I.add(f'<path d="M290 92 H470 V128 H290Z" {st("#ffffff", 6)}/><text x="380" y="120" text-anchor="middle" font-size="27" {FONT} fill="#1e6bff">kauai.es</text>'
+          f'<path d="M290 110 H262" stroke="{INK}" stroke-width="4"/>'
+          f'<path d="M188 104 L252 96 Q266 104 252 116 L188 116Z" {st("#ff6b4a", 6)}/><path d="M212 86 L226 100 L212 128 L204 128Z" {st("#ffd23f", 5)}/>')
+    # mar e isla
+    I.add(f'<path d="M-10 330 C120 300 380 300 522 330 V522 H-10Z" fill="{I.lg("#2fd0e0", "#0f78b8")}"/>')
+    I.add(f'<ellipse cx="256" cy="392" rx="232" ry="92" {st(I.lg("#ffe7a8", "#e8b45a"))}/>'
+          f'<ellipse cx="256" cy="378" rx="196" ry="70" {st(I.lg("#7ce06a", "#2fa84a"), 7)}/>'
+          f'<path d="M110 372 Q256 330 402 372" fill="none" stroke="#a8f090" stroke-width="10" opacity=".6"/>')
+    # palmera
+    I.add(f'<path d="M96 380 Q84 300 112 230" fill="none" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M96 380 Q84 300 112 230" fill="none" stroke="#b07a42" stroke-width="12" stroke-linecap="round"/>')
+    for d in ('M112 230 Q70 200 34 226 Q74 214 112 236Z', 'M112 230 Q150 186 196 210 Q150 206 114 238Z', 'M112 230 Q100 176 128 150 Q118 190 118 232Z', 'M112 230 Q60 240 50 280 Q78 248 112 238Z'):
+        I.add(f'<path d="{d}" {st("#3fd06a", 6)}/>')
+    # hoyo y bandera
+    I.add(f'<ellipse cx="330" cy="382" rx="34" ry="12" fill="#14301c" stroke="{INK}" stroke-width="5"/>')
+    I.add(f'<path d="M330 380 V214" stroke="{INK}" stroke-width="12" stroke-linecap="round"/><path d="M330 380 V214" stroke="#fff" stroke-width="5" stroke-linecap="round"/>')
+    I.add(f'<path d="M334 218 Q380 226 418 214 Q394 244 420 270 Q380 262 334 268Z" {st("#1e6bff", 7)}/><text x="372" y="256" text-anchor="middle" font-size="34" {FONT} fill="#fff">K</text>')
+    # palo y bola
+    I.add(f'<path d="M150 470 L236 316" stroke="{INK}" stroke-width="14" stroke-linecap="round"/><path d="M150 470 L236 316" stroke="#c9d1e6" stroke-width="6" stroke-linecap="round"/>')
+    I.add(f'<path d="M120 466 h56 a10 10 0 0 1 0 20 h-56Z" {st("#ffd23f", 6)}/>')
+    I.add(f'<path d="M206 410 Q260 390 300 394" fill="none" stroke="#fff" stroke-width="7" stroke-dasharray="3 14" stroke-linecap="round"/>')
+    I.add(f'<circle cx="200" cy="418" r="24" {st(I.rg("#ffffff", "#d8deef", .35, .3, .85), 7)}/><path d="M178 420 Q200 428 222 420" stroke="#1e6bff" stroke-width="6" fill="none"/>')
+    shine(I, 192, 408, 8, 5, -30, .9)
+    sparkle(I, 440, 300, 16); sparkle(I, 60, 120, 14)
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

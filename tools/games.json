@@ -496,6 +496,21 @@
    "play": "juegos/mnac/index.html"
   },
   {
+   "slug": "kauai-minigolf",
+   "id": "minigolf",
+   "kw": "juego de minigolf",
+   "cat": "marca",
+   "name": "Kauai Minigolf",
+   "note": "Torneos por la isla de Kauai",
+   "blurb": "Juego de minigolf en 3D por la isla de Kauai: arrastra desde la bola hacia atrás, suelta y busca el hoyo en uno entre palmeras, cascadas, puentes y portales. 45 hoyos en cinco torneos, estrellas en cada hoyo, reto del día y bolas que se desbloquean.",
+   "tags": [
+    "Minigolf",
+    "5 torneos",
+    "Reto del día"
+   ],
+   "play": "juegos/minigolf/index.html"
+  },
+  {
    "slug": "olimpiadas-de-la-granja",
    "id": "olimpiadas",
    "kw": "juegos de olimpiadas para niños",
@@ -553,6 +568,21 @@
     "Gira mundial"
    ],
    "play": "juegos/ola-perfecta/index.html"
+  },
+  {
+   "slug": "strike-party",
+   "id": "strike",
+   "kw": "juego de bolos",
+   "cat": "deporte",
+   "name": "Strike Party",
+   "note": "¡Bolos de pista loca!",
+   "blurb": "Juego de bolos en 3D en una bolera de neón: elige jugador, lanza la bola con un gesto rápido hacia arriba y dale efecto. Encadena strikes para celebraciones cada vez más locas y reta a un amigo, cada uno desde su móvil, con un código de sala.",
+   "tags": [
+    "Bolos",
+    "2 móviles",
+    "Strikes"
+   ],
+   "play": "juegos/strike-party/index.html"
   },
   {
    "slug": "cabina",

@@ -719,6 +719,9 @@ const GAMES=[
   {id:'mnac',kw:"juego del MNAC",cat:'marca',name:'MNAC Rush',
    blurb:"Juego de gestión ambientado en el Museu Nacional d'Art de Catalunya: atiende a los visitantes y amplía el museo, con obras y salas reales de la colección del MNAC.",
    tags:["Museo", "Arte", "Gestión"],play:'juegos/mnac/index.html'},
+  {id:'minigolf',kw:"juego de minigolf",cat:'marca',name:'Kauai Minigolf',note:'Torneos por la isla de Kauai',
+   blurb:"Juego de minigolf en 3D por la isla de Kauai: arrastra desde la bola hacia atrás, suelta y busca el hoyo en uno entre palmeras, cascadas, puentes y portales. 45 hoyos en cinco torneos, estrellas en cada hoyo, reto del día y bolas que se desbloquean.",
+   tags:["Minigolf", "5 torneos", "Reto del día"],play:'juegos/minigolf/index.html'},
   {id:'olimpiadas',kw:"juegos de olimpiadas para niños",cat:'deporte',name:'Olimpiadas de la Granja',
    blurb:"Juegos de olimpiadas para niños pequeños: diez pruebas de verano e invierno con cuatro campeones de granja. Solo hay que tocar la pantalla, ideal a partir de 3 años.",
    tags:["Para peques", "Olimpiadas", "Un toque"],play:'juegos/olimpiadas/index.html'},
@@ -731,6 +734,9 @@ const GAMES=[
   {id:'olaperfecta',kw:"juego de surf",cat:'deporte',name:'Ola Perfecta',note:'Campeonato mundial de surf',
    blurb:"Juego de surf en 3D: rema, levántate justo cuando llega la ola y surfea dentro del tubo. Salta, gira y haz flips en una gira mundial de ocho olas, de Waikiki a los más de 20 metros de Nazaré.",
    tags:["Surf", "Trucos", "Gira mundial"],play:'juegos/ola-perfecta/index.html'},
+  {id:'strike',kw:"juego de bolos",cat:'deporte',name:'Strike Party',note:'¡Bolos de pista loca!',
+   blurb:"Juego de bolos en 3D en una bolera de neón: elige jugador, lanza la bola con un gesto rápido hacia arriba y dale efecto. Encadena strikes para celebraciones cada vez más locas y reta a un amigo, cada uno desde su móvil, con un código de sala.",
+   tags:["Bolos", "2 móviles", "Strikes"],play:'juegos/strike-party/index.html'},
   {id:'cabina',kw:"app de DJ online",cat:'ritmo',name:'Cabina',
    blurb:"App de DJ para niños y principiantes: profesional por dentro y fácil por fuera, casi un juego. Mezcla canciones en el móvil, en horizontal y a pantalla completa.",
    tags:["DJ", "Música", "Para niños"],play:'juegos/cabina/index.html'},
@@ -803,9 +809,9 @@ const GAMES=[
 
 /* ---------- Datos de uso: edad, partidas cortas, móvil, novedades ---------- */
 const AGE={olimpiadas:3,aventura:3,towerstack:3,miramar:16};               // por defecto +7; relax +3
-const SHORT=new Set(['porteroloco','balonloco','lluvialoca','muroloco','crucigiro','loopingloco','stu','bloquesneon','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
-const MOB=new Set(['porteroloco','balonloco','lluvialoca','muroloco','boxeokids','yogakids','estirakids','crucigiro','loopingloco','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
-const NEW=new Set(['porteroloco','balonloco','lluvialoca','muroloco','cq_castells','cq_roda','cq_pronoms','cq_esportistes','boxeokids','yogakids','estirakids','crucigiro','loopingloco','cq_futbol','cq_barbarismes','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
+const SHORT=new Set(['minigolf','strike',porteroloco','balonloco','lluvialoca','muroloco','crucigiro','loopingloco','stu','bloquesneon','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
+const MOB=new Set(['minigolf','strike',porteroloco','balonloco','lluvialoca','muroloco','boxeokids','yogakids','estirakids','crucigiro','loopingloco','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
+const NEW=new Set(['minigolf','strike',porteroloco','balonloco','lluvialoca','muroloco','cq_castells','cq_roda','cq_pronoms','cq_esportistes','boxeokids','yogakids','estirakids','crucigiro','loopingloco','cq_futbol','cq_barbarismes','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
 const ageOf=g=>AGE[g.id]||(g.cat==='relax'?3:7);
 const EMAIL='';
 
@@ -1860,7 +1866,7 @@ renderMine();
   function paintSc(cv){const g=GAMES.find(x=>x.id===cv.dataset.sc),sc=g&&sceneOf(g);if(!sc)return;const W=cv.closest('.gv-card')?600:360,H=cv.closest('.gv-card')?375:360;cv.width=W;cv.height=H;const c=cv.getContext('2d'),k=H/375;c.setTransform(k,0,0,k,(W-600*k)/2,0);try{sc(c,600,375,2.2);}catch(e){}}
   function hoverVids(root){root.querySelectorAll('.tile').forEach(t=>{const v=t.querySelector('video');if(!v)return;
     t.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!reduce)playVid(v);});t.addEventListener('pointerleave',()=>stopVid(v));});}
-  const BIG=new Set(['porteroloco','muroloco','crucigiro','loopingloco','stu','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
+  const BIG=new Set(['strike','minigolf',porteroloco','muroloco','crucigiro','loopingloco','stu','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','olaperfecta','rutacosmica','motofury','paradon','aura','aventura','porrazo','towerstack','rx_linternas','miramar','suo','olimpiadas','cq_motle']);
   const tile=(g,cls)=>{const c=CATS[g.cat],m=MEDIA.has(g.slug),big=/big/.test(cls||'');
     const media=!big?'<img src="icons/games/'+g.slug+'.svg" alt="" loading="lazy" decoding="async">'+(m?'<video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':''):m?'<img src="media/'+g.slug+'.jpg" alt="" loading="lazy" decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" data-src="media/'+g.slug+'"></video>':(sceneOf(g)?'<canvas data-sc="'+g.id+'" aria-hidden="true"></canvas>':thumb(g));
     const inner=media+(NEW.has(g.id)?'<span class="sp" title="'+T.nw+'" aria-hidden="true">✦</span>':'')+'<span class="tn">'+esc(g.name)+'</span>';
