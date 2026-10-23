@@ -1349,7 +1349,7 @@ $('resumeBtn').onclick=togglePause;$('restartBtn').onclick=()=>startGame(LV.ri,L
 $('nextBtn').onclick=()=>startGame(LV.ri,LV.L+1);$('nextRideBtn').onclick=()=>{const r=(LV.ri+1)%RIDES.length;startGame(r,nextLevel(r));};$('clearMenuBtn').onclick=toMenu;
 
 /* ================= simulation ================= */
-const FR=mkFrame(),FR2=mkFrame();
+const FR=mkFrame(),FR2=mkFrame(),FR3=mkFrame();
 const hopH=()=>G.hop<0?0:(G.hopH||HOP_H)*4*G.hop*(1-G.hop);
 function assistT(){return Math.max(1.05,1.85-0.14*(LV.L-1));}
 function nextObs(types,lane,maxD){for(let i=G.obsPtr;i<obs.length;i++){const o=obs[i];const d=o.s-G.s;if(d<-1)continue;if(d>maxD)break;if(o.lane===lane&&types.includes(o.type)&&!o.hitDone)return [o,d];}return null;}
@@ -1512,10 +1512,15 @@ function updateCamera(dt,snap){
     const look=FR2.p.clone().addScaledVector(FR2.r,G.x).addScaledVector(FR2.u,1.6+hopH()*0.5);
     camPos.copy(pos);camLook.copy(look);camUp.lerp(FR.u,snap?1:1-Math.exp(-dt*12));
   }else if(kind==='chase'){
-    const port=camera.aspect<1;frameAt(G.s,FR);/*look further ahead*/const inT=!!(FR.smp.el&&FR.smp.el.tunnel);G.camT=(G.camT||0)+((inT?1:0)-(G.camT||0))*Math.min(1,dt*4);const back=(port?11.5:9.5)-(G.boost>0?1.6:0)-G.camT*2.5;frameAt(G.s-back,FR);frameAt(G.s+(port?17:14),FR2);
-    const want=FR.p.clone().addScaledVector(FR.r,G.x*0.85).addScaledVector(FR.u,(port?5.9:4.4)-G.camT*(port?3.0:1.9)).add(new V3(0,0.8*(1-G.camT),0));
-    camPos.lerp(want,snap?1:1-Math.exp(-dt*12));camLook.lerp(FR2.p.clone().addScaledVector(FR2.r,G.x*0.7).addScaledVector(FR2.u,1.0+hopH()*0.4),snap?1:1-Math.exp(-dt*12));
-    camUp.lerp(FR.u.clone().lerp(WUP,0.35),snap?1:1-Math.exp(-dt*7));
+    const port=camera.aspect<1;frameAt(G.s,FR);/*look further ahead*/const inT=!!(FR.smp.el&&FR.smp.el.tunnel);G.camT=(G.camT||0)+((inT?1:0)-(G.camT||0))*Math.min(1,dt*4);
+    /* rizos y sacacorchos: cámara pegada al carril, mirando cerca y con el "arriba" del propio carril (como Looping Loco) */
+    const isInv=ss=>{const e=frameAt(ss,FR3).smp.el;return !!(e&&(e.type==='loop'||e.type==='cork'));};
+    const nearL=isInv(G.s)||isInv(G.s+10)||isInv(G.s-6);G.camL=snap?(nearL?1:0):(G.camL||0)+((nearL?1:0)-(G.camL||0))*Math.min(1,dt*4);const L=G.camL;
+    const back=((port?11.5:9.5)-(G.boost>0?1.6:0)-G.camT*2.5)*(1-L)+(port?8.5:7.5)*L;frameAt(G.s-back,FR);frameAt(G.s+(port?17:14)*(1-L)+3.5*L,FR2);
+    const want=FR.p.clone().addScaledVector(FR.r,G.x*0.85).addScaledVector(FR.u,((port?5.9:4.4)-G.camT*(port?3.0:1.9))*(1-L)+(port?5.2:4.4)*L).add(new V3(0,0.8*(1-G.camT)*(1-L),0));
+    const kp=snap?1:1-Math.exp(-dt*(12+L*48));
+    camPos.lerp(want,kp);camLook.lerp(FR2.p.clone().addScaledVector(FR2.r,G.x*0.7).addScaledVector(FR2.u,1.0+hopH()*0.4+0.4*L),kp);
+    camUp.lerp(FR.u.clone().lerp(WUP,0.35*(1-L)),snap?1:1-Math.exp(-dt*(7+L*5))).normalize();
   }else{
     cineT-=dt;frameAt(G.s,FR);
     if(!cine||cineT<=0||cine.distanceTo(FR.p)>110){frameAt(G.s+R(45,75),FR2);const rh=new V3(FR2.r.x,0,FR2.r.z);if(rh.lengthSq()<0.01)rh.set(1,0,0);rh.normalize();
@@ -1526,7 +1531,7 @@ function updateCamera(dt,snap){
   camera.position.copy(camPos);
   const vib=G.demo?0:clamp((G.v-26)/40,0,0.25)+(G.boost>0?0.12:0);if(G.shake>0||vib>0){const s=G.shake*0.35+vib*0.18;camera.position.add(new V3(R(-s,s),R(-s,s),R(-s,s)));G.shake=Math.max(0,G.shake-dt*2.4);}
   camera.up.copy(camUp).normalize();camera.lookAt(camLook);
-  const fov=(fp?68:60)+Math.min(G.v,48)*0.6+(G.boost>0?8:0)-(G.slow>0?14*(1-(G.tscale||1))/0.72:0)+(G.super>0?5:0);
+  const fov=(fp?68:60)+(kind==='chase'?(G.camL||0)*8:0)+Math.min(G.v,48)*0.6+(G.boost>0?8:0)-(G.slow>0?14*(1-(G.tscale||1))/0.72:0)+(G.super>0?5:0);
   if(Math.abs(camera.fov-fov)>0.05){camera.fov+=(fov-camera.fov)*Math.min(1,dt*(G.slow>0?7:4));camera.updateProjectionMatrix();}
   sky.position.copy(camera.position);
   ground.position.set(Math.round(camera.position.x/16)*16,0,Math.round(camera.position.z/16)*16);
@@ -1609,7 +1614,7 @@ function frame(now){
   if(G.hintT>0){G.hintT-=dt;if(G.hintT<=0)$('hint').hidden=true;}
   renderer.render(scene,camera);
 }
-window.__porc={get G(){return G;},get LV(){return LV;},get obs(){return obs;},RIDES,startGame,toMenu};
+window.__porc={get G(){return G;},get LV(){return LV;},get obs(){return obs;},get els(){return els;},get camera(){return camera;},RIDES,startGame,toMenu};
 $('loading').remove();
 toMenu();placeTrain(0);updateCamera(0,true);
 requestAnimationFrame(frame);

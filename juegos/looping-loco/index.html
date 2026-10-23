@@ -88,6 +88,32 @@ body.nogame #hud,body.nogame #ctrl,body.nogame #fx,body.nogame #hint{display:non
 .stat .sb i{display:block;height:100%;background:linear-gradient(90deg,#ffd23f,#ff7a1a)}
 .tog{display:flex;justify-content:space-between;align-items:center;margin:calc(var(--u)*2.2) 0;font-size:calc(var(--u)*5.6)}
 .panel .tog .ybtn{margin:0;padding:calc(var(--u)*1.6) calc(var(--u)*3);width:calc(var(--u)*30);font-size:calc(var(--u)*5)}
+
+/* horizontal: el marcador cabe en una franja arriba y deja ver la moto */
+@media (orientation:landscape){
+  #hud{display:flex;flex-wrap:wrap;align-content:flex-start;align-items:center;justify-content:center;gap:calc(var(--u)*1.6);padding:calc(var(--u)*2.4) calc(var(--u)*3);padding-top:calc(var(--u)*2.4 + env(safe-area-inset-top));padding-left:max(78px,calc(var(--u)*3 + env(safe-area-inset-left)));padding-right:max(calc(var(--u)*3),env(safe-area-inset-right))}
+  #hud .row{display:contents}
+  #hud .sp{display:none}
+  #hud .chip,#hud .chip.big,#hud .chip.wide{font-size:calc(var(--u)*3.9);padding:calc(var(--u)*1.1) calc(var(--u)*2.2);border-radius:calc(var(--u)*2.4);width:auto;margin:0}
+  #hud .chip.big{flex-direction:row;align-items:baseline;line-height:1}
+  #hud .chip.big b{margin:0 0 0 .3em;font-size:1.18em}
+  #hud .ybtn{font-size:calc(var(--u)*3.9);padding:calc(var(--u)*1.3) calc(var(--u)*2.4);border-width:calc(var(--u)*.5);box-shadow:0 calc(var(--u)*.7) 0 var(--navy)}
+  #hud .bar{order:99;flex:0 0 100%;height:calc(var(--u)*2.2);margin:0;border-width:calc(var(--u)*.45)}
+  .cb{width:calc(var(--u)*17);height:calc(var(--u)*17)}
+  #bT{width:calc(var(--u)*32);height:calc(var(--u)*19);font-size:calc(var(--u)*7.5)}
+  #ctrl{padding:calc(var(--u)*3);padding-bottom:calc(var(--u)*3 + env(safe-area-inset-bottom))}
+}
+@media (orientation:portrait){
+  #hud .r1{padding-left:58px;gap:calc(var(--u)*1.6)}
+  #hud .row{gap:calc(var(--u)*1.6)}
+  #hud .chip{font-size:calc(var(--u)*4);padding:calc(var(--u)*1.2) calc(var(--u)*2.3)}
+  #hud .chip.big{font-size:calc(var(--u)*3.8);padding:calc(var(--u)*1.5) calc(var(--u)*2.6)}
+  #hud .chip.wide{font-size:calc(var(--u)*4.6)}
+  #hud .ybtn{font-size:calc(var(--u)*4);padding:calc(var(--u)*1.8) calc(var(--u)*2.4)}
+  #bSnd,#bFs{font-size:0!important;width:calc(var(--u)*12);height:calc(var(--u)*12);padding:0!important;display:flex;align-items:center;justify-content:center}
+  #bSnd::before{content:'🔊';font-size:calc(var(--u)*5.6)}
+  #bFs::before{content:'⛶';font-size:calc(var(--u)*6.4);font-weight:900}
+}
 </style>
 </head>
 <body class="nogame">
