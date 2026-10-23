@@ -99,6 +99,42 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 .sharebtn{font-size:16px!important;padding:8px 16px!important}
 .leadbox{margin:8px 0}.leadbox input{font:inherit;font-weight:600;border:3px solid var(--ink);border-radius:12px;padding:7px 10px;width:min(100%,240px);margin-right:6px}
 @media (max-height:540px){.mapcard{padding:8px 10px}.maphead{margin-bottom:6px}}
+
+.panel .mp{max-height:min(84vh,760px);overflow:auto;margin:-6px -10px;padding:6px 10px}
+.mp input{font-family:inherit;font-weight:700;font-size:20px;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px 12px;text-align:center;width:100%;max-width:260px;user-select:text;-webkit-user-select:text;touch-action:manipulation}
+.mp #mpIn{text-transform:uppercase;letter-spacing:.15em;width:9ch;font-size:22px}
+@media (max-height:480px){#title p{display:none}#title h1{font-size:clamp(40px,11vh,80px)}}
+.mp input:disabled{opacity:.6}
+.mprow{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap}
+.mprow .btn{flex:0 0 auto}
+#mpCode{font-size:clamp(40px,12vw,58px);font-weight:700;letter-spacing:.2em;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink);line-height:1.1;margin:2px 0 8px}
+#mpList{display:flex;flex-direction:column;gap:6px;margin:0 0 10px;text-align:left}
+.mppl{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:5px 10px}
+.mppl.me{background:#fff2c4}
+.mppl b{flex:1;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mppl em{font-style:normal;font-weight:700;font-size:13px;opacity:.75;white-space:nowrap}
+.mppl.empty{justify-content:center;border-style:dashed;opacity:.7;font-weight:600;font-size:14px}
+.mppl .chip,.chip.mini{width:28px;height:28px;border-width:2px;box-shadow:none;display:inline-block;vertical-align:middle;flex:0 0 auto;cursor:default}
+#mpBalls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:4px 0}
+#mpBalls.lock{opacity:.55;pointer-events:none}
+#mpCopa,#mpLen{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:4px 0}
+.mpopt{flex:0 0 auto!important;font-size:14px!important;padding:6px 10px!important;margin:2px!important}
+.mpopt.sel{background:var(--sun)}
+.mpopt i,.mpsel i{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid var(--ink);margin-right:6px;vertical-align:-1px}
+.mpsel{font-weight:700;font-size:17px;margin:4px 0}
+#mpGo.off{filter:grayscale(.7);opacity:.75;font-size:17px}
+#mpNext small{font-size:15px;opacity:.7;margin-left:4px}
+#mpBoard{display:none;left:calc(10px + env(safe-area-inset-left));top:calc(72px + env(safe-area-inset-top));padding:6px 8px;pointer-events:none;flex-direction:column;gap:3px;font-size:13px;min-width:130px}
+#mpBoard.on{display:flex}
+#mpBoard div{display:flex;align-items:center;gap:6px;white-space:nowrap}
+#mpBoard div.me b{color:#c06f00}
+#mpBoard div.gone{opacity:.45;text-decoration:line-through}
+#mpBoard b{flex:1;max-width:90px;overflow:hidden;text-overflow:ellipsis}
+#mpBoard span{opacity:.8;font-weight:600}
+#mpBoard em{font-style:normal;font-weight:700;min-width:26px;text-align:right}
+#mpBoard .chip.mini{width:18px;height:18px}
+#mpWait{display:none;left:50%;transform:translateX(-50%);bottom:calc(60px + env(safe-area-inset-bottom));padding:7px 16px;font-weight:700;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#mpWait.on{display:block}
 </style>
 </head>
 <body>
@@ -121,7 +157,7 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 <div id="title" class="ov on">
   <h1 id="ttl">Kauai<em>Minigolf</em></h1>
   <p>45 hoyos en 5 torneos por la isla de Kauai. Consigue estrellas, desbloquea torneos y bolas nuevas. Arrastra desde la bola hacia atrás y suelta.</p>
-  <button class="btn big" id="bPlay">¡JUGAR!</button>
+  <button class="btn big" id="bPlay">¡JUGAR!</button><br><button class="btn big c2" id="bMp" style="font-size:18px;padding:9px 22px;margin-top:10px">👥 Multijugador · 2 a 4 móviles</button>
   <div id="best" style="margin-top:14px;font-weight:700;color:#fff;text-shadow:0 2px 0 var(--ink)"></div><div style="margin-top:10px;font-weight:700;letter-spacing:.25em;color:#fff;text-shadow:0 2px 0 var(--ink)" id="tUrl">KAUAI.ES</div>
 </div>
 <div id="map" class="ov"><div class="card mapcard">
@@ -145,6 +181,7 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
   </div>
   <div id="mapRow"></div><div id="balls"></div><div id="mapStats"></div>
  </div></div>
+<div id="mpBoard" class="ui card"></div><div id="mpWait" class="ui card"></div>
 <div id="dim" class="ov"><div class="card panel" id="pnl"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -802,7 +839,7 @@ cv.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p)return
 function endPtr(e){const had=ptrs.delete(e.pointerId);if(!had)return;if(ptrs.size===0){gest=null;if(aim){const v=aimVec();aim=null;if(v.p>.07&&state==='aim'&&e.type==='pointerup')shoot(v.x,v.z,v.p)}}else if(ptrs.size===1){gest=null;aim=null}}
 cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',endPtr);
 cv.addEventListener('wheel',e=>{cam.zoom=clamp(cam.zoom*(1+e.deltaY*.001),.6,1.7);e.preventDefault()},{passive:false});
-const keys={};addEventListener('keydown',e=>{keys[e.code]=1;if(e.code==='KeyR')recenter();if(e.code==='KeyP'||e.code==='Escape')togglePause();if(e.code==='KeyF')toggleFs();if(e.code==='KeyM'){setMuted(!muted)}});
+const keys={};addEventListener('keydown',e=>{if(e.target&&e.target.tagName==='INPUT')return;keys[e.code]=1;if(e.code==='KeyR')recenter();if(e.code==='KeyP'||e.code==='Escape')togglePause();if(e.code==='KeyF')toggleFs();if(e.code==='KeyM'){setMuted(!muted)}});
 addEventListener('keyup',e=>{keys[e.code]=0});
 function camGoal(){const via=HD.via||[];while(viaIdx<via.length&&Math.hypot(B.x-via[viaIdx][0],B.z-via[viaIdx][1])<3)viaIdx++;return viaIdx<via.length?via[viaIdx]:HD.cup}
 function recenter(){if(!HD)return;const t=camGoal();cam.yawT=yawToward(B.x,B.z,t[0],t[1])}
@@ -840,7 +877,7 @@ function startHole(i){
   hIdx=i;strokes=0;holed=false;viaIdx=0;userRot=false;buildHole(i);setPal(i);holeZ=0;tsc=1;setMusic((i/TH)|0);setScenery((i/TH)|0);
   B={x:HD.tee[0],z:HD.tee[1],vx:0,vz:0};lastPos={x:B.x,z:B.z};
   const look=HD.look||HD.cup;cam.yaw=cam.yawT=yawToward(B.x,B.z,look[0],look[1]);cam.zoom=1;cam.pitch=.5;cam.dist=baseDist();cam.tx=B.x;cam.tz=B.z;
-  hud();showUI(true);startFly();
+  hud();showUI(true);startFly();if(MP.on&&MP.phase==='game'){mpBoardRender();$('mpWait').classList.remove('on')}
 }
 function startFly(){state='fly';flyT=0;flyYaw0=cam.yaw+(Math.random()<.5?1:-1)*.9;$('bs').textContent='HOYO '+((hIdx%TH)+1)+' · '+TOURS[(hIdx/TH)|0].name.toUpperCase();$('bn').textContent=HD.name;$('bp').textContent='Par '+HD.par;$('banner').classList.add('on');$('power').style.opacity=0}
 function shoot(dx,dz,p){
@@ -858,12 +895,12 @@ function holeDone(pickup){
   lastStars=pickup?0:calcStars(s,HD.par);prevStars=starsOf(hIdx);if(lastStars>prevStars)prog.s[hIdx]=lastStars;if(!pickup&&(!prog.b[hIdx]||s<prog.b[hIdx]))prog.b[hIdx]=s;
   prog.st.holes++;prog.st.strokes+=s;if(!pickup&&s===1)prog.st.aces++;
   if(dailyMode&&!pickup&&lastStars>=1){const td=todayStr();if(prog.d.last!==td){const y=new Date(Date.now()-864e5),ys=y.getFullYear()*10000+(y.getMonth()+1)*100+y.getDate();prog.d.streak=prog.d.last===ys?prog.d.streak+1:1;prog.d.last=td}if(prog.d.bd!==td||s<prog.d.bs){prog.d.bd=td;prog.d.bs=s}}
-  saveProg();
+  saveProg();if(MP.on&&MP.phase==='game')mpSendHole(s,pickup);
   const name=pickup?'RECOGIDA':scoreName(s,HD.par);
   if(!pickup){S.hole(s===1||s<=HD.par-2);const cols=[0xff6b6b,0xffd34d,0x4cd8c0,0x6aa8ff,0xff9ae0,0xffffff];burst(cupPos.x,.5,cupPos.z,70,cols,6,9,.12,1.4,14);burst(cupPos.x,1.5,cupPos.z,40,cols,3,6,.1,1.6,9);shake=.12}
   if(!pickup&&s===1){for(let k=1;k<6;k++)setTimeout(()=>burst(cupPos.x+rand(-1.5,1.5),1+k*.5,cupPos.z+rand(-1.5,1.5),50,[0xffd34d,0xfff0a0,0xffffff,0xff9ae0],5,8,.12,1.4,14),k*260)}
   toast(name,pickup?'Se acabaron los golpes · '+s:'Golpes: '+s+' · Par '+HD.par,2200);hud();
-  setTimeout(showHoleCard,2000);
+  setTimeout(()=>{if(MP.on&&MP.phase==='game')mpAfterHole();else showHoleCard()},2000);
 }
 function holeRows(){let h='<table><tr><th>Hoyo</th><th>Par</th><th>Golpes</th><th>★</th></tr>';
   scores.forEach((v,i)=>{const d=v-HOLES[i].par;h+='<tr><td>'+((i%TH)+1)+' '+HOLES[i].name+'</td><td>'+HOLES[i].par+'</td><td class="'+(d<0?'sc-good':d>0?'sc-bad':'')+'"><b>'+v+'</b></td><td style="color:#ffb300">'+calcStars(v,HOLES[i].par)+'</td></tr>'});return h+'</table>'}
@@ -933,12 +970,12 @@ function openTour(t){
   h+='</div><button class="btn big" id="bGo">Jugar desde el hoyo 1</button><button class="btn big c2" id="bClose" style="font-size:17px;padding:9px 20px">Cerrar</button>';
   openPanel(h);$('bGo').onclick=()=>startTour(t,0);$('bClose').onclick=()=>{S.ui();closePanel()};$('pnl').querySelectorAll('.tile').forEach(e=>e.onclick=()=>startTour(t,+e.dataset.j))
 }
-function toMap(){state='title';dailyMode=false;showUI(false);$('banner').classList.remove('on');$('power').style.opacity=0;$('hint').style.opacity=0;scores=[];buildHole(0);setPal(0);setMusic(0);setScenery(0);renderMap();$('map').classList.add('on')}
+function toMap(){if(MP.on)mpLeave();state='title';dailyMode=false;showUI(false);$('banner').classList.remove('on');$('power').style.opacity=0;$('hint').style.opacity=0;scores=[];buildHole(0);setPal(0);setMusic(0);setScenery(0);renderMap();$('map').classList.add('on')}
 function openPanel(h){$('pnl').innerHTML=h;$('dim').classList.add('on')}
 function closePanel(){$('dim').classList.remove('on')}
 function togglePause(){if(state==='title'||state==='final'||$('dim').classList.contains('on')&&!paused)return;paused=!paused;
   if(paused){aim=null;openPanel('<h2>Pausa</h2><p>Hoyo '+(hIdx+1)+' · '+HD.name+'</p><button class="btn big" id="bRes">Continuar</button><br><button class="btn big c2" id="bRst" style="font-size:17px;padding:9px 20px">Reiniciar hoyo</button><button class="btn big c2" id="bMenu" style="font-size:17px;padding:9px 20px">🗺️ Mapa</button>');
-    $('bRes').onclick=togglePause;$('bRst').onclick=()=>{paused=false;closePanel();startHole(hIdx)};$('bMenu').onclick=()=>{paused=false;closePanel();toMap()}}else closePanel()}
+    $('bRes').onclick=togglePause;if(MP.on&&$('bRst'))$('bRst').remove();$('bRst').onclick=()=>{paused=false;closePanel();startHole(hIdx)};$('bMenu').onclick=()=>{paused=false;closePanel();toMap()}}else closePanel()}
 function toTitle(){state='title';showUI(false);$('banner').classList.remove('on');$('power').style.opacity=0;scores=[];buildHole(0);setPal(0);$('title').classList.add('on');$('best').textContent='⭐ '+totalStars()+' / '+MAXSTARS}
 $('bPlay').onclick=()=>{initAudio();S.ui();$('title').classList.remove('on');toggleFsOnce();toMap()};$('mapBack').onclick=()=>{S.ui();$('map').classList.remove('on');toTitle()};
 function toggleFsOnce(){try{const el=document.documentElement;if(!document.fullscreenElement&&!document.webkitFullscreenElement){(el.requestFullscreen||el.webkitRequestFullscreen||function(){}).call(el)}}catch(e){}}
@@ -1062,8 +1099,253 @@ function frame(now){
   stars.position.copy(camera.position);const nf=nightF();lampMat.color.setRGB(1,.95-.12*nf,.82-.3*nf);
   for(let i=0;i<FF;i++){const p=ffPh[i],a=p[0]+T*.07*p[2],rr=(.15+.85*((i*.618)%1))*Math.max(platR-1.5,3);ffPos[i*3]=bboxC.x+Math.cos(a+p[1])*rr+Math.sin(T*.5*p[2]+p[1])*.8;ffPos[i*3+1]=.6+((i*.37)%1)*4+Math.sin(T*.8*p[2]+p[0])*.5;ffPos[i*3+2]=bboxC.z+Math.sin(a+p[1])*rr+Math.cos(T*.4*p[2]+p[0])*.8}
   ffGeo.attributes.position.needsUpdate=true;ffMat.opacity=.3+.6*nf;
+  if(MP.on)mpTick(dt);
   if(composer){gradePass.uniforms.time.value=T;gradePass.uniforms.night.value=nf;composer.render(dt)}else renderer.render(scene,camera);
 }
+/* ============ MULTIJUGADOR (2 a 4 móviles · WebRTC / PeerJS) ============ */
+/* Sala de espera: cada jugador elige nombre y bola y pulsa «¡Listo!»; el anfitrión elige la copa y los hoyos y empieza.
+   En la partida todos juegan el MISMO hoyo a la vez en su móvil y ven las bolas de los demás (sin chocar).
+   Cuando todos han terminado el hoyo, sale el marcador y se pasa al siguiente. Gana quien menos golpes sume. */
+const MAXP=4,MPLEN=[3,6,9];
+const MP={on:false,host:false,me:0,peer:null,conn:null,code:'',phase:'off',players:[],ready:false,tour:0,n:9,first:0,res:{},sendT:0,last:'',ghosts:{},adv:null,shown:-1};
+const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let mpName='';try{mpName=(localStorage.getItem('kauaigolf_name')||'').slice(0,12)}catch(e){}
+function mpSend(o){o.from=MP.me;
+  if(MP.host)MP.players.forEach(p=>{if(p.conn&&p.conn.open){try{p.conn.send(o)}catch(e){}}});
+  else{try{if(MP.conn&&MP.conn.open)MP.conn.send(o)}catch(e){}}}
+function mpRelay(m,except){MP.players.forEach(p=>{if(p.conn&&p.conn!==except&&p.conn.open){try{p.conn.send(m)}catch(e){}}})}
+function mpInfo(t){const e=$('mpInfo');if(e)e.textContent=t}
+function mpLoadLib(cb){
+  if(window.Peer)return cb(true);
+  const urls=window.MG_PEER_URLS||['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js'];
+  let i=0;(function next(){if(i>=urls.length)return cb(false);const sc=document.createElement('script');sc.src=urls[i++];sc.onload=()=>cb(!!window.Peer);sc.onerror=next;document.head.appendChild(sc)})();
+}
+/* ---------- panel de la sala ---------- */
+function mpPanel(){
+  openPanel('<div class="mp"><h2>👥 Multijugador</h2><p id="mpInfo">De 2 a '+MAXP+' jugadores, cada uno en su móvil. Vale con wifi distintos o datos móviles.</p>'
+   +'<div id="mpStart"><button class="btn big" id="mpCreate">Crear sala</button><div class="lbl" style="margin:8px 0">— o únete con un código —</div>'
+   +'<div class="mprow"><input id="mpIn" maxlength="4" placeholder="CÓDIGO" autocomplete="off" autocapitalize="characters"><button class="btn big c2" id="mpJoin">Unirme</button></div></div>'
+   +'<div id="mpLobby" style="display:none"><div class="lbl">Código de la sala</div><div id="mpCode">----</div><div id="mpList"></div>'
+   +'<div class="lbl">Tu nombre</div><input id="mpName" maxlength="12" autocomplete="off" placeholder="Nombre">'
+   +'<div class="lbl" style="margin-top:8px">Tu bola</div><div id="mpBalls"></div>'
+   +'<div class="lbl" style="margin-top:8px">Torneo</div><div id="mpCopa"></div><div id="mpLen"></div>'
+   +'<button class="btn big" id="mpReady">¡Listo!</button><button class="btn big" id="mpGo">Esperando jugadores…</button></div>'
+   +'<button class="btn big c2" id="mpBack" style="font-size:16px;padding:8px 22px">Salir</button></div>');
+  $('mpCreate').onclick=()=>{S.ui();mpCreate(0)};$('mpJoin').onclick=()=>{S.ui();mpJoin()};
+  $('mpIn').addEventListener('keydown',e=>{if(e.key==='Enter')mpJoin()});
+  $('mpName').value=mpName||'';$('mpName').addEventListener('change',()=>{if(MP.phase==='lobby')mpPick()});
+  $('mpReady').onclick=()=>{S.ui();MP.ready=!MP.ready;mpPick();mpRender()};
+  $('mpGo').onclick=mpGo;
+  $('mpBack').onclick=()=>{S.ui();mpLeave();closePanel();toTitle()};
+}
+function mpOpen(){initAudio();S.ui();$('title').classList.remove('on');$('map').classList.remove('on');toggleFsOnce();MP.phase='menu';mpPanel()}
+function mpShowLobby(){
+  MP.phase='lobby';MP.ready=false;MP.res={};mpClearGhosts();mpBoard(false);clearTimeout(MP.adv);
+  if(state!=='title'){state='title';showUI(false);$('banner').classList.remove('on');$('power').style.opacity=0;$('hint').style.opacity=0;buildHole(MP.first||0);setPal(MP.first||0)}
+  if(!$('mpLobby'))mpPanel();else $('dim').classList.add('on');
+  $('mpStart').style.display='none';$('mpLobby').style.display='';
+  if(!$('mpName').value)$('mpName').value=mpName||'Jugador';
+  mpRender();
+}
+function mpPick(){
+  const name=($('mpName')&&$('mpName').value||'').trim().slice(0,12)||'Jugador';mpName=name;try{localStorage.setItem('kauaigolf_name',name)}catch(e){}
+  if(MP.host){const p=MP.players[0];p.name=name;p.b=prog.ball;mpLobbyBroadcast()}
+  else mpSend({t:'pick',name,b:prog.ball,ready:MP.ready});
+}
+function mpLobbyData(){return MP.players.map(p=>({name:p.name,b:p.b,ready:!!p.ready}))}
+function mpLobbyBroadcast(){
+  MP.players.forEach((p,i)=>{if(p.conn&&p.conn.open){try{p.conn.send({t:'lobby',you:i,code:MP.code,tour:MP.tour,n:MP.n,players:mpLobbyData()})}catch(e){}}});
+  mpRender();
+}
+const ballBg=i=>'url('+ballTexFor(i).image.toDataURL()+')';
+const ballUrl={};function ballImg(i){return ballUrl[i]||(ballUrl[i]=ballBg(i))}
+function mpRender(){
+  if(MP.phase!=='lobby'||!$('mpLobby'))return;
+  $('mpCode').textContent=MP.code||'----';
+  $('mpList').innerHTML=MP.players.map((p,i)=>'<div class="mppl'+(i===MP.me?' me':'')+'"><i class="chip" style="background-image:'+ballImg(p.b|0)+'"></i><b>'+esc(p.name)+(i===MP.me?' (tú)':'')+'</b><em>'+(i===0?'Anfitrión':p.ready?'✅ ¡Listo!':'Eligiendo…')+'</em></div>').join('')
+    +(MP.players.length<MAXP?'<div class="mppl empty">'+(MP.players.length<2?'Esperando jugadores… comparte el código':'Puede entrar alguien más (máx. '+MAXP+')')+'</div>':'');
+  // bolas (solo las desbloqueadas en este móvil)
+  const bl=$('mpBalls');if(!bl.children.length||bl.dataset.sel!=String(prog.ball)||bl.dataset.lk!=String(MP.ready)){bl.innerHTML='';bl.dataset.sel=prog.ball;bl.dataset.lk=MP.ready;
+    BALLS.forEach((o,i)=>{if(!ballOpen(i))return;const c=document.createElement('button');c.className='chip'+(prog.ball===i?' sel':'');c.title=o.n;c.style.backgroundImage=ballImg(i);
+      c.onclick=()=>{if(MP.ready)return;S.ui();prog.ball=i;saveProg();applyBall(i);mpPick();mpRender()};bl.appendChild(c)})}
+  bl.classList.toggle('lock',MP.ready);$('mpName').disabled=MP.ready;
+  // torneo y hoyos (lo elige el anfitrión)
+  const cp=$('mpCopa'),ln=$('mpLen');
+  if(MP.host){
+    cp.innerHTML=TOURS.map((o,t)=>tourOpen(t)?'<button class="btn mpopt'+(MP.tour===t?' sel':'')+'" data-t="'+t+'"><i style="background:'+o.col+'"></i>'+o.name+'</button>':'').join('');
+    ln.innerHTML=MPLEN.map(n=>'<button class="btn mpopt'+(MP.n===n?' sel':'')+'" data-n="'+n+'">'+n+' hoyos</button>').join('');
+    cp.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.ui();MP.tour=+b.dataset.t;mpLobbyBroadcast()});
+    ln.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{S.ui();MP.n=+b.dataset.n;mpLobbyBroadcast()});
+  }else{
+    const o=TOURS[MP.tour]||TOURS[0];cp.innerHTML='<div class="mpsel"><i style="background:'+o.col+'"></i>'+o.name+' · '+MP.n+' hoyos</div>';ln.innerHTML='';
+  }
+  const rb=$('mpReady'),go=$('mpGo');
+  if(MP.host){rb.style.display='none';go.style.display='';
+    const others=MP.players.slice(1),allR=others.length>=1&&others.every(p=>p.ready);
+    go.disabled=!allR;go.classList.toggle('off',!allR);
+    go.textContent=others.length<1?'Esperando jugadores…':allR?'¡Empezar partida! ('+MP.players.length+')':'Esperando a que estén listos…';
+    mpInfo('Cada jugador elige nombre y bola y pulsa «¡Listo!». Tú eliges el torneo y empiezas.');
+  }else{go.style.display='none';rb.style.display='';rb.textContent=MP.ready?'✓ ¡Listo! (cambiar)':'¡Listo!';rb.classList.toggle('c2',MP.ready);
+    mpInfo(MP.ready?'Esperando a que el anfitrión empiece la partida…':'Elige tu nombre y tu bola y pulsa «¡Listo!».')}
+}
+function mpGo(){
+  if(!MP.host||$('mpGo').disabled)return;S.ui();mpPick();
+  const pl=MP.players.map(p=>({name:p.name,b:p.b}));
+  MP.players.forEach((p,i)=>{if(p.conn&&p.conn.open){try{p.conn.send({t:'lobby',you:i,code:MP.code,tour:MP.tour,n:MP.n,players:mpLobbyData()});p.conn.send({t:'start',tour:MP.tour,n:MP.n,players:pl})}catch(e){}}});
+  mpBegin(MP.tour,MP.n,pl);
+}
+/* ---------- partida ---------- */
+function mpBegin(tour,n,pl){
+  MP.tour=tour;MP.n=n;MP.first=tour*TH;MP.res={};MP.shown=-1;
+  pl.forEach((q,i)=>{const p=MP.players[i]||(MP.players[i]={});p.name=q.name;p.b=q.b|0;p.left=false;p.h=-1;p.s='';p.x=p.z=0});
+  MP.players.length=pl.length;MP.phase='game';
+  closePanel();$('map').classList.remove('on');$('title').classList.remove('on');
+  dailyMode=false;scores=[];runStart=totalStars();mpClearGhosts();mpBoard(true);startHole(MP.first);
+}
+function mpActive(){return MP.players.map((p,i)=>i).filter(i=>!MP.players[i].left)}
+function mpTotal(i){let t=0,d=0;for(let h=MP.first;h<MP.first+MP.n;h++){const r=MP.res[h];if(r&&r[i]!=null){t+=r[i];d+=r[i]-HOLES[h].par}}return{t,d}}
+function mpSendHole(s,pk){(MP.res[hIdx]=MP.res[hIdx]||{})[MP.me]=s;mpSend({t:'hole',h:hIdx,s,pk:pk?1:0});mpBoardRender();}
+function mpAfterHole(){if(!MP.on||MP.phase!=='game'){showHoleCard();return}mpBoardRender();mpCheck()}
+function mpCheck(){
+  if(MP.phase!=='game'||MP.shown===hIdx)return;
+  const r=MP.res[hIdx]||{};if(r[MP.me]==null||!(state==='done'||state==='sunk'))return;
+  const wait=mpActive().filter(i=>r[i]==null);
+  if(wait.length){$('mpWait').textContent='⏳ Esperando a '+wait.map(i=>MP.players[i].name).join(', ')+'…';$('mpWait').classList.add('on');return}
+  $('mpWait').classList.remove('on');MP.shown=hIdx;
+  const last=hIdx>=MP.first+MP.n-1;
+  const rows=MP.players.map((p,i)=>({i,p,s:r[i],tot:mpTotal(i)})).filter(o=>o.s!=null||!o.p.left).sort((a,b)=>a.tot.t-b.tot.t||(a.s||99)-(b.s||99));
+  if(last){mpFinal();return}
+  let h='<div class="mp"><h2>Hoyo '+((hIdx%TH)+1)+' · '+HD.name+'</h2><p>Par '+HD.par+'</p><table><tr><th></th><th>Jugador</th><th>Hoyo</th><th>Total</th></tr>';
+  rows.forEach((o,k)=>{const d=o.s!=null?o.s-HD.par:0;h+='<tr><td>'+(k+1)+'º</td><td style="text-align:left"><i class="chip mini" style="background-image:'+ballImg(o.p.b)+'"></i> '+esc(o.i===MP.me?'Tú':o.p.name)+'</td><td class="'+(d<0?'sc-good':d>0?'sc-bad':'')+'"><b>'+(o.s!=null?o.s:'—')+'</b></td><td><b>'+o.tot.t+'</b> <small>('+fmtD(o.tot.d)+')</small></td></tr>'});
+  h+='</table><button class="btn big" id="mpNext">Siguiente hoyo ▶ <small id="mpCnt">5</small></button></div>';
+  openPanel(h);let c=5;const go=()=>{clearInterval(MP.adv);if(MP.phase!=='game')return;closePanel();startHole(hIdx+1)};
+  $('mpNext').onclick=()=>{S.ui();go()};
+  clearInterval(MP.adv);MP.adv=setInterval(()=>{c--;const e=$('mpCnt');if(e)e.textContent=c;if(c<=0)go()},1000);
+}
+function mpFinal(){
+  const rk=MP.players.map((p,i)=>({i,p,tot:mpTotal(i)})).filter(o=>!o.p.left||o.tot.t>0).sort((a,b)=>a.tot.t-b.tot.t);
+  const top=rk[0],tie=rk.length>1&&rk[1].tot.t===top.tot.t&&rk.filter(o=>o.tot.t===top.tot.t).some(o=>o.i===MP.me);
+  const med=['🥇','🥈','🥉','4º'];
+  let h='<div class="mp"><h2>'+(tie?'¡Empate!':top.i===MP.me?'🏆 ¡Has ganado!':'¡Gana '+esc(top.p.name)+'!')+'</h2><p>'+TOURS[MP.tour].name+' · '+MP.n+' hoyos</p><table><tr><th></th><th>Jugador</th><th>Golpes</th><th>Par</th></tr>';
+  rk.forEach((o,k)=>{const pos=rk.filter(q=>q.tot.t<o.tot.t).length;h+='<tr><td>'+(med[pos]||'')+'</td><td style="text-align:left"><i class="chip mini" style="background-image:'+ballImg(o.p.b)+'"></i> '+esc(o.i===MP.me?'Tú':o.p.name)+(o.p.left?' <small>(se fue)</small>':'')+'</td><td><b>'+o.tot.t+'</b></td><td class="'+(o.tot.d<0?'sc-good':o.tot.d>0?'sc-bad':'')+'">'+fmtD(o.tot.d)+'</td></tr>'});
+  h+='</table><button class="btn big" id="mpAgain">Volver a la sala</button><br><button class="btn big c2" id="mpOut" style="font-size:16px;padding:8px 22px">Salir</button></div>';
+  openPanel(h);state='final';S.hole(true);burst(cupPos.x,.5,cupPos.z,80,[0xff6b6b,0xffd34d,0x4cd8c0,0x6aa8ff,0xff9ae0],6,9,.12,1.6,14);
+  $('mpAgain').onclick=()=>{S.ui();$('mpAgain').textContent='Volviendo…';if(MP.host)mpHostLobby();else mpSend({t:'tolobby'})};
+  $('mpOut').onclick=()=>{S.ui();mpLeave();closePanel();toMap()};
+}
+function mpHostLobby(){
+  MP.players=MP.players.filter((p,i)=>i===0||(!p.left&&p.conn&&p.conn.open));
+  MP.players.forEach(p=>{p.ready=false});MP.me=0;
+  MP.players.forEach(p=>{if(p.conn&&p.conn.open){try{p.conn.send({t:'lobbyshow'})}catch(e){}}});
+  mpPanel();mpShowLobby();mpLobbyBroadcast();
+}
+/* ---------- bolas de los demás ---------- */
+function mpGhost(i){
+  const p=MP.players[i];let g=MP.ghosts[i];
+  if(g&&g.b===p.b)return g;
+  if(g){scene.remove(g.m);scene.remove(g.sp);scene.remove(g.sh)}
+  const m=new THREE.Mesh(new THREE.SphereGeometry(BR,24,16),new THREE.MeshStandardMaterial({map:ballTexFor(p.b),roughness:.3}));m.scale.setScalar(1.2);outline(m,1.1);scene.add(m);
+  const c=cvs(256,72),x=c.getContext('2d');x.font='bold 34px Fredoka,Trebuchet MS,sans-serif';const w=Math.min(240,x.measureText(p.name).width+30);
+  x.fillStyle='rgba(255,248,232,.95)';x.strokeStyle='#2b3a5c';x.lineWidth=5;const r=18,x0=(256-w)/2;x.beginPath();x.moveTo(x0+r,8);x.arcTo(x0+w,8,x0+w,60,r);x.arcTo(x0+w,60,x0,60,r);x.arcTo(x0,60,x0,8,r);x.arcTo(x0,8,x0+w,8,r);x.closePath();x.fill();x.stroke();
+  x.fillStyle='#2b3a5c';x.textAlign='center';x.textBaseline='middle';x.fillText(p.name,128,35);
+  const tx=new THREE.CanvasTexture(c),sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,depthTest:false,transparent:true}));sp.scale.set(1.7,.48,1);sp.renderOrder=999;scene.add(sp);
+  const sh=new THREE.Mesh(new THREE.CircleGeometry(BR*1.1,20).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false}));scene.add(sh);
+  g={m,sp,sh,b:p.b,x:p.x,z:p.z};MP.ghosts[i]=g;return g;
+}
+function mpClearGhosts(){Object.values(MP.ghosts).forEach(g=>{scene.remove(g.m);scene.remove(g.sp);scene.remove(g.sh)});MP.ghosts={}}
+function mpTick(dt){
+  if(MP.phase!=='game')return;
+  MP.sendT+=dt;const key=B.x.toFixed(2)+','+B.z.toFixed(2)+','+state+','+hIdx;
+  if(MP.sendT>.08&&key!==MP.last||MP.sendT>1.5){MP.sendT=0;MP.last=key;mpSend({t:'pos',x:+B.x.toFixed(3),z:+B.z.toFixed(3),s:state,h:hIdx})}
+  MP.players.forEach((p,i)=>{
+    if(i===MP.me)return;
+    const vis=!p.left&&p.h===hIdx&&state!=='title'&&state!=='final'&&p.s!=='sunk'&&p.s!=='done'&&p.s!=='final'&&p.s!=='fly'&&p.s!=='title';
+    const g=vis?mpGhost(i):MP.ghosts[i];if(!g)return;
+    g.m.visible=g.sp.visible=g.sh.visible=vis;if(!vis)return;
+    const f=Math.min(1,dt*12);if(Math.hypot(p.x-g.x,p.z-g.z)>6){g.x=p.x;g.z=p.z}else{g.x+=(p.x-g.x)*f;g.z+=(p.z-g.z)*f}
+    const y=p.s==='sink'?BR*.4:p.s==='water'?0:BR*1.2;
+    g.m.position.set(g.x,y,g.z);g.sh.position.set(g.x,.03,g.z);g.sp.position.set(g.x,1.15,g.z);
+  });
+}
+/* ---------- marcador lateral ---------- */
+function mpBoard(on){$('mpBoard').classList.toggle('on',!!on);$('mpWait').classList.remove('on');if(on)mpBoardRender()}
+function mpBoardRender(){
+  if(MP.phase!=='game')return;
+  const r=MP.res[hIdx]||{};
+  $('mpBoard').innerHTML=MP.players.map((p,i)=>{const t=mpTotal(i);return '<div class="'+(i===MP.me?'me':'')+(p.left?' gone':'')+'"><i class="chip mini" style="background-image:'+ballImg(p.b)+'"></i><b>'+esc(i===MP.me?'Tú':p.name)+'</b><span>'+(r[i]!=null?'✓ '+r[i]:'⛳')+'</span><em>'+fmtD(t.d)+'</em></div>'}).join('');
+}
+/* ---------- mensajes ---------- */
+function mpHandle(m){
+  if(!m||!m.t)return;
+  if(m.t==='lobby'){MP.me=m.you;MP.code=m.code||MP.code;MP.tour=m.tour|0;MP.n=m.n||9;
+    const keep=MP.players;MP.players=m.players.map((q,i)=>Object.assign(keep[i]||{},{name:q.name,b:q.b|0,ready:q.ready}));
+    if(MP.phase!=='lobby'&&MP.phase!=='game')mpShowLobby();else mpRender();return}
+  if(m.t==='lobbyshow'){mpPanel();mpShowLobby();return}
+  if(m.t==='start'){mpBegin(m.tour|0,m.n||9,m.players);return}
+  if(m.t==='full'){MP.on=false;mpInfo(m.why||'La sala está llena.');return}
+  if(MP.phase!=='game')return;
+  const p=MP.players[m.from];if(!p)return;
+  if(m.t==='pos'){p.x=m.x;p.z=m.z;p.s=m.s;p.h=m.h}
+  else if(m.t==='hole'){(MP.res[m.h]=MP.res[m.h]||{})[m.from]=m.s;p.s='done';p.h=m.h;
+    if(m.h===hIdx&&state!=='done'&&state!=='final')toast(p.name+': '+(m.pk?'recogida':scoreName(m.s,HOLES[m.h].par)),m.s+' golpes',1300);
+    mpBoardRender();mpCheck()}
+  else if(m.t==='left')mpLeft(m.seat);
+}
+function mpLeft(i){const p=MP.players[i];if(!p||p.left)return;p.left=true;const g=MP.ghosts[i];if(g){g.m.visible=g.sp.visible=g.sh.visible=false}
+  if(MP.phase==='game'){toast(p.name,'se ha ido de la partida',1500);mpBoardRender();mpCheck()}}
+function mpHostData(conn,m){
+  if(!m||!m.t)return;const i=MP.players.findIndex(p=>p.conn===conn);if(i<0)return;m.from=i;
+  if(m.t==='pick'){const p=MP.players[i];p.name=String(m.name||'').slice(0,12)||'Jugador';p.b=clamp(m.b|0,0,BALLS.length-1);p.ready=!!m.ready;mpLobbyBroadcast();return}
+  if(m.t==='tolobby'){if(MP.phase==='game')mpHostLobby();return}
+  mpRelay(m,conn);mpHandle(m);
+}
+function mpCreate(attempt){
+  mpInfo('Conectando…');
+  mpLoadLib(ok=>{
+    if(!ok){mpInfo('No se pudo cargar el modo online. Revisa tu conexión.');return}
+    const L='ABCDEFGHJKLMNPQRSTUVWXYZ',code=[0,1,2,3].map(()=>L[Math.floor(Math.random()*L.length)]).join('');
+    let peer;try{peer=new Peer('kauaigolf-'+code,window.MG_PEER_OPTS||{})}catch(e){mpInfo('Error al crear la sala.');return}
+    MP.peer=peer;
+    peer.on('open',()=>{MP.on=true;MP.host=true;MP.me=0;MP.code=code;MP.tour=Math.min(MP.tour,TOURS.length-1);if(!tourOpen(MP.tour))MP.tour=0;
+      MP.players=[{name:($('mpName')&&$('mpName').value||mpName||'Anfitrión').slice(0,12),b:prog.ball,ready:true,conn:null}];mpShowLobby();mpLobbyBroadcast()});
+    peer.on('error',e=>{if(e&&e.type==='unavailable-id'&&(attempt||0)<4){try{peer.destroy()}catch(_){}mpCreate((attempt||0)+1)}else if(MP.phase!=='game')mpInfo('Error de conexión ('+(e&&e.type||'?')+'). Inténtalo de nuevo.')});
+    peer.on('connection',conn=>{
+      conn.on('open',()=>{
+        if(MP.phase!=='lobby'||MP.players.length>=MAXP){try{conn.send({t:'full',why:MP.phase!=='lobby'?'La partida ya ha empezado. Espera a la siguiente.':'La sala está llena (máximo '+MAXP+').'})}catch(e){}setTimeout(()=>{try{conn.close()}catch(e){}},400);return}
+        MP.players.push({name:'Jugador '+(MP.players.length+1),b:0,ready:false,conn});S.ui();mpLobbyBroadcast()});
+      conn.on('data',m=>mpHostData(conn,m));
+      conn.on('close',()=>{const i=MP.players.findIndex(p=>p.conn===conn);if(i<0)return;
+        if(MP.phase==='lobby'){MP.players.splice(i,1);mpLobbyBroadcast();return}
+        if(MP.phase==='game'){mpRelay({t:'left',seat:i,from:0},conn);mpLeft(i)}});
+    });
+  });
+}
+function mpJoin(){
+  const code=($('mpIn').value||'').trim().toUpperCase();if(code.length!==4){mpInfo('Escribe el código de 4 letras.');return}
+  mpInfo('Conectando…');
+  mpLoadLib(ok=>{
+    if(!ok){mpInfo('No se pudo cargar el modo online. Revisa tu conexión.');return}
+    let peer;try{peer=new Peer(window.MG_PEER_OPTS||{})}catch(e){mpInfo('Error de conexión.');return}
+    MP.peer=peer;let done=false;const fail=t=>{if(done)return;done=true;mpInfo(t);try{peer.destroy()}catch(_){}};
+    const to=setTimeout(()=>fail('No se encuentra la sala. Revisa el código (o puede que tu red bloquee la conexión).'),22000);
+    peer.on('error',e=>{if(!MP.on)fail(e&&e.type==='peer-unavailable'?'No existe esa sala. Revisa el código.':'Error de conexión ('+(e&&e.type||'?')+').')});
+    peer.on('open',()=>{const conn=peer.connect('kauaigolf-'+code,{reliable:true});MP.conn=conn;MP.code=code;
+      conn.on('data',mpHandle);conn.on('close',mpLostHost);
+      conn.on('open',()=>{clearTimeout(to);done=true;MP.on=true;MP.host=false;mpInfo('¡Conectado! Entrando en la sala…');setTimeout(()=>{MP.ready=false;mpPick()},300)})});
+  });
+}
+function mpLostHost(){
+  if(!MP.on)return;const g=MP.phase==='game';MP.on=false;MP.phase='off';mpClearGhosts();mpBoard(false);clearInterval(MP.adv);
+  if(g){toast('Se ha cerrado la sala','Sigues jugando solo',2200);if(state==='done'||state==='sunk')showHoleCard()}
+  else if($('mpStart')){$('mpLobby').style.display='none';$('mpStart').style.display='';mpInfo('Se ha cerrado la sala. Crea una nueva o únete con otro código.')}
+}
+function mpLeave(){
+  const was=MP.on;MP.on=false;MP.phase='off';MP.host=false;clearInterval(MP.adv);
+  try{if(MP.conn)MP.conn.close()}catch(e){}MP.players.forEach(p=>{try{if(p.conn)p.conn.close()}catch(e){}});try{if(MP.peer)MP.peer.destroy()}catch(e){}
+  MP.conn=null;MP.peer=null;MP.players=[];mpClearGhosts();mpBoard(false);return was;
+}
+$('bMp').onclick=mpOpen;
+
 /* ============ arranque ============ */
 setPal(0,true);cam.fov=56;
 buildHole(0);applyPal(1,true);ballMesh.visible=false;

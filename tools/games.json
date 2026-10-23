@@ -502,11 +502,11 @@
    "cat": "marca",
    "name": "Kauai Minigolf",
    "note": "Torneos por la isla de Kauai",
-   "blurb": "Juego de minigolf en 3D por la isla de Kauai: arrastra desde la bola hacia atrás, suelta y busca el hoyo en uno entre palmeras, cascadas, puentes y portales. 45 hoyos en cinco torneos, estrellas en cada hoyo, reto del día y bolas que se desbloquean.",
+   "blurb": "Juego de minigolf en 3D por la isla de Kauai: arrastra desde la bola hacia atrás, suelta y busca el hoyo en uno entre palmeras, cascadas, puentes y portales. 45 hoyos en cinco torneos, reto del día, bolas que se desbloquean y multijugador de 2 a 4 móviles jugando el mismo hoyo a la vez.",
    "tags": [
     "Minigolf",
     "5 torneos",
-    "Reto del día"
+    "2-4 móviles"
    ],
    "play": "juegos/minigolf/index.html"
   },
@@ -576,10 +576,10 @@
    "cat": "deporte",
    "name": "Strike Party",
    "note": "¡Bolos de pista loca!",
-   "blurb": "Juego de bolos en 3D en una bolera de neón: elige jugador, lanza la bola con un gesto rápido hacia arriba y dale efecto. Encadena strikes para celebraciones cada vez más locas y reta a un amigo, cada uno desde su móvil, con un código de sala.",
+   "blurb": "Juego de bolos en 3D en una bolera de neón: elige jugador, lanza la bola con un gesto rápido hacia arriba y dale efecto. Encadena strikes para celebraciones cada vez más locas y juega con amigos, de 2 a 4, cada uno desde su móvil con un código de sala.",
    "tags": [
     "Bolos",
-    "2 móviles",
+    "2-4 móviles",
     "Strikes"
    ],
    "play": "juegos/strike-party/index.html"

@@ -1216,7 +1216,7 @@ function vsEndText(tot){
   const top=rk[0],tie=rk.length>1&&rk[1].t===top.t;
   $('endT').textContent=tie&&rk.filter(o=>o.t===top.t).some(o=>o.i===V.me)?'¡EMPATE!':top.i===V.me?'🏆 ¡HAS GANADO!':'¡Gana '+top.p.name+'!';
   const med=['🥇','🥈','🥉','4º'];
-  $('endS').innerHTML=rk.map((o,k)=>(med[k]||'')+' '+(CHARS[o.p.c]||CHARS[0]).e+' '+(o.i===V.me?'<b>Tú</b>':esc(o.p.name))+': <b>'+o.t+'</b>').join('<br>')
+  $('endS').innerHTML=rk.map((o,k)=>(med[rk.filter(q=>q.t>o.t).length]||'')+' '+(CHARS[o.p.c]||CHARS[0]).e+' '+(o.i===V.me?'<b>Tú</b>':esc(o.p.name))+': <b>'+o.t+'</b>').join('<br>')
     +'<br><small>Tus strikes: <b>'+G.strikes+'</b> · spares: <b>'+G.spares+'</b></small>';
   S.endHappy=top.i===V.me;$('bAgain').textContent='VOLVER A LA SALA';
   $('wait').classList.add('hidden');
