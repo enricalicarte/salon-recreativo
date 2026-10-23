@@ -46,11 +46,11 @@ html,body{margin:0;height:100%;overflow:hidden;background:#cfe9f1;font-family:'F
 .ov{position:fixed;inset:0;z-index:8;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
 .ov.on{display:flex}
 #title{background:radial-gradient(ellipse at 50% 60%,rgba(255,226,196,.0),rgba(255,214,170,.45))}
-#title h1{margin:0;font-size:clamp(46px,13vw,110px);line-height:.9;color:#fff;-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;text-shadow:0 8px 0 var(--ink);letter-spacing:.01em;transform:rotate(-3deg)}
+#title h1{margin:0;font-size:clamp(78px,24vw,190px);line-height:.88;color:#fff;-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;text-shadow:0 8px 0 var(--ink);letter-spacing:.01em;transform:rotate(-3deg)}
 #title h1 em{display:block;font-size:.62em;margin-top:.08em;font-style:normal;color:var(--sun)}
-#title p{font-size:clamp(15px,3.6vw,20px);font-weight:600;margin:20px 0 22px;color:#fff;text-shadow:0 2px 0 var(--ink),0 0 10px rgba(0,0,0,.35);max-width:420px}
+#title p{font-size:clamp(18px,4.6vw,26px);font-weight:700;letter-spacing:.04em;margin:26px 0 26px;color:#fff;text-shadow:0 2px 0 var(--ink),0 0 10px rgba(0,0,0,.35);max-width:420px}
 #dim{background:rgba(40,40,80,.35)}
-.panel{padding:20px 26px;max-width:min(92vw,460px);width:100%}
+.panel{padding:20px 26px;max-width:min(92vw,460px);width:100%;max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch}#pnl:has(.t18){max-width:min(94vw,700px)}
 .panel h2{margin:0 0 4px;font-size:34px}
 .panel p{margin:4px 0 14px;font-weight:600;opacity:.8}
 .panel .btn{margin:5px;display:inline-block}
@@ -84,6 +84,7 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
 .tile{font-family:inherit;color:var(--ink);background:var(--paper);border:3px solid var(--ink);border-radius:14px;box-shadow:0 3px 0 rgba(43,58,92,.9);padding:6px 4px;cursor:pointer;touch-action:manipulation}
 .tile:active{transform:translateY(2px)}
+.tiles.t18{grid-template-columns:repeat(6,1fr)}@media(max-width:700px){.tiles.t18{grid-template-columns:repeat(3,1fr)}}
 .tile b{display:block;font-size:20px;line-height:1.1}
 .tile em{display:block;font-style:normal;font-size:10.5px;font-weight:600;opacity:.75;line-height:1.15;min-height:24px}
 .tile .st{display:block;font-size:15px;color:#ffb300;letter-spacing:.05em;line-height:1.2}
@@ -176,27 +177,21 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 
 <div id="title" class="ov on">
   <h1 id="ttl">Kauai<em>Minigolf</em></h1>
-  <p>45 hoyos en 5 torneos por la isla de Kauai. Consigue estrellas, desbloquea torneos y bolas nuevas. Arrastra desde la bola hacia atrás y suelta.</p>
+  <p class="tag">Campeonato Hawaiano</p>
   <button class="btn big" id="bPlay">¡JUGAR!</button><br><button class="btn big c2" id="bMp" style="font-size:18px;padding:9px 22px;margin-top:10px">👥 Multijugador · 2 a 4 móviles</button>
   <div id="best" style="margin-top:14px;font-weight:700;color:#fff;text-shadow:0 2px 0 var(--ink)"></div><div style="margin-top:10px;font-weight:700;letter-spacing:.25em;color:#fff;text-shadow:0 2px 0 var(--ink)" id="tUrl">KAUAI.ES</div>
 </div>
 <div id="map" class="ov"><div class="card mapcard">
-  <div class="maphead"><button class="btn ib" id="mapBack" title="Volver">‹</button><b>Isla de Kauai</b><span id="mapStars"></span></div>
+  <div class="maphead"><button class="btn ib" id="mapBack" title="Volver">‹</button><b id="mapTitle">Campeonato Hawaiano</b><span id="mapStars"></span></div>
   <div class="mapbox" id="mapbox">
-   <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+   <svg id="mapSvg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
     <defs><linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fdcf0"/><stop offset="1" stop-color="#2f9fcf"/></linearGradient></defs>
     <rect width="400" height="300" fill="url(#sea)"/>
     <g fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2" stroke-linecap="round"><path d="M12 40q10-6 20 0t20 0"/><path d="M340 270q10-6 20 0t20 0"/><path d="M14 262q10-6 20 0t20 0"/><path d="M345 150q10-6 20 0t20 0"/><path d="M14 140q10-6 20 0t20 0"/></g>
-    <path d="M93.0 27.9 L87.5 35.7 L87.5 41.8 L81.4 43.8 L74.5 49.5 L73.7 57.3 L75.1 64.5 L61.2 79.8 L58.9 92.8 L55.2 96.6 L54.0 104.3 L30.7 127.1 L30.7 180.5 L38.8 197.5 L46.8 205.0 L52.9 206.7 L58.9 216.8 L66.4 219.4 L82.9 218.6 L93.3 220.9 L99.0 224.9 L105.7 225.5 L114.6 233.0 L116.3 238.5 L121.8 242.2 L132.8 255.5 L148.1 266.2 L172.6 266.8 L181.8 271.1 L194.8 271.7 L197.4 274.5 L202.3 276.0 L207.2 275.4 L212.7 271.7 L217.6 271.7 L223.9 275.1 L232.3 276.0 L236.9 279.7 L247.0 280.6 L251.3 283.8 L258.0 285.2 L272.7 280.0 L278.2 274.8 L283.4 273.1 L296.3 261.3 L302.1 259.2 L309.0 247.4 L319.1 239.1 L326.1 237.0 L331.8 231.0 L334.7 224.1 L340.2 220.0 L343.7 212.5 L343.9 179.9 L340.2 174.2 L343.1 168.7 L343.1 161.2 L346.0 158.0 L348.0 149.6 L352.3 144.4 L352.9 134.1 L361.0 125.1 L362.1 117.6 L364.7 115.3 L364.7 65.1 L357.8 61.7 L355.8 49.0 L343.4 34.8 L324.3 20.1 L309.0 19.0 L306.2 15.8 L301.2 14.3 L207.8 14.3 L201.4 17.2 L194.8 14.3 L166.0 14.3 L161.1 15.8 L148.7 27.9 L136.0 24.2 L128.2 27.3 L121.0 23.6 L109.1 23.9Z" fill="#fff" fill-opacity=".5" stroke-linejoin="round"/>
-    <path id="isl" d="M97.9 35.1 L95.9 38.3 L97.0 47.5 L99.3 50.4 L103.4 50.4 L104.5 52.1 L104.2 53.9 L102.8 55.0 L97.0 54.2 L92.1 50.7 L86.9 50.7 L82.3 53.6 L83.5 62.2 L86.1 66.0 L85.8 67.4 L82.3 69.2 L81.4 72.0 L77.4 74.1 L75.4 77.2 L72.8 79.0 L71.9 81.8 L69.0 83.9 L67.6 89.1 L67.6 96.8 L65.9 99.2 L63.0 100.6 L62.4 109.2 L58.7 111.8 L56.6 115.3 L54.0 116.2 L52.6 119.1 L49.4 120.8 L47.4 124.2 L44.8 125.1 L43.1 128.9 L40.5 129.4 L39.6 131.8 L35.3 135.2 L35.0 172.7 L39.0 175.9 L41.3 182.5 L43.9 184.5 L46.0 192.6 L49.4 193.8 L51.7 197.8 L57.5 199.0 L61.8 203.6 L63.8 209.6 L70.8 211.1 L84.3 209.6 L89.5 212.2 L96.7 212.2 L101.3 216.6 L112.3 217.1 L113.8 221.7 L115.8 224.1 L122.7 227.2 L123.6 233.6 L127.0 234.7 L131.3 239.1 L133.4 244.0 L135.4 244.8 L137.7 248.3 L141.4 249.2 L143.5 253.2 L148.9 253.8 L151.2 258.1 L157.0 258.4 L160.8 256.9 L164.8 258.4 L176.3 258.1 L179.2 261.3 L184.1 262.7 L199.7 263.0 L201.2 264.2 L202.3 267.3 L204.6 267.0 L209.8 263.0 L220.5 263.0 L224.2 265.9 L228.3 267.3 L237.2 267.6 L240.1 271.7 L251.3 272.2 L253.9 275.4 L258.0 276.6 L260.6 275.7 L262.6 272.2 L269.5 271.9 L271.8 267.6 L278.5 265.9 L280.2 262.7 L283.4 261.8 L285.7 258.4 L288.6 257.2 L290.6 253.8 L297.2 252.0 L298.1 250.9 L298.1 245.7 L301.5 242.8 L303.0 239.9 L306.4 239.3 L307.3 236.7 L311.3 234.7 L313.4 231.6 L321.2 229.8 L325.8 224.6 L326.3 218.3 L332.7 215.4 L335.0 211.1 L335.3 181.4 L330.7 176.5 L330.7 172.1 L334.4 167.2 L333.3 164.3 L334.4 160.3 L331.8 156.8 L333.3 155.4 L335.9 155.4 L338.2 154.0 L339.9 144.7 L343.9 141.8 L344.5 129.4 L348.0 126.6 L350.3 122.2 L353.2 121.1 L353.8 112.1 L358.1 109.8 L358.1 86.8 L359.2 85.3 L361.2 85.0 L364.7 87.0 L364.7 73.8 L359.8 73.8 L357.2 70.6 L351.4 69.4 L349.1 68.0 L349.1 57.9 L348.0 53.0 L340.2 46.1 L338.5 42.0 L336.2 41.5 L331.0 36.8 L328.9 36.3 L321.2 28.2 L318.0 27.6 L313.4 28.8 L311.1 27.6 L304.4 27.3 L301.2 23.0 L270.7 23.0 L268.4 24.2 L264.9 23.0 L207.8 23.0 L205.2 27.0 L197.7 27.3 L194.8 23.0 L166.0 23.0 L163.1 27.0 L160.2 28.2 L158.2 32.2 L151.2 36.6 L142.9 36.8 L140.3 33.7 L135.1 32.8 L132.8 36.0 L127.0 37.1 L121.0 32.2 L119.2 32.5 L117.2 35.4 L114.9 35.1 L112.0 32.2 L110.3 32.5 L107.7 34.8Z" fill="#ecd3a0" stroke="#2b3a5c" stroke-width="2.6" stroke-linejoin="round"/>
-    <path d="M103.1 41.2 L103.1 44.1 L107.1 45.2 L110.3 49.2 L110.0 56.8 L106.5 60.2 L102.8 61.4 L95.0 60.2 L88.9 57.0 L92.4 64.8 L91.5 70.3 L74.5 87.9 L73.9 98.0 L69.0 104.6 L68.2 112.1 L41.6 138.1 L41.3 169.5 L44.2 172.1 L46.8 178.8 L49.7 181.7 L51.2 187.4 L56.3 192.3 L61.2 193.8 L67.0 199.8 L68.8 204.4 L86.3 203.6 L91.0 205.9 L98.8 206.2 L104.2 210.5 L116.1 211.9 L118.7 214.8 L119.8 218.9 L127.9 223.5 L129.3 229.0 L136.5 235.3 L138.3 239.3 L148.1 247.4 L152.7 248.6 L155.6 252.0 L160.8 250.6 L166.0 252.0 L176.3 251.7 L185.0 256.4 L199.7 256.7 L204.6 258.7 L209.8 256.7 L222.5 256.9 L228.3 260.7 L239.2 261.6 L243.6 265.6 L253.4 266.2 L257.1 269.1 L258.8 267.0 L265.2 265.9 L268.1 262.4 L274.1 260.4 L286.8 248.6 L291.7 246.8 L292.3 242.8 L299.2 234.7 L309.6 226.4 L317.1 224.3 L319.4 222.3 L321.2 214.5 L328.7 209.3 L328.9 184.0 L324.3 177.6 L324.3 171.0 L327.2 166.1 L325.5 155.7 L329.5 150.2 L332.4 149.3 L334.1 141.8 L337.9 137.5 L338.8 126.6 L347.1 116.7 L348.0 109.2 L351.7 105.8 L351.7 85.6 L356.9 79.2 L353.8 76.4 L348.6 75.2 L343.9 71.8 L342.2 56.5 L333.3 46.9 L325.2 41.5 L318.3 34.2 L313.4 35.1 L302.4 33.4 L298.1 29.3 L272.1 29.3 L268.4 30.5 L263.8 29.3 L211.2 29.3 L207.2 33.1 L195.7 33.4 L191.3 29.3 L169.4 29.3 L161.9 37.4 L153.3 42.6 L140.9 42.9 L137.4 40.3 L127.9 43.5 L120.7 40.9Z" fill="#62c26e" stroke-linejoin="round"/>
-    <path d="M323.5 91.1 L317.4 82.1 L314.5 69.2 L306.4 62.5 L288.0 57.6 L221.1 57.6 L213.0 60.8 L201.4 61.9 L191.3 61.4 L181.2 57.9 L169.7 66.0 L160.2 70.0 L134.5 70.9 L125.3 81.6 L113.8 87.6 L101.9 100.0 L99.9 109.5 L91.2 128.6 L69.9 150.8 L69.6 159.7 L74.8 169.0 L82.9 175.3 L105.7 178.8 L125.6 185.1 L132.8 189.2 L148.4 203.9 L154.1 212.8 L163.7 222.6 L182.7 224.1 L193.9 228.4 L226.8 229.0 L254.8 237.6 L269.2 226.7 L277.0 216.8 L295.8 201.8 L300.4 195.5 L296.1 179.3 L297.8 149.9 L301.2 140.4 L309.9 127.7 L312.8 115.3 L320.0 104.9Z" fill="#3f9d5a" stroke-linejoin="round"/>
-    <path d="M288.3 94.2 L286.8 91.1 L281.3 89.3 L227.4 89.3 L211.2 93.1 L186.7 92.5 L169.7 100.3 L148.9 102.9 L131.3 115.6 L115.8 148.8 L136.0 155.1 L149.8 162.3 L172.6 183.4 L178.9 192.0 L201.7 196.9 L231.2 197.5 L248.2 202.1 L264.9 185.7 L264.3 167.8 L267.5 140.1Z" fill="#2c7d4e" stroke-linejoin="round"/>
-    <g fill="none" stroke="#6fd0f0" stroke-width="2.2" stroke-linecap="round"><path d="M227.6 140.3 Q268.4 147.7 307.4 151.4"/><path d="M205.3 158.9 Q186.7 203.4 179.3 236.9"/><path d="M190.4 62.3 Q216.4 47.4 238.7 32.6"/></g>
-    <g fill="#1d5a3a" stroke="#143f2a" stroke-width="1" stroke-linejoin="round"><path d="M212.6 143.0L223.8 120.6L235.0 143.0Z"/><path d="M199.9 115.8L209.0 97.6L218.1 115.8Z"/><path d="M236.6 155.8L244.3 140.4L252.0 155.8Z"/><path d="M179.0 89.0L186.7 73.6L194.4 89.0Z"/><path d="M135.8 136.5L142.1 123.9L148.4 136.5Z"/></g><g fill="#fff"><path d="M223.8 120.6L219.4 129.4L228.3 129.4Z"/><path d="M209.0 97.6L205.3 104.7L212.6 104.7Z"/><path d="M244.3 140.4L241.2 146.5L247.4 146.5Z"/></g>
+    <g id="gLand"></g>
     <g id="mapPlane" transform="translate(372 17)"><path d="M0 0l22-5 6 3-5 3z" fill="#fff" stroke="#2b3a5c" stroke-width="1.5"/><path d="M8 -3l-5-9 5 0 7 8z" fill="#1e6bff" stroke="#2b3a5c" stroke-width="1"/><path d="M-6 1L-62 6" stroke="#2b3a5c" stroke-width="1"/><rect x="-100" y="1" width="42" height="14" fill="#1e6bff" stroke="#2b3a5c" stroke-width="1.5" transform="rotate(5 -60 8)"/><text x="-79" y="12" font-family="Arial,sans-serif" font-weight="700" font-size="9" fill="#fff" text-anchor="middle" transform="rotate(5 -60 8)" id="mapUrl">kauai.es</text></g>
     <g transform="translate(366 268)"><circle r="16" fill="#fff" fill-opacity=".7" stroke="#2b3a5c" stroke-width="2"/><path d="M0 -13L4 0L0 13L-4 0Z" fill="#ef6f5a" stroke="#2b3a5c"/><text y="-17" font-family="Arial" font-size="8" font-weight="700" text-anchor="middle" fill="#2b3a5c">N</text></g>
-    <g transform="translate(40 40)"><path d="M-14 0h28l-5 8h-18z" fill="#fff" stroke="#2b3a5c" stroke-width="2"/><path d="M0 0V-18l12 12z" fill="#ef6f5a" stroke="#2b3a5c" stroke-width="1.5"/></g>
+    <g id="mapBoat" transform="translate(40 40)"><path d="M-14 0h28l-5 8h-18z" fill="#fff" stroke="#2b3a5c" stroke-width="2"/><path d="M0 0V-18l12 12z" fill="#ef6f5a" stroke="#2b3a5c" stroke-width="1.5"/></g>
    </svg>
   </div>
   <div id="mapRow"></div><div id="balls"></div><div id="mapStats"></div>
@@ -342,12 +337,15 @@ const PAL=[
  {top:0x7c8fd6,bot:0xffb88a,sunc:0xffb070,light:0xffc08e,hs:0xbccaf5,hg:0xeec08e,elev:19,si:1.0,hi:.72},
  {top:0x8a7fcf,bot:0xff9fa0,sunc:0xff8f8a,light:0xffa98f,hs:0xb5b4ee,hg:0xe8b090,elev:13,si:.95,hi:.68},
  {top:0x4b4e9c,bot:0xf08aa0,sunc:0xff8a7a,light:0xffa27a,hs:0xa0a2e0,hg:0xd9a08a,elev:8,si:.85,hi:.64},
- {top:0x1f2458,bot:0x9a5a9e,sunc:0xffa0a0,light:0xa6abff,hs:0x7f86d8,hg:0xb08aa0,elev:6,si:.62,hi:.6}
+ {top:0x1f2458,bot:0x9a5a9e,sunc:0xffa0a0,light:0xa6abff,hs:0x7f86d8,hg:0xb08aa0,elev:6,si:.62,hi:.6},
+ {top:0x3a1418,bot:0xff6a2a,sunc:0xff7a30,light:0xffa070,hs:0xc08080,hg:0xd09070,elev:10,si:.8,hi:.62},
+ {top:0x0a1840,bot:0x2aa0a0,sunc:0x9affd8,light:0xa8d0ff,hs:0x7fb0e0,hg:0x90b0b0,elev:7,si:.6,hi:.58}
 ];
 const cur={top:new THREE.Color(),bot:new THREE.Color(),sunc:new THREE.Color(),light:new THREE.Color(),hs:new THREE.Color(),hg:new THREE.Color(),elev:30,si:1,hi:.8};
 const tgt={top:new THREE.Color(),bot:new THREE.Color(),sunc:new THREE.Color(),light:new THREE.Color(),hs:new THREE.Color(),hg:new THREE.Color(),elev:30,si:1,hi:.8};
-const PALMAP=[[0,1,2,3,4,5,6,7,8],[1,1,2,2,3,3,4,5,5],[3,4,4,5,5,6,6,7,8],[2,3,3,4,4,4,5,5,6],[6,7,7,8,8,8,8,8,8]];
-function setPal(i,snap){const p=PAL[PALMAP[Math.min(4,(i/9)|0)][i%9]||0];['top','bot','sunc','light','hs','hg'].forEach(k=>tgt[k].set(p[k]));tgt.elev=p.elev;tgt.si=p.si;tgt.hi=p.hi;if(typeof HD!=='undefined'&&HD&&HD.rain){const gy=new THREE.Color(.55,.6,.66);tgt.top.lerp(gy,.45);tgt.bot.lerp(gy,.35);tgt.si*=.7;tgt.hi*=.92}if(snap)applyPal(1,true)}
+const PALMAP=[[0,1,2,3,4,5,6,7,8],[1,1,2,2,3,3,4,5,5],[3,4,4,5,5,6,6,7,8],[2,3,3,4,4,4,5,5,6],[6,7,7,8,8,8,8,8,8],
+ [1,1,2,2,3,3,4,4,5],[6,7,7,8,8,8,8,8,8],[8,7,6,6,5,4,3,2,1],[1,1,2,2,1,2,2,3,3],[6,9,9,9,9,9,9,9,9],[8,10,10,10,10,10,10,10,10],[3,4,4,5,5,6,6,7,7],[0,1,1,2,2,1,1,2,2],[4,4,5,5,6,6,7,7,8,1,2,2,3,4,5,6,7,8]];
+function setPal(i,snap){const p=PAL[(r=>r[(posOf[i]||0)%r.length])(PALMAP[Math.min(PALMAP.length-1,tourOf[i]||0)])||0];['top','bot','sunc','light','hs','hg'].forEach(k=>tgt[k].set(p[k]));tgt.elev=p.elev;tgt.si=p.si;tgt.hi=p.hi;if(typeof HD!=='undefined'&&HD&&HD.rain){const gy=new THREE.Color(.55,.6,.66);tgt.top.lerp(gy,.45);tgt.bot.lerp(gy,.35);tgt.si*=.7;tgt.hi*=.92}if(snap)applyPal(1,true)}
 const skyU={top:{value:new THREE.Color()},bot:{value:new THREE.Color()},sunCol:{value:new THREE.Color()},sunDir:{value:new THREE.Vector3(0,1,0)}};
 const sky=new THREE.Mesh(new THREE.SphereGeometry(500,32,16),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,uniforms:skyU,
  vertexShader:'varying vec3 vP;void main(){vP=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
@@ -470,8 +468,17 @@ const MUS=[
  {ch:[[220,261.6,329.6],[174.6,220,261.6],[261.6,329.6,392],[196,246.9,293.7]],bass:[110,87.3,130.8,98],pent:[440,523,587,659,784,880],bpm:96,type:'triangle'},
  {ch:[[146.8,174.6,220],[116.5,146.8,174.6],[174.6,220,261.6],[130.8,164.8,196]],bass:[73.4,58.3,87.3,65.4],pent:[587,659,698,784,880,1047],bpm:104,type:'triangle'},
  {ch:[[164.8,196,246.9],[196,246.9,293.7],[146.8,185,220],[164.8,207.7,246.9]],bass:[82.4,98,73.4,82.4],pent:[659,740,988,1109,1319,1480],bpm:84,type:'sine'},
- {ch:[[261.6,329.6,392],[293.7,370,440],[196,246.9,293.7],[261.6,329.6,392]],bass:[130.8,146.8,98,130.8],pent:[523,659,784,880,988,1175],bpm:100,type:'triangle'}];
-let musT=0;function setMusic(t){musT=Math.min(4,t)}
+ {ch:[[261.6,329.6,392],[293.7,370,440],[196,246.9,293.7],[261.6,329.6,392]],bass:[130.8,146.8,98,130.8],pent:[523,659,784,880,988,1175],bpm:100,type:'triangle'},
+ {ch:[[261.6,329.6,392],[349.2,440,523.3],[392,493.9,587.3],[261.6,329.6,392]],bass:[130.8,174.6,196,130.8],pent:[523,587,659,784,880,1047],bpm:112,type:'triangle'},
+ {ch:[[220,261.6,329.6],[246.9,293.7,370],[196,246.9,293.7],[220,277.2,329.6]],bass:[110,123.5,98,110],pent:[440,523,587,659,784,880],bpm:122,type:'triangle'},
+ {ch:[[293.7,370,440],[220,277.2,329.6],[246.9,293.7,370],[196,246.9,293.7]],bass:[146.8,110,123.5,98],pent:[587,659,740,880,988,1175],bpm:72,type:'sine'},
+ {ch:[[220,261.6,329.6],[174.6,220,261.6],[196,246.9,293.7],[164.8,207.7,246.9]],bass:[110,87.3,98,82.4],pent:[440,523,659,784,880,1047],bpm:80,type:'sine'},
+ {ch:[[110,130.8,164.8],[103.8,130.8,155.6],[98,123.5,146.8],[110,138.6,164.8]],bass:[55,51.9,49,55],pent:[220,261.6,329.6,392,440,523],bpm:100,type:'triangle'},
+ {ch:[[261.6,329.6,392],[246.9,311.1,370],[220,277.2,329.6],[233.1,293.7,349.2]],bass:[130.8,123.5,110,116.5],pent:[988,1175,1319,1568,1760,2093],bpm:76,type:'sine'},
+ {ch:[[196,246.9,293.7],[220,277.2,329.6],[164.8,196,246.9],[196,246.9,293.7]],bass:[98,110,82.4,98],pent:[392,440,523,587,659,784],bpm:92,type:'triangle'},
+ {ch:[[261.6,329.6,392],[293.7,370,440],[349.2,440,523.3],[392,493.9,587.3]],bass:[130.8,146.8,174.6,196],pent:[523,659,784,880,1047,1319],bpm:108,type:'triangle'},
+ {ch:[[261.6,329.6,392],[349.2,440,523.3],[293.7,370,440],[392,493.9,587.3]],bass:[130.8,174.6,146.8,196],pent:[523,659,784,988,1175,1319],bpm:118,type:'triangle'}];
+let musT=0;function setMusic(t){musT=Math.min(MUS.length-1,t)}
 function startMusic(){if(musicOn||!AC)return;musicOn=true;
   let next=AC.currentTime+.2,b=0;const mg=AC.createGain();mg.gain.value=.5;mg.connect(master);
   setInterval(()=>{if(!AC)return;const M=MUS[musT],beat=60/M.bpm;while(next<AC.currentTime+.4){const bar=(b>>2)&3,bt=b&3;const c=M.ch[bar];
@@ -484,6 +491,7 @@ function setMuted(m){muted=m;if(master)master.gain.value=m?0:.85;$('bSnd').textC
 
 /* ============ definición de hoyos ============ */
 const ngon=(cx,cz,rx,rz,n,rot)=>{const p=[];for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2+(rot||0);p.push([cx+Math.cos(a)*rx,cz+Math.sin(a)*rz])}return p};
+const COR=(name,par,w,l,o)=>Object.assign({name,par,poly:[[-w,l],[w,l],[w,-l],[-w,-l]],tee:[0,l-1.6],cup:[0,-l+1.7]},o);
 const HOLES=[
  {name:'Poipu Beach',par:2,poly:[[-2.5,8],[2.5,8],[2.5,-8],[-2.5,-8]],tee:[0,6.4],cup:[0,-6.3],
   circles:[{x:-1.1,z:-0.5,r:.55,t:'rock'}],wall:0xf6e7c8,cap:0x1e6bff},
@@ -603,13 +611,477 @@ const HOLES=[
   circles:[{x:0,z:0,r:.95,t:'light'},{x:-5.5,z:5.5,r:.8,t:'barrel',e:1.3},{x:5.5,z:5.5,r:.8,t:'barrel',e:1.3},{x:-5.5,z:-5.5,r:.8,t:'barrel',e:1.3},{x:5.5,z:-5.5,r:.8,t:'barrel',e:1.3}],
   rotors:[{x:0,z:0,len:3.4,w:1.1,a0:0,arms:2,t:'beam'}],portals:[{a:[-7,0],b:[7,0],r:.7,c:0xff9ae0}],boosts:[{x:0,z:9,w:2.4,l:2.2,dx:0,dz:-1,a:26}],
   sands:[{x:0,z:7.2,r:1.4},{x:0,z:-7.5,r:1.4}],wall:0xfff0d0,cap:0xff5a9e}
+,
+ /* ===== COPA WAIKIKI LOCO (Oahu · playa y tablas de surf) ===== */
+ {name:'Waikiki Welcome',par:2,poly:[[-3.5,8.5],[3.5,8.5],[3.5,-8.5],[-3.5,-8.5]],tee:[0,6.9],cup:[0,-6.8],
+  circles:[{x:-1.6,z:2.5,r:.8,t:'barrel',e:1.5},{x:1.6,z:-1.5,r:.8,t:'barrel',e:1.5},{x:0,z:-4.2,r:.7,t:'barrel',e:1.5}],wall:0xfff1d8,cap:0x19c8d9},
+ {name:"Surf's Up",par:3,poly:[[-3,12],[3,12],[3,-12],[-3,-12]],tee:[0,10.4],cup:[0,-10.3],
+  boosts:[{x:-1.2,z:5.5,w:2,l:2.2,dx:0,dz:-1,a:20},{x:1.2,z:-1.5,w:2,l:2.2,dx:0,dz:-1,a:20}],
+  circles:[{x:1.3,z:5.5,r:.7,t:'barrel',e:1.4},{x:-1.3,z:-1.5,r:.7,t:'barrel',e:1.4},{x:0,z:-6.5,r:.75,t:'barrel',e:1.4}],wall:0xfff1d8,cap:0xff5a9e},
+ {name:'Sandcastle Rumble',par:3,poly:ngon(0,0,8,8,8,Math.PI/8),tee:[0,6.6],cup:[0,-6.6],
+  circles:[{x:0,z:0,r:.8,t:'tower'}],rotors:[{x:0,z:0,len:3,w:1.4,a0:0,arms:4,t:'mill'}],
+  sands:[{x:-4.8,z:2.2,r:1.4},{x:4.8,z:-2.2,r:1.4},{x:-3.2,z:-4.4,r:1.2},{x:3.2,z:4.4,r:1.2}],wall:0xfff1d8,cap:0xffc94d},
+ {name:'Shark Fin Alley',par:3,poly:[[-3.3,12],[3.3,12],[3.3,-12],[-3.3,-12]],tee:[0,10.4],cup:[0,-10.3],
+  gates:[{z:6,hw:1.15,x0:0,amp:.9,sp:1.5,ph:0},{z:2,hw:1.15,x0:0,amp:.9,sp:2,ph:1.5},{z:-2,hw:1.15,x0:0,amp:.9,sp:1.2,ph:3},{z:-6,hw:1.15,x0:0,amp:.9,sp:1.8,ph:4.5}],wall:0xdff6ff,cap:0xff4d4d},
+ {name:'Banzai Pipeline',par:4,poly:[[-3.5,15],[3.5,15],[3.5,-15],[-3.5,-15]],tee:[0,13.4],cup:[0,-13.3],
+  boosts:[{x:0,z:8,w:2.4,l:7,dx:1,dz:0,a:15},{x:0,z:2,w:2.4,l:7,dx:-1,dz:0,a:15},{x:0,z:-4,w:2.4,l:7,dx:1,dz:0,a:15},{x:0,z:-9.5,w:2.4,l:2.4,dx:0,dz:-1,a:22}],wall:0xe9fbff,cap:0x19c8d9},
+ {name:"Duke's Surfboards",par:3,poly:[[-5,9],[5,9],[5,-9],[-5,-9]],tee:[0,7.4],cup:[0,-7.4],
+  boosts:[{x:-2.6,z:3,w:1.6,l:2.8,dx:.6,dz:-.8,a:18},{x:2.6,z:-1.5,w:1.6,l:2.8,dx:-.6,dz:-.8,a:18}],
+  circles:[{x:0,z:2,r:.8,t:'barrel',e:1.4},{x:-3.5,z:-4.5,r:.7,t:'barrel',e:1.4},{x:3.5,z:-4.8,r:.7,t:'barrel',e:1.4}],wall:0xfff1d8,cap:0xff5a9e},
+ {name:'Hang Loose Loops',par:3,poly:[[-6,10],[6,10],[6,-10],[-6,-10]],tee:[0,8.4],cup:[0,-8.4],
+  circles:[{x:0,z:0,r:1,t:'tower'}],rotors:[{x:0,z:0,len:3.8,w:-2,a0:0,arms:2,t:'beam'}],
+  portals:[{a:[-3.8,5],b:[3.8,-5],r:.7,c:0xff7ad8},{a:[3.8,5],b:[-3.8,-5],r:.7,c:0x4cd8ff}],wall:0xfff1d8,cap:0xffc94d},
+ {name:'Beach Ball Madness',par:4,poly:ngon(0,0,9,9,6,Math.PI/6),tee:[0,7.2],cup:[0,-7.2],
+  circles:[{x:0,z:3,r:.75,t:'barrel',e:1.6},{x:-3.3,z:1,r:.75,t:'barrel',e:1.6},{x:3.3,z:1,r:.75,t:'barrel',e:1.6},{x:-1.7,z:-2.4,r:.75,t:'barrel',e:1.6},{x:1.7,z:-2.4,r:.75,t:'barrel',e:1.6},{x:0,z:-5,r:.75,t:'barrel',e:1.6}],wall:0xfff1d8,cap:0xff5a9e},
+ {name:'Surf Finale',par:5,poly:[[-10,12],[4,12],[4,-6],[10,-6],[10,-12],[-2,-12],[-2,6],[-10,6]],tee:[-8,9],cup:[8,-9],look:[1,9],via:[[1,9],[1,-9]],
+  circles:[{x:-4.5,z:9,r:.5,t:'tower'}],rotors:[{x:-4.5,z:9,len:2.4,w:1.6,a0:0,arms:2,t:'mill'}],
+  waters:[{x0:-2,x1:4,z0:-1,z1:2,bridges:[{x0:1.2,x1:3}]}],gates:[{z:4,hw:1,x0:1,amp:.9,sp:1.5,ph:0}],
+  boosts:[{x:4,z:-9,w:2.4,l:3,dx:1,dz:0,a:18}],wall:0xfff1d8,cap:0xffc94d},
 
+ /* ===== COPA DISCO DIAMOND HEAD (Oahu · discoteca volcánica) ===== */
+ {name:'Entrada Disco',par:2,poly:[[-3.5,9],[3.5,9],[3.5,-9],[-3.5,-9]],tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:0,z:0,r:.6,t:'light'}],rotors:[{x:0,z:0,len:2.6,w:1.7,a0:0,arms:2,t:'beam'}],wall:0xe9dcff,cap:0xff2ea6},
+ {name:'Bola de Espejos',par:3,poly:[[-4.5,10],[4.5,10],[4.5,-10],[-4.5,-10]],tee:[0,8.4],cup:[0,-8.4],
+  circles:[{x:0,z:0,r:1.2,t:'tower'}],rotors:[{x:0,z:0,len:3.4,w:1.2,a0:0,arms:4,t:'beam'}],portals:[{a:[-3.3,5],b:[3.3,-5],r:.7,c:0x18f0ff}],wall:0xe9dcff,cap:0x18f0ff},
+ {name:'Pista de Baile',par:3,poly:[[-7,7],[7,7],[7,-7],[-7,-7]],tee:[0,5.6],cup:[0,-5.6],
+  circles:[{x:-3.8,z:0,r:.5,t:'light'},{x:3.8,z:0,r:.5,t:'light'}],rotors:[{x:-3.8,z:0,len:2.4,w:1.6,a0:0,arms:2,t:'beam'},{x:3.8,z:0,len:2.4,w:-1.6,a0:1.57,arms:2,t:'beam'}],wall:0xe9dcff,cap:0xffd34d},
+ {name:'Laser Alley',par:3,poly:[[-3,13],[3,13],[3,-13],[-3,-13]],tee:[0,11.4],cup:[0,-11.3],
+  circles:[{x:0,z:6,r:.5,t:'light'},{x:0,z:0,r:.5,t:'light'},{x:0,z:-6,r:.5,t:'light'}],rotors:[{x:0,z:6,len:2.4,w:2.2,a0:0,arms:2,t:'beam'},{x:0,z:0,len:2.4,w:-2.2,a0:1,arms:2,t:'beam'},{x:0,z:-6,len:2.4,w:2.4,a0:2,arms:2,t:'beam'}],wall:0xe9dcff,cap:0xff2ea6},
+ {name:'Portal Party',par:4,poly:[[-7,8],[7,8],[7,-8],[-7,-8]],tee:[0,6.4],cup:[0,-6.4],
+  circles:[{x:0,z:0,r:2,t:'rock'},{x:-3,z:0,r:.5,t:'light'},{x:3,z:0,r:.5,t:'light'}],
+  portals:[{a:[-5,5],b:[5,-5],r:.7,c:0xff7ad8},{a:[5,5],b:[-5,-5],r:.7,c:0x18f0ff}],wall:0xe9dcff,cap:0xffd34d},
+ {name:'Neon Snake',par:4,poly:[[-6,10],[6,10],[6,-2],[-3,-2],[-3,-4],[6,-4],[6,-8],[-6,-8],[-6,4],[3,4],[3,6],[-6,6]],tee:[-4.5,8],cup:[4.5,-6],look:[4.5,5],via:[[4.5,5],[-4.5,-3]],
+  circles:[{x:0,z:-6,r:.5,t:'light'},{x:0,z:1,r:.5,t:'light'}],rotors:[{x:0,z:1,len:2.2,w:1.7,a0:0,arms:2,t:'beam'}],
+  boosts:[{x:-1,z:8,w:2.4,l:3,dx:1,dz:0,a:18}],wall:0xe9dcff,cap:0x18f0ff},
+ {name:'Disco Fever',par:3,poly:[[-4,12],[4,12],[4,-12],[-4,-12]],tee:[0,10.4],cup:[0,-10.3],
+  circles:[{x:0,z:5,r:.5,t:'light'},{x:0,z:-5,r:.5,t:'light'}],rotors:[{x:0,z:5,len:3.2,w:2,a0:0,arms:2,t:'beam'},{x:0,z:-5,len:3.2,w:-2.4,a0:1,arms:2,t:'beam'}],
+  boosts:[{x:0,z:0,w:2.4,l:2,dx:0,dz:-1,a:20}],wall:0xe9dcff,cap:0xff2ea6},
+ {name:'Fiebre del Sábado',par:4,poly:ngon(0,0,9,9,8,Math.PI/8),tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:0,z:0,r:1.2,t:'tower'},{x:-3,z:-4.5,r:.7,t:'barrel',e:1.5},{x:3,z:-4.5,r:.7,t:'barrel',e:1.5},{x:-3,z:4.5,r:.7,t:'barrel',e:1.5},{x:3,z:4.5,r:.7,t:'barrel',e:1.5}],
+  rotors:[{x:0,z:0,len:3.6,w:1.3,a0:0,arms:4,t:'beam'}],portals:[{a:[-6,0],b:[6,0],r:.7,c:0xffd34d}],wall:0xe9dcff,cap:0xffd34d},
+ {name:'Diamond Head Final',par:5,poly:ngon(0,0,11,11,12,Math.PI/12),tee:[0,9.2],cup:[0,-9.2],
+  circles:[{x:0,z:0,r:.9,t:'tower'}],rotors:[{x:0,z:0,len:4.5,w:1.1,a0:0,arms:4,t:'beam'},{x:0,z:0,len:7,w:-.7,a0:0,arms:2,t:'beam'}],
+  portals:[{a:[-8.2,0],b:[8.2,0],r:.7,c:0xff7ad8}],sands:[{x:-5.5,z:6.5,r:1.3},{x:5.5,z:-6.5,r:1.3}],wall:0xe9dcff,cap:0xff2ea6},
+
+ /* ===== COPA HALEAKALĀ SOBRE LAS NUBES (Maui · amanecer y viento) ===== */
+ {name:'Amanecer en Haleakalā',par:2,poly:[[-3,9],[3,9],[3,-9],[-3,-9]],tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:-1.4,z:3,r:.7,t:'rock'},{x:1.4,z:-1,r:.7,t:'rock'},{x:0,z:-4.2,r:.7,t:'rock'}],boosts:[{x:0,z:6,w:2.4,l:2,dx:0,dz:-1,a:16}],wall:0xf3dccb,cap:0xff9a70},
+ {name:'Cráter Silencioso',par:3,poly:ngon(0,0,8,8,8,Math.PI/8),tee:[0,6.6],cup:[0,-6.6],
+  circles:[{x:-4.2,z:0,r:.8,t:'rock'},{x:4.2,z:0,r:.8,t:'rock'}],sands:[{x:0,z:0,r:3}],wall:0xf3dccb,cap:0xb06fe0},
+ {name:'Mar de Nubes',par:3,poly:[[-3.5,11],[3.5,11],[3.5,-11],[-3.5,-11]],tee:[0,9.4],cup:[0,-9.3],
+  boosts:[{x:0,z:5,w:3,l:7,dx:1,dz:0,a:10},{x:0,z:-3,w:3,l:7,dx:-1,dz:0,a:10}],circles:[{x:-2,z:1,r:.6,t:'rock'},{x:2,z:-7,r:.6,t:'rock'}],wall:0xf7ece0,cap:0xffd9a0},
+ {name:'Portales Celestes',par:3,poly:[[-5,10],[5,10],[5,-10],[-5,-10]],tee:[0,8.4],cup:[0,-8.4],
+  circles:[{x:-4,z:0,r:1.05,t:'rock'},{x:-2,z:0,r:1.05,t:'rock'},{x:0,z:0,r:1.05,t:'rock'},{x:2,z:0,r:1.05,t:'rock'},{x:4,z:0,r:1.05,t:'rock'}],
+  portals:[{a:[-2.5,4.5],b:[2.5,-4.5],r:.75,c:0x7ad8ff},{a:[2.5,4.5],b:[-2.5,-4.5],r:.75,c:0xffd34d}],wall:0xf3dccb,cap:0x7ad8ff},
+ {name:'Silversword Slalom',par:4,poly:[[-3,14],[3,14],[3,-14],[-3,-14]],tee:[0,12.4],cup:[0,-12.3],
+  circles:[{x:-1.5,z:8,r:1,t:'rock'},{x:1.5,z:4,r:1,t:'rock'},{x:-1.5,z:0,r:1,t:'rock'},{x:1.5,z:-4,r:1,t:'rock'},{x:-1.5,z:-8,r:1,t:'rock'}],wall:0xf3dccb,cap:0xffa070},
+ {name:'Vientos del Cráter',par:4,poly:ngon(0,0,10,10,10,Math.PI/10),tee:[0,8.2],cup:[0,-8.2],
+  circles:[{x:0,z:0,r:.7,t:'tower'}],rotors:[{x:0,z:0,len:4.5,w:1,a0:0,arms:2,t:'beam'}],
+  boosts:[{x:-6,z:0,w:3,l:3,dx:0,dz:-1,a:14},{x:6,z:0,w:3,l:3,dx:0,dz:1,a:14}],wall:0xf3dccb,cap:0xb06fe0},
+ {name:'Telescopio Gigante',par:3,poly:[[-4,12],[4,12],[4,-12],[-4,-12]],tee:[0,10.4],cup:[0,-10.3],
+  circles:[{x:0,z:0,r:1.2,t:'tower'}],rotors:[{x:0,z:0,len:3.3,w:.9,a0:0,arms:2,t:'mill'}],boosts:[{x:0,z:6.5,w:2.4,l:2,dx:0,dz:-1,a:18}],wall:0xf7ece0,cap:0xff9a70},
+ {name:'Entre Nubes',par:4,poly:[[-9,12],[9,12],[9,6],[3,6],[3,-12],[-3,-12],[-3,6],[-9,6]],tee:[-7.2,9],cup:[0,-10.3],look:[0,9],via:[[0,9]],
+  circles:[{x:0,z:-3,r:.5,t:'tower'}],rotors:[{x:0,z:-3,len:2.4,w:1.6,a0:0,arms:2,t:'beam'}],wall:0xf3dccb,cap:0xffd9a0},
+ {name:'Cima del Mundo',par:4,poly:ngon(0,0,11,11,14,Math.PI/14),tee:[0,9.2],cup:[0,-9.2],
+  circles:[{x:0,z:0,r:2.2,t:'rock'}],rotors:[{x:0,z:0,len:7,w:.8,a0:0,arms:2,t:'beam'}],
+  portals:[{a:[-8.6,2],b:[8.6,-2],r:.75,c:0xffd34d},{a:[8.6,2],b:[-8.6,-2],r:.75,c:0x7ad8ff}],wall:0xf3dccb,cap:0xff9a70},
+
+ /* ===== COPA BALLENA LOCA (Maui · bahía de las ballenas) ===== */
+ {name:'Lahaina Harbor',par:2,poly:[[-3,8],[3,8],[3,-8],[-3,-8]],tee:[0,6.4],cup:[0,-6.4],
+  waters:[{x0:-3,x1:3,z0:-1.5,z1:1.5,bridges:[{x0:-1.2,x1:1.2}]}],wall:0xdff1ff,cap:0x1e6bff},
+ {name:'Ballena Saltarina',par:3,poly:[[-3.5,12],[3.5,12],[3.5,-12],[-3.5,-12]],tee:[0,10.4],cup:[0,-10.3],
+  waters:[{x0:-3.5,x1:3.5,z0:-2,z1:3,bridges:[{x0:-.8,x1:.8}]}],gates:[{z:6.5,hw:1.3,x0:0,amp:1.1,sp:1.3,ph:0}],wall:0xdff1ff,cap:0x19c8d9},
+ {name:'Ola de Ola',par:3,poly:[[-6,8],[6,8],[6,-8],[-6,-8]],tee:[0,6.4],cup:[0,-6.4],
+  waters:[{x0:-6,x1:6,z0:2,z1:4,bridges:[{x0:-5,x1:-3}]},{x0:-6,x1:6,z0:-4,z1:-2,bridges:[{x0:3,x1:5}]}],wall:0xdff1ff,cap:0x6aa8ff},
+ {name:'Cola de Ballena',par:4,poly:[[-3,15],[3,15],[3,-15],[-3,-15]],tee:[0,13.4],cup:[0,-13.3],
+  waters:[{x0:-3,x1:3,z0:7,z1:9,bridges:[{x0:-2.6,x1:-.6}]},{x0:-3,x1:3,z0:-1,z1:1,bridges:[{x0:.6,x1:2.6}]},{x0:-3,x1:3,z0:-9,z1:-7,bridges:[{x0:-2.6,x1:-.6}]}],wall:0xdff1ff,cap:0x1e6bff},
+ {name:'Puente del Gigante',par:3,poly:[[-3,13],[3,13],[3,-13],[-3,-13]],tee:[0,11.4],cup:[0,-11.3],
+  waters:[{x0:-3,x1:3,z0:-4,z1:4,bridges:[{x0:-.6,x1:.6}]}],gates:[{z:7.5,hw:1.2,x0:0,amp:1,sp:1.6,ph:0},{z:-7.5,hw:1.2,x0:0,amp:1,sp:2.1,ph:2}],wall:0xdff1ff,cap:0x19c8d9},
+ {name:'Gran Salto',par:3,poly:[[-3.5,11],[3.5,11],[3.5,-11],[-3.5,-11]],tee:[0,9.4],cup:[0,-9.3],
+  waters:[{x0:-3.5,x1:3.5,z0:-4,z1:4,bridges:[{x0:2.3,x1:3.5}]}],wall:0xdff1ff,cap:0xffc94d},
+ {name:'Remolino',par:3,poly:ngon(0,0,9,9,12,Math.PI/12),tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:5.8,z:0,r:.4,t:'tower'},{x:-5.8,z:0,r:.4,t:'tower'}],rotors:[{x:5.8,z:0,len:2.2,w:1.4,a0:0,arms:2,t:'mill'},{x:-5.8,z:0,len:2.2,w:-1.4,a0:1,arms:2,t:'mill'}],
+  waters:[{x0:-3,x1:3,z0:-3,z1:3,bridges:[{x0:1.6,x1:3}]}],wall:0xdff1ff,cap:0x6aa8ff},
+ {name:'Ballena Gigante',par:4,poly:[[-5,12],[5,12],[5,-12],[-5,-12]],tee:[0,9.4],cup:[0,-9.4],
+  waters:[{x0:-5,x1:5,z0:-3,z1:3,bridges:[{x0:-4,x1:-2.6},{x0:2.6,x1:4}]}],gates:[{z:6,hw:1.5,x0:0,amp:1.2,sp:1.4,ph:0},{z:-6,hw:1.5,x0:0,amp:1.2,sp:1.7,ph:2}],wall:0xdff1ff,cap:0x1e6bff},
+ {name:'Tormenta Final',par:5,poly:[[-6,16],[6,16],[6,-16],[-6,-16]],tee:[0,14.4],cup:[0,-14.3],
+  waters:[{x0:-6,x1:6,z0:8,z1:11,bridges:[{x0:-5,x1:-3}]},{x0:-6,x1:6,z0:-1,z1:2,bridges:[{x0:3,x1:5}]},{x0:-6,x1:6,z0:-11,z1:-8,bridges:[{x0:-1,x1:1}]}],
+  circles:[{x:0,z:-4.5,r:.5,t:'tower'}],rotors:[{x:0,z:-4.5,len:2.6,w:1.6,a0:0,arms:2,t:'mill'}],gates:[{z:5,hw:1.6,x0:0,amp:2,sp:1.3,ph:0}],wall:0xdff1ff,cap:0x1e6bff},
+
+ /* ===== COPA LAVA LOCA (Isla Grande · volcán Kīlauea) ===== */
+ {name:'Kīlauea Welcome',par:2,poly:[[-3,9],[3,9],[3,-9],[-3,-9]],tee:[0,7.4],cup:[0,-7.4],
+  waters:[{x0:-3,x1:3,z0:-1.5,z1:1.5,bridges:[{x0:-1.3,x1:1.3}],lava:1}],wall:0xf0c8a8,cap:0xff4d1a},
+ {name:'Río de Lava',par:3,poly:[[-4,11],[4,11],[4,-11],[-4,-11]],tee:[0,9.4],cup:[0,-9.3],
+  waters:[{x0:-4,x1:4,z0:-2.5,z1:2.5,bridges:[{x0:-3.2,x1:-1.8},{x0:1.8,x1:3.2}],lava:1}],
+  circles:[{x:0,z:6,r:.5,t:'tower'}],rotors:[{x:0,z:6,len:2.4,w:1.6,a0:0,arms:2,t:'beam'}],wall:0xf0c8a8,cap:0xffb020},
+ {name:'Géiser Gamberro',par:3,poly:ngon(0,0,8,8,8,Math.PI/8),tee:[0,6.6],cup:[0,-6.6],
+  circles:[{x:0,z:1.5,r:.8,t:'barrel',e:1.6},{x:-3.2,z:-1.5,r:.8,t:'barrel',e:1.6},{x:3.2,z:-1.5,r:.8,t:'barrel',e:1.6},{x:-2,z:4.2,r:.8,t:'barrel',e:1.6},{x:2,z:4.2,r:.8,t:'barrel',e:1.6}],wall:0xf0c8a8,cap:0xff4d1a},
+ {name:'Volcán Rotor',par:4,poly:[[-4,13],[4,13],[4,-13],[-4,-13]],tee:[0,11.4],cup:[0,-11.3],
+  circles:[{x:0,z:7,r:.5,t:'tower'},{x:0,z:0,r:.5,t:'tower'},{x:0,z:-7,r:.5,t:'tower'}],
+  rotors:[{x:0,z:7,len:3.2,w:1.5,a0:0,arms:2,t:'beam'},{x:0,z:0,len:3.2,w:-1.8,a0:1,arms:2,t:'beam'},{x:0,z:-7,len:3.2,w:2.1,a0:2,arms:2,t:'beam'}],wall:0xf0c8a8,cap:0xb03a1a},
+ {name:'Lava Lanes',par:4,poly:[[-4.5,13],[4.5,13],[4.5,-13],[-4.5,-13]],tee:[0,11.4],cup:[0,-11.3],
+  waters:[{x0:-4.5,x1:4.5,z0:8,z1:9.8,bridges:[{x0:-4.2,x1:-2.4}],lava:1},{x0:-4.5,x1:4.5,z0:1,z1:2.8,bridges:[{x0:2.4,x1:4.2}],lava:1},{x0:-4.5,x1:4.5,z0:-6,z1:-4.2,bridges:[{x0:-1,x1:.8}],lava:1}],wall:0xf0c8a8,cap:0xffb020},
+ {name:'Cráter Humeante',par:3,poly:ngon(0,0,10,10,12,Math.PI/12),tee:[0,8.2],cup:[0,-8.2],
+  waters:[{x0:-3.5,x1:3.5,z0:-3.5,z1:3.5,bridges:[{x0:-.7,x1:.7}],lava:1}],
+  circles:[{x:6,z:0,r:.4,t:'tower'},{x:-6,z:0,r:.4,t:'tower'}],rotors:[{x:6,z:0,len:2,w:1.4,a0:0,arms:2,t:'beam'},{x:-6,z:0,len:2,w:-1.4,a0:1,arms:2,t:'beam'}],wall:0xf0c8a8,cap:0xff4d1a},
+ {name:'Rocas Voladoras',par:3,poly:[[-6,8],[6,8],[6,-8],[-6,-8]],tee:[0,6.4],cup:[0,-6.4],
+  circles:[{x:-3,z:2,r:.4,t:'light'},{x:3,z:-2,r:.4,t:'light'},{x:0,z:0.5,r:.4,t:'light'}],
+  rotors:[{x:-3,z:2,len:1.7,w:2.4,a0:0,arms:2,t:'beam'},{x:3,z:-2,len:1.7,w:-2.4,a0:1,arms:2,t:'beam'},{x:0,z:.5,len:1.4,w:3,a0:2,arms:2,t:'beam'}],wall:0xf0c8a8,cap:0xb03a1a},
+ {name:'Lava Lago',par:4,poly:[[-6,12],[6,12],[6,-12],[-6,-12]],tee:[0,9.4],cup:[0,-9.4],
+  waters:[{x0:-6,x1:6,z0:-5,z1:5,bridges:[{x0:-4.6,x1:-3.2},{x0:3.2,x1:4.6},{x0:-.7,x1:.7}],lava:1}],
+  gates:[{z:8,hw:1.5,x0:0,amp:2.2,sp:1.2,ph:0},{z:-8,hw:1.5,x0:0,amp:2.2,sp:1.6,ph:2}],wall:0xf0c8a8,cap:0xff4d1a},
+ {name:'Pelé Final',par:5,poly:[[-7,15],[7,15],[7,-15],[-7,-15]],tee:[0,13.4],cup:[0,-13.4],
+  waters:[{x0:-7,x1:7,z0:2,z1:5,bridges:[{x0:-5.5,x1:-4.2},{x0:4.2,x1:5.5}],lava:1},{x0:-7,x1:7,z0:-8,z1:-5.5,bridges:[{x0:-.7,x1:.7}],lava:1}],
+  circles:[{x:0,z:9,r:.5,t:'tower'},{x:0,z:-1.5,r:.5,t:'tower'}],rotors:[{x:0,z:9,len:4,w:1.2,a0:0,arms:2,t:'beam'},{x:0,z:-1.5,len:3,w:-1.5,a0:0,arms:2,t:'beam'}],wall:0xf0c8a8,cap:0xb03a1a},
+
+ /* ===== COPA MAUNA KEA GALÁCTICA (Isla Grande · observatorio) ===== */
+ {name:'Observatorio',par:2,poly:[[-3,9],[3,9],[3,-9],[-3,-9]],tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:0,z:0,r:.7,t:'light'}],rotors:[{x:0,z:0,len:2.4,w:1.4,a0:0,arms:2,t:'beam'}],wall:0xdfe6ff,cap:0x18f0ff},
+ {name:'Gravedad Cero',par:3,poly:[[-5,10],[5,10],[5,-10],[-5,-10]],tee:[0,8.4],cup:[0,-8.4],
+  boosts:[{x:-2.5,z:4,w:4,l:4,dx:0,dz:-1,a:14},{x:2.5,z:-2,w:4,l:4,dx:0,dz:1,a:14}],circles:[{x:0,z:0.5,r:.7,t:'light'}],wall:0xdfe6ff,cap:0xa070ff},
+ {name:'Telescopios',par:3,poly:[[-8,9],[8,9],[8,-9],[-8,-9]],tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:-5.2,z:0,r:.8,t:'tower'},{x:0,z:0,r:.8,t:'tower'},{x:5.2,z:0,r:.8,t:'tower'}],
+  rotors:[{x:-5.2,z:0,len:2.4,w:1.4,a0:0,arms:2,t:'beam'},{x:0,z:0,len:2.4,w:-1.6,a0:1,arms:2,t:'beam'},{x:5.2,z:0,len:2.4,w:1.2,a0:2,arms:2,t:'beam'}],wall:0xdfe6ff,cap:0x18f0ff},
+ {name:'Agujero de Gusano',par:4,poly:[[-6,12],[6,12],[6,-12],[-6,-12]],tee:[0,10.4],cup:[0,-10.3],
+  circles:[{x:-5,z:5,r:1.05,t:'rock'},{x:-3,z:5,r:1.05,t:'rock'},{x:-1,z:5,r:1.05,t:'rock'},{x:1,z:5,r:1.05,t:'rock'},{x:3,z:5,r:1.05,t:'rock'},{x:5,z:5,r:1.05,t:'rock'},
+   {x:-5,z:-5,r:1.05,t:'rock'},{x:-3,z:-5,r:1.05,t:'rock'},{x:-1,z:-5,r:1.05,t:'rock'},{x:1,z:-5,r:1.05,t:'rock'},{x:3,z:-5,r:1.05,t:'rock'},{x:5,z:-5,r:1.05,t:'rock'}],
+  portals:[{a:[3,8],b:[-3,0],r:.7,c:0xa070ff},{a:[3,0],b:[-3,-8],r:.7,c:0x18f0ff}],wall:0xdfe6ff,cap:0xa070ff},
+ {name:'Constelación',par:4,poly:ngon(0,0,10,10,10,Math.PI/10),tee:[0,8.2],cup:[0,-8.2],
+  circles:[{x:0,z:0,r:.6,t:'tower'},{x:0,z:5.5,r:.5,t:'light'},{x:5.2,z:1.7,r:.5,t:'light'},{x:3.2,z:-4.4,r:.5,t:'light'},{x:-3.2,z:-4.4,r:.5,t:'light'},{x:-5.2,z:1.7,r:.5,t:'light'}],
+  rotors:[{x:0,z:0,len:3,w:1.2,a0:0,arms:2,t:'beam'}],portals:[{a:[-7,-2],b:[7,3],r:.7,c:0xffd34d}],wall:0xdfe6ff,cap:0x18f0ff},
+ {name:'Cohete Rebelde',par:3,poly:[[-3,15],[3,15],[3,-15],[-3,-15]],tee:[0,13.4],cup:[0,-13.3],
+  boosts:[{x:0,z:9,w:2.4,l:2.4,dx:0,dz:-1,a:26},{x:0,z:3,w:2.4,l:2.4,dx:0,dz:-1,a:26},{x:0,z:-3,w:2.4,l:2.4,dx:0,dz:-1,a:26}],
+  gates:[{z:-8,hw:1.2,x0:0,amp:.9,sp:2,ph:0},{z:-11,hw:1.2,x0:0,amp:.9,sp:2.3,ph:2}],wall:0xdfe6ff,cap:0xff5a5a},
+ {name:'Aurora Boreal',par:4,poly:[[-4,11],[4,11],[4,-11],[-4,-11]],tee:[0,9.4],cup:[0,-9.3],
+  circles:[{x:-1.8,z:6,r:.4,t:'light'},{x:1.8,z:2,r:.4,t:'light'},{x:-1.8,z:-2,r:.4,t:'light'},{x:1.8,z:-6,r:.4,t:'light'}],
+  rotors:[{x:-1.8,z:6,len:1.8,w:1.8,a0:0,arms:2,t:'beam'},{x:1.8,z:2,len:1.8,w:-1.8,a0:1,arms:2,t:'beam'},{x:-1.8,z:-2,len:1.8,w:1.8,a0:2,arms:2,t:'beam'},{x:1.8,z:-6,len:1.8,w:-1.8,a0:3,arms:2,t:'beam'}],wall:0xdfe6ff,cap:0xa070ff},
+ {name:'Nebulosa Caótica',par:4,poly:ngon(0,0,10,10,6,Math.PI/6),tee:[0,8.2],cup:[0,-8.2],
+  circles:[{x:5,z:0,r:.8,t:'barrel',e:1.6},{x:2.5,z:4.33,r:.8,t:'barrel',e:1.6},{x:-2.5,z:4.33,r:.8,t:'barrel',e:1.6},{x:-5,z:0,r:.8,t:'barrel',e:1.6},{x:-2.5,z:-4.33,r:.8,t:'barrel',e:1.6},{x:2.5,z:-4.33,r:.8,t:'barrel',e:1.6}],
+  portals:[{a:[0,2.2],b:[0,-2.2],r:.7,c:0xff7ad8}],wall:0xdfe6ff,cap:0xa070ff},
+ {name:'Mauna Kea Cumbre',par:5,poly:ngon(0,0,12,12,16,Math.PI/16),tee:[0,10.4],cup:[0,-10.3],
+  circles:[{x:0,z:0,r:.8,t:'tower'},{x:10,z:0,r:1,t:'rock'},{x:-10,z:0,r:1,t:'rock'}],
+  rotors:[{x:0,z:0,len:4.2,w:1.3,a0:0,arms:4,t:'beam'},{x:0,z:0,len:8.6,w:-.55,a0:0,arms:2,t:'beam'}],
+  portals:[{a:[7.6,5.5],b:[-7.6,-5.5],r:.7,c:0xffd34d},{a:[-7.6,5.5],b:[7.6,-5.5],r:.7,c:0x18f0ff}],wall:0xdfe6ff,cap:0x18f0ff},
+
+ /* ===== COPA MOLOKAI SALVAJE (acantilados, mulas y rocas gigantes) ===== */
+ {name:'Mulas en Fila',par:3,poly:[[-3.2,13],[3.2,13],[3.2,-13],[-3.2,-13]],tee:[0,11.4],cup:[0,-11.3],
+  gates:[{z:6,hw:1,x0:0,amp:1.6,sp:1.6,ph:0},{z:0,hw:1,x0:0,amp:1.6,sp:2.1,ph:1.5},{z:-6,hw:1,x0:0,amp:1.6,sp:1.3,ph:3}],wall:0xe6c9a0,cap:0xc0623e},
+ {name:'Sendero de Kalaupapa',par:4,poly:[[-7,11],[7,11],[7,-1.5],[-3,-1.5],[-3,-3.5],[7,-3.5],[7,-8],[-7,-8],[-7,4.5],[3,4.5],[3,6.5],[-7,6.5]],tee:[-5,8.8],cup:[5,-5.8],look:[5,5.5],via:[[5,5.5],[-5,-2.5]],
+  circles:[{x:0,z:8.8,r:.8,t:'rock'},{x:-2,z:1.5,r:1,t:'rock'},{x:0,z:-5.8,r:1,t:'rock'}],wall:0xe6c9a0,cap:0x7a8a4a},
+ {name:'Acantilados Locos',par:3,poly:[[-5,10],[5,10],[5,-10],[-5,-10]],tee:[0,8.4],cup:[0,-8.4],
+  waters:[{x0:-5,x1:-3.4,z0:-6,z1:6,bridges:[]},{x0:3.4,x1:5,z0:-6,z1:6,bridges:[]}],circles:[{x:0,z:0,r:1.6,t:'rock'},{x:-1.4,z:5.5,r:.6,t:'rock'},{x:1.4,z:-5.5,r:.6,t:'rock'}],wall:0xe6c9a0,cap:0xe0a060},
+ {name:'Gigante Dormido',par:3,poly:ngon(0,0,9,9,10,Math.PI/10),tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:0,z:0,r:2.8,t:'rock'}],rotors:[{x:0,z:0,len:5.6,w:.9,a0:0,arms:2,t:'beam'}],wall:0xe6c9a0,cap:0xc0623e},
+ {name:'Mula Testaruda',par:4,poly:[[-5,12],[5,12],[5,-12],[-5,-12]],tee:[0,10.4],cup:[0,-10.3],
+  circles:[{x:-2.5,z:6,r:.8,t:'barrel',e:1.5},{x:2.5,z:3,r:.8,t:'barrel',e:1.5},{x:-2.5,z:0,r:.8,t:'barrel',e:1.5},{x:2.5,z:-3,r:.8,t:'barrel',e:1.5},{x:-2.5,z:-6,r:.8,t:'barrel',e:1.5}],
+  gates:[{z:8.5,hw:1.3,x0:0,amp:2,sp:1.5,ph:0}],wall:0xe6c9a0,cap:0x7a8a4a},
+ {name:'Puente Colgante',par:3,poly:[[-3,13],[3,13],[3,-13],[-3,-13]],tee:[0,11.4],cup:[0,-11.3],
+  waters:[{x0:-3,x1:3,z0:3,z1:5.5,bridges:[{x0:-2.2,x1:-.6}]},{x0:-3,x1:3,z0:-5.5,z1:-3,bridges:[{x0:.6,x1:2.2}]}],gates:[{z:8.5,hw:1.1,x0:0,amp:1.2,sp:1.8,ph:0},{z:-8.5,hw:1.1,x0:0,amp:1.2,sp:2.2,ph:2}],wall:0xe6c9a0,cap:0xc0623e},
+ {name:'Cruz del Sur',par:4,poly:[[-3,12],[3,12],[3,3],[12,3],[12,-3],[3,-3],[3,-12],[-3,-12],[-3,-3],[-12,-3],[-12,3],[-3,3]],tee:[0,10.4],cup:[10.4,0],look:[0,1],via:[[0,1]],
+  circles:[{x:0,z:0,r:.6,t:'tower'}],rotors:[{x:0,z:0,len:2.4,w:1.6,a0:0,arms:2,t:'beam'}],sands:[{x:-9,z:0,r:1.3},{x:0,z:-9,r:1.3}],wall:0xe6c9a0,cap:0xe0a060},
+ {name:'Valle Escondido',par:4,poly:[[-8,12],[-3,12],[-3,-6],[3,-6],[3,12],[8,12],[8,-12],[-8,-12]],tee:[-5.5,9.5],cup:[5.5,9.5],look:[-5.5,-4],via:[[-5.5,-8.5],[5.5,-8.5]],
+  circles:[{x:0,z:-9,r:1.4,t:'rock'},{x:-5.5,z:2,r:.8,t:'rock'},{x:5.5,z:2,r:.8,t:'rock'}],wall:0xe6c9a0,cap:0x7a8a4a},
+ {name:'Reto Molokai',par:5,poly:[[-8,14],[8,14],[8,-1],[-4,-1],[-4,-3.5],[8,-3.5],[8,-14],[-8,-14],[-8,5.5],[4,5.5],[4,8],[-8,8]],tee:[-6,11],cup:[6,-11.5],look:[6,6.5],via:[[6,6.5],[-6,-2.2]],
+  circles:[{x:0,z:11,r:.9,t:'rock'}],waters:[{x0:-8,x1:8,z0:-9,z1:-7,bridges:[{x0:-.9,x1:.9}]}],rotors:[{x:0,z:2,len:2.3,w:1.7,a0:0,arms:2,t:'mill'}],wall:0xe6c9a0,cap:0xc0623e},
+
+ /* ===== COPA PIÑA GIGANTE (Lanai · isla piña) ===== */
+ {name:'Piña de Bienvenida',par:2,poly:[[-3.5,9],[3.5,9],[3.5,-9],[-3.5,-9]],tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:-2,z:2.8,r:.9,t:'barrel',e:1.5},{x:2,z:2.8,r:.9,t:'barrel',e:1.5},{x:0,z:-1.8,r:.9,t:'barrel',e:1.5},{x:2.2,z:-5,r:.8,t:'barrel',e:1.5}],wall:0xfff2b0,cap:0x4fb96a},
+ {name:'Campo de Piñas',par:3,poly:[[-6,8],[6,8],[6,-8],[-6,-8]],tee:[0,6.4],cup:[0,-6.4],
+  circles:[{x:-3.4,z:3.4,r:.8,t:'barrel',e:1.3},{x:0,z:3.4,r:.8,t:'barrel',e:1.3},{x:3.4,z:3.4,r:.8,t:'barrel',e:1.3},{x:-3.4,z:0,r:.8,t:'barrel',e:1.3},{x:0,z:0,r:.8,t:'barrel',e:1.3},{x:3.4,z:0,r:.8,t:'barrel',e:1.3},{x:-3.4,z:-3.4,r:.8,t:'barrel',e:1.3},{x:0,z:-3.4,r:.8,t:'barrel',e:1.3},{x:3.4,z:-3.4,r:.8,t:'barrel',e:1.3}],wall:0xfff2b0,cap:0xffc94d},
+ {name:'Laberinto de Piñas',par:4,poly:[[-6,10],[6,10],[6,-10],[-6,-10]],tee:[0,8.4],cup:[0,-8.4],
+  circles:[{x:-5,z:4,r:1,t:'rock'},{x:-3,z:4,r:1,t:'rock'},{x:-1,z:4,r:1,t:'rock'},{x:1,z:4,r:1,t:'rock'},{x:5,z:-4,r:1,t:'rock'},{x:3,z:-4,r:1,t:'rock'},{x:1,z:-4,r:1,t:'rock'},{x:-1,z:-4,r:1,t:'rock'}],wall:0xfff2b0,cap:0x4fb96a},
+ {name:'Garden of the Gods',par:3,poly:[[-7,9],[7,9],[7,-9],[-7,-9]],tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:-4,z:3,r:1.3,t:'rock'},{x:3.5,z:4,r:1,t:'rock'},{x:0,z:0,r:1.6,t:'rock'},{x:-3,z:-4,r:1,t:'rock'},{x:4.5,z:-3,r:1.3,t:'rock'},{x:-5.5,z:-.5,r:.9,t:'rock'}],wall:0xe9b98f,cap:0xe0703a},
+ {name:'Hulopoe Beach Party',par:3,poly:[[-5,11],[5,11],[5,-11],[-5,-11]],tee:[0,9.4],cup:[0,-9.4],
+  sands:[{x:-2.5,z:5,r:1.3},{x:2.5,z:2,r:1.4},{x:-2,z:-2,r:1.4},{x:2.5,z:-5.5,r:1.3}],circles:[{x:0,z:3.5,r:.75,t:'barrel',e:1.4},{x:0,z:-4,r:.75,t:'barrel',e:1.4}],wall:0xfff2b0,cap:0x19c8d9},
+ {name:'Cañón de las Piñas',par:4,poly:[[-3,14],[3,14],[3,-14],[-3,-14]],tee:[0,12.4],cup:[0,-12.3],
+  boosts:[{x:0,z:9,w:2.4,l:2,dx:0,dz:-1,a:22},{x:0,z:-1,w:2.4,l:2,dx:0,dz:-1,a:22}],gates:[{z:5,hw:1.1,x0:0,amp:.9,sp:1.7,ph:0},{z:-5,hw:1.1,x0:0,amp:.9,sp:2.1,ph:1}],
+  circles:[{x:-1.5,z:-9,r:.7,t:'barrel',e:1.4},{x:1.5,z:-9,r:.7,t:'barrel',e:1.4}],wall:0xfff2b0,cap:0xffc94d},
+ {name:'Torre de Piña',par:4,poly:ngon(0,0,9,9,8,Math.PI/8),tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:0,z:0,r:1,t:'tower'},{x:4.4,z:4.4,r:.7,t:'barrel',e:1.5},{x:-4.4,z:4.4,r:.7,t:'barrel',e:1.5},{x:4.4,z:-4.4,r:.7,t:'barrel',e:1.5},{x:-4.4,z:-4.4,r:.7,t:'barrel',e:1.5}],
+  rotors:[{x:0,z:0,len:3.8,w:1.3,a0:0,arms:4,t:'mill'}],wall:0xfff2b0,cap:0x4fb96a},
+ {name:'Shipwreck Beach',par:4,poly:[[-5,12],[5,12],[5,-12],[-5,-12]],tee:[0,10.4],cup:[0,-10.3],
+  waters:[{x0:-5,x1:5,z0:-2,z1:2,bridges:[{x0:-4.2,x1:-3},{x0:3,x1:4.2}]}],circles:[{x:0,z:7,r:1.4,t:'rock'}],gates:[{z:-6,hw:1.5,x0:0,amp:2,sp:1.5,ph:0}],wall:0xe9b98f,cap:0x19c8d9},
+ {name:'Gran Final Piña',par:5,poly:[[-8,12],[-3,12],[-3,-6],[3,-6],[3,12],[8,12],[8,-12],[-8,-12]],tee:[-5.5,9.5],cup:[5.5,9.5],look:[-5.5,-4],via:[[-5.5,-8.5],[5.5,-8.5]],
+  circles:[{x:-5.5,z:3,r:.4,t:'tower'},{x:-1.5,z:-9,r:.8,t:'barrel',e:1.5},{x:1.5,z:-9,r:.8,t:'barrel',e:1.5}],rotors:[{x:-5.5,z:3,len:1.8,w:1.6,a0:0,arms:2,t:'mill'}],
+  gates:[{z:3,hw:1,x0:5.5,amp:.8,sp:1.5,ph:0}],sands:[{x:0,z:-11,r:1.3}],wall:0xfff2b0,cap:0xffc94d}
+,
+ /* ===== GRAN FINAL HAWAIANA (todas las islas en un torneo) ===== */
+ {name:'Bienvenida Aloha',par:3,poly:[[-3.5,11],[3.5,11],[3.5,-11],[-3.5,-11]],tee:[0,9.4],cup:[0,-9.3],
+  circles:[{x:0,z:3,r:.5,t:'tower'},{x:-1.8,z:-3.5,r:.7,t:'barrel',e:1.5},{x:1.8,z:-6,r:.7,t:'barrel',e:1.5}],rotors:[{x:0,z:3,len:2.6,w:1.6,a0:0,arms:2,t:'mill'}],
+  boosts:[{x:0,z:-1,w:2.2,l:2,dx:0,dz:-1,a:20}],wall:0xfff6dc,cap:0xffc94d},
+ {name:'Lluvia de Piñas',par:3,poly:[[-5,10],[5,10],[5,-10],[-5,-10]],tee:[0,8.4],cup:[0,-8.4],
+  circles:[{x:-2.5,z:4.5,r:.8,t:'barrel',e:1.5},{x:2.5,z:4.5,r:.8,t:'barrel',e:1.5},{x:0,z:2,r:.8,t:'barrel',e:1.5},{x:-3,z:-1,r:.8,t:'barrel',e:1.5},{x:3,z:-1,r:.8,t:'barrel',e:1.5},{x:0,z:-3.5,r:.8,t:'barrel',e:1.5},{x:-2,z:-6,r:.8,t:'barrel',e:1.5},{x:2,z:-6,r:.8,t:'barrel',e:1.5}],wall:0xfff6dc,cap:0xff5a9e},
+ {name:'Surf sobre Lava',par:4,poly:[[-3.5,14],[3.5,14],[3.5,-14],[-3.5,-14]],tee:[0,12.4],cup:[0,-12.3],
+  waters:[{x0:-3.5,x1:3.5,z0:6,z1:8,bridges:[{x0:-2.8,x1:-1.2}],lava:1},{x0:-3.5,x1:3.5,z0:-2,z1:0,bridges:[{x0:1.2,x1:2.8}],lava:1}],
+  boosts:[{x:0,z:3,w:2.4,l:7,dx:1,dz:0,a:14},{x:0,z:-5,w:2.4,l:7,dx:-1,dz:0,a:14}],wall:0xfff6dc,cap:0xff4d1a},
+ {name:'Disco Galáctico',par:4,poly:ngon(0,0,10,10,10,Math.PI/10),tee:[0,8.2],cup:[0,-8.2],
+  circles:[{x:0,z:0,r:.6,t:'tower'},{x:0,z:5.5,r:.5,t:'light'},{x:0,z:-5.5,r:.5,t:'light'}],rotors:[{x:0,z:0,len:3.2,w:1.4,a0:0,arms:4,t:'beam'}],
+  portals:[{a:[-7,0],b:[7,0],r:.7,c:0xff7ad8}],wall:0xfff6dc,cap:0xa070ff},
+ {name:'Ballena Voladora',par:4,poly:[[-4,12],[4,12],[4,-12],[-4,-12]],tee:[0,10.4],cup:[0,-10.3],
+  waters:[{x0:-4,x1:4,z0:-3,z1:3,bridges:[{x0:-3.7,x1:-2.7}]}],portals:[{a:[2.5,6],b:[2.5,-6],r:.7,c:0x7ad8ff}],
+  gates:[{z:8.5,hw:1.3,x0:0,amp:1.2,sp:1.5,ph:0},{z:-8,hw:1.3,x0:0,amp:1.2,sp:1.9,ph:2}],wall:0xfff6dc,cap:0x1e6bff},
+ {name:'Serpiente de Fuego',par:5,poly:[[-7,11],[7,11],[7,-1.5],[-3,-1.5],[-3,-3.5],[7,-3.5],[7,-8],[-7,-8],[-7,4.5],[3,4.5],[3,6.5],[-7,6.5]],tee:[-5,8.8],cup:[5,-5.8],look:[5,5.5],via:[[5,5.5],[-5,-2.5]],
+  waters:[{x0:0,x1:2.4,z0:-8,z1:-5.6,bridges:[],lava:1},{x0:-5.2,x1:-3.6,z0:-1.5,z1:1.5,bridges:[],lava:1}],
+  circles:[{x:1,z:1.5,r:.5,t:'light'}],rotors:[{x:1,z:1.5,len:2.2,w:1.7,a0:0,arms:2,t:'beam'}],boosts:[{x:-1,z:8.8,w:2.4,l:3,dx:1,dz:0,a:18}],wall:0xfff6dc,cap:0xff4d1a},
+ {name:'Nubes Locas',par:4,poly:[[-4.5,13],[4.5,13],[4.5,-13],[-4.5,-13]],tee:[0,11.4],cup:[0,-11.3],
+  boosts:[{x:0,z:7,w:3,l:9,dx:1,dz:0,a:11},{x:0,z:0,w:3,l:9,dx:-1,dz:0,a:11},{x:0,z:-7,w:3,l:9,dx:1,dz:0,a:11}],
+  circles:[{x:-2,z:9.5,r:.7,t:'rock'},{x:-2.5,z:3.5,r:.8,t:'rock'},{x:2.5,z:-3.5,r:.8,t:'rock'}],wall:0xfff6dc,cap:0x7ad8ff},
+ {name:'Cruz de Rocas',par:4,poly:[[-3,12],[3,12],[3,3],[12,3],[12,-3],[3,-3],[3,-12],[-3,-12],[-3,-3],[-12,-3],[-12,3],[-3,3]],tee:[0,10.4],cup:[-10.4,0],look:[0,1],via:[[0,1]],
+  circles:[{x:0,z:0,r:.6,t:'tower'},{x:-7,z:1.2,r:.7,t:'barrel',e:1.5}],rotors:[{x:0,z:0,len:2.4,w:1.6,a0:0,arms:2,t:'beam'}],gates:[{z:7,hw:1.1,x0:0,amp:1,sp:1.6,ph:0}],wall:0xfff6dc,cap:0xffc94d},
+ {name:'Gran Final Hawaiana',par:6,poly:[[-10,12],[4,12],[4,-6],[10,-6],[10,-12],[-2,-12],[-2,6],[-10,6]],tee:[-8,9],cup:[8,-9],look:[1,9],via:[[1,9],[1,-9]],
+  circles:[{x:-4,z:9,r:.5,t:'tower'},{x:2.5,z:-9,r:.5,t:'light'}],rotors:[{x:-4,z:9,len:2.4,w:1.6,a0:0,arms:2,t:'mill'},{x:2.5,z:-9,len:2.4,w:-1.7,a0:1,arms:2,t:'beam'}],
+  waters:[{x0:-1.2,x1:.6,z0:6,z1:9,bridges:[],lava:1},{x0:-2,x1:4,z0:-1,z1:2,bridges:[{x0:1.2,x1:3}]}],gates:[{z:4,hw:1,x0:1,amp:.9,sp:1.5,ph:0}],
+  boosts:[{x:5.5,z:-9,w:2.4,l:2.5,dx:1,dz:0,a:16}],wall:0xfff6dc,cap:0xff5a9e}
+,
+ /* ===== COPA NORTH SHORE (Oahu · olas gigantes y tubos) ===== */
+ COR('Sunset Beach',2,4,9,{sands:[{x:-1.8,z:1.5,r:1.3},{x:2,z:-2,r:1.2}],circles:[{x:0,z:-1,r:.7,t:'barrel',e:1.4}],wall:0xfff1d8,cap:0xff8a3d}),
+ COR('Ola Gigante',3,3.4,12,{gates:[{z:6,hw:1.2,x0:0,amp:1.4,sp:1.4,ph:0},{z:.5,hw:1.2,x0:0,amp:1.4,sp:1.8,ph:2},{z:-5,hw:1.2,x0:0,amp:1.4,sp:1.2,ph:4}],wall:0xdff6ff,cap:0x12b5e8}),
+ COR('Tubo Perfecto',3,3,13,{boosts:[{x:0,z:7.5,w:2.2,l:3,dx:0,dz:-1,a:17},{x:0,z:1.5,w:2.2,l:3,dx:0,dz:-1,a:17},{x:0,z:-4.5,w:2.2,l:3,dx:0,dz:-1,a:17}],
+  circles:[{x:-1.8,z:4.5,r:.7,t:'barrel',e:1.4},{x:1.8,z:-1.5,r:.7,t:'barrel',e:1.4},{x:-1.8,z:-7.5,r:.7,t:'barrel',e:1.4}],wall:0xe9fbff,cap:0x12b5e8}),
+ {name:'Tortuga Tranquila',par:3,poly:ngon(0,0,8.5,8.5,10,Math.PI/10),tee:[0,6.8],cup:[0,-6.8],
+  circles:[{x:0,z:0,r:.9,t:'tower'}],rotors:[{x:0,z:0,len:3.4,w:1.3,a0:0,arms:2,t:'mill'}],
+  sands:[{x:-4.6,z:-3.2,r:1.5},{x:4.6,z:3.2,r:1.5}],wall:0xfff1d8,cap:0x2fb77a},
+ {name:'Cangrejos Locos',par:4,poly:[[-4,12],[4,12],[4,-3],[12,-3],[12,-10],[-4,-10]],tee:[0,10.4],cup:[10,-8],look:[0,-6],via:[[0,-6.5]],
+  circles:[{x:-1.5,z:6.5,r:.6,t:'barrel',e:1.5},{x:1.5,z:3,r:.6,t:'barrel',e:1.5},{x:0,z:0,r:.6,t:'barrel',e:1.5},{x:6,z:-6.5,r:.6,t:'barrel',e:1.5},{x:9,z:-5,r:.6,t:'barrel',e:1.5}],
+  boosts:[{x:7.5,z:-6.5,w:2.4,l:3.5,dx:1,dz:0,a:15}],wall:0xfff1d8,cap:0xef5a4a},
+ COR('Bahía de Tiburones',4,4,13,{waters:[{x0:-4,x1:4,z0:2,z1:5,bridges:[{x0:-3.6,x1:-2.2}]},{x0:-4,x1:4,z0:-6,z1:-3,bridges:[{x0:2.2,x1:3.6}]}],
+  circles:[{x:0,z:8,r:.8,t:'rock'}],wall:0xdff6ff,cap:0x1e6bff}),
+ {name:'Rompeolas',par:4,poly:[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],tee:[-6.5,8.6],cup:[6.5,-8.6],look:[0,8.6],via:[[0,8.6],[0,-8.6]],
+  rotors:[{x:0,z:0,len:2.4,w:1.4,a0:0,arms:2,t:'beam'}],circles:[{x:-6,z:6.4,r:.55,t:'barrel',e:1.4},{x:6,z:-6.4,r:.55,t:'barrel',e:1.4}],wall:0xfff1d8,cap:0x12b5e8},
+ {name:'Cueva de Surf',par:4,poly:[[-5,10],[5,10],[5,-10],[-5,-10]],tee:[0,8.4],cup:[0,-8.4],
+  circles:[{x:-4.1,z:0,r:.9,t:'rock'},{x:-2.3,z:0,r:.9,t:'rock'},{x:-.5,z:0,r:.9,t:'rock'},{x:1.3,z:0,r:.9,t:'rock'}],
+  portals:[{a:[-3.2,4],b:[-3.2,-5],r:.7,c:0x4cd8ff}],wall:0xe9fbff,cap:0x7a6cff},
+ {name:'Gran Ola Final',par:5,poly:[[-9,12],[-3,12],[-3,-6],[3,-6],[3,12],[9,12],[9,-12],[-9,-12]],tee:[-6,10.4],cup:[6,10.4],look:[-6,-8],via:[[-6,-8.5],[6,-8.5]],
+  waters:[{x0:-9,x1:-3,z0:3,z1:6,bridges:[{x0:-8.4,x1:-6.6}]}],circles:[{x:6,z:3,r:.7,t:'tower'}],rotors:[{x:6,z:3,len:2.4,w:1.6,a0:0,arms:2,t:'mill'}],
+  boosts:[{x:0,z:-9.3,w:2.6,l:5,dx:1,dz:0,a:16}],sands:[{x:-6,z:-9,r:1.4}],wall:0xe9fbff,cap:0xff8a3d}
+,
+ /* ===== GRAN COPA DE HONOLULU (Oahu · 18 hoyos · ciudad, puerto y neón) ===== */
+ COR('Aloha Tower',2,3.6,9,{circles:[{x:0,z:0,r:.6,t:'tower'}],rotors:[{x:0,z:0,len:2.5,w:1.5,a0:0,arms:2,t:'beam'}],wall:0xfff6dc,cap:0xff4fa0}),
+ {name:'Ala Moana Mall',par:3,poly:[[-6,8],[6,8],[6,-8],[-6,-8]],tee:[0,6.4],cup:[0,-6.4],
+  circles:[{x:-3.2,z:3,r:.55,t:'light'},{x:0,z:3,r:.55,t:'light'},{x:3.2,z:3,r:.55,t:'light'},{x:-1.6,z:-.5,r:.55,t:'light'},{x:1.6,z:-.5,r:.55,t:'light'},{x:-3.2,z:-3.5,r:.55,t:'light'},{x:0,z:-3.5,r:.55,t:'light'},{x:3.2,z:-3.5,r:.55,t:'light'}],wall:0xe9dcff,cap:0xff4fa0},
+ COR('Calle Kalakaua',3,3,15,{gates:[{z:8,hw:1,x0:0,amp:1.3,sp:1.3,ph:0},{z:3,hw:1,x0:0,amp:1.3,sp:1.7,ph:2},{z:-2,hw:1,x0:0,amp:1.3,sp:1.1,ph:4},{z:-7,hw:1,x0:0,amp:1.3,sp:2,ph:1}],wall:0xe9dcff,cap:0xffc94d}),
+ {name:'Rascacielos',par:4,poly:ngon(0,0,9,9,8,Math.PI/8),tee:[0,7.2],cup:[0,-7.2],
+  circles:[{x:-4,z:3,r:.9,t:'tower'},{x:4,z:3,r:.9,t:'tower'},{x:-4,z:-3,r:.9,t:'tower'},{x:4,z:-3,r:.9,t:'tower'},{x:0,z:0,r:.6,t:'tower'}],rotors:[{x:0,z:0,len:3.2,w:1.2,a0:0,arms:4,t:'beam'}],wall:0xe9dcff,cap:0x19c8d9},
+ COR('Puerto de Honolulu',3,4.2,12,{waters:[{x0:-4.2,x1:4.2,z0:2,z1:5,bridges:[{x0:-3.8,x1:-2.6},{x0:2.6,x1:3.8}]}],circles:[{x:0,z:8,r:.8,t:'rock'}],wall:0xdff6ff,cap:0x1e6bff}),
+ {name:'Pearl Harbor',par:4,poly:[[-7,11],[7,11],[7,-11],[-7,-11]],tee:[0,9.4],cup:[0,-9.4],
+  waters:[{x0:-7,x1:7,z0:-2,z1:3,bridges:[{x0:-.8,x1:.8}]}],circles:[{x:-4,z:6,r:.8,t:'rock'},{x:4,z:6,r:.8,t:'rock'},{x:-3.5,z:-6,r:.8,t:'rock'},{x:3.5,z:-6,r:.8,t:'rock'}],
+  boosts:[{x:0,z:7.5,w:2.4,l:2.5,dx:0,dz:-1,a:15}],wall:0xdff6ff,cap:0x7da9dc},
+ COR('Acorazado',4,2.7,14,{rotors:[{x:0,z:7,len:2.3,w:1.8,a0:0,arms:2,t:'beam'},{x:0,z:0,len:2.3,w:-1.8,a0:1.5,arms:2,t:'beam'},{x:0,z:-7,len:2.3,w:1.8,a0:3,arms:2,t:'beam'}],wall:0xdff6ff,cap:0x7da9dc}),
+ {name:'Diamond Head',par:4,poly:ngon(0,0,9.5,9.5,12,Math.PI/12),tee:[0,7.8],cup:[0,-7.8],
+  circles:[{x:0,z:0,r:3.2,t:'rock'}],sands:[{x:-6.4,z:0,r:1.3},{x:6.4,z:0,r:1.3}],boosts:[{x:0,z:5.6,w:2.2,l:2,dx:1,dz:0,a:14}],wall:0xf6e7c8,cap:0xff9a3d},
+ COR('Hanauma Bay',4,9,12,{tee:[-6,10.2],cup:[-6,-10.2],look:[-6,-8],waters:[{x0:-9,x1:-3,z0:-5,z1:5,bridges:[]}],circles:[{x:4,z:4,r:.8,t:'rock'},{x:4,z:-4,r:.8,t:'rock'}],sands:[{x:7,z:0,r:1.3}],wall:0xfff1d8,cap:0x19c8d9}),
+ COR('Surf Contest',3,5,10,{boosts:[{x:-2.5,z:4,w:2,l:3,dx:.7,dz:-.7,a:17},{x:2.5,z:-1,w:2,l:3,dx:-.7,dz:-.7,a:17}],circles:[{x:0,z:2.5,r:.7,t:'barrel',e:1.5},{x:-3,z:-4,r:.7,t:'barrel',e:1.5},{x:3,z:-5,r:.7,t:'barrel',e:1.5}],wall:0xfff6dc,cap:0xff4fa0}),
+ {name:'Neón Waikiki',par:4,poly:ngon(0,0,9,9,6,Math.PI/6),tee:[0,7],cup:[0,-7],
+  circles:[{x:0,z:0,r:.6,t:'light'},{x:-4,z:0,r:.5,t:'light'},{x:4,z:0,r:.5,t:'light'}],portals:[{a:[-5,3.5],b:[5,-3.5],r:.7,c:0xff7ad8},{a:[5,3.5],b:[-5,-3.5],r:.7,c:0x4cd8ff}],wall:0xe9dcff,cap:0xff2ea6},
+ {name:'Mercado de Chinatown',par:4,poly:[[-7,9],[7,9],[7,-9],[-7,-9]],tee:[-5,7.4],cup:[5,-7.4],look:[0,0],
+  circles:[{x:-2,z:4,r:.9,t:'rock'},{x:2,z:5,r:.8,t:'rock'},{x:0,z:1,r:.9,t:'rock'},{x:-3.5,z:-2,r:.8,t:'rock'},{x:3,z:-1.5,r:.8,t:'rock'},{x:0,z:-5,r:.9,t:'rock'}],
+  gates:[{z:-3,hw:1.3,x0:0,amp:2.2,sp:1.2,ph:0}],sands:[{x:5.4,z:3,r:1.3}],wall:0xfff6dc,cap:0xe05a3a},
+ COR('Palacio Iolani',3,5,10,{circles:[{x:-3.2,z:4,r:.7,t:'tower'},{x:3.2,z:4,r:.7,t:'tower'},{x:-3.2,z:-4,r:.7,t:'tower'},{x:3.2,z:-4,r:.7,t:'tower'},{x:0,z:0,r:.7,t:'tower'}],rotors:[{x:0,z:0,len:2.6,w:1.4,a0:0,arms:2,t:'beam'}],wall:0xfff6dc,cap:0xffc94d}),
+ {name:'Estadio Aloha',par:4,poly:ngon(0,0,10,10,10,Math.PI/10),tee:[0,8.2],cup:[0,-8.2],
+  circles:[{x:-5,z:-1,r:.6,t:'barrel',e:1.5},{x:5,z:-1,r:.6,t:'barrel',e:1.5},{x:-2.5,z:3.5,r:.6,t:'barrel',e:1.5},{x:2.5,z:3.5,r:.6,t:'barrel',e:1.5},{x:-2.5,z:-5,r:.6,t:'barrel',e:1.5},{x:2.5,z:-5,r:.6,t:'barrel',e:1.5},{x:0,z:0,r:.6,t:'tower'}],
+  rotors:[{x:0,z:0,len:3.4,w:1.2,a0:0,arms:4,t:'mill'}],wall:0xfff6dc,cap:0x2fb77a},
+ COR('Tren al Aeropuerto',4,3,16,{boosts:[{x:0,z:9,w:2.4,l:3,dx:0,dz:-1,a:18},{x:0,z:1,w:2.4,l:3,dx:0,dz:1,a:12},{x:0,z:-6,w:2.4,l:3,dx:0,dz:-1,a:18}],gates:[{z:4,hw:1.1,x0:0,amp:1.2,sp:1.6,ph:0},{z:-10,hw:1.1,x0:0,amp:1.2,sp:1.4,ph:2}],wall:0xe9dcff,cap:0x7da9dc}),
+ {name:'Aterrizaje Forzoso',par:5,poly:[[-10,12],[4,12],[4,-4],[10,-4],[10,-12],[-4,-12],[-4,4],[-10,4]],tee:[-7,9.6],cup:[7,-9.6],look:[0,9.6],via:[[0,9],[0,-9]],
+  waters:[{x0:-4,x1:4,z0:-1,z1:2,bridges:[{x0:-.6,x1:1.2}]}],portals:[{a:[-7.5,6],b:[7.5,-6],r:.7,c:0xff7ad8}],circles:[{x:-6.5,z:6.5,r:.5,t:'light'}],rotors:[{x:0,z:6,len:2.2,w:1.4,a0:0,arms:2,t:'beam'}],wall:0xe9dcff,cap:0xff4fa0},
+ {name:'Fuegos Artificiales',par:4,poly:ngon(0,0,9.5,9.5,9,Math.PI/9),tee:[0,7.6],cup:[0,-7.6],
+  circles:[{x:0,z:3,r:.5,t:'light'},{x:-3,z:-1,r:.5,t:'light'},{x:3,z:-1,r:.5,t:'light'}],rotors:[{x:0,z:-3.5,len:2.8,w:1.3,a0:0,arms:4,t:'beam'}],portals:[{a:[-6,2],b:[6,-2],r:.7,c:0xffc94d}],wall:0xe9dcff,cap:0xff2ea6},
+ {name:'Gran Final de Honolulu',par:6,poly:[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],tee:[-8,11.4],cup:[8,-11.4],look:[0,11.4],via:[[0,11],[0,-11]],
+  waters:[{x0:-3,x1:3,z0:4,z1:7,bridges:[{x0:-2.8,x1:-1.2}]},{x0:-3,x1:3,z0:-8,z1:-5,bridges:[{x0:1.2,x1:2.8}]}],
+  circles:[{x:-7,z:7,r:.7,t:'tower'},{x:7,z:-7,r:.7,t:'tower'},{x:0,z:0,r:.6,t:'light'}],rotors:[{x:-7,z:7,len:2.4,w:1.6,a0:0,arms:2,t:'mill'},{x:7,z:-7,len:2.4,w:1.6,a0:1.6,arms:2,t:'mill'}],
+  gates:[{z:0,hw:1.2,x0:0,amp:1.2,sp:1.4,ph:0}],boosts:[{x:0,z:10,w:2.4,l:3,dx:1,dz:0,a:15}],wall:0xfff6dc,cap:0xffc94d}
+,
+ /* ===== COPA LAHAINA PIRATA (Maui · puerto pirata, barcos y cañones) ===== */
+ COR('Puerto de Lahaina',2,4,9,{circles:[{x:-1.6,z:2,r:.7,t:'barrel',e:1.4},{x:1.6,z:-1,r:.7,t:'barrel',e:1.4}],sands:[{x:0,z:-4,r:1.2}],wall:0xe8c690,cap:0xc9833a}),
+ COR('Barco Pirata',3,4.2,12,{waters:[{x0:-4.2,x1:4.2,z0:0,z1:3,bridges:[{x0:-.9,x1:.9}]}],circles:[{x:-2.6,z:6.5,r:.7,t:'rock'},{x:2.6,z:6.5,r:.7,t:'rock'},{x:0,z:-5,r:.8,t:'tower'}],wall:0xe8c690,cap:0xc9833a}),
+ COR('Cañonazo',3,3,13,{boosts:[{x:0,z:5,w:2.2,l:2.6,dx:0,dz:-1,a:20},{x:0,z:-5,w:2.2,l:2.6,dx:0,dz:-1,a:20}],circles:[{x:-1.8,z:0,r:.7,t:'barrel',e:1.6},{x:1.8,z:0,r:.7,t:'barrel',e:1.6},{x:0,z:-9,r:.7,t:'barrel',e:1.6}],wall:0xd9b27a,cap:0x7a4a22}),
+ {name:'Isla del Tesoro',par:3,poly:[[-6,9],[6,9],[6,-9],[-6,-9]],tee:[-3.8,7.4],cup:[3.6,-6.8],look:[0,0],
+  waters:[{x0:-6,x1:6,z0:-3.8,z1:-1.2,bridges:[{x0:1.8,x1:3.4}]},{x0:-6,x1:-3,z0:-9,z1:-3.8,bridges:[]}],sands:[{x:-2,z:3,r:1.4}],circles:[{x:3,z:3.5,r:.7,t:'rock'}],wall:0xe8c690,cap:0xffc94d},
+ {name:'Mástil Giratorio',par:3,poly:ngon(0,0,8.5,8.5,8,Math.PI/8),tee:[0,6.8],cup:[0,-6.8],
+  circles:[{x:0,z:0,r:.7,t:'tower'}],rotors:[{x:0,z:0,len:4.2,w:1.2,a0:0,arms:4,t:'mill'}],wall:0xd9b27a,cap:0xef5a4a},
+ COR('Motín a Bordo',4,3.4,14,{gates:[{z:8,hw:1.1,x0:0,amp:1.5,sp:1.3,ph:0},{z:3,hw:1.1,x0:0,amp:1.5,sp:1.7,ph:2},{z:-2,hw:1.1,x0:0,amp:1.5,sp:1.1,ph:4},{z:-7,hw:1.1,x0:0,amp:1.5,sp:2,ph:1}],circles:[{x:0,z:5.5,r:.6,t:'barrel',e:1.5},{x:0,z:-4.5,r:.6,t:'barrel',e:1.5}],wall:0xd9b27a,cap:0x111111}),
+ {name:'Faro de Lahaina',par:4,poly:[[-10,11],[4,11],[4,-5],[10,-5],[10,-11],[-4,-11],[-4,5],[-10,5]],tee:[-7,8.6],cup:[7,-8.6],look:[0,8.6],via:[[0,8.6],[0,-8.6]],
+  circles:[{x:0,z:0,r:.8,t:'tower'}],rotors:[{x:0,z:0,len:3,w:1.3,a0:0,arms:2,t:'beam'}],sands:[{x:-7,z:6.8,r:1.1}],wall:0xfff6dc,cap:0xef5a4a},
+ {name:'Banyan Tree',par:4,poly:[[-7,9],[7,9],[7,-9],[-7,-9]],tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:-2.6,z:3.5,r:.9,t:'rock'},{x:2.6,z:3.5,r:.9,t:'rock'},{x:0,z:.5,r:1.1,t:'rock'},{x:-4.5,z:-1.5,r:.9,t:'rock'},{x:4.5,z:-1.5,r:.9,t:'rock'},{x:-2,z:-4,r:.9,t:'rock'},{x:2,z:-4,r:.9,t:'rock'}],wall:0xd8ecd0,cap:0x2fb77a},
+ {name:'Ballena en el Horizonte',par:5,poly:[[-9,12],[-3,12],[-3,-6],[3,-6],[3,12],[9,12],[9,-12],[-9,-12]],tee:[-6,10.4],cup:[6,10.4],look:[-6,-8],via:[[-6,-8.5],[6,-8.5]],
+  waters:[{x0:3,x1:9,z0:2,z1:5,bridges:[{x0:6.6,x1:8.2}]}],circles:[{x:-6,z:3,r:.7,t:'tower'}],rotors:[{x:-6,z:3,len:2.4,w:1.6,a0:0,arms:2,t:'mill'}],
+  boosts:[{x:0,z:-9.3,w:2.6,l:5,dx:1,dz:0,a:16}],sands:[{x:5,z:-9,r:1.4}],wall:0xe9fbff,cap:0x1e6bff}
+,
+ /* ===== GRAN COPA DE HANA (Maui · 18 hoyos · la carretera de Hana, selva y cascadas) ===== */
+ COR('Salida de Paia',2,3.6,9,{circles:[{x:0,z:0,r:.7,t:'rock'}],sands:[{x:-1.6,z:-4,r:1.1}],wall:0xd8ecd0,cap:0x2fb77a}),
+ {name:'Curvas de la Carretera',par:3,poly:[[-9,9],[1,9],[1,-1],[9,-1],[9,-9],[-1,-9],[-1,1],[-9,1]],tee:[-6.6,6.8],cup:[6.6,-6.8],look:[-4,3],via:[[0,5],[0,-5]],
+  circles:[{x:-3,z:3.5,r:.6,t:'rock'},{x:3,z:-3.5,r:.6,t:'rock'}],wall:0xd8ecd0,cap:0xb06f3a},
+ COR('Puente de una Vía',3,4.2,12,{waters:[{x0:-4.2,x1:4.2,z0:-1.5,z1:2.5,bridges:[{x0:-.7,x1:.7}]}],circles:[{x:-2.2,z:6.5,r:.8,t:'rock'},{x:2.2,z:-6.5,r:.8,t:'rock'}],wall:0xd8ecd0,cap:0x8a5a2e}),
+ COR('Twin Falls',3,3.2,13,{gates:[{z:6,hw:1.1,x0:-.8,amp:1.4,sp:1.5,ph:0},{z:0,hw:1.1,x0:.8,amp:1.4,sp:1.5,ph:3.14},{z:-6,hw:1.1,x0:-.8,amp:1.4,sp:1.5,ph:0}],boosts:[{x:0,z:-9.5,w:2.4,l:2,dx:0,dz:-1,a:15}],wall:0xe9fbff,cap:0x19c8d9}),
+ {name:'Bosque de Bambú',par:4,poly:[[-7,11],[7,11],[7,-11],[-7,-11]],tee:[0,9.4],cup:[0,-9.4],
+  circles:[{x:-4.8,z:6,r:.55,t:'rock'},{x:-2.4,z:6.6,r:.55,t:'rock'},{x:.4,z:6,r:.55,t:'rock'},{x:3,z:6.6,r:.55,t:'rock'},{x:5.4,z:6,r:.55,t:'rock'},{x:-5.4,z:1.8,r:.55,t:'rock'},{x:-3,z:1.2,r:.55,t:'rock'},{x:-.6,z:1.8,r:.55,t:'rock'},{x:1.8,z:1.2,r:.55,t:'rock'},{x:4.2,z:1.8,r:.55,t:'rock'},{x:-4.2,z:-3.5,r:.55,t:'rock'},{x:-1.8,z:-4,r:.55,t:'rock'},{x:.6,z:-3.5,r:.55,t:'rock'},{x:3,z:-4,r:.55,t:'rock'}],wall:0xd8ecd0,cap:0x2fb77a},
+ {name:'Piscinas Sagradas',par:4,poly:[[-6,12],[6,12],[6,-12],[-6,-12]],tee:[0,10.4],cup:[0,-10.4],
+  waters:[{x0:-6,x1:6,z0:5,z1:7.5,bridges:[{x0:-5.4,x1:-3.8}]},{x0:-6,x1:6,z0:-.5,z1:2,bridges:[{x0:3.8,x1:5.4}]},{x0:-6,x1:6,z0:-6,z1:-3.5,bridges:[{x0:-.8,x1:.8}]}],wall:0xe9fbff,cap:0x3fa07a},
+ COR('Playa Roja',3,5,10,{sands:[{x:-2.5,z:4,r:1.6},{x:2.5,z:1,r:1.6},{x:-2,z:-3,r:1.5},{x:2.6,z:-5,r:1.3}],circles:[{x:0,z:-1,r:.7,t:'rock'}],wall:0xe0a080,cap:0xc0392b}),
+ {name:'Túnel de Lava',par:4,poly:[[-5,10],[5,10],[5,-10],[-5,-10]],tee:[0,8.4],cup:[0,-8.4],
+  circles:[{x:-3.9,z:0,r:.9,t:'rock'},{x:-2.1,z:0,r:.9,t:'rock'},{x:-.3,z:0,r:.9,t:'rock'},{x:1.5,z:0,r:.9,t:'rock'}],portals:[{a:[-3.2,4],b:[-3.2,-5],r:.7,c:0xff9a3d}],wall:0xc9a37a,cap:0xff6a2a},
+ COR('Mirador de Wailua',3,3.4,12,{boosts:[{x:-1.2,z:5,w:2,l:2.4,dx:.5,dz:-.85,a:18},{x:1.2,z:-1.5,w:2,l:2.4,dx:-.5,dz:-.85,a:18}],circles:[{x:1.4,z:5.5,r:.7,t:'barrel',e:1.4},{x:-1.4,z:-1.5,r:.7,t:'barrel',e:1.4},{x:0,z:-6.5,r:.8,t:'rock'}],wall:0xd8ecd0,cap:0x2fb77a}),
+ {name:'Deslizamiento',par:4,poly:[[-6,10],[6,10],[6,-10],[-6,-10]],tee:[-3.8,8.4],cup:[3.8,-8.4],look:[0,0],
+  boosts:[{x:-2.5,z:3.5,w:2.2,l:3,dx:.8,dz:-.6,a:15},{x:2.5,z:-2.5,w:2.2,l:3,dx:-.8,dz:-.6,a:15}],circles:[{x:3,z:4.5,r:.8,t:'rock'},{x:-3,z:-5.5,r:.8,t:'rock'},{x:0,z:.5,r:.7,t:'rock'}],wall:0xc9a37a,cap:0xb06f3a},
+ {name:'Árbol Banyan',par:4,poly:ngon(0,0,9,9,10,Math.PI/10),tee:[0,7.4],cup:[0,-7.4],
+  circles:[{x:0,z:0,r:1.6,t:'rock'},{x:-3.4,z:1,r:.7,t:'rock'},{x:3.4,z:-1,r:.7,t:'rock'},{x:2,z:3.4,r:.7,t:'rock'},{x:-2,z:-3.4,r:.7,t:'rock'}],sands:[{x:-5.5,z:-3.5,r:1.3}],wall:0xd8ecd0,cap:0x2f8f4a},
+ {name:'Horquilla Doble',par:4,poly:[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],tee:[-5,8.4],cup:[5,8.4],look:[-5,-8],via:[[-5,-7.5],[5,-7.5]],
+  circles:[{x:-5,z:2,r:.7,t:'rock'},{x:5,z:-2,r:.7,t:'rock'}],sands:[{x:0,z:-8.4,r:1.2}],wall:0xd8ecd0,cap:0xe0703a},
+ {name:'Molino de Agua',par:3,poly:ngon(0,0,8,8,8,Math.PI/8),tee:[0,6.2],cup:[0,-6.2],
+  circles:[{x:0,z:0,r:.9,t:'tower'}],rotors:[{x:0,z:0,len:3.6,w:1.4,a0:0,arms:4,t:'mill'}],wall:0xd8ecd0,cap:0x19c8d9},
+ {name:'Valle Escondido',par:4,poly:[[-8,10],[8,10],[8,-10],[-8,-10]],tee:[-6,8.4],cup:[6,-8.4],look:[0,0],
+  circles:[{x:-2,z:5,r:.8,t:'rock'},{x:3,z:3,r:.8,t:'rock'},{x:0,z:0,r:.9,t:'rock'},{x:-4,z:-2.5,r:.8,t:'rock'},{x:3.5,z:-5,r:.8,t:'rock'}],waters:[{x0:-1,x1:2,z0:-9,z1:-4,bridges:[]}],boosts:[{x:-4.5,z:6,w:2,l:2.6,dx:.9,dz:-.4,a:14}],wall:0xd8ecd0,cap:0x2fb77a},
+ {name:'Lluvia Tropical',par:4,poly:[[-4,13],[4,13],[4,-13],[-4,-13]],tee:[0,11.4],cup:[0,-11.3],rain:1,
+  gates:[{z:6,hw:1.2,x0:0,amp:1.5,sp:1.3,ph:0},{z:0,hw:1.2,x0:0,amp:1.5,sp:1.6,ph:2},{z:-6,hw:1.2,x0:0,amp:1.5,sp:1.9,ph:4}],circles:[{x:-2.4,z:3,r:.6,t:'rock'},{x:2.4,z:-3,r:.6,t:'rock'}],wall:0xc8d8d8,cap:0x4a8f8a},
+ {name:'Cruce de Ríos',par:5,poly:[[-9,9],[9,9],[9,-9],[-9,-9]],tee:[-6.8,7.2],cup:[6.8,-7.2],look:[0,0],
+  waters:[{x0:-9,x1:9,z0:-1.5,z1:1.5,bridges:[{x0:-.9,x1:.9}]},{x0:-1.5,x1:1.5,z0:4,z1:9,bridges:[]},{x0:-1.5,x1:1.5,z0:-9,z1:-4,bridges:[]}],circles:[{x:-4,z:4,r:.7,t:'rock'},{x:4,z:-4,r:.7,t:'rock'}],sands:[{x:4.5,z:4.5,r:1.3}],wall:0xe9fbff,cap:0x1e6bff},
+ {name:'Faro de Hana',par:4,poly:ngon(0,0,9.5,9.5,9,Math.PI/9),tee:[0,7.8],cup:[0,-7.8],
+  circles:[{x:0,z:0,r:.8,t:'tower'}],rotors:[{x:0,z:0,len:3.6,w:1.2,a0:0,arms:2,t:'beam'}],sands:[{x:-5,z:-3.5,r:1.3},{x:5,z:3.5,r:1.3}],boosts:[{x:0,z:5.3,w:2.2,l:2,dx:0,dz:-1,a:14}],wall:0xfff6dc,cap:0xef5a4a},
+ {name:'Final en Hana',par:6,poly:[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],tee:[-8,11.4],cup:[8,-11.4],look:[0,11.4],via:[[0,11],[0,-11]],
+  waters:[{x0:-3,x1:3,z0:4,z1:7,bridges:[{x0:1.2,x1:2.8}]},{x0:-3,x1:3,z0:-8,z1:-5,bridges:[{x0:-2.8,x1:-1.2}]}],
+  circles:[{x:-7,z:7,r:.7,t:'tower'},{x:7,z:-7,r:.7,t:'tower'},{x:0,z:0,r:.7,t:'rock'}],rotors:[{x:-7,z:7,len:2.4,w:1.6,a0:0,arms:2,t:'mill'},{x:7,z:-7,len:2.4,w:1.6,a0:1.6,arms:2,t:'mill'}],
+  boosts:[{x:0,z:10,w:2.4,l:3,dx:1,dz:0,a:15}],sands:[{x:7,z:-5.5,r:1.1}],wall:0xd8ecd0,cap:0xffc94d}
+,
+ /* ===== COPA ARENA NEGRA (Isla Grande · 18 hoyos · playa negra, tortugas y cuevas de lava) ===== */
+ {"name":"Punaluʻu","par":2,"poly":[[-3.6,9],[3.6,9],[3.6,-9],[-3.6,-9]],"tee":[0,7.4],"cup":[0,-7.3],"circles":[{"x":1.01,"z":4.22,"r":0.97,"t":"rock"},{"x":-2.17,"z":-2.2,"r":0.86,"t":"rock"}],"sands":[{"x":0.63,"z":-1.2,"r":1.47}],"wall":14210272,"cap":1689817},
+ {"name":"Tortuga Honu","par":3,"poly":[[8.08,2.63],[5,6.88],[0,8.5],[-5,6.88],[-8.08,2.63],[-8.08,-2.63],[-5,-6.88],[0,-8.5],[5,-6.88],[8.08,-2.63]],"tee":[0,6.8],"cup":[0,-6.8],"circles":[{"x":0,"z":0,"r":1.1,"t":"rock"}],"sands":[{"x":-4.85,"z":-2.52,"r":1.22},{"x":5.82,"z":-1.61,"r":1.21},{"x":3.86,"z":-4.28,"r":1.31}],"wall":14210272,"cap":16751165},
+ {"name":"Cocoteros Negros","par":3,"poly":[[-4.2,11],[4.2,11],[4.2,-11],[-4.2,-11]],"tee":[0,9.4],"cup":[0,-9.3],"circles":[{"x":1.02,"z":-4.15,"r":0.97,"t":"rock"},{"x":1.88,"z":-0.59,"r":0.88,"t":"rock"},{"x":-2.28,"z":7.17,"r":0.5,"t":"palm"},{"x":1.23,"z":-7.28,"r":0.5,"t":"palm"},{"x":-1.17,"z":4.85,"r":0.5,"t":"palm"},{"x":2.02,"z":6.4,"r":0.5,"t":"palm"},{"x":2.78,"z":3.97,"r":0.5,"t":"palm"}],"wall":14210272,"cap":1689817},
+ {"name":"Tubo de Lava","par":3,"poly":[[-3,13],[3,13],[3,-13],[-3,-13]],"tee":[0,11.4],"cup":[0,-11.3],"circles":[{"x":-0.21,"z":-3.71,"r":0.65,"t":"barrel","e":1.58},{"x":0.75,"z":-6.34,"r":0.65,"t":"barrel","e":1.48},{"x":-0.21,"z":4.17,"r":0.65,"t":"barrel","e":1.48}],"boosts":[{"x":0.22,"z":9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.2},{"x":-0.16,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":18.6},{"x":-0.13,"z":-9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":19.09}],"wall":14210272,"cap":16751165},
+ {"name":"Marea Alta","par":4,"poly":[[-4,13],[4,13],[4,-13],[-4,-13]],"tee":[0,11.4],"cup":[0,-11.3],"gates":[{"z":8.5,"hw":1.2,"x0":0,"amp":2.25,"sp":1.99,"ph":3.2},{"z":0,"hw":1.2,"x0":0,"amp":2.25,"sp":1.74,"ph":5.51},{"z":-8.5,"hw":1.2,"x0":0,"amp":2.25,"sp":1.57,"ph":5.92}],"waters":[{"x0":-4,"x1":4,"z0":-1,"z1":2,"bridges":[{"x0":-3.7,"x1":-2.3}]}],"wall":14210272,"cap":16751165},
+ {"name":"Arco de Roca","par":3,"poly":[[-5,10],[5,10],[5,-10],[-5,-10]],"tee":[0,8.4],"cup":[0,-8.3],"circles":[{"x":-4.1,"z":0,"r":0.9,"t":"rock"},{"x":-2.4,"z":0,"r":0.9,"t":"rock"},{"x":2.4,"z":0,"r":0.9,"t":"rock"},{"x":4.1,"z":0,"r":0.9,"t":"rock"}],"sands":[{"x":-2.53,"z":-6.67,"r":1.28},{"x":2.96,"z":-5.04,"r":1.22}],"wall":14210272,"cap":8023295},
+ {"name":"Géiser","par":4,"poly":[[8.31,3.44],[3.44,8.31],[-3.44,8.31],[-8.31,3.44],[-8.31,-3.44],[-3.44,-8.31],[3.44,-8.31],[8.31,-3.44]],"tee":[0,7.2],"cup":[0,-7.2],"circles":[{"x":-0.43,"z":-0.21,"r":0.94,"t":"rock"},{"x":-5.22,"z":-2.01,"r":0.88,"t":"rock"},{"x":-3.51,"z":4.63,"r":0.7,"t":"tower"},{"x":3.24,"z":-6.45,"r":0.7,"t":"tower"}],"boosts":[{"x":0,"z":3.4,"w":2.2,"l":2.2,"dx":0,"dz":-1,"a":16},{"x":3.4,"z":0,"w":2,"l":2.2,"dx":-1,"dz":0,"a":14},{"x":-3.4,"z":0,"w":2,"l":2.2,"dx":1,"dz":0,"a":14}],"wall":14210272,"cap":1689817},
+ {"name":"Cueva Azul","par":4,"poly":[[-5,10],[5,10],[5,-10],[-5,-10]],"tee":[0,8.4],"cup":[0,-8.3],"circles":[{"x":-4.1,"z":0,"r":0.9,"t":"rock"},{"x":-2.3,"z":0,"r":0.9,"t":"rock"},{"x":-0.5,"z":0,"r":0.9,"t":"rock"},{"x":1.3,"z":0,"r":0.9,"t":"rock"}],"portals":[{"a":[-3.2,4],"b":[-3.2,-5],"r":0.7,"c":5036287}],"wall":14210272,"cap":16751165},
+ {"name":"Charcos de Marea","par":4,"poly":[[-7,9],[7,9],[7,-9],[-7,-9]],"tee":[-5.2,7.4],"cup":[5.2,-7.3],"look":[0,0],"circles":[{"x":-1.03,"z":-3.64,"r":0.89,"t":"rock"},{"x":-4.33,"z":-2.27,"r":1,"t":"rock"},{"x":-1.44,"z":6.34,"r":0.96,"t":"rock"}],"sands":[{"x":-3.56,"z":-7.13,"r":1.26},{"x":3.9,"z":-3.02,"r":1.43}],"waters":[{"x0":-7,"x1":7,"z0":0.5,"z1":2.5,"bridges":[{"x0":5.2,"x1":6.6}]}],"wall":14210272,"cap":16751165},
+ {"name":"Dunas Negras","par":3,"poly":[[-5,10],[5,10],[5,-10],[-5,-10]],"tee":[0,8.4],"cup":[0,-8.3],"circles":[{"x":2.89,"z":2.33,"r":0.84,"t":"rock"},{"x":-3.08,"z":7.45,"r":0.99,"t":"rock"}],"sands":[{"x":2.56,"z":-2.04,"r":1.49},{"x":-0.44,"z":-0.28,"r":1.44},{"x":-1.64,"z":-5.61,"r":1.25},{"x":3.05,"z":-6.8,"r":1.22},{"x":3.17,"z":7.71,"r":1.33},{"x":-0.24,"z":3.85,"r":1.35}],"wall":14210272,"cap":16751165},
+ {"name":"Cangrejo Ermitaño","par":4,"poly":[[8.46,3.08],[4.5,7.79],[-1.56,8.86],[-6.89,5.79],[-9,0],[-6.89,-5.79],[-1.56,-8.86],[4.5,-7.79],[8.46,-3.08]],"tee":[0,7.2],"cup":[0,-7.2],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"},{"x":3.35,"z":6.5,"r":0.91,"t":"rock"},{"x":6.29,"z":-2.56,"r":0.86,"t":"rock"},{"x":-1.14,"z":4.61,"r":0.94,"t":"rock"}],"rotors":[{"x":0,"z":0,"len":3.4,"w":1.4,"a0":0,"arms":4,"t":"beam"}],"sands":[{"x":-6.96,"z":0.09,"r":1.31},{"x":-3.94,"z":-4.65,"r":1.29}],"wall":14210272,"cap":8023295},
+ {"name":"Acantilado","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":-0.83,"z":-3.07,"r":0.96,"t":"rock"},{"x":1.44,"z":2.4,"r":0.8,"t":"rock"},{"x":-1.78,"z":7.03,"r":0.65,"t":"barrel","e":1.46},{"x":-1.1,"z":9.38,"r":0.65,"t":"barrel","e":1.57}],"sands":[{"x":1.03,"z":-0.57,"r":1.28}],"wall":14210272,"cap":16751165},
+ {"name":"Rompiente","par":4,"poly":[[-3.6,14],[3.6,14],[3.6,-14],[-3.6,-14]],"tee":[0,12.4],"cup":[0,-12.3],"gates":[{"z":9.5,"hw":1.2,"x0":0,"amp":1.85,"sp":1.75,"ph":5.72},{"z":3.17,"hw":1.2,"x0":0,"amp":1.85,"sp":1.81,"ph":3.22},{"z":-3.17,"hw":1.2,"x0":0,"amp":1.85,"sp":1.65,"ph":3.33},{"z":-9.5,"hw":1.2,"x0":0,"amp":1.85,"sp":1.13,"ph":3.25}],"boosts":[{"x":-0.72,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":18.3}],"wall":14210272,"cap":1689817},
+ {"name":"Ola Negra","par":4,"poly":[[-3.2,15],[3.2,15],[3.2,-15],[-3.2,-15]],"tee":[0,13.4],"cup":[0,-13.3],"circles":[{"x":-1.97,"z":6.7,"r":0.65,"t":"barrel","e":1.42},{"x":0.06,"z":-7.5,"r":0.65,"t":"barrel","e":1.51},{"x":1.43,"z":8.33,"r":0.65,"t":"barrel","e":1.43}],"boosts":[{"x":-0.51,"z":11,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":19.74},{"x":-0.71,"z":3.67,"w":2.2,"l":2.8,"dx":0,"dz":1,"a":12},{"x":0.46,"z":-3.67,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.46},{"x":-0.62,"z":-11,"w":2.2,"l":2.8,"dx":0,"dz":1,"a":12}],"wall":14210272,"cap":8023295},
+ {"name":"Isla Tortuga","par":5,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":5,"z":-1,"r":0.7,"t":"tower"}],"rotors":[{"x":5,"z":-1,"len":2.4,"w":1.6,"a0":0,"arms":2,"t":"mill"}],"sands":[{"x":4.74,"z":4.1,"r":1.27},{"x":-5.5,"z":-1.71,"r":1.24}],"waters":[{"x0":-8,"x1":-2,"z0":2,"z1":5,"bridges":[{"x0":-7.4,"x1":-5.8}]}],"wall":14210272,"cap":1689817},
+ {"name":"Cráter Marino","par":4,"poly":[[9.18,2.46],[6.72,6.72],[2.46,9.18],[-2.46,9.18],[-6.72,6.72],[-9.18,2.46],[-9.18,-2.46],[-6.72,-6.72],[-2.46,-9.18],[2.46,-9.18],[6.72,-6.72],[9.18,-2.46]],"tee":[0,7.6],"cup":[0,-7.6],"circles":[{"x":0,"z":0,"r":3.2,"t":"rock"},{"x":-3.8,"z":4.65,"r":0.65,"t":"barrel","e":1.52},{"x":-6.69,"z":-2.44,"r":0.65,"t":"barrel","e":1.43}],"sands":[{"x":-6.59,"z":2.64,"r":1.43},{"x":5.89,"z":-3.25,"r":1.46},{"x":4.12,"z":4.68,"r":1.36}],"wall":14210272,"cap":8023295},
+ {"name":"Puesta de Sol","par":4,"poly":[[-4,12],[4,12],[4,-3],[12,-3],[12,-10],[-4,-10]],"tee":[0,10.4],"cup":[10,-8],"look":[0,-6],"via":[[0,-6.5]],"circles":[{"x":-1.69,"z":-5.22,"r":0.83,"t":"rock"},{"x":1.51,"z":4.92,"r":0.8,"t":"rock"},{"x":2.37,"z":8.85,"r":0.86,"t":"rock"},{"x":2.27,"z":-4.52,"r":0.65,"t":"barrel","e":1.47},{"x":-2.23,"z":-2.21,"r":0.65,"t":"barrel","e":1.52}],"boosts":[{"x":7.5,"z":-6.5,"w":2.4,"l":3.5,"dx":1,"dz":0,"a":15}],"wall":14210272,"cap":1689817},
+ {"name":"Gran Tortuga","par":6,"poly":[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],"tee":[-8,11.4],"cup":[8,-11.4],"look":[0,11.4],"via":[[0,11],[0,-11]],"circles":[{"x":-0.4,"z":-9.81,"r":0.89,"t":"rock"},{"x":-1.17,"z":-1.59,"r":0.98,"t":"rock"},{"x":9.3,"z":-5.94,"r":0.94,"t":"rock"},{"x":-4.47,"z":12.52,"r":0.7,"t":"tower"},{"x":-6.4,"z":9.21,"r":0.7,"t":"tower"}],"boosts":[{"x":0,"z":10,"w":2.4,"l":3,"dx":1,"dz":0,"a":15}],"sands":[{"x":6.04,"z":-9,"r":1.42},{"x":-8.86,"z":7.36,"r":1.47}],"waters":[{"x0":-3,"x1":3,"z0":4,"z1":7,"bridges":[{"x0":-2.8,"x1":-1.2}]},{"x0":-3,"x1":3,"z0":-8,"z1":-5,"bridges":[{"x0":1.2,"x1":2.8}]}],"wall":14210272,"cap":8023295}
+,
+ /* ===== COPA KONA ESTRELLADA (Isla Grande · 18 hoyos · café, telescopios y cielo estrellado) ===== */
+ {"name":"Finca de Café","par":2,"poly":[[-3.6,9],[3.6,9],[3.6,-9],[-3.6,-9]],"tee":[0,7.4],"cup":[0,-7.3],"circles":[{"x":-0.81,"z":3.56,"r":0.85,"t":"rock"},{"x":2.36,"z":3.07,"r":0.5,"t":"palm"},{"x":-0.05,"z":-3.84,"r":0.5,"t":"palm"}],"wall":15326463,"cap":16743128},
+ {"name":"Granos Tostados","par":3,"poly":[[8.08,2.63],[5,6.88],[0,8.5],[-5,6.88],[-8.08,2.63],[-8.08,-2.63],[-5,-6.88],[0,-8.5],[5,-6.88],[8.08,-2.63]],"tee":[0,6.8],"cup":[0,-6.8],"circles":[{"x":0,"z":0,"r":0.7,"t":"tower"}],"rotors":[{"x":0,"z":0,"len":3.2,"w":1.4,"a0":0,"arms":4,"t":"mill"}],"sands":[{"x":5.4,"z":-2.44,"r":1.4},{"x":-5.52,"z":-1.06,"r":1.49}],"wall":15326463,"cap":16743128},
+ {"name":"Telescopio Kona","par":3,"poly":[[-4.4,11],[4.4,11],[4.4,-11],[-4.4,-11]],"tee":[0,9.4],"cup":[0,-9.3],"circles":[{"x":-3,"z":-1.19,"r":0.7,"t":"tower"},{"x":1.92,"z":2.97,"r":0.7,"t":"tower"},{"x":-1.41,"z":1.23,"r":0.7,"t":"tower"},{"x":2.75,"z":6.3,"r":0.5,"t":"light"},{"x":-1.49,"z":-3.3,"r":0.5,"t":"light"}],"wall":15326463,"cap":8023295},
+ {"name":"Estrella Fugaz","par":3,"poly":[[-3,13],[3,13],[3,-13],[-3,-13]],"tee":[0,11.4],"cup":[0,-11.3],"boosts":[{"x":0.24,"z":9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":17.76},{"x":0.03,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":16.08},{"x":0.45,"z":-9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":18.27}],"wall":15326463,"cap":5036224},
+ {"name":"Vía Láctea","par":4,"poly":[[-3.6,14],[3.6,14],[3.6,-14],[-3.6,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":-1,"z":1.14,"r":0.5,"t":"light"},{"x":-0.13,"z":4.91,"r":0.5,"t":"light"}],"gates":[{"z":9.5,"hw":1.2,"x0":0,"amp":1.85,"sp":1.96,"ph":2.32},{"z":3.17,"hw":1.2,"x0":0,"amp":1.85,"sp":1.28,"ph":1.16},{"z":-3.17,"hw":1.2,"x0":0,"amp":1.85,"sp":1.68,"ph":3.59},{"z":-9.5,"hw":1.2,"x0":0,"amp":1.85,"sp":1.64,"ph":3.14}],"wall":15326463,"cap":5036224},
+ {"name":"Constelación","par":4,"poly":[[-7,9],[7,9],[7,-9],[-7,-9]],"tee":[-5.2,7.4],"cup":[5.2,-7.3],"look":[0,0],"circles":[{"x":4.29,"z":-1.13,"r":0.5,"t":"light"},{"x":2.92,"z":6.24,"r":0.5,"t":"light"},{"x":-5.85,"z":-3.86,"r":0.5,"t":"light"},{"x":4.39,"z":-3.88,"r":0.5,"t":"light"},{"x":0.67,"z":3.49,"r":0.5,"t":"light"},{"x":-1.64,"z":-6.99,"r":0.5,"t":"light"}],"portals":[{"a":[-1.5,4.5],"b":[1.5,-4.5],"r":0.7,"c":16743128}],"wall":15326463,"cap":8023295},
+ {"name":"Luna de Miel","par":3,"poly":[[7.39,3.06],[3.06,7.39],[-3.06,7.39],[-7.39,3.06],[-7.39,-3.06],[-3.06,-7.39],[3.06,-7.39],[7.39,-3.06]],"tee":[0,6.4],"cup":[0,-6.4],"circles":[{"x":0,"z":0,"r":1.2,"t":"tower"}],"sands":[{"x":2.19,"z":-3.59,"r":1.43},{"x":4.34,"z":3.42,"r":1.48}],"wall":15326463,"cap":16743128},
+ {"name":"Aurora","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"},{"x":-3.28,"z":6.47,"r":0.5,"t":"light"},{"x":-1.92,"z":-6.03,"r":0.5,"t":"light"},{"x":-0.07,"z":5.31,"r":0.5,"t":"light"}],"rotors":[{"x":0,"z":0,"len":2.6,"w":1.4,"a0":0,"arms":2,"t":"beam"}],"wall":15326463,"cap":16743128},
+ {"name":"Agujero Negro","par":4,"poly":[[9.04,2.94],[5.58,7.69],[0,9.5],[-5.58,7.69],[-9.04,2.94],[-9.04,-2.94],[-5.58,-7.69],[0,-9.5],[5.58,-7.69],[9.04,-2.94]],"tee":[0,7.6],"cup":[0,-7.6],"circles":[{"x":0,"z":0,"r":1.2,"t":"tower"}],"portals":[{"a":[-5,3],"b":[5,-3],"r":0.7,"c":16743128},{"a":[5,3],"b":[-5,-3],"r":0.7,"c":5036287}],"wall":15326463,"cap":5036224},
+ {"name":"Cometa","par":4,"poly":[[-2.8,15],[2.8,15],[2.8,-15],[-2.8,-15]],"tee":[0,13.4],"cup":[0,-13.3],"circles":[{"x":-0.8,"z":-4.88,"r":0.93,"t":"rock"},{"x":-0.44,"z":4.53,"r":0.9,"t":"rock"}],"boosts":[{"x":0.11,"z":11,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.07},{"x":-0.23,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":1,"a":12},{"x":-0.29,"z":-11,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.14}],"wall":15326463,"cap":16763213},
+ {"name":"Lluvia de Meteoros","par":4,"poly":[[-7,9],[7,9],[7,-9],[-7,-9]],"tee":[-5.2,7.4],"cup":[5.2,-7.3],"look":[0,0],"circles":[{"x":-4.77,"z":-7.57,"r":0.65,"t":"barrel","e":1.59},{"x":-4.79,"z":4.62,"r":0.65,"t":"barrel","e":1.44},{"x":-3.74,"z":-2.72,"r":0.65,"t":"barrel","e":1.47},{"x":4.95,"z":5.19,"r":0.65,"t":"barrel","e":1.44},{"x":-2.69,"z":2.81,"r":0.65,"t":"barrel","e":1.56},{"x":-0.05,"z":2.11,"r":0.65,"t":"barrel","e":1.49}],"gates":[{"z":-0.5,"hw":1.2,"x0":0,"amp":2.5,"sp":1.3,"ph":0}],"wall":15326463,"cap":16763213},
+ {"name":"Observatorio","par":4,"poly":[[8.93,3.25],[4.75,8.23],[-1.65,9.36],[-7.28,6.11],[-9.5,0],[-7.28,-6.11],[-1.65,-9.36],[4.75,-8.23],[8.93,-3.25]],"tee":[0,7.6],"cup":[0,-7.6],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"},{"x":-5.43,"z":-3.67,"r":0.5,"t":"light"},{"x":4.79,"z":-1.59,"r":0.5,"t":"light"},{"x":2.78,"z":4.17,"r":0.5,"t":"light"}],"rotors":[{"x":0,"z":0,"len":3.6,"w":1.4,"a0":0,"arms":2,"t":"beam"}],"wall":15326463,"cap":16743128},
+ {"name":"Cráter Lunar","par":4,"poly":[[9.18,2.46],[6.72,6.72],[2.46,9.18],[-2.46,9.18],[-6.72,6.72],[-9.18,2.46],[-9.18,-2.46],[-6.72,-6.72],[-2.46,-9.18],[2.46,-9.18],[6.72,-6.72],[9.18,-2.46]],"tee":[0,7.6],"cup":[0,-7.6],"circles":[{"x":0,"z":0,"r":3,"t":"rock"}],"sands":[{"x":2.63,"z":-5.2,"r":1.29},{"x":4.13,"z":6.11,"r":1.32}],"wall":15326463,"cap":5036224},
+ {"name":"Eclipse","par":4,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":5,"z":-1,"r":0.7,"t":"tower"},{"x":-5,"z":1,"r":0.7,"t":"light"}],"rotors":[{"x":5,"z":-1,"len":2.4,"w":1.6,"a0":0,"arms":2,"t":"mill"},{"x":-5,"z":1,"len":2.2,"w":1.6,"a0":1.5,"arms":2,"t":"beam"}],"wall":15326463,"cap":8023295},
+ {"name":"Nebulosa","par":5,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":0.87,"z":7.57,"r":0.5,"t":"light"},{"x":7.73,"z":-6.64,"r":0.5,"t":"light"}],"sands":[{"x":-0.03,"z":4.96,"r":1.37}],"waters":[{"x0":-3,"x1":3,"z0":-1,"z1":2,"bridges":[{"x0":-0.8,"x1":0.8}]}],"wall":15326463,"cap":8023295},
+ {"name":"Satélite","par":4,"poly":[[-4,12],[4,12],[4,-3],[12,-3],[12,-10],[-4,-10]],"tee":[0,10.4],"cup":[10,-8],"look":[0,-6],"via":[[0,-6.5]],"circles":[{"x":0,"z":3,"r":0.7,"t":"light"},{"x":2.52,"z":-5.46,"r":0.5,"t":"light"},{"x":2.44,"z":-8.13,"r":0.5,"t":"light"}],"rotors":[{"x":0,"z":3,"len":2.6,"w":1.6,"a0":0,"arms":2,"t":"beam"}],"boosts":[{"x":7.5,"z":-6.5,"w":2.4,"l":3.5,"dx":1,"dz":0,"a":15}],"wall":15326463,"cap":16763213},
+ {"name":"Cola de Cometa","par":4,"poly":[[-3.4,16],[3.4,16],[3.4,-16],[-3.4,-16]],"tee":[0,14.4],"cup":[0,-14.3],"gates":[{"z":11.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.8,"ph":2.85},{"z":-11.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.61,"ph":3.74}],"boosts":[{"x":0.8,"z":12,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":16.47},{"x":-0.17,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":16.32},{"x":-0.47,"z":-12,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":17.49}],"wall":15326463,"cap":16743128},
+ {"name":"Gran Constelación","par":6,"poly":[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],"tee":[-8,11.4],"cup":[8,-11.4],"look":[0,11.4],"via":[[0,11],[0,-11]],"circles":[{"x":-7,"z":7,"r":0.7,"t":"tower"},{"x":7,"z":-7,"r":0.7,"t":"tower"},{"x":0.83,"z":-10.64,"r":0.5,"t":"light"},{"x":5.09,"z":-3.97,"r":0.5,"t":"light"}],"rotors":[{"x":-7,"z":7,"len":2.4,"w":1.6,"a0":0,"arms":2,"t":"mill"},{"x":7,"z":-7,"len":2.4,"w":1.6,"a0":1.6,"arms":2,"t":"mill"}],"waters":[{"x0":-3,"x1":3,"z0":4,"z1":7,"bridges":[{"x0":1.2,"x1":2.8}]},{"x0":-3,"x1":3,"z0":-8,"z1":-5,"bridges":[{"x0":-2.8,"x1":-1.2}]}],"portals":[{"a":[-8,5],"b":[8,-5],"r":0.7,"c":16743128}],"wall":15326463,"cap":5036224}
+,
+ /* ===== GRAN COPA DEL KĪLAUEA (Isla Grande · 18 hoyos · lava, fuego y erupciones) ===== */
+ {"name":"Cráter Halemaʻumaʻu","par":3,"poly":[[8.56,2.78],[5.29,7.28],[0,9],[-5.29,7.28],[-8.56,2.78],[-8.56,-2.78],[-5.29,-7.28],[0,-9],[5.29,-7.28],[8.56,-2.78]],"tee":[0,7.2],"cup":[0,-7.2],"circles":[{"x":0,"z":0,"r":3,"t":"rock"}],"sands":[{"x":6.45,"z":-2.7,"r":1.34},{"x":5.54,"z":1.81,"r":1.42}],"wall":15784136,"cap":11545104},
+ {"name":"Río de Lava","par":3,"poly":[[-4,12],[4,12],[4,-12],[-4,-12]],"tee":[0,10.4],"cup":[0,-10.3],"circles":[{"x":0.47,"z":5.68,"r":0.92,"t":"rock"},{"x":-1.29,"z":-5.08,"r":0.91,"t":"rock"}],"waters":[{"x0":-4,"x1":4,"z0":-1,"z1":2.5,"bridges":[{"x0":-3.7,"x1":-2.3}],"lava":1}],"wall":15784136,"cap":16751165},
+ {"name":"Tubo Térmico","par":4,"poly":[[-3,14],[3,14],[3,-14],[-3,-14]],"tee":[0,12.4],"cup":[0,-12.3],"gates":[{"z":9.5,"hw":1.02,"x0":0,"amp":1.43,"sp":1.86,"ph":1.73},{"z":-9.5,"hw":1.02,"x0":0,"amp":1.43,"sp":1.4,"ph":4.55}],"boosts":[{"x":0.6,"z":10,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":16.25},{"x":-0.63,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":17.16},{"x":0.72,"z":-10,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":18.62}],"wall":15784136,"cap":16731418},
+ {"name":"Fuente de Fuego","par":3,"poly":[[7.39,3.06],[3.06,7.39],[-3.06,7.39],[-7.39,3.06],[-7.39,-3.06],[-3.06,-7.39],[3.06,-7.39],[7.39,-3.06]],"tee":[0,6.4],"cup":[0,-6.4],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"}],"rotors":[{"x":0,"z":0,"len":3.6,"w":1.4,"a0":0,"arms":4,"t":"beam"}],"wall":15784136,"cap":16751165},
+ {"name":"Bomba Volcánica","par":4,"poly":[[-7,9],[7,9],[7,-9],[-7,-9]],"tee":[-5.2,7.4],"cup":[5.2,-7.3],"look":[0,0],"circles":[{"x":-5.48,"z":-6.21,"r":0.83,"t":"rock"},{"x":1.74,"z":5.85,"r":0.89,"t":"rock"},{"x":4.3,"z":7.63,"r":0.96,"t":"rock"},{"x":-2.52,"z":-4.09,"r":0.94,"t":"rock"},{"x":-1.71,"z":4.37,"r":0.65,"t":"barrel","e":1.45},{"x":1.11,"z":-2.98,"r":0.65,"t":"barrel","e":1.47},{"x":-1.79,"z":7.27,"r":0.65,"t":"barrel","e":1.59}],"waters":[{"x0":-7,"x1":7,"z0":-1,"z1":1,"bridges":[{"x0":5.2,"x1":6.6}],"lava":1}],"wall":15784136,"cap":11545104},
+ {"name":"Cenizas","par":3,"poly":[[-4.4,10],[4.4,10],[4.4,-10],[-4.4,-10]],"tee":[0,8.4],"cup":[0,-8.3],"circles":[{"x":2.33,"z":2.74,"r":0.96,"t":"rock"},{"x":-3.03,"z":0.71,"r":0.84,"t":"rock"}],"sands":[{"x":-1.14,"z":-3.98,"r":1.23},{"x":0.54,"z":0.09,"r":1.39},{"x":-1.34,"z":4.46,"r":1.39},{"x":1.87,"z":5.49,"r":1.36},{"x":2.43,"z":-6.37,"r":1.37}],"wall":15784136,"cap":16763213},
+ {"name":"Pasarela de Lava","par":4,"poly":[[-3,14],[3,14],[3,-14],[-3,-14]],"tee":[0,12.4],"cup":[0,-12.3],"waters":[{"x0":-3,"x1":3,"z0":4,"z1":7,"bridges":[{"x0":-0.8,"x1":0.8}],"lava":1},{"x0":-3,"x1":3,"z0":-6,"z1":-3,"bridges":[{"x0":-0.8,"x1":0.8}],"lava":1}],"wall":15784136,"cap":16751165},
+ {"name":"Roca Ardiente","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"},{"x":-0.99,"z":-3.91,"r":0.98,"t":"rock"},{"x":1.33,"z":-6.22,"r":0.82,"t":"rock"},{"x":-1.11,"z":5.56,"r":0.89,"t":"rock"}],"rotors":[{"x":0,"z":0,"len":2.6,"w":1.4,"a0":0,"arms":2,"t":"beam"}],"wall":15784136,"cap":16731418},
+ {"name":"Erupción","par":4,"poly":[[9.66,2.59],[7.07,7.07],[2.59,9.66],[-2.59,9.66],[-7.07,7.07],[-9.66,2.59],[-9.66,-2.59],[-7.07,-7.07],[-2.59,-9.66],[2.59,-9.66],[7.07,-7.07],[9.66,-2.59]],"tee":[0,8],"cup":[0,-8],"circles":[{"x":0,"z":0,"r":0.7,"t":"tower"},{"x":5.96,"z":3.25,"r":0.65,"t":"barrel","e":1.58},{"x":5.52,"z":-1.23,"r":0.65,"t":"barrel","e":1.44},{"x":2.71,"z":-7.1,"r":0.65,"t":"barrel","e":1.48},{"x":-3.78,"z":6.83,"r":0.65,"t":"barrel","e":1.44}],"rotors":[{"x":0,"z":0,"len":4,"w":1.4,"a0":0,"arms":4,"t":"mill"}],"wall":15784136,"cap":11545104},
+ {"name":"Géiser de Azufre","par":4,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":3.42,"z":1.6,"r":0.97,"t":"rock"},{"x":6.4,"z":-5.57,"r":0.85,"t":"rock"}],"boosts":[{"x":0,"z":-8.4,"w":2.6,"l":5,"dx":1,"dz":0,"a":15}],"waters":[{"x0":-8,"x1":-2,"z0":2,"z1":5,"bridges":[{"x0":-7.4,"x1":-5.8}],"lava":1}],"wall":15784136,"cap":16763213},
+ {"name":"Campo de Obsidiana","par":4,"poly":[[-5,11],[5,11],[5,-11],[-5,-11]],"tee":[0,9.4],"cup":[0,-9.3],"circles":[{"x":-0.45,"z":-6.59,"r":0.97,"t":"rock"},{"x":-0.59,"z":5.07,"r":0.84,"t":"rock"},{"x":2.12,"z":4.03,"r":0.82,"t":"rock"},{"x":1.15,"z":0.4,"r":0.88,"t":"rock"},{"x":3.49,"z":-7.74,"r":0.84,"t":"rock"},{"x":-3.4,"z":5.09,"r":0.87,"t":"rock"},{"x":-2.99,"z":-2.87,"r":0.93,"t":"rock"}],"wall":15784136,"cap":16763213},
+ {"name":"Lluvia de Ceniza","par":4,"poly":[[-3.4,13],[3.4,13],[3.4,-13],[-3.4,-13]],"tee":[0,11.4],"cup":[0,-11.3],"circles":[{"x":-1.48,"z":4.41,"r":0.86,"t":"rock"},{"x":1.35,"z":-4.36,"r":0.91,"t":"rock"}],"gates":[{"z":8.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.54,"ph":0.48},{"z":0,"hw":1.16,"x0":0,"amp":1.69,"sp":1.41,"ph":4.63},{"z":-8.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.23,"ph":3.15}],"rain":1,"wall":15784136,"cap":11545104},
+ {"name":"Cráter Doble","par":5,"poly":[[-8,10],[8,10],[8,-10],[-8,-10]],"tee":[-6.2,8.4],"cup":[6.2,-8.3],"look":[0,0],"circles":[{"x":0.4,"z":6.16,"r":0.96,"t":"rock"},{"x":-4.25,"z":-5.54,"r":0.92,"t":"rock"},{"x":-5.73,"z":-3.09,"r":0.96,"t":"rock"},{"x":3.44,"z":7.39,"r":0.7,"t":"tower"},{"x":-3.22,"z":8.2,"r":0.7,"t":"tower"}],"waters":[{"x0":-8,"x1":8,"z0":-1.5,"z1":1.5,"bridges":[{"x0":-0.9,"x1":0.9}],"lava":1}],"wall":15784136,"cap":16763213},
+ {"name":"Laberinto Térmico","par":5,"poly":[[-8,10],[8,10],[8,-10],[-8,-10]],"tee":[-6.2,8.4],"cup":[6.2,-8.3],"look":[0,0],"circles":[{"x":2.55,"z":6.55,"r":0.83,"t":"rock"},{"x":1.37,"z":-7.26,"r":0.99,"t":"rock"},{"x":5.51,"z":-2.24,"r":0.97,"t":"rock"},{"x":5,"z":4.8,"r":0.91,"t":"rock"},{"x":-1,"z":3.61,"r":0.99,"t":"rock"},{"x":0.92,"z":-1.86,"r":0.96,"t":"rock"},{"x":-3.36,"z":-3.49,"r":0.94,"t":"rock"},{"x":-2.85,"z":7.36,"r":0.94,"t":"rock"},{"x":-3.83,"z":3.75,"r":0.93,"t":"rock"}],"sands":[{"x":-5.09,"z":-0.76,"r":1.33},{"x":3.76,"z":0.66,"r":1.41}],"wall":15784136,"cap":16731418},
+ {"name":"Puente de Fuego","par":5,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":4.66,"z":-5.79,"r":0.93,"t":"rock"},{"x":5.2,"z":5.67,"r":0.9,"t":"rock"}],"waters":[{"x0":-8,"x1":-2,"z0":3,"z1":6,"bridges":[{"x0":-7.4,"x1":-5.8}],"lava":1},{"x0":2,"x1":8,"z0":-3,"z1":0,"bridges":[{"x0":5.8,"x1":7.4}],"lava":1}],"wall":15784136,"cap":16763213},
+ {"name":"Corazón del Volcán","par":5,"poly":[[9.66,2.59],[7.07,7.07],[2.59,9.66],[-2.59,9.66],[-7.07,7.07],[-9.66,2.59],[-9.66,-2.59],[-7.07,-7.07],[-2.59,-9.66],[2.59,-9.66],[7.07,-7.07],[9.66,-2.59]],"tee":[0,8],"cup":[0,-8],"circles":[{"x":0,"z":0,"r":0.7,"t":"tower"},{"x":-6.17,"z":1.47,"r":0.65,"t":"barrel","e":1.46},{"x":-4.35,"z":-5.56,"r":0.65,"t":"barrel","e":1.52}],"rotors":[{"x":0,"z":0,"len":4.2,"w":1.4,"a0":0,"arms":4,"t":"mill"}],"portals":[{"a":[-6.5,4],"b":[6.5,-4],"r":0.7,"c":16751165}],"wall":15784136,"cap":16751165},
+ {"name":"Torrente de Magma","par":5,"poly":[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],"tee":[-8,11.4],"cup":[8,-11.4],"look":[0,11.4],"via":[[0,11],[0,-11]],"circles":[{"x":-4.7,"z":5.18,"r":0.82,"t":"rock"},{"x":3.41,"z":-10.93,"r":0.91,"t":"rock"},{"x":-5.05,"z":12.51,"r":0.86,"t":"rock"}],"boosts":[{"x":0,"z":10,"w":2.4,"l":3,"dx":1,"dz":0,"a":15}],"waters":[{"x0":-3,"x1":3,"z0":4,"z1":7,"bridges":[{"x0":-2.8,"x1":-1.2}],"lava":1},{"x0":-3,"x1":3,"z0":-8,"z1":-5,"bridges":[{"x0":1.2,"x1":2.8}],"lava":1}],"wall":15784136,"cap":16751165},
+ {"name":"Gran Erupción Final","par":6,"poly":[[-9,12],[9,12],[9,4],[3,4],[3,-12],[-3,-12],[-3,4],[-9,4]],"tee":[-6.5,9.4],"cup":[0,-10.2],"look":[0,6],"via":[[0,6]],"circles":[{"x":3.5,"z":8,"r":0.7,"t":"tower"},{"x":-3,"z":8,"r":0.7,"t":"light"},{"x":7.52,"z":9.13,"r":0.91,"t":"rock"}],"rotors":[{"x":3.5,"z":8,"len":2.6,"w":1.6,"a0":0,"arms":2,"t":"mill"},{"x":-3,"z":8,"len":2.2,"w":1.4,"a0":1.6,"arms":2,"t":"beam"}],"gates":[{"z":-8.5,"hw":1.2,"x0":0,"amp":1.2,"sp":1.5,"ph":0}],"boosts":[{"x":0,"z":1,"w":2.4,"l":3,"dx":0,"dz":-1,"a":15}],"waters":[{"x0":-3,"x1":3,"z0":-5,"z1":-2,"bridges":[{"x0":-2.8,"x1":-1.4}],"lava":1}],"wall":15784136,"cap":11545104}
+,
+ /* ===== COPA VALLE HALAWA (Molokai · cascadas, mulas y selva escondida) ===== */
+ {"name":"Entrada al Valle","par":2,"poly":[[-3.6,9],[3.6,9],[3.6,-9],[-3.6,-9]],"tee":[0,7.4],"cup":[0,-7.3],"circles":[{"x":1.16,"z":-3.23,"r":0.96,"t":"rock"},{"x":1.58,"z":1.64,"r":0.5,"t":"palm"},{"x":1.52,"z":-0.63,"r":0.5,"t":"palm"},{"x":-0.06,"z":2.83,"r":0.5,"t":"palm"}],"wall":14216400,"cap":1689817},
+ {"name":"Mulas en Fila","par":3,"poly":[[-3.4,12],[3.4,12],[3.4,-12],[-3.4,-12]],"tee":[0,10.4],"cup":[0,-10.3],"circles":[{"x":1.55,"z":-2.84,"r":0.93,"t":"rock"}],"gates":[{"z":7.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.98,"ph":1.61},{"z":0,"hw":1.16,"x0":0,"amp":1.69,"sp":1.32,"ph":0.22},{"z":-7.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.53,"ph":2.69}],"wall":14216400,"cap":4169850},
+ {"name":"Cascada Moaʻula","par":3,"poly":[[-3.2,13],[3.2,13],[3.2,-13],[-3.2,-13]],"tee":[0,11.4],"cup":[0,-11.3],"boosts":[{"x":0.11,"z":9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":16.79},{"x":0.38,"z":-9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":16.78}],"waters":[{"x0":-3.2,"x1":3.2,"z0":0,"z1":3,"bridges":[{"x0":-2.9,"x1":-1.5}]}],"wall":14216400,"cap":1689817},
+ {"name":"Poza Escondida","par":3,"poly":[[7.99,2.91],[4.25,7.36],[-1.48,8.37],[-6.51,5.46],[-8.5,0],[-6.51,-5.46],[-1.48,-8.37],[4.25,-7.36],[7.99,-2.91]],"tee":[0,6.8],"cup":[0,-6.8],"circles":[{"x":0,"z":0,"r":1.4,"t":"rock"}],"sands":[{"x":5.1,"z":3.61,"r":1.27},{"x":-4.85,"z":-2.77,"r":1.36}],"wall":14216400,"cap":3127162},
+ {"name":"Selva Densa","par":4,"poly":[[-7,9],[7,9],[7,-9],[-7,-9]],"tee":[-5.2,7.4],"cup":[5.2,-7.3],"look":[0,0],"circles":[{"x":0.36,"z":7.36,"r":0.93,"t":"rock"},{"x":-2.18,"z":-3.08,"r":0.85,"t":"rock"},{"x":2.97,"z":-4.61,"r":0.83,"t":"rock"},{"x":-4.53,"z":3.78,"r":0.83,"t":"rock"},{"x":-3.22,"z":-6.66,"r":0.94,"t":"rock"},{"x":2.97,"z":3.7,"r":0.5,"t":"palm"},{"x":-0.07,"z":-5.92,"r":0.5,"t":"palm"},{"x":-1.34,"z":0.31,"r":0.5,"t":"palm"},{"x":-5.41,"z":-3.71,"r":0.5,"t":"palm"}],"wall":14216400,"cap":9067054},
+ {"name":"Ríos Gemelos","par":4,"poly":[[-4.2,14],[4.2,14],[4.2,-14],[-4.2,-14]],"tee":[0,12.4],"cup":[0,-12.3],"waters":[{"x0":-4.2,"x1":4.2,"z0":4,"z1":6.5,"bridges":[{"x0":-3.8,"x1":-2.4}]},{"x0":-4.2,"x1":4.2,"z0":-5,"z1":-2.5,"bridges":[{"x0":2.4,"x1":3.8}]}],"wall":14216400,"cap":9067054},
+ {"name":"Camino de Piedras","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":-1.44,"z":-1.02,"r":0.82,"t":"rock"},{"x":1.14,"z":-0.14,"r":0.98,"t":"rock"},{"x":1.62,"z":-8.79,"r":0.91,"t":"rock"},{"x":-1.09,"z":3.73,"r":0.87,"t":"rock"}],"sands":[{"x":-1.03,"z":7.49,"r":1.26}],"wall":14216400,"cap":4169850},
+ {"name":"Ofrenda","par":4,"poly":[[8.31,3.44],[3.44,8.31],[-3.44,8.31],[-8.31,3.44],[-8.31,-3.44],[-3.44,-8.31],[3.44,-8.31],[8.31,-3.44]],"tee":[0,7.2],"cup":[0,-7.2],"circles":[{"x":0,"z":0,"r":0.7,"t":"tower"},{"x":-6.74,"z":3.34,"r":0.5,"t":"palm"},{"x":6.18,"z":0.87,"r":0.5,"t":"palm"},{"x":-4.86,"z":-3.68,"r":0.5,"t":"palm"}],"rotors":[{"x":0,"z":0,"len":3.4,"w":1.4,"a0":0,"arms":2,"t":"mill"}],"wall":14216400,"cap":9067054},
+ {"name":"Final del Valle","par":5,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":5,"z":-1,"r":0.7,"t":"tower"},{"x":0.65,"z":-8.06,"r":0.97,"t":"rock"},{"x":4.73,"z":-8.05,"r":0.82,"t":"rock"}],"rotors":[{"x":5,"z":-1,"len":2.4,"w":1.6,"a0":0,"arms":2,"t":"mill"}],"waters":[{"x0":-8,"x1":-2,"z0":2,"z1":5,"bridges":[{"x0":-7.4,"x1":-5.8}]}],"wall":14216400,"cap":9067054}
+,
+ /* ===== GRAN COPA DE MOLOKAI (Molokai · 18 hoyos · los acantilados más altos del mundo) ===== */
+ {"name":"Faro de Molokai","par":2,"poly":[[-3.6,9],[3.6,9],[3.6,-9],[-3.6,-9]],"tee":[0,7.4],"cup":[0,-7.3],"circles":[{"x":-1.84,"z":-2.3,"r":1,"t":"rock"},{"x":0.95,"z":2.94,"r":0.96,"t":"rock"},{"x":1.99,"z":-2.65,"r":0.7,"t":"tower"}],"wall":15258288,"cap":1993727},
+ {"name":"Acantilado del Mundo","par":3,"poly":[[-3.4,12],[3.4,12],[3.4,-12],[-3.4,-12]],"tee":[0,10.4],"cup":[0,-10.3],"circles":[{"x":0.96,"z":6.58,"r":0.88,"t":"rock"},{"x":-0.47,"z":-2.24,"r":0.99,"t":"rock"},{"x":1.46,"z":2.74,"r":0.98,"t":"rock"},{"x":1.3,"z":-4.79,"r":0.98,"t":"rock"},{"x":-0.44,"z":0.52,"r":0.65,"t":"barrel","e":1.59},{"x":-1.65,"z":7.09,"r":0.65,"t":"barrel","e":1.47}],"wall":15258288,"cap":1993727},
+ {"name":"Estanque de Peces","par":3,"poly":[[-6,8],[6,8],[6,-8],[-6,-8]],"tee":[-4.2,6.4],"cup":[4.2,-6.3],"look":[0,0],"sands":[{"x":0.33,"z":-5.27,"r":1.38},{"x":-3.55,"z":-4.29,"r":1.43}],"waters":[{"x0":-6,"x1":6,"z0":-1,"z1":1,"bridges":[{"x0":4.4,"x1":5.6}]}],"wall":15258288,"cap":1993727},
+ {"name":"Paso de la Mula","par":3,"poly":[[-2.8,13],[2.8,13],[2.8,-13],[-2.8,-13]],"tee":[0,11.4],"cup":[0,-11.3],"gates":[{"z":8.5,"hw":0.95,"x0":0,"amp":1.3,"sp":1.5,"ph":3.54},{"z":0,"hw":0.95,"x0":0,"amp":1.3,"sp":1.48,"ph":1.86},{"z":-8.5,"hw":0.95,"x0":0,"amp":1.3,"sp":1.91,"ph":3.04}],"wall":15258288,"cap":16751165},
+ {"name":"Roca Gigante","par":4,"poly":[[8.56,2.78],[5.29,7.28],[0,9],[-5.29,7.28],[-8.56,2.78],[-8.56,-2.78],[-5.29,-7.28],[0,-9],[5.29,-7.28],[8.56,-2.78]],"tee":[0,7.2],"cup":[0,-7.2],"circles":[{"x":0,"z":0,"r":3,"t":"rock"}],"sands":[{"x":6.46,"z":1.56,"r":1.38},{"x":4.15,"z":-3.63,"r":1.38}],"wall":15258288,"cap":1993727},
+ {"name":"Playa Papohaku","par":3,"poly":[[-5,10],[5,10],[5,-10],[-5,-10]],"tee":[0,8.4],"cup":[0,-8.3],"circles":[{"x":-2.62,"z":6.55,"r":0.5,"t":"palm"},{"x":0.01,"z":5.7,"r":0.5,"t":"palm"}],"sands":[{"x":1.14,"z":3.38,"r":1.46},{"x":-1.61,"z":-3.89,"r":1.34},{"x":2.5,"z":-3.46,"r":1.41},{"x":0.7,"z":0.1,"r":1.43},{"x":-3.08,"z":-7.97,"r":1.33},{"x":-2.73,"z":1.8,"r":1.43}],"wall":15258288,"cap":9067054},
+ {"name":"Bosque de Kamakou","par":4,"poly":[[-7,9],[7,9],[7,-9],[-7,-9]],"tee":[-5.2,7.4],"cup":[5.2,-7.3],"look":[0,0],"circles":[{"x":1.84,"z":2.55,"r":0.83,"t":"rock"},{"x":4.39,"z":-0.72,"r":0.94,"t":"rock"},{"x":3.98,"z":7.02,"r":0.92,"t":"rock"},{"x":-4.16,"z":-2.54,"r":0.95,"t":"rock"},{"x":0.46,"z":-5.04,"r":0.85,"t":"rock"},{"x":4.41,"z":2.84,"r":0.5,"t":"palm"},{"x":-5.78,"z":2.62,"r":0.5,"t":"palm"},{"x":-1.38,"z":0.34,"r":0.5,"t":"palm"},{"x":1.72,"z":-7.62,"r":0.5,"t":"palm"},{"x":-0.11,"z":-1.97,"r":0.5,"t":"palm"}],"wall":15258288,"cap":1993727},
+ {"name":"Sendero del Precipicio","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":-1.63,"z":-2.64,"r":0.86,"t":"rock"},{"x":-0.97,"z":3.06,"r":0.9,"t":"rock"},{"x":-3.75,"z":6.83,"r":0.82,"t":"rock"}],"sands":[{"x":-0.78,"z":-8.61,"r":1.26}],"wall":15258288,"cap":9067054},
+ {"name":"Cascada Kahiwa","par":4,"poly":[[-3,14],[3,14],[3,-14],[-3,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":0.2,"z":-6.35,"r":0.65,"t":"barrel","e":1.44},{"x":1.6,"z":-10.37,"r":0.65,"t":"barrel","e":1.47},{"x":-0.47,"z":7.45,"r":0.65,"t":"barrel","e":1.42}],"waters":[{"x0":-3,"x1":3,"z0":3,"z1":6,"bridges":[{"x0":0.8,"x1":2.2}]},{"x0":-3,"x1":3,"z0":-5,"z1":-2,"bridges":[{"x0":-2.2,"x1":-0.8}]}],"wall":15258288,"cap":16751165},
+ {"name":"Dunas de Mōʻomomi","par":3,"poly":[[-4.4,11],[4.4,11],[4.4,-11],[-4.4,-11]],"tee":[0,9.4],"cup":[0,-9.3],"circles":[{"x":-2.92,"z":-6.44,"r":0.89,"t":"rock"},{"x":-2.84,"z":7.13,"r":0.88,"t":"rock"},{"x":2.4,"z":-8.26,"r":0.98,"t":"rock"}],"sands":[{"x":0.51,"z":-4.32,"r":1.45},{"x":-2.32,"z":2.15,"r":1.39},{"x":2.06,"z":-1.29,"r":1.27},{"x":-1.84,"z":-1.11,"r":1.37},{"x":0.84,"z":4.09,"r":1.49}],"wall":15258288,"cap":13662794},
+ {"name":"Viento del Norte","par":4,"poly":[[-3.2,14],[3.2,14],[3.2,-14],[-3.2,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":-1.37,"z":5.93,"r":0.81,"t":"rock"},{"x":-0.66,"z":0.15,"r":0.82,"t":"rock"}],"boosts":[{"x":0.79,"z":10,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.57},{"x":0.44,"z":3.33,"w":2.2,"l":2.8,"dx":0,"dz":1,"a":12},{"x":-0.18,"z":-3.33,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.38},{"x":0.28,"z":-10,"w":2.2,"l":2.8,"dx":0,"dz":1,"a":12}],"wall":15258288,"cap":13662794},
+ {"name":"Cueva de los Murciélagos","par":4,"poly":[[-5,10],[5,10],[5,-10],[-5,-10]],"tee":[0,8.4],"cup":[0,-8.3],"circles":[{"x":-4.1,"z":0,"r":0.9,"t":"rock"},{"x":-2.4,"z":0,"r":0.9,"t":"rock"},{"x":-0.5,"z":0,"r":0.9,"t":"rock"},{"x":1.3,"z":0,"r":0.9,"t":"rock"}],"portals":[{"a":[-3.2,4],"b":[-3.2,-5],"r":0.7,"c":10514687}],"wall":15258288,"cap":1993727},
+ {"name":"Terraza de Lava Vieja","par":4,"poly":[[-4,12],[4,12],[4,-3],[12,-3],[12,-10],[-4,-10]],"tee":[0,10.4],"cup":[10,-8],"look":[0,-6],"via":[[0,-6.5]],"circles":[{"x":4.73,"z":-6.87,"r":0.86,"t":"rock"},{"x":-0.95,"z":2.3,"r":0.81,"t":"rock"},{"x":2.64,"z":2.88,"r":0.84,"t":"rock"},{"x":-2.25,"z":-1.28,"r":0.65,"t":"barrel","e":1.56},{"x":9.15,"z":-4.31,"r":0.65,"t":"barrel","e":1.41}],"wall":15258288,"cap":16751165},
+ {"name":"Rotor de Pesca","par":4,"poly":[[8.93,3.25],[4.75,8.23],[-1.65,9.36],[-7.28,6.11],[-9.5,0],[-7.28,-6.11],[-1.65,-9.36],[4.75,-8.23],[8.93,-3.25]],"tee":[0,7.6],"cup":[0,-7.6],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"}],"rotors":[{"x":0,"z":0,"len":3.6,"w":1.4,"a0":0,"arms":2,"t":"beam"}],"sands":[{"x":3.95,"z":5.08,"r":1.3},{"x":-3.21,"z":4.37,"r":1.26}],"wall":15258288,"cap":1993727},
+ {"name":"Doble Acantilado","par":5,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":-5.2,"z":-5.66,"r":0.93,"t":"rock"},{"x":4.37,"z":-0.98,"r":1,"t":"rock"},{"x":5.62,"z":3.86,"r":0.97,"t":"rock"}],"boosts":[{"x":0,"z":-8.4,"w":2.6,"l":5,"dx":1,"dz":0,"a":15}],"waters":[{"x0":-8,"x1":-2,"z0":2,"z1":5,"bridges":[{"x0":-7.4,"x1":-5.8}]}],"wall":15258288,"cap":16751165},
+ {"name":"Puente Colgante","par":4,"poly":[[-3.6,14],[3.6,14],[3.6,-14],[-3.6,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":1.11,"z":-7.83,"r":0.86,"t":"rock"},{"x":1.56,"z":9.76,"r":0.81,"t":"rock"}],"waters":[{"x0":-3.6,"x1":3.6,"z0":1,"z1":4,"bridges":[{"x0":-0.9,"x1":0.9}]},{"x0":-3.6,"x1":3.6,"z0":-6,"z1":-3,"bridges":[{"x0":-0.9,"x1":0.9}]}],"wall":15258288,"cap":1993727},
+ {"name":"Tormenta del Pacífico","par":5,"poly":[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],"tee":[-8,11.4],"cup":[8,-11.4],"look":[0,11.4],"via":[[0,11],[0,-11]],"circles":[{"x":-4.65,"z":3.73,"r":0.99,"t":"rock"},{"x":0,"z":2.08,"r":0.94,"t":"rock"},{"x":-5.94,"z":8.27,"r":1,"t":"rock"}],"boosts":[{"x":0,"z":10,"w":2.4,"l":3,"dx":1,"dz":0,"a":15}],"waters":[{"x0":-3,"x1":3,"z0":4,"z1":7,"bridges":[{"x0":1.2,"x1":2.8}]},{"x0":-3,"x1":3,"z0":-8,"z1":-5,"bridges":[{"x0":-2.8,"x1":-1.2}]}],"rain":1,"wall":15258288,"cap":13662794},
+ {"name":"Gran Acantilado","par":6,"poly":[[-9,12],[9,12],[9,4],[3,4],[3,-12],[-3,-12],[-3,4],[-9,4]],"tee":[-6.5,9.4],"cup":[0,-10.2],"look":[0,6],"via":[[0,6]],"circles":[{"x":3.5,"z":8,"r":0.7,"t":"tower"},{"x":-3,"z":8,"r":0.7,"t":"light"},{"x":-1.21,"z":4.71,"r":0.8,"t":"rock"}],"rotors":[{"x":3.5,"z":8,"len":2.6,"w":1.6,"a0":0,"arms":2,"t":"mill"},{"x":-3,"z":8,"len":2.2,"w":1.4,"a0":1.6,"arms":2,"t":"beam"}],"gates":[{"z":-8.5,"hw":1.2,"x0":0,"amp":1.2,"sp":1.5,"ph":0}],"boosts":[{"x":0,"z":1,"w":2.4,"l":3,"dx":0,"dz":-1,"a":15}],"waters":[{"x0":-3,"x1":3,"z0":-5,"z1":-2,"bridges":[{"x0":1.4,"x1":2.8}]}],"wall":15258288,"cap":9067054}
+,
+ /* ===== COPA JARDÍN DE LOS DIOSES (Lanai · rocas rojas, viento y misterio) ===== */
+ {"name":"Piedras Rojas","par":2,"poly":[[-3.6,9],[3.6,9],[3.6,-9],[-3.6,-9]],"tee":[0,7.4],"cup":[0,-7.3],"circles":[{"x":1.26,"z":0.95,"r":0.98,"t":"rock"},{"x":1.59,"z":-2.71,"r":1,"t":"rock"},{"x":-2.07,"z":-1.86,"r":0.98,"t":"rock"}],"wall":15782080,"cap":11545104},
+ {"name":"Torres de Roca","par":3,"poly":[[7.39,3.06],[3.06,7.39],[-3.06,7.39],[-7.39,3.06],[-7.39,-3.06],[-3.06,-7.39],[3.06,-7.39],[7.39,-3.06]],"tee":[0,6.4],"cup":[0,-6.4],"circles":[{"x":-1.03,"z":-3.34,"r":0.86,"t":"rock"},{"x":3.25,"z":1.29,"r":0.97,"t":"rock"},{"x":5.4,"z":-1.78,"r":0.7,"t":"tower"},{"x":0.66,"z":2.69,"r":0.7,"t":"tower"},{"x":-5.37,"z":-1.17,"r":0.7,"t":"tower"}],"wall":15782080,"cap":11545104},
+ {"name":"Viento del Desierto","par":3,"poly":[[-3.2,13],[3.2,13],[3.2,-13],[-3.2,-13]],"tee":[0,11.4],"cup":[0,-11.3],"circles":[{"x":0.96,"z":-5.17,"r":0.82,"t":"rock"},{"x":0.13,"z":5.51,"r":0.89,"t":"rock"}],"boosts":[{"x":0.6,"z":9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":19.96},{"x":-0.7,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":17.41},{"x":0.72,"z":-9,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.67}],"wall":15782080,"cap":11545104},
+ {"name":"Arco de Piedra","par":3,"poly":[[-5,10],[5,10],[5,-10],[-5,-10]],"tee":[0,8.4],"cup":[0,-8.3],"circles":[{"x":-4.1,"z":0,"r":0.9,"t":"rock"},{"x":-2.4,"z":0,"r":0.9,"t":"rock"},{"x":2.4,"z":0,"r":0.9,"t":"rock"},{"x":4.1,"z":0,"r":0.9,"t":"rock"}],"sands":[{"x":-0.16,"z":-2.72,"r":1.23}],"wall":15782080,"cap":14241850},
+ {"name":"Laberinto de Roca","par":4,"poly":[[-8,10],[8,10],[8,-10],[-8,-10]],"tee":[-6.2,8.4],"cup":[6.2,-8.3],"look":[0,0],"circles":[{"x":-1.77,"z":2.01,"r":0.86,"t":"rock"},{"x":-4.83,"z":3.97,"r":0.89,"t":"rock"},{"x":2.63,"z":2.79,"r":0.87,"t":"rock"},{"x":-5.9,"z":-6.99,"r":0.88,"t":"rock"},{"x":-2.91,"z":7.71,"r":0.98,"t":"rock"},{"x":6.02,"z":5.89,"r":0.81,"t":"rock"},{"x":3.15,"z":-5.97,"r":0.9,"t":"rock"},{"x":-1.39,"z":-3.85,"r":0.97,"t":"rock"}],"wall":15782080,"cap":11545104},
+ {"name":"Pozos de Arena","par":3,"poly":[[-4.4,11],[4.4,11],[4.4,-11],[-4.4,-11]],"tee":[0,9.4],"cup":[0,-9.3],"sands":[{"x":1.11,"z":6.26,"r":1.49},{"x":-1.83,"z":-1.63,"r":1.45},{"x":1.47,"z":0.6,"r":1.22},{"x":1.78,"z":-4.87,"r":1.37},{"x":-2.29,"z":4.14,"r":1.43},{"x":-1.44,"z":-5.8,"r":1.3}],"wall":15782080,"cap":16751165},
+ {"name":"Espejismo","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":3.65,"z":-9.32,"r":0.8,"t":"rock"},{"x":-1.62,"z":4.53,"r":0.83,"t":"rock"}],"portals":[{"a":[-6.5,6],"b":[6.5,-6],"r":0.7,"c":16751165}],"wall":15782080,"cap":14241850},
+ {"name":"Danza de los Dioses","par":4,"poly":[[8.56,2.78],[5.29,7.28],[0,9],[-5.29,7.28],[-8.56,2.78],[-8.56,-2.78],[-5.29,-7.28],[0,-9],[5.29,-7.28],[8.56,-2.78]],"tee":[0,7.2],"cup":[0,-7.2],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"},{"x":-4.94,"z":-3.62,"r":0.85,"t":"rock"},{"x":-4.65,"z":3.6,"r":0.86,"t":"rock"},{"x":3.38,"z":5.23,"r":0.82,"t":"rock"}],"rotors":[{"x":0,"z":0,"len":3.6,"w":1.4,"a0":0,"arms":4,"t":"beam"}],"wall":15782080,"cap":16751165},
+ {"name":"Trono Rojo","par":5,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":5,"z":-1,"r":0.7,"t":"tower"},{"x":-5,"z":1,"r":0.7,"t":"light"},{"x":3.74,"z":-4.6,"r":0.97,"t":"rock"},{"x":-5.75,"z":-2.93,"r":0.94,"t":"rock"},{"x":-1.07,"z":-8.39,"r":0.95,"t":"rock"}],"rotors":[{"x":5,"z":-1,"len":2.4,"w":1.6,"a0":0,"arms":2,"t":"mill"},{"x":-5,"z":1,"len":2.2,"w":1.6,"a0":1.5,"arms":2,"t":"beam"}],"sands":[{"x":5.81,"z":-8.17,"r":1.24},{"x":-4.59,"z":5.2,"r":1.42}],"wall":15782080,"cap":9058850}
+,
+ /* ===== GRAN COPA DE LANAI (Lanai · 18 hoyos · campos de piña y naufragios) ===== */
+ {"name":"Campo de Piñas","par":2,"poly":[[-4,9],[4,9],[4,-9],[-4,-9]],"tee":[0,7.4],"cup":[0,-7.3],"circles":[{"x":-1.91,"z":-0.5,"r":0.65,"t":"barrel","e":1.48},{"x":0.95,"z":2.91,"r":0.65,"t":"barrel","e":1.6},{"x":1.13,"z":-0.71,"r":0.65,"t":"barrel","e":1.46},{"x":-2.27,"z":3.84,"r":0.65,"t":"barrel","e":1.42},{"x":-2.74,"z":-5.26,"r":0.65,"t":"barrel","e":1.49}],"wall":16774876,"cap":16761390},
+ {"name":"Piña Rodante","par":3,"poly":[[-3.4,12],[3.4,12],[3.4,-12],[-3.4,-12]],"tee":[0,10.4],"cup":[0,-10.3],"circles":[{"x":0.71,"z":-1.59,"r":0.65,"t":"barrel","e":1.56},{"x":1.55,"z":5.23,"r":0.65,"t":"barrel","e":1.46},{"x":0.99,"z":2.05,"r":0.65,"t":"barrel","e":1.47},{"x":-1.75,"z":-1.33,"r":0.65,"t":"barrel","e":1.56}],"boosts":[{"x":-0.17,"z":8,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":17.83},{"x":-0.29,"z":-8,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":19.89}],"wall":16774876,"cap":3127208},
+ {"name":"Hulopoʻe Bay","par":3,"poly":[[-6,8],[6,8],[6,-8],[-6,-8]],"tee":[-4.2,6.4],"cup":[4.2,-6.3],"look":[0,0],"circles":[{"x":0.35,"z":-6,"r":0.5,"t":"palm"},{"x":3.73,"z":2.72,"r":0.5,"t":"palm"},{"x":2.35,"z":4.66,"r":0.5,"t":"palm"}],"sands":[{"x":-2.9,"z":-3.67,"r":1.26},{"x":-0.39,"z":5.34,"r":1.21}],"waters":[{"x0":-6,"x1":6,"z0":-1,"z1":1,"bridges":[{"x0":4.4,"x1":5.6}]}],"wall":16774876,"cap":16751165},
+ {"name":"Naufragio","par":3,"poly":[[7.99,2.91],[4.25,7.36],[-1.48,8.37],[-6.51,5.46],[-8.5,0],[-6.51,-5.46],[-1.48,-8.37],[4.25,-7.36],[7.99,-2.91]],"tee":[0,6.8],"cup":[0,-6.8],"circles":[{"x":0,"z":0,"r":1.3,"t":"tower"},{"x":-0.33,"z":3.91,"r":0.85,"t":"rock"},{"x":5.97,"z":-0.31,"r":0.91,"t":"rock"}],"sands":[{"x":2.48,"z":-3.25,"r":1.37},{"x":-4.78,"z":3.47,"r":1.49}],"wall":16774876,"cap":16761390},
+ {"name":"Laberinto de Piñas","par":4,"poly":[[-8,10],[8,10],[8,-10],[-8,-10]],"tee":[-6.2,8.4],"cup":[6.2,-8.3],"look":[0,0],"circles":[{"x":-1.3,"z":7.8,"r":0.65,"t":"barrel","e":1.53},{"x":6.52,"z":-2.61,"r":0.65,"t":"barrel","e":1.55},{"x":-6.36,"z":0.59,"r":0.65,"t":"barrel","e":1.56},{"x":-4.06,"z":-6.16,"r":0.65,"t":"barrel","e":1.56},{"x":-5.14,"z":5.29,"r":0.65,"t":"barrel","e":1.57},{"x":5.09,"z":8.23,"r":0.65,"t":"barrel","e":1.43},{"x":5.56,"z":4.44,"r":0.65,"t":"barrel","e":1.42},{"x":-4.08,"z":-8.77,"r":0.65,"t":"barrel","e":1.58},{"x":-6.25,"z":-3.18,"r":0.65,"t":"barrel","e":1.51},{"x":1.73,"z":2.51,"r":0.65,"t":"barrel","e":1.48}],"wall":16774876,"cap":5224810},
+ {"name":"Tractor Loco","par":4,"poly":[[-3.6,14],[3.6,14],[3.6,-14],[-3.6,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":-1.63,"z":-7.44,"r":0.65,"t":"barrel","e":1.46},{"x":-0.09,"z":5.35,"r":0.65,"t":"barrel","e":1.4}],"gates":[{"z":9.5,"hw":1.2,"x0":0,"amp":1.85,"sp":1.28,"ph":2.06},{"z":3.17,"hw":1.2,"x0":0,"amp":1.85,"sp":1.48,"ph":0.94},{"z":-3.17,"hw":1.2,"x0":0,"amp":1.85,"sp":1.69,"ph":0.63},{"z":-9.5,"hw":1.2,"x0":0,"amp":1.85,"sp":1.26,"ph":1.25}],"wall":16774876,"cap":16751165},
+ {"name":"Mirador del Faro","par":3,"poly":[[-4.4,11],[4.4,11],[4.4,-11],[-4.4,-11]],"tee":[0,9.4],"cup":[0,-9.3],"circles":[{"x":0.78,"z":6.68,"r":0.7,"t":"tower"},{"x":-0.81,"z":-4.58,"r":0.7,"t":"tower"},{"x":3.13,"z":-0.3,"r":0.5,"t":"palm"},{"x":-1.56,"z":4.83,"r":0.5,"t":"palm"},{"x":-2.9,"z":7.41,"r":0.5,"t":"palm"}],"wall":16774876,"cap":3127208},
+ {"name":"Cielo de Lanai","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":1.36,"z":-0.36,"r":0.65,"t":"barrel","e":1.44},{"x":3.48,"z":-6.4,"r":0.65,"t":"barrel","e":1.58},{"x":-1.1,"z":-0.45,"r":0.65,"t":"barrel","e":1.47}],"sands":[{"x":-0.29,"z":-5.9,"r":1.42}],"wall":16774876,"cap":16761390},
+ {"name":"Jardín Colgante","par":4,"poly":[[-3.4,14],[3.4,14],[3.4,-14],[-3.4,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":1.44,"z":8.77,"r":0.5,"t":"palm"},{"x":1.86,"z":-8.87,"r":0.5,"t":"palm"}],"waters":[{"x0":-3.4,"x1":3.4,"z0":2,"z1":5,"bridges":[{"x0":1.6,"x1":3.1}]},{"x0":-3.4,"x1":3.4,"z0":-5,"z1":-2,"bridges":[{"x0":-3.1,"x1":-1.6}]}],"wall":16774876,"cap":16761390},
+ {"name":"Piñas Gigantes","par":5,"poly":[[9.66,2.59],[7.07,7.07],[2.59,9.66],[-2.59,9.66],[-7.07,7.07],[-9.66,2.59],[-9.66,-2.59],[-7.07,-7.07],[-2.59,-9.66],[2.59,-9.66],[7.07,-7.07],[9.66,-2.59]],"tee":[0,8],"cup":[0,-8],"circles":[{"x":0,"z":0,"r":2.2,"t":"barrel","e":1.5},{"x":6.79,"z":3.59,"r":0.65,"t":"barrel","e":1.53},{"x":7.95,"z":1.19,"r":0.65,"t":"barrel","e":1.57},{"x":-2.87,"z":-2.97,"r":0.65,"t":"barrel","e":1.46},{"x":-3.83,"z":1.94,"r":0.65,"t":"barrel","e":1.42}],"sands":[{"x":5.17,"z":-2.33,"r":1.2},{"x":-7.04,"z":-1.28,"r":1.47}],"wall":16774876,"cap":16751165},
+ {"name":"Camino de Tierra","par":4,"poly":[[-4,12],[4,12],[4,-3],[12,-3],[12,-10],[-4,-10]],"tee":[0,10.4],"cup":[10,-8],"look":[0,-6],"via":[[0,-6.5]],"circles":[{"x":0.94,"z":4.12,"r":0.93,"t":"rock"},{"x":2.21,"z":7.49,"r":0.94,"t":"rock"},{"x":1.2,"z":-2.83,"r":0.94,"t":"rock"}],"boosts":[{"x":7.5,"z":-6.5,"w":2.4,"l":3.5,"dx":1,"dz":0,"a":15}],"sands":[{"x":1.93,"z":-6.59,"r":1.21},{"x":-1.57,"z":-5.97,"r":1.35}],"wall":16774876,"cap":16761390},
+ {"name":"Cañón de Tractores","par":4,"poly":[[-3,15],[3,15],[3,-15],[-3,-15]],"tee":[0,13.4],"cup":[0,-13.3],"gates":[{"z":10.5,"hw":1.02,"x0":0,"amp":1.43,"sp":1.95,"ph":1.85},{"z":-10.5,"hw":1.02,"x0":0,"amp":1.43,"sp":1.2,"ph":0.52}],"boosts":[{"x":0.74,"z":11,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":19.78},{"x":-0.44,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":15.66},{"x":0.04,"z":-11,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":17.99}],"wall":16774876,"cap":16751165},
+ {"name":"Cráter Rojo","par":4,"poly":[[9.18,2.46],[6.72,6.72],[2.46,9.18],[-2.46,9.18],[-6.72,6.72],[-9.18,2.46],[-9.18,-2.46],[-6.72,-6.72],[-2.46,-9.18],[2.46,-9.18],[6.72,-6.72],[9.18,-2.46]],"tee":[0,7.6],"cup":[0,-7.6],"circles":[{"x":0,"z":0,"r":3,"t":"rock"},{"x":3.89,"z":-5.02,"r":0.65,"t":"barrel","e":1.49},{"x":4.28,"z":-2.12,"r":0.65,"t":"barrel","e":1.52},{"x":-6.27,"z":1.43,"r":0.65,"t":"barrel","e":1.55}],"wall":16774876,"cap":16751165},
+ {"name":"Vuelo en Globo","par":4,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":4.96,"z":-6.52,"r":0.65,"t":"barrel","e":1.5},{"x":4.81,"z":4.9,"r":0.65,"t":"barrel","e":1.55},{"x":-6.24,"z":-5.03,"r":0.65,"t":"barrel","e":1.56}],"boosts":[{"x":-5,"z":2,"w":2.2,"l":3,"dx":0,"dz":-1,"a":15},{"x":5,"z":-2,"w":2.2,"l":3,"dx":0,"dz":1,"a":12}],"wall":16774876,"cap":5224810},
+ {"name":"Molino de Viento","par":4,"poly":[[8.31,3.44],[3.44,8.31],[-3.44,8.31],[-8.31,3.44],[-8.31,-3.44],[-3.44,-8.31],[3.44,-8.31],[8.31,-3.44]],"tee":[0,7.2],"cup":[0,-7.2],"circles":[{"x":0,"z":0,"r":0.7,"t":"tower"},{"x":5.49,"z":-1.96,"r":0.5,"t":"palm"},{"x":2.33,"z":4.76,"r":0.5,"t":"palm"},{"x":-6.79,"z":-2.61,"r":0.5,"t":"palm"}],"rotors":[{"x":0,"z":0,"len":3.6,"w":1.4,"a0":0,"arms":4,"t":"mill"}],"wall":16774876,"cap":16761390},
+ {"name":"Cueva del Gato","par":5,"poly":[[-8,10],[8,10],[8,-10],[-8,-10]],"tee":[-6.2,8.4],"cup":[6.2,-8.3],"look":[0,0],"circles":[{"x":-3,"z":0,"r":0.9,"t":"rock"},{"x":-1.2,"z":0,"r":0.9,"t":"rock"},{"x":0.6,"z":0,"r":0.9,"t":"rock"},{"x":2.4,"z":0,"r":0.9,"t":"rock"},{"x":4.2,"z":0,"r":0.9,"t":"rock"},{"x":-1.13,"z":-6.63,"r":0.97,"t":"rock"},{"x":4.24,"z":4.38,"r":0.85,"t":"rock"},{"x":3.14,"z":-7.75,"r":0.92,"t":"rock"}],"portals":[{"a":[-5.5,4],"b":[5.5,-4],"r":0.7,"c":16751165}],"wall":16774876,"cap":16751165},
+ {"name":"Tormenta Tropical","par":5,"poly":[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],"tee":[-8,11.4],"cup":[8,-11.4],"look":[0,11.4],"via":[[0,11],[0,-11]],"circles":[{"x":-5.08,"z":3.91,"r":0.65,"t":"barrel","e":1.46},{"x":8.71,"z":-5.88,"r":0.65,"t":"barrel","e":1.5},{"x":9.1,"z":-3.49,"r":0.65,"t":"barrel","e":1.51},{"x":-2.19,"z":8.42,"r":0.65,"t":"barrel","e":1.53}],"waters":[{"x0":-3,"x1":3,"z0":4,"z1":7,"bridges":[{"x0":-2.8,"x1":-1.2}]},{"x0":-3,"x1":3,"z0":-8,"z1":-5,"bridges":[{"x0":1.2,"x1":2.8}]}],"rain":1,"wall":16774876,"cap":3127208},
+ {"name":"Gran Piña Final","par":6,"poly":[[-9,12],[9,12],[9,4],[3,4],[3,-12],[-3,-12],[-3,4],[-9,4]],"tee":[-6.5,9.4],"cup":[0,-10.2],"look":[0,6],"via":[[0,6]],"circles":[{"x":3.5,"z":8,"r":0.7,"t":"tower"},{"x":-5.46,"z":6.3,"r":0.65,"t":"barrel","e":1.57},{"x":-2.3,"z":10.04,"r":0.65,"t":"barrel","e":1.54},{"x":-0.51,"z":4.56,"r":0.65,"t":"barrel","e":1.49},{"x":0.77,"z":-6.34,"r":0.65,"t":"barrel","e":1.49}],"rotors":[{"x":3.5,"z":8,"len":2.6,"w":1.6,"a0":0,"arms":2,"t":"mill"}],"gates":[{"z":-8.5,"hw":1.2,"x0":0,"amp":1.2,"sp":1.5,"ph":0}],"boosts":[{"x":0,"z":1,"w":2.4,"l":3,"dx":0,"dz":-1,"a":15}],"waters":[{"x0":-3,"x1":3,"z0":-5,"z1":-2,"bridges":[{"x0":-2.8,"x1":-1.4}]}],"wall":16774876,"cap":5224810}
+,
+ /* ===== GRAN FINAL HAWAIANA · SEGUNDA MITAD (Kauai · la final en casa) ===== */
+ {"name":"Nā Pali Express","par":3,"poly":[[-3,14],[3,14],[3,-14],[-3,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":-0.96,"z":-5.86,"r":0.98,"t":"rock"},{"x":1.24,"z":2.84,"r":0.9,"t":"rock"},{"x":-1.23,"z":7,"r":0.97,"t":"rock"}],"boosts":[{"x":0.25,"z":10,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":17.59},{"x":0.41,"z":0,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":16.84},{"x":0.64,"z":-10,"w":2.2,"l":2.8,"dx":0,"dz":-1,"a":18.43}],"wall":16774876,"cap":16734878},
+ {"name":"Cascadas de Wailua","par":4,"poly":[[-3.4,13],[3.4,13],[3.4,-13],[-3.4,-13]],"tee":[0,11.4],"cup":[0,-11.3],"gates":[{"z":8.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.49,"ph":2.45},{"z":-8.5,"hw":1.16,"x0":0,"amp":1.69,"sp":1.51,"ph":5.25}],"waters":[{"x0":-3.4,"x1":3.4,"z0":2,"z1":5,"bridges":[{"x0":1.6,"x1":3.1}]},{"x0":-3.4,"x1":3.4,"z0":-5,"z1":-2,"bridges":[{"x0":-3.1,"x1":-1.6}]}],"wall":16774876,"cap":16763213},
+ {"name":"Cañón de Waimea","par":4,"poly":[[-9,11],[3,11],[3,-5],[9,-5],[9,-11],[-3,-11],[-3,5],[-9,5]],"tee":[-6.5,8.6],"cup":[6.5,-8.6],"look":[0,8.6],"via":[[0,8.6],[0,-8.6]],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"},{"x":-0.6,"z":-4.58,"r":0.9,"t":"rock"},{"x":-1.58,"z":3.91,"r":0.93,"t":"rock"},{"x":-2.86,"z":6.36,"r":0.88,"t":"rock"},{"x":2.62,"z":-8.59,"r":0.93,"t":"rock"}],"rotors":[{"x":0,"z":0,"len":2.6,"w":1.4,"a0":0,"arms":2,"t":"beam"}],"sands":[{"x":1.16,"z":8.47,"r":1.47}],"wall":16774876,"cap":16734878},
+ {"name":"Spouting Horn","par":3,"poly":[[8.08,2.63],[5,6.88],[0,8.5],[-5,6.88],[-8.08,2.63],[-8.08,-2.63],[-5,-6.88],[0,-8.5],[5,-6.88],[8.08,-2.63]],"tee":[0,6.8],"cup":[0,-6.8],"circles":[{"x":0,"z":0,"r":1.2,"t":"rock"}],"boosts":[{"x":0,"z":3.2,"w":2.2,"l":2.2,"dx":0,"dz":-1,"a":16},{"x":3.2,"z":0,"w":2,"l":2.2,"dx":-1,"dz":0,"a":14},{"x":-3.2,"z":0,"w":2,"l":2.2,"dx":1,"dz":0,"a":14}],"wall":16774876,"cap":16734878},
+ {"name":"Tormenta en Hanalei","par":5,"poly":[[-11,14],[3,14],[3,-2],[11,-2],[11,-14],[-3,-14],[-3,2],[-11,2]],"tee":[-8,11.4],"cup":[8,-11.4],"look":[0,11.4],"via":[[0,11],[0,-11]],"circles":[{"x":6.47,"z":-5.77,"r":0.81,"t":"rock"},{"x":-8.29,"z":3.64,"r":0.93,"t":"rock"},{"x":0.37,"z":-11.09,"r":0.95,"t":"rock"}],"boosts":[{"x":0,"z":10,"w":2.4,"l":3,"dx":1,"dz":0,"a":15}],"waters":[{"x0":-3,"x1":3,"z0":4,"z1":7,"bridges":[{"x0":-2.8,"x1":-1.2}]},{"x0":-3,"x1":3,"z0":-8,"z1":-5,"bridges":[{"x0":1.2,"x1":2.8}]}],"rain":1,"wall":16774876,"cap":11562976},
+ {"name":"Puente de Kalalau","par":4,"poly":[[-3.6,14],[3.6,14],[3.6,-14],[-3.6,-14]],"tee":[0,12.4],"cup":[0,-12.3],"circles":[{"x":1.67,"z":7.23,"r":0.92,"t":"rock"},{"x":-0.71,"z":-9.68,"r":0.95,"t":"rock"}],"waters":[{"x0":-3.6,"x1":3.6,"z0":1,"z1":4,"bridges":[{"x0":-0.9,"x1":0.9}]},{"x0":-3.6,"x1":3.6,"z0":-6,"z1":-3,"bridges":[{"x0":-0.9,"x1":0.9}]}],"wall":16774876,"cap":16763213},
+ {"name":"Antorchas del Luau","par":4,"poly":[[9.18,2.46],[6.72,6.72],[2.46,9.18],[-2.46,9.18],[-6.72,6.72],[-9.18,2.46],[-9.18,-2.46],[-6.72,-6.72],[-2.46,-9.18],[2.46,-9.18],[6.72,-6.72],[9.18,-2.46]],"tee":[0,7.6],"cup":[0,-7.6],"circles":[{"x":0,"z":0,"r":0.7,"t":"light"},{"x":5.37,"z":6.2,"r":0.5,"t":"light"},{"x":-7.42,"z":-0.29,"r":0.5,"t":"light"},{"x":3.05,"z":4.69,"r":0.5,"t":"light"},{"x":-1.98,"z":-5.39,"r":0.5,"t":"light"}],"rotors":[{"x":0,"z":0,"len":4,"w":1.4,"a0":0,"arms":4,"t":"beam"}],"wall":16774876,"cap":16734878},
+ {"name":"Atardecer en Poipu","par":4,"poly":[[-8,10],[-2,10],[-2,-6],[2,-6],[2,10],[8,10],[8,-10],[-8,-10]],"tee":[-5,8.4],"cup":[5,8.4],"look":[-5,-8],"via":[[-5,-7.5],[5,-7.5]],"circles":[{"x":5,"z":-1,"r":0.7,"t":"tower"}],"rotors":[{"x":5,"z":-1,"len":2.4,"w":1.6,"a0":0,"arms":2,"t":"mill"}],"sands":[{"x":-3.81,"z":-6.39,"r":1.47},{"x":2.41,"z":-7.96,"r":1.29}],"waters":[{"x0":-8,"x1":-2,"z0":2,"z1":5,"bridges":[{"x0":-7.4,"x1":-5.8}]}],"wall":16774876,"cap":3127208},
+ {"name":"La Gran Final de Kauai","par":7,"poly":[[-9,12],[9,12],[9,4],[3,4],[3,-12],[-3,-12],[-3,4],[-9,4]],"tee":[-6.5,9.4],"cup":[0,-10.2],"look":[0,6],"via":[[0,6]],"circles":[{"x":3.5,"z":8,"r":0.7,"t":"tower"},{"x":-3,"z":8,"r":0.7,"t":"light"},{"x":-0.34,"z":5.2,"r":0.99,"t":"rock"},{"x":0.1,"z":9.99,"r":0.98,"t":"rock"}],"rotors":[{"x":3.5,"z":8,"len":2.6,"w":1.6,"a0":0,"arms":2,"t":"mill"},{"x":-3,"z":8,"len":2.2,"w":1.4,"a0":1.6,"arms":2,"t":"beam"}],"gates":[{"z":-8.5,"hw":1.2,"x0":0,"amp":1.2,"sp":1.5,"ph":0}],"boosts":[{"x":0,"z":1.6,"w":2.4,"l":3,"dx":0,"dz":-1,"a":15}],"waters":[{"x0":-3,"x1":3,"z0":-5,"z1":-2,"bridges":[{"x0":-2.8,"x1":-1.4}]}],"portals":[{"a":[-7.5,7],"b":[0,-1],"r":0.7,"c":16763213}],"wall":16774876,"cap":16763213}
 ];
-[10,16,20,24,29,39].forEach(i=>{HOLES[i].rain=1});
+[10,16,20,24,29,39,65,73,76,79,80,101].forEach(i=>{HOLES[i].rain=1});
 
 /* ============ física ============ */
 const BR=.22,STEP=1/240;
-let HD=null,segs=[],circ=[],B={x:0,z:0,vx:0,vz:0},lastPos={x:0,z:0},simT=0,acc=0,state='title';
+let lavaHit=false,HD=null,segs=[],circ=[],B={x:0,z:0,vx:0,vz:0},lastPos={x:0,z:0},simT=0,acc=0,state='title';
 function inPoly(p,x,z){let c=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const xi=p[i][0],zi=p[i][1],xj=p[j][0],zj=p[j][1];if((zi>z)!==(zj>z)&&x<(xj-xi)*(z-zi)/(zj-zi)+xi)c=!c}return c}
 function segDist(px,pz,ax,az,bx,bz){const abx=bx-ax,abz=bz-az;let t=((px-ax)*abx+(pz-az)*abz)/(abx*abx+abz*abz);t=clamp(t,0,1);return Math.hypot(px-ax-abx*t,pz-az-abz*t)}
 function polyDist(p,x,z){let d=1e9;for(let i=0;i<p.length;i++){const a=p[i],b=p[(i+1)%p.length];d=Math.min(d,segDist(x,z,a[0],a[1],b[0],b[1]))}return inPoly(p,x,z)?-d:d}
@@ -652,7 +1124,7 @@ function step(h){
   // agua
   for(const w of HD.waters||[]){if(B.x>w.x0&&B.x<w.x1&&B.z>w.z0&&B.z<w.z1){let on=false;for(const br of w.bridges)if(B.x>br.x0&&B.x<br.x1)on=true;
     if(!on){if(sp>15){if(Math.random()<.4)burst(B.x,.1,B.z,3,[0xffffff,0xbfeaff],1.5,2.5,.08,.4,9);B.vx*=1-.35*h*60/60;B.vz*=1-.35*h*60/60;if(Math.random()<.02)S.sand()}
-      else{state='water';waterT=0;burst(B.x,.15,B.z,26,[0xffffff,0xbfeaff,0x7fd0f0],3,5,.12,.8,12);S.splash();vib(70);return}}}}
+      else{state='water';waterT=0;lavaHit=!!w.lava;burst(B.x,.15,B.z,26,w.lava?[0xffd34d,0xff7a2a,0xff3a1a]:[0xffffff,0xbfeaff,0x7fd0f0],3,5,.12,.8,12);S.splash();vib(70);return}}}}
   // hoyo
   const cx=HD.cup[0]-B.x,cz=HD.cup[1]-B.z,d=Math.hypot(cx,cz);
   if(d<.55&&sp<9.5){state='sink';sinkT=0;sinkFrom={x:B.x,z:B.z};S.sink();vib([25,40,70]);return}
@@ -691,6 +1163,7 @@ function makeRotor(r){const g=new THREE.Group();const n=r.arms/2;
     if(r.t==='mill'){for(const s of[-1,1]){const sail=new THREE.Mesh(new THREE.BoxGeometry(r.len*.8,.05,.55),M(s>0?0x2fb7a8:0xffc94d));sail.position.set(s*r.len*.55,.6,.0);arm.add(sail)}}
     g.add(arm)}
   return g}
+const LAVA_FS='uniform float t;uniform vec2 sz;varying vec2 vU;varying vec3 vP;void main(){float n=(sin(vP.x*1.7+t*.7+sin(vP.z*2.3+t*.8))*.5+.5)*(sin(vP.z*1.9-t*.8+sin(vP.x*2.1+t*.5))*.5+.5);vec3 c=mix(vec3(.22,.03,.02),vec3(1.,.36,.04),smoothstep(.12,.7,n));c=mix(c,vec3(1.,.86,.32),smoothstep(.78,1.,n));float e=min(min(vU.x*sz.x,(1.-vU.x)*sz.x),min(vU.y*sz.y,(1.-vU.y)*sz.y));c=mix(c,vec3(1.,.92,.55),smoothstep(.4,0.,e)*.55);gl_FragColor=vec4(c,1.);}';
 function buildHole(idx){
   clearCourse();HD=JSON.parse(JSON.stringify(HOLES[idx]));seed=idx*97+13;
   const P=HD.poly;let x0=1e9,x1=-1e9,z0=1e9,z1=-1e9;P.forEach(p=>{x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);z0=Math.min(z0,p[1]);z1=Math.max(z1,p[1])});
@@ -754,7 +1227,7 @@ function buildHole(idx){
   for(const w of HD.waters||[]){const W=w.x1-w.x0,Hh=w.z1-w.z0;
     const wm2=new THREE.Mesh(new THREE.PlaneGeometry(W,Hh).rotateX(-Math.PI/2),new THREE.ShaderMaterial({uniforms:{t:{value:0},sz:{value:new THREE.Vector2(W,Hh)}},
       vertexShader:'varying vec2 vU;varying vec3 vP;void main(){vU=uv;vP=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-      fragmentShader:'uniform float t;uniform vec2 sz;varying vec2 vU;varying vec3 vP;void main(){vec3 c=mix(vec3(.22,.68,.85),vec3(.45,.86,.9),.5+.5*sin(vP.x*1.6+vP.z*1.1+t*1.6+sin(vP.z*2.+t)));float e=min(min(vU.x*sz.x,(1.-vU.x)*sz.x),min(vU.y*sz.y,(1.-vU.y)*sz.y));float wv=sin((vP.x*2.+vP.z*3.)+t*2.)*.5+.5;c=mix(c,vec3(1.),smoothstep(.35,0.,e+wv*.1)*.85);c=mix(c,vec3(1.),smoothstep(.93,.99,sin(vP.x*3.1-vP.z*2.2+t*1.3)*.5+.5)*.35);gl_FragColor=vec4(c,1.);}'}));
+      fragmentShader:w.lava?LAVA_FS:'uniform float t;uniform vec2 sz;varying vec2 vU;varying vec3 vP;void main(){vec3 c=mix(vec3(.22,.68,.85),vec3(.45,.86,.9),.5+.5*sin(vP.x*1.6+vP.z*1.1+t*1.6+sin(vP.z*2.+t)));float e=min(min(vU.x*sz.x,(1.-vU.x)*sz.x),min(vU.y*sz.y,(1.-vU.y)*sz.y));float wv=sin((vP.x*2.+vP.z*3.)+t*2.)*.5+.5;c=mix(c,vec3(1.),smoothstep(.35,0.,e+wv*.1)*.85);c=mix(c,vec3(1.),smoothstep(.93,.99,sin(vP.x*3.1-vP.z*2.2+t*1.3)*.5+.5)*.35);gl_FragColor=vec4(c,1.);}'}));
     wm2.position.set((w.x0+w.x1)/2,.03,(w.z0+w.z1)/2);course.add(wm2);dyn.push({t:'water',m:wm2});
     for(const br of w.bridges){const bw=br.x1-br.x0,g=new THREE.Group();const n=Math.ceil((Hh+1)/.55);
       for(let i=0;i<n;i++){const pl=new THREE.Mesh(new THREE.BoxGeometry(bw,.12,.5),M(i%2?0xd49a5e:0xe2ae75));pl.position.set(0,.09,-(Hh+1)/2+(i+.5)*(Hh+1)/n);pl.castShadow=pl.receiveShadow=true;g.add(pl)}
@@ -788,9 +1261,18 @@ const PROPS=[
  ['palm','flower','tiki','palm','flower','torch','rooster','flower','palm','tuft','flag','flower','palm','rocks','flower','flag','tiki','palm','board','flower','torch','palm','crab','flower','flag'],
  ['rocks','palm','rocks','flag','tuft','rocks','palm','rooster','rocks','torch','flag','pebbles','rocks','palm','board','flag','rocks','tuft','crab','palm','rocks','torch','flag','rocks','pebbles'],
  ['rocks','tuft','rocks','rooster','flag','rocks','pebbles','tuft','rocks','torch','flag','rocks','tuft','pebbles','rocks','flag','rooster','rocks','tuft','rocks','torch','pebbles','flag','rocks','tuft'],
- ['torch','tiki','torch','palm','flag','torch','flower','tiki','torch','palm','torch','flag','tiki','torch','flower','palm','torch','tiki','flag','torch','palm','torch','tiki','flag','torch']];
+ ['torch','tiki','torch','palm','flag','torch','flower','tiki','torch','palm','torch','flag','tiki','torch','flower','palm','torch','tiki','flag','torch','palm','torch','tiki','flag','torch'],
+ ['umb','palm','board','crab','umb','palm','bucket','board','flag','palm','umb','crab','board','palm','flag','umb','bucket','board','palm','crab','umb','board','palm','flag','umb'],
+ ['torch','tiki','torch','flag','torch','tiki','palm','torch','tiki','flag','torch','torch','tiki','palm','torch','flag','tiki','torch','torch','tiki','flag','torch','palm','tiki','torch'],
+ ['rocks','tuft','pebbles','rocks','flag','tuft','rocks','rooster','pebbles','rocks','tuft','flag','rocks','pebbles','tuft','rocks','flag','rocks','tuft','pebbles','rocks','flag','tuft','rocks','pebbles'],
+ ['palm','crab','board','palm','flag','crab','umb','palm','board','flag','crab','palm','umb','board','flag','crab','palm','board','umb','flag','palm','crab','board','flag','palm'],
+ ['torch','rocks','torch','rocks','tiki','torch','rocks','flag','torch','rocks','torch','tiki','rocks','torch','flag','rocks','torch','tiki','rocks','torch','flag','rocks','torch','tiki','rocks'],
+ ['torch','flag','rocks','torch','tiki','flag','torch','rocks','torch','flag','tiki','torch','rocks','flag','torch','tiki','torch','rocks','flag','torch','tiki','torch','flag','rocks','torch'],
+ ['rocks','palm','rooster','rocks','tuft','flag','rocks','palm','pebbles','rocks','rooster','tuft','rocks','flag','palm','rocks','pebbles','rooster','rocks','tuft','flag','rocks','palm','pebbles','rocks'],
+ ['palm','flower','bucket','flag','flower','palm','tuft','bucket','flower','flag','palm','flower','bucket','tuft','flag','palm','flower','bucket','tiki','flag','palm','flower','bucket','tuft','flag'],
+ ['torch','palm','flag','tiki','torch','flower','palm','flag','torch','tiki','palm','torch','flag','flower','tiki','torch','palm','flag','torch','tiki','palm','flag','torch','flower','tiki']];
 function placeProps(idx){
-  const P=HD.poly,R=platR-1.2;let placed=0,tries=0;const base=PROPS[Math.min(4,(idx/9)|0)];const items=[];const nI=Math.min(30,14+(platR*.9|0));for(let i=0;i<nI;i++)items.push(base[i%base.length]);
+  const P=HD.poly,R=platR-1.2;let placed=0,tries=0;const base=PROPS[Math.min(PROPS.length-1,tourOf[idx]||0)];const items=[];const nI=Math.min(30,14+(platR*.9|0));for(let i=0;i<nI;i++)items.push(base[i%base.length]);
   while(placed<items.length&&tries<600){tries++;const a=srand()*6.283,d=Math.sqrt(srand())*R;const x=bboxC.x+Math.cos(a)*d,z=bboxC.z+Math.sin(a)*d;
     if(polyDist(P,x,z)<2.3)continue;const t=items[placed];const g=new THREE.Group();let ok=true;if(t==='palm'||t==='umb'||t==='flag'||t==='tiki'||t==='torch'){const lk=HD.look||HD.cup,yw=Math.atan2(-(lk[0]-HD.tee[0]),-(lk[1]-HD.tee[1])),bx=Math.sin(yw),bz=Math.cos(yw),rx=x-HD.tee[0],rz=z-HD.tee[1],al=rx*bx+rz*bz,la=Math.abs(-rx*bz+rz*bx);if(al>-1&&la<al*.9+3.5)continue}
     if(t==='palm'){const p=makePalm(sr(2.4,3.4),sr(-.3,.3));g.add(p);const cr=p.userData.crown;dyn.push({t:'sway',m:cr,ph:srand()*6});g.rotation.y=srand()*6;g.scale.setScalar(sr(.9,1.2))}
@@ -867,20 +1349,46 @@ function toggleFs(){try{const d=document,el=d.documentElement;if(!d.fullscreenEl
 
 /* ============ lógica de juego ============ */
 const TH=9,TOURS=[
- {name:'Copa Poipu',sub:'Costa sur · para empezar',need:0,col:'#ffc94d'},
- {name:'Copa Hanalei',sub:'Selva, cascadas y portales',need:12,col:'#2fb7a8'},
- {name:'Copa Nā Pali',sub:'Acantilados · nivel experto',need:30,col:'#b06fe0'},
- {name:'Copa Waimea',sub:'Cañón rojo · muy difícil',need:52,col:'#e0703a'},
- {name:'Copa Luau',sub:'Noche de antorchas · la gran final',need:85,col:'#ff5a9e'}];
-const PINS=[[60.6,80],[52.2,19],[22,28],[31,50],[75,59]];
+ {name:'Copa Poipu',sub:'Costa sur · para empezar',need:0,col:'#ffc94d',isle:0,pin:[60.6,80]},
+ {name:'Copa Hanalei',sub:'Selva, cascadas y portales',need:12,col:'#2fb7a8',isle:0,pin:[52.2,19]},
+ {name:'Copa Nā Pali',sub:'Acantilados · nivel experto',need:30,col:'#b06fe0',isle:0,pin:[22,28]},
+ {name:'Copa Waimea',sub:'Cañón rojo · muy difícil',need:52,col:'#e0703a',isle:0,pin:[31,50]},
+ {name:'Copa Luau',sub:'Noche de antorchas · la gran final de Kauai',need:85,col:'#ff5a9e',isle:0,pin:[75,59]},
+ {name:'Copa Waikiki Loco',sub:'Playa, tablas de surf y bolas rebotonas',need:35,col:'#19c8d9',isle:1,pin:[64,66]},
+ {name:'Copa Disco Diamond Head',sub:'Discoteca volcánica con láseres',need:65,col:'#ff2ea6',isle:1,pin:[82,50]},
+ {name:'Copa Haleakalā',sub:'Sobre las nubes · portales y viento',need:95,col:'#ff9a70',isle:2,pin:[72,54]},
+ {name:'Copa Ballena Loca',sub:'Bahía de ballenas, puentes y tormenta',need:125,col:'#1e6bff',isle:2,pin:[27,38]},
+ {name:'Copa Lava Loca',sub:'Ríos de lava y rotores · peligro extremo',need:155,col:'#ff4d1a',isle:3,pin:[67,72]},
+ {name:'Copa Mauna Kea Galáctica',sub:'Observatorio, gravedad cero y portales',need:185,col:'#a070ff',isle:3,pin:[56,32]},
+ {name:'Copa Molokai Salvaje',sub:'Acantilados, mulas y rocas gigantes',need:215,col:'#c0623e',isle:4,pin:[50,47]},
+ {name:'Copa Piña Gigante',sub:'Lanai · piñas rebotonas y laberintos',need:245,col:'#4fb96a',isle:5,pin:[50,53]},
+ {name:'Gran Final Hawaiana',sub:'18 hoyos · la final de los campeones, en casa: Kauai',need:0,col:'#ffc94d',isle:0,pin:[58,43],big:1,gate:()=>BIGT.every(gold),lockMsg:'Consigue oro 🥇 en la Copa Luau de Kauai y en la Gran Copa de cada una de las otras 5 islas'},
+ {name:'Copa North Shore',sub:'Olas gigantes y tubos de surf',need:110,col:'#12b5e8',isle:1,pin:[40,24]},
+ {name:'Gran Copa de Honolulu',sub:'18 hoyos · rascacielos, Pearl Harbor y neón',need:160,col:'#ff4fa0',isle:1,pin:[27,58],big:1,gate:()=>ISLES[TOURS[15].isle].tours.some(x=>x!==15&&gold(x)),lockMsg:'Consigue oro 🥇 en otro torneo de esta isla'},
+ {name:'Copa Lahaina Pirata',sub:'Barcos piratas, ballenas y cañones',need:145,col:'#c9833a',isle:2,pin:[22,68]},
+ {name:'Gran Copa de Hana',sub:'18 hoyos · la carretera de Hana y sus cascadas',need:200,col:'#2fb77a',isle:2,pin:[58,78],big:1,gate:()=>ISLES[TOURS[17].isle].tours.some(x=>x!==17&&gold(x)),lockMsg:'Consigue oro 🥇 en otro torneo de esta isla'},
+ {name:'Copa Arena Negra',sub:'18 hoyos · playa negra, tortugas y cuevas de lava',need:230,col:'#4a4f66',isle:3,pin:[36,78]},
+ {name:'Copa Kona Estrellada',sub:'18 hoyos · café, cielo estrellado y telescopios',need:275,col:'#7a6cff',isle:3,pin:[28,46]},
+ {name:'Gran Copa del Kīlauea',sub:'18 hoyos · el volcán más loco del Pacífico',need:330,col:'#ff3b1f',isle:3,pin:[72,48],big:1,gate:()=>ISLES[TOURS[20].isle].tours.some(x=>x!==20&&gold(x)),lockMsg:'Consigue oro 🥇 en otro torneo de esta isla'},
+ {name:'Copa Valle Halawa',sub:'Cascadas, mulas y selva escondida',need:260,col:'#3fa07a',isle:4,pin:[80,42]},
+ {name:'Gran Copa de Molokai',sub:'18 hoyos · los acantilados más altos del mundo',need:315,col:'#d07a4a',isle:4,pin:[24,62],big:1,gate:()=>ISLES[TOURS[22].isle].tours.some(x=>x!==22&&gold(x)),lockMsg:'Consigue oro 🥇 en otro torneo de esta isla'},
+ {name:'Copa Jardín de los Dioses',sub:'Rocas rojas, viento y misterio',need:285,col:'#d9503a',isle:5,pin:[28,36]},
+ {name:'Gran Copa de Lanai',sub:'18 hoyos · campos de piña y naufragios',need:345,col:'#ffc22e',isle:5,pin:[72,70],big:1,gate:()=>ISLES[TOURS[24].isle].tours.some(x=>x!==24&&gold(x)),lockMsg:'Consigue oro 🥇 en otro torneo de esta isla'}];
+
+const BIGT=[4,15,17,20,22,24].filter(t=>t<TOURS.length);
+/* hoyos de cada torneo: los 13 primeros siguen en bloques de 9 (el progreso guardado no cambia); los nuevos se añaden al final */
+TOURS.forEach((o,t)=>{o.h=[];if(t<=13)for(let j=0;j<9;j++)o.h.push(t*9+j)});
+(()=>{let idx=126;const L=[[14, 9], [15, 18], [16, 9], [17, 18], [18, 18], [19, 18], [20, 18], [21, 9], [22, 18], [23, 9], [24, 18]];L.forEach(([t,n])=>{for(let k=0;k<n;k++)TOURS[t].h.push(idx++)});const fe=9;for(let k=0;k<fe;k++)TOURS[13].h.push(idx++);if(typeof console!=='undefined'&&idx!==HOLES.length)console.error('HOLES mismatch',idx,HOLES.length)})();
+const tourOf=[],posOf=[];TOURS.forEach((o,t)=>o.h.forEach((i,j)=>{tourOf[i]=t;posOf[i]=j}));
+const tourMax=t=>TOURS[t].h.length*3,medTh=t=>[14,20,25].map(v=>Math.round(v*TOURS[t].h.length/9));
 let prog=(()=>{try{const p=JSON.parse(lsGet('kauaiMiniProg')||'{}');return{s:p.s||{},b:p.b||{},ball:p.ball||0,st:p.st||{holes:0,strokes:0,aces:0},d:p.d||{last:0,streak:0,bd:0,bs:0},lead:p.lead||0}}catch(e){return{s:{},b:{},ball:0,st:{holes:0,strokes:0,aces:0},d:{last:0,streak:0,bd:0,bs:0},lead:0}}})();
 const saveProg=()=>lsSet('kauaiMiniProg',JSON.stringify(prog));
-const starsOf=i=>prog.s[i]||0,totalStars=()=>{let n=0;for(const k in prog.s)n+=prog.s[k];return n},tourStars=t=>{let n=0;for(let j=0;j<TH;j++)n+=starsOf(t*TH+j);return n};
-const tourOpen=t=>totalStars()>=TOURS[t].need,ballOpen=i=>totalStars()>=BALLS[i].need,MAXSTARS=HOLES.length*3;
-const medalOf=t=>{const n=tourStars(t);return n>=25?'🥇':n>=20?'🥈':n>=14?'🥉':''};
+const starsOf=i=>prog.s[i]||0,totalStars=()=>{let n=0;for(const k in prog.s)n+=prog.s[k];return n},tourStars=t=>{let n=0;TOURS[t].h.forEach(i=>n+=starsOf(i));return n};
+const tourOpen=t=>totalStars()>=TOURS[t].need&&(!TOURS[t].gate||TOURS[t].gate()),ballOpen=i=>totalStars()>=BALLS[i].need,MAXSTARS=HOLES.length*3;
+const medalOf=t=>{const n=tourStars(t),m=medTh(t);return n>=m[2]?'🥇':n>=m[1]?'🥈':n>=m[0]?'🥉':''},gold=t=>tourStars(t)>=medTh(t)[2];
 const todayStr=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
-function dailyHole(){const pool=[];for(let t=0;t<TOURS.length;t++)if(tourOpen(t))for(let j=0;j<TH;j++)pool.push(t*TH+j);let x=(todayStr()*2654435761)%4294967296;x=((x^(x>>>13))>>>0);return pool[x%pool.length]}
-function nextHole(){for(const lim of [1,3]){for(let t=0;t<TOURS.length;t++){if(!tourOpen(t))continue;for(let j=0;j<TH;j++)if(starsOf(t*TH+j)<lim)return t*TH+j}}return 0}
+function dailyHole(){const pool=[];for(let t=0;t<TOURS.length;t++)if(tourOpen(t))TOURS[t].h.forEach(i=>pool.push(i));let x=(todayStr()*2654435761)%4294967296;x=((x^(x>>>13))>>>0);return pool[x%pool.length]}
+function nextHole(){for(const lim of [1,3]){for(let t=0;t<TOURS.length;t++){if(!tourOpen(t))continue;for(const i of TOURS[t].h)if(starsOf(i)<lim)return i}}return 0}
 let dailyMode=false;
 const calcStars=(s,par)=>(s===1||s<=par-1)?3:s===par?2:s<=par+2?1:0,starStr=n=>'★'.repeat(n)+'☆'.repeat(3-n);
 let lastStars=0,prevStars=0,runStart=0;
@@ -888,18 +1396,39 @@ let hIdx=0,strokes=0,scores=[],hintDone=false,holed=false,viaIdx=0,userRot=false
 const scoreName=(s,par,max)=>{const d=s-par;if(s===1)return'¡HOYO EN UNO!';if(d<=-3)return'¡ALBATROS!';if(d===-2)return'¡ÁGUILA!';if(d===-1)return'¡BIRDIE!';if(d===0)return'PAR';if(d===1)return'BOGEY';if(d===2)return'DOBLE BOGEY';return'+'+d};
 function totalDiff(){let t=0;scores.forEach((v,i)=>{t+=v-HOLES[i].par});return t}
 const fmtD=d=>d>0?'+'+d:d===0?'E':''+d;
-function hud(){$('hn').textContent='Hoyo '+((hIdx%TH)+1)+' · '+HD.name;$('hp').textContent='Par '+HD.par;$('hs').textContent=strokes;$('ht').textContent=fmtD(totalDiff())}
+function hud(){$('hn').textContent='Hoyo '+(posOf[hIdx]+1)+' · '+HD.name;$('hp').textContent='Par '+HD.par;$('hs').textContent=strokes;$('ht').textContent=fmtD(totalDiff())}
 function toast(a,b,ms){$('tb').textContent=a;$('ts').textContent=b||'';$('toast').classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('on'),ms||1500)}
 function showUI(on){['hudL','hudR'].forEach(i=>$(i).style.display=on?'':'none');if(on){$('hudL').style.display='block';$('hudR').style.display='flex'}}
-const SCEN=[[1,1,1],[.88,1.05,.92],[1,.96,.95],[1.35,.8,.62],[.78,.74,1]];
-function setScenery(t){const c=SCEN[Math.min(4,t)];if(window._rm)window._rm.color.setRGB(c[0],c[1],c[2])}
+const SCEN=[[1,1,1],[.88,1.05,.92],[1,.96,.95],[1.35,.8,.62],[.78,.74,1],[1.05,1.05,1],[.8,.7,1],[1.1,.9,.92],[.85,1,1.1],[1.55,.62,.45],[.7,.75,1],[1.2,.95,.8],[1.05,1.15,.8],[1.2,1,.8]];
+
+/* ===== extensión v13: escenografía de los torneos nuevos ===== */
+(()=>{const cyc=a=>Array.from({length:25},(_,i)=>a[i%a.length]);
+ PALMAP.push([1,1,2,2,3,3,4,4,5],[1,2,3,3,4,4,5,5,6,6,7,7,8,8,8,7,8,8],[3,4,4,5,5,6,6,7,8],[2,2,1,2,3,3,2,3,4,4,5,5,4,5,6,6,7,7],
+  [3,3,4,4,5,5,6,6,7,7,8,8,8,7,8,8,7,8],[7,8,8,10,10,8,10,10,8,10,10,10,8,10,10,10,10,10],[6,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+  [0,1,1,2,2,1,1,2,2],[3,4,4,5,5,6,6,7,7,3,4,4,5,5,6,6,7,7],[5,5,6,6,7,7,5,6,7],[0,1,1,2,2,1,1,2,2,3,4,4,5,5,6,6,7,8]);
+ PROPS.push(cyc(['palm','board','crab','umb','flag','board','palm','bucket','crab','tiki','board','palm']),
+  cyc(['torch','tiki','flag','torch','palm','umb','torch','board','flag','tiki','torch','palm']),
+  cyc(['flag','torch','crab','rocks','bucket','flag','palm','shell','torch','rocks']),
+  cyc(['palm','flower','tuft','palm','flower','rocks','palm','flower','tuft','tiki','flower','palm']),
+  cyc(['rocks','pebbles','crab','palm','shell','rocks','torch','pebbles','tuft','rocks']),
+  cyc(['torch','tuft','palm','flag','torch','rocks','tiki','torch','tuft','flag']),
+  cyc(['torch','rocks','torch','rocks','tiki','torch','pebbles','rocks','flag','torch']),
+  cyc(['palm','flower','rooster','tuft','palm','rocks','flower','flag','palm','tuft']),
+  cyc(['rocks','palm','rooster','rocks','tuft','flag','pebbles','rocks','palm','rooster']),
+  cyc(['rocks','pebbles','rocks','flag','tuft','rocks','torch','pebbles','rocks','rooster']),
+  cyc(['palm','flower','bucket','tuft','flag','ball','palm','shell','flower','bucket']));
+ SCEN.push([1,1.05,1.1],[.8,.7,1],[1.1,.9,.85],[.8,1.1,.8],[.55,.55,.62],[.7,.75,1],[1.55,.62,.45],[.85,1.1,.85],[1.1,.95,.8],[1.35,.8,.62],[1.05,1.15,.8]);
+ const tr=(m,f,b)=>({ch:m.ch.map(c=>c.map(x=>x*f)),bass:m.bass.map(x=>x*f),pent:m.pent.map(x=>x*f),bpm:b,type:m.type});
+ [[5,1.122,114],[6,1,124],[2,1.26,94],[11,1.122,100],[9,1.19,92],[10,.94,70],[3,1.335,98],[12,.89,104],[8,1.19,86],[1,1.26,96],[13,1.122,110]].forEach(a=>MUS.push(tr(MUS[a[0]],a[1],a[2])));
+})();
+function setScenery(t){const c=SCEN[Math.min(SCEN.length-1,t)];if(window._rm)window._rm.color.setRGB(c[0],c[1],c[2])}
 function startHole(i){
-  hIdx=i;strokes=0;holed=false;viaIdx=0;userRot=false;buildHole(i);setPal(i);holeZ=0;tsc=1;setMusic((i/TH)|0);setScenery((i/TH)|0);
+  hIdx=i;strokes=0;holed=false;viaIdx=0;userRot=false;buildHole(i);setPal(i);holeZ=0;tsc=1;setMusic(tourOf[i]);setScenery(tourOf[i]);
   B={x:HD.tee[0],z:HD.tee[1],vx:0,vz:0};lastPos={x:B.x,z:B.z};
   const look=HD.look||HD.cup;cam.yaw=cam.yawT=yawToward(B.x,B.z,look[0],look[1]);cam.zoom=1;cam.pitch=.5;cam.dist=baseDist();cam.tx=B.x;cam.tz=B.z;
   hud();showUI(true);startFly();if(MP.on&&MP.phase==='game'){mpBoardRender();$('mpWait').classList.remove('on')}
 }
-function startFly(){state='fly';flyT=0;flyYaw0=cam.yaw+(Math.random()<.5?1:-1)*.9;$('bs').textContent='HOYO '+((hIdx%TH)+1)+' · '+TOURS[(hIdx/TH)|0].name.toUpperCase();$('bn').textContent=HD.name;$('bp').textContent='Par '+HD.par;$('banner').classList.add('on');$('power').style.opacity=0}
+function startFly(){state='fly';flyT=0;flyYaw0=cam.yaw+(Math.random()<.5?1:-1)*.9;$('bs').textContent='HOYO '+(posOf[hIdx]+1)+' · '+TOURS[tourOf[hIdx]].name.toUpperCase();$('bn').textContent=HD.name;$('bp').textContent='Par '+HD.par;$('banner').classList.add('on');$('power').style.opacity=0}
 function shoot(dx,dz,p){
   const v=2.5+23.5*p;B.vx=dx*v;B.vz=dz*v;lastPos={x:B.x,z:B.z};strokes++;state='rolling';S.putt(p);vib(10+p*25);
   burst(B.x,.2,B.z,8,[0xffffff,0xfff0c0],2+p*2,1.5,.08,.35,8);shake=Math.max(shake,.04+p*.1);hud();hideHint();
@@ -923,24 +1452,27 @@ function holeDone(pickup){
   setTimeout(()=>{if(MP.on&&MP.phase==='game')mpAfterHole();else showHoleCard()},2000);
 }
 function holeRows(){let h='<table><tr><th>Hoyo</th><th>Par</th><th>Golpes</th><th>★</th></tr>';
-  scores.forEach((v,i)=>{const d=v-HOLES[i].par;h+='<tr><td>'+((i%TH)+1)+' '+HOLES[i].name+'</td><td>'+HOLES[i].par+'</td><td class="'+(d<0?'sc-good':d>0?'sc-bad':'')+'"><b>'+v+'</b></td><td style="color:#ffb300">'+calcStars(v,HOLES[i].par)+'</td></tr>'});return h+'</table>'}
+  scores.forEach((v,i)=>{const d=v-HOLES[i].par;h+='<tr><td>'+(posOf[i]+1)+' '+HOLES[i].name+'</td><td>'+HOLES[i].par+'</td><td class="'+(d<0?'sc-good':d>0?'sc-bad':'')+'"><b>'+v+'</b></td><td style="color:#ffb300">'+calcStars(v,HOLES[i].par)+'</td></tr>'});return h+'</table>'}
 function showHoleCard(){
-  const last=(hIdx%TH)===TH-1,s=scores[hIdx];$('toast').classList.remove('on');
-  let h='<h2>'+(s===1?'¡HOYO EN UNO!':lastStars===3?'¡Increíble!':lastStars===2?'¡Bien jugado!':lastStars===1?'¡Sigue así!':'¡Inténtalo otra vez!')+'</h2><div class="stars">'+starStr(lastStars)+'</div><p>'+(dailyMode?'Reto del día · ':'Hoyo '+((hIdx%TH)+1)+' · ')+HD.name+' — '+s+' golpes (par '+HD.par+')'+(lastStars>prevStars?' · ¡Más estrellas!':'')+'</p>';
+  const tt=TOURS[tourOf[hIdx]],last=posOf[hIdx]===tt.h.length-1,s=scores[hIdx];$('toast').classList.remove('on');
+  let h='<h2>'+(s===1?'¡HOYO EN UNO!':lastStars===3?'¡Increíble!':lastStars===2?'¡Bien jugado!':lastStars===1?'¡Sigue así!':'¡Inténtalo otra vez!')+'</h2><div class="stars">'+starStr(lastStars)+'</div><p>'+(dailyMode?'Reto del día · ':'Hoyo '+(posOf[hIdx]+1)+' · ')+HD.name+' — '+s+' golpes (par '+HD.par+')'+(lastStars>prevStars?' · ¡Más estrellas!':'')+'</p>';
   if(dailyMode){h+='<div class="news">🔥 Racha: '+prog.d.streak+(prog.d.bd===todayStr()?' · mejor de hoy: '+prog.d.bs:'')+'</div><button class="btn big" id="bMap2">🗺️ Mapa</button><button class="btn big c2" id="bRetry" style="font-size:17px;padding:10px 20px">↺ Repetir</button>';
     openPanel(h);$('bMap2').onclick=()=>{S.ui();closePanel();toMap()};$('bRetry').onclick=()=>{S.ui();closePanel();startHole(hIdx)};return}
   h+=holeRows();
   h+='<button class="btn big" id="bNext">'+(last?'Ver resultado':'Siguiente hoyo ▶')+'</button><br><button class="btn big c2" id="bRetry" style="font-size:16px;padding:8px 18px">↺ Repetir hoyo</button>';
-  openPanel(h);$('bNext').onclick=()=>{S.ui();closePanel();if(last)showFinal();else startHole(hIdx+1)};$('bRetry').onclick=()=>{S.ui();closePanel();startHole(hIdx)}
+  openPanel(h);$('bNext').onclick=()=>{S.ui();closePanel();if(last)showFinal();else startHole(tt.h[posOf[hIdx]+1])};$('bRetry').onclick=()=>{S.ui();closePanel();startHole(hIdx)}
 }
 function makeShare(t,rs,ts,tp){
-  const W=1080,H=1350,c=cvs(W,H),g=c.getContext('2d');
+  const W=1080,H=1350,c=cvs(W,H),g=c.getContext('2d'),I=ISLES[TOURS[t].isle];
   const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#7fdcf0');gr.addColorStop(1,'#2f9fcf');g.fillStyle=gr;g.fillRect(0,0,W,H);
   g.strokeStyle='rgba(255,255,255,.35)';g.lineWidth=5;g.lineCap='round';for(let k=0;k<14;k++){const x=Math.random()*W,y=Math.random()*H;g.beginPath();g.moveTo(x,y);g.quadraticCurveTo(x+25,y-14,x+50,y);g.quadraticCurveTo(x+75,y+14,x+100,y);g.stroke()}
-  try{const p=new Path2D($('isl').getAttribute('d'));g.save();g.translate(W/2-200*3.0,300-150*3.0+60);g.scale(3.0,3.0);g.fillStyle='#ecd3a0';g.fill(p);g.lineWidth=3;g.strokeStyle='#2b3a5c';g.stroke(p);g.save();g.translate(200,150);g.scale(.9,.9);g.translate(-200,-150);g.fillStyle='#58b865';g.fill(p);g.restore();
-    const pn=PINS[t];g.fillStyle=TOURS[t].col;g.beginPath();g.arc(pn[0]/100*400,pn[1]/100*300,9,0,7);g.fill();g.lineWidth=3;g.strokeStyle='#2b3a5c';g.stroke();g.restore()}catch(e){}
+  try{const p=new Path2D(I.d),b=I.bb,sc=Math.min(760/b.w,470/b.h);g.save();g.translate(W/2,520);g.scale(sc,sc);g.translate(-b.cx,-b.cy);
+    g.lineJoin='round';g.lineWidth=16/sc;g.strokeStyle='rgba(255,255,255,.5)';g.stroke(p);g.fillStyle='#ecd3a0';g.fill(p);g.lineWidth=3/sc;g.strokeStyle='#2b3a5c';g.stroke(p);
+    g.save();g.translate(b.cx,b.cy);g.scale(.88,.88);g.translate(-b.cx,-b.cy);g.fillStyle='#58b865';g.fill(p);g.restore();
+    const pn=TOURS[t].pin,px=pn[0]/100*400,py=pn[1]/100*300;g.fillStyle=TOURS[t].col;g.beginPath();g.arc(px,py,11/sc*2.2,0,7);g.fill();g.lineWidth=3/sc*1.6;g.strokeStyle='#2b3a5c';g.stroke();g.restore()}catch(e){}
   g.textAlign='center';g.fillStyle='#fff';g.strokeStyle='#2b3a5c';g.lineJoin='round';g.lineWidth=14;g.font='bold 120px Arial,Helvetica,sans-serif';
-  g.strokeText(BRAND.name+' '+BRAND.sub,W/2,170);g.fillText(BRAND.name+' '+BRAND.sub,W/2,170);
+  g.strokeText(BRAND.name+' '+BRAND.sub,W/2,150);g.fillText(BRAND.name+' '+BRAND.sub,W/2,150);
+  g.font='bold 46px Arial,Helvetica,sans-serif';g.lineWidth=8;g.strokeText('CAMPEONATO HAWAIANO · '+I.name.toUpperCase(),W/2,225);g.fillText('CAMPEONATO HAWAIANO · '+I.name.toUpperCase(),W/2,225);
   g.font='bold 70px Arial,Helvetica,sans-serif';g.lineWidth=10;g.strokeText(TOURS[t].name,W/2,820);g.fillText(TOURS[t].name,W/2,820);
   g.fillStyle='#ffb300';g.font='bold 190px Arial,Helvetica,sans-serif';g.lineWidth=16;g.strokeText(rs+' ★',W/2,1030);g.fillText(rs+' ★',W/2,1030);
   g.fillStyle='#fff';g.font='bold 56px Arial,Helvetica,sans-serif';g.lineWidth=9;const tx=ts+' golpes · par '+tp+' ('+fmtD(ts-tp)+')';g.strokeText(tx,W/2,1120);g.fillText(tx,W/2,1120);
@@ -950,43 +1482,80 @@ function shareCard(t,rs,ts,tp){const c=makeShare(t,rs,ts,tp);c.toBlob(bl=>{const
   if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:BRAND.name+' '+BRAND.sub,text:msg}).catch(()=>{})}
   else{const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download='kauai-minigolf.png';document.body.appendChild(a);a.click();a.remove()}})}
 function showFinal(){
-  const t=(hIdx/TH)|0;let tp=0,ts=0,rs=0,n=0;scores.forEach((v,i)=>{tp+=HOLES[i].par;ts+=v;rs+=calcStars(v,HOLES[i].par);n++});const d=ts-tp,per=d/Math.max(n,1);
+  const t=tourOf[hIdx];let tp=0,ts=0,rs=0,n=0;scores.forEach((v,i)=>{tp+=HOLES[i].par;ts+=v;rs+=calcStars(v,HOLES[i].par);n++});const d=ts-tp,per=d/Math.max(n,1);
   const rank=per<=-.6?'Leyenda de Kauai':per<=-.2?'Campeón de la copa':per<=.4?'Gran jugador':per<=1?'Buen paseo por la isla':'Disfrutón del minigolf';
-  const now=totalStars(),news=[];TOURS.forEach((o,k)=>{if(k&&o.need>runStart&&o.need<=now)news.push('🏝️ ¡Torneo desbloqueado: '+o.name+'!')});BALLS.forEach((o,k)=>{if(k&&o.need>runStart&&o.need<=now)news.push('⚪ ¡Bola nueva: '+o.n+'!')});
+  const now=totalStars(),news=[];TOURS.forEach((o,k)=>{if(k&&o.need>runStart&&o.need<=now&&(!o.gate||o.gate()))news.push('🏝️ ¡Torneo desbloqueado: '+o.name+'!')});BALLS.forEach((o,k)=>{if(k&&o.need>runStart&&o.need<=now)news.push('⚪ ¡Bola nueva: '+o.n+'!')});
   const md=medalOf(t);
-  let h='<h2>'+rank+'</h2><div class="stars">'+rs+' ★</div><p>'+TOURS[t].name+' · '+ts+' golpes · par '+tp+' ('+fmtD(d)+')<br>Torneo: '+tourStars(t)+' / 27 ★ '+(md?'<span class="medal">'+md+'</span>':'')+'</p>';
+  let h='<h2>'+rank+'</h2><div class="stars">'+rs+' ★</div><p>'+TOURS[t].name+' · '+ts+' golpes · par '+tp+' ('+fmtD(d)+')<br>Torneo: '+tourStars(t)+' / '+tourMax(t)+' ★ '+(md?'<span class="medal">'+md+'</span>':'')+'</p>';
   news.forEach(x=>h+='<div class="news">'+x+'</div>');
   h+=holeRows();
   if(BRAND.lead.enabled&&!prog.lead)h+='<div class="leadbox"><div style="font-weight:700;margin-bottom:4px">'+BRAND.lead.text+'</div><input id="leadMail" type="email" placeholder="tu@email.com"><button class="btn" id="leadGo" style="padding:7px 12px">Enviar</button></div>';
-  const nxt=t<TOURS.length-1&&tourOpen(t+1);
+  const nt=nextTourOf(t),nxt=nt>=0;
   if(nxt)h+='<button class="btn big" id="bNT">Siguiente torneo ▶</button><br>';
   h+='<div class="pbtns"><button class="btn big'+(nxt?' c2':'')+'" id="bMap2">🗺️ Mapa</button><button class="btn big c2" id="bAgain">↺ Repetir</button><button class="btn big c2 sharebtn" id="bShare">📤 Compartir</button></div>';
   openPanel(h);state='final';S.hole(true);burst(cupPos.x,.5,cupPos.z,80,[0xff6b6b,0xffd34d,0x4cd8c0,0x6aa8ff,0xff9ae0],6,9,.12,1.6,14);
-  $('bAgain').onclick=()=>{S.ui();closePanel();startTour(t,0)};$('bMap2').onclick=()=>{S.ui();closePanel();toMap()};if($('bNT'))$('bNT').onclick=()=>{S.ui();closePanel();startTour(t+1,0)};
+  $('bAgain').onclick=()=>{S.ui();closePanel();startTour(t,0)};$('bMap2').onclick=()=>{S.ui();closePanel();toMap()};if($('bNT'))$('bNT').onclick=()=>{S.ui();closePanel();startTour(nt,0)};
   $('bShare').onclick=()=>{S.ui();shareCard(t,rs,ts,tp)};
   if($('leadGo'))$('leadGo').onclick=()=>{const em=$('leadMail').value.trim();if(!/^\S+@\S+\.\S+$/.test(em)){toast('Email no válido','',1200);return}try{fetch(BRAND.lead.endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,torneo:TOURS[t].name,estrellas:rs,origen:BRAND.name+'-minigolf'})})}catch(e){}prog.lead=1;saveProg();$('leadMail').parentNode.innerHTML='<b>¡Gracias! 🎉</b>'}
 }
-function startTour(t,j){initAudio();S.ui();closePanel();$('map').classList.remove('on');dailyMode=false;scores=[];runStart=totalStars();startHole(t*TH+j)}
+const nextTourOf=t=>{const L=ISLES[TOURS[t].isle].tours,k=L.indexOf(t);for(let q=k+1;q<L.length;q++)if(tourOpen(L[q]))return L[q];return -1};
+function startTour(t,j){initAudio();S.ui();closePanel();$('map').classList.remove('on');dailyMode=false;scores=[];runStart=totalStars();startHole(TOURS[t].h[j])}
 function startDaily(){initAudio();S.ui();closePanel();$('map').classList.remove('on');dailyMode=true;scores=[];runStart=totalStars();startHole(dailyHole())}
+const KAUAI_SVG="<path d=\"M93.0 27.9 L87.5 35.7 L87.5 41.8 L81.4 43.8 L74.5 49.5 L73.7 57.3 L75.1 64.5 L61.2 79.8 L58.9 92.8 L55.2 96.6 L54.0 104.3 L30.7 127.1 L30.7 180.5 L38.8 197.5 L46.8 205.0 L52.9 206.7 L58.9 216.8 L66.4 219.4 L82.9 218.6 L93.3 220.9 L99.0 224.9 L105.7 225.5 L114.6 233.0 L116.3 238.5 L121.8 242.2 L132.8 255.5 L148.1 266.2 L172.6 266.8 L181.8 271.1 L194.8 271.7 L197.4 274.5 L202.3 276.0 L207.2 275.4 L212.7 271.7 L217.6 271.7 L223.9 275.1 L232.3 276.0 L236.9 279.7 L247.0 280.6 L251.3 283.8 L258.0 285.2 L272.7 280.0 L278.2 274.8 L283.4 273.1 L296.3 261.3 L302.1 259.2 L309.0 247.4 L319.1 239.1 L326.1 237.0 L331.8 231.0 L334.7 224.1 L340.2 220.0 L343.7 212.5 L343.9 179.9 L340.2 174.2 L343.1 168.7 L343.1 161.2 L346.0 158.0 L348.0 149.6 L352.3 144.4 L352.9 134.1 L361.0 125.1 L362.1 117.6 L364.7 115.3 L364.7 65.1 L357.8 61.7 L355.8 49.0 L343.4 34.8 L324.3 20.1 L309.0 19.0 L306.2 15.8 L301.2 14.3 L207.8 14.3 L201.4 17.2 L194.8 14.3 L166.0 14.3 L161.1 15.8 L148.7 27.9 L136.0 24.2 L128.2 27.3 L121.0 23.6 L109.1 23.9Z\" fill=\"#fff\" fill-opacity=\".5\" stroke-linejoin=\"round\"/>\n    <path d=\"M97.9 35.1 L95.9 38.3 L97.0 47.5 L99.3 50.4 L103.4 50.4 L104.5 52.1 L104.2 53.9 L102.8 55.0 L97.0 54.2 L92.1 50.7 L86.9 50.7 L82.3 53.6 L83.5 62.2 L86.1 66.0 L85.8 67.4 L82.3 69.2 L81.4 72.0 L77.4 74.1 L75.4 77.2 L72.8 79.0 L71.9 81.8 L69.0 83.9 L67.6 89.1 L67.6 96.8 L65.9 99.2 L63.0 100.6 L62.4 109.2 L58.7 111.8 L56.6 115.3 L54.0 116.2 L52.6 119.1 L49.4 120.8 L47.4 124.2 L44.8 125.1 L43.1 128.9 L40.5 129.4 L39.6 131.8 L35.3 135.2 L35.0 172.7 L39.0 175.9 L41.3 182.5 L43.9 184.5 L46.0 192.6 L49.4 193.8 L51.7 197.8 L57.5 199.0 L61.8 203.6 L63.8 209.6 L70.8 211.1 L84.3 209.6 L89.5 212.2 L96.7 212.2 L101.3 216.6 L112.3 217.1 L113.8 221.7 L115.8 224.1 L122.7 227.2 L123.6 233.6 L127.0 234.7 L131.3 239.1 L133.4 244.0 L135.4 244.8 L137.7 248.3 L141.4 249.2 L143.5 253.2 L148.9 253.8 L151.2 258.1 L157.0 258.4 L160.8 256.9 L164.8 258.4 L176.3 258.1 L179.2 261.3 L184.1 262.7 L199.7 263.0 L201.2 264.2 L202.3 267.3 L204.6 267.0 L209.8 263.0 L220.5 263.0 L224.2 265.9 L228.3 267.3 L237.2 267.6 L240.1 271.7 L251.3 272.2 L253.9 275.4 L258.0 276.6 L260.6 275.7 L262.6 272.2 L269.5 271.9 L271.8 267.6 L278.5 265.9 L280.2 262.7 L283.4 261.8 L285.7 258.4 L288.6 257.2 L290.6 253.8 L297.2 252.0 L298.1 250.9 L298.1 245.7 L301.5 242.8 L303.0 239.9 L306.4 239.3 L307.3 236.7 L311.3 234.7 L313.4 231.6 L321.2 229.8 L325.8 224.6 L326.3 218.3 L332.7 215.4 L335.0 211.1 L335.3 181.4 L330.7 176.5 L330.7 172.1 L334.4 167.2 L333.3 164.3 L334.4 160.3 L331.8 156.8 L333.3 155.4 L335.9 155.4 L338.2 154.0 L339.9 144.7 L343.9 141.8 L344.5 129.4 L348.0 126.6 L350.3 122.2 L353.2 121.1 L353.8 112.1 L358.1 109.8 L358.1 86.8 L359.2 85.3 L361.2 85.0 L364.7 87.0 L364.7 73.8 L359.8 73.8 L357.2 70.6 L351.4 69.4 L349.1 68.0 L349.1 57.9 L348.0 53.0 L340.2 46.1 L338.5 42.0 L336.2 41.5 L331.0 36.8 L328.9 36.3 L321.2 28.2 L318.0 27.6 L313.4 28.8 L311.1 27.6 L304.4 27.3 L301.2 23.0 L270.7 23.0 L268.4 24.2 L264.9 23.0 L207.8 23.0 L205.2 27.0 L197.7 27.3 L194.8 23.0 L166.0 23.0 L163.1 27.0 L160.2 28.2 L158.2 32.2 L151.2 36.6 L142.9 36.8 L140.3 33.7 L135.1 32.8 L132.8 36.0 L127.0 37.1 L121.0 32.2 L119.2 32.5 L117.2 35.4 L114.9 35.1 L112.0 32.2 L110.3 32.5 L107.7 34.8Z\" fill=\"#ecd3a0\" stroke=\"#2b3a5c\" stroke-width=\"2.6\" stroke-linejoin=\"round\"/>\n    <path d=\"M103.1 41.2 L103.1 44.1 L107.1 45.2 L110.3 49.2 L110.0 56.8 L106.5 60.2 L102.8 61.4 L95.0 60.2 L88.9 57.0 L92.4 64.8 L91.5 70.3 L74.5 87.9 L73.9 98.0 L69.0 104.6 L68.2 112.1 L41.6 138.1 L41.3 169.5 L44.2 172.1 L46.8 178.8 L49.7 181.7 L51.2 187.4 L56.3 192.3 L61.2 193.8 L67.0 199.8 L68.8 204.4 L86.3 203.6 L91.0 205.9 L98.8 206.2 L104.2 210.5 L116.1 211.9 L118.7 214.8 L119.8 218.9 L127.9 223.5 L129.3 229.0 L136.5 235.3 L138.3 239.3 L148.1 247.4 L152.7 248.6 L155.6 252.0 L160.8 250.6 L166.0 252.0 L176.3 251.7 L185.0 256.4 L199.7 256.7 L204.6 258.7 L209.8 256.7 L222.5 256.9 L228.3 260.7 L239.2 261.6 L243.6 265.6 L253.4 266.2 L257.1 269.1 L258.8 267.0 L265.2 265.9 L268.1 262.4 L274.1 260.4 L286.8 248.6 L291.7 246.8 L292.3 242.8 L299.2 234.7 L309.6 226.4 L317.1 224.3 L319.4 222.3 L321.2 214.5 L328.7 209.3 L328.9 184.0 L324.3 177.6 L324.3 171.0 L327.2 166.1 L325.5 155.7 L329.5 150.2 L332.4 149.3 L334.1 141.8 L337.9 137.5 L338.8 126.6 L347.1 116.7 L348.0 109.2 L351.7 105.8 L351.7 85.6 L356.9 79.2 L353.8 76.4 L348.6 75.2 L343.9 71.8 L342.2 56.5 L333.3 46.9 L325.2 41.5 L318.3 34.2 L313.4 35.1 L302.4 33.4 L298.1 29.3 L272.1 29.3 L268.4 30.5 L263.8 29.3 L211.2 29.3 L207.2 33.1 L195.7 33.4 L191.3 29.3 L169.4 29.3 L161.9 37.4 L153.3 42.6 L140.9 42.9 L137.4 40.3 L127.9 43.5 L120.7 40.9Z\" fill=\"#62c26e\" stroke-linejoin=\"round\"/>\n    <path d=\"M323.5 91.1 L317.4 82.1 L314.5 69.2 L306.4 62.5 L288.0 57.6 L221.1 57.6 L213.0 60.8 L201.4 61.9 L191.3 61.4 L181.2 57.9 L169.7 66.0 L160.2 70.0 L134.5 70.9 L125.3 81.6 L113.8 87.6 L101.9 100.0 L99.9 109.5 L91.2 128.6 L69.9 150.8 L69.6 159.7 L74.8 169.0 L82.9 175.3 L105.7 178.8 L125.6 185.1 L132.8 189.2 L148.4 203.9 L154.1 212.8 L163.7 222.6 L182.7 224.1 L193.9 228.4 L226.8 229.0 L254.8 237.6 L269.2 226.7 L277.0 216.8 L295.8 201.8 L300.4 195.5 L296.1 179.3 L297.8 149.9 L301.2 140.4 L309.9 127.7 L312.8 115.3 L320.0 104.9Z\" fill=\"#3f9d5a\" stroke-linejoin=\"round\"/>\n    <path d=\"M288.3 94.2 L286.8 91.1 L281.3 89.3 L227.4 89.3 L211.2 93.1 L186.7 92.5 L169.7 100.3 L148.9 102.9 L131.3 115.6 L115.8 148.8 L136.0 155.1 L149.8 162.3 L172.6 183.4 L178.9 192.0 L201.7 196.9 L231.2 197.5 L248.2 202.1 L264.9 185.7 L264.3 167.8 L267.5 140.1Z\" fill=\"#2c7d4e\" stroke-linejoin=\"round\"/>\n    <g fill=\"none\" stroke=\"#6fd0f0\" stroke-width=\"2.2\" stroke-linecap=\"round\"><path d=\"M227.6 140.3 Q268.4 147.7 307.4 151.4\"/><path d=\"M205.3 158.9 Q186.7 203.4 179.3 236.9\"/><path d=\"M190.4 62.3 Q216.4 47.4 238.7 32.6\"/></g>\n    <g fill=\"#1d5a3a\" stroke=\"#143f2a\" stroke-width=\"1\" stroke-linejoin=\"round\"><path d=\"M212.6 143.0L223.8 120.6L235.0 143.0Z\"/><path d=\"M199.9 115.8L209.0 97.6L218.1 115.8Z\"/><path d=\"M236.6 155.8L244.3 140.4L252.0 155.8Z\"/><path d=\"M179.0 89.0L186.7 73.6L194.4 89.0Z\"/><path d=\"M135.8 136.5L142.1 123.9L148.4 136.5Z\"/></g><g fill=\"#fff\"><path d=\"M223.8 120.6L219.4 129.4L228.3 129.4Z\"/><path d=\"M209.0 97.6L205.3 104.7L212.6 104.7Z\"/><path d=\"M244.3 140.4L241.2 146.5L247.4 146.5Z\"/></g>";
+const smoothD=pts=>{const n=pts.length,m=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];let d='M'+m(pts[n-1],pts[0]).map(v=>v.toFixed(1)).join(' ');for(let i=0;i<n;i++){const p=pts[i],q=m(p,pts[(i+1)%n]);d+='Q'+p[0]+' '+p[1]+' '+q[0].toFixed(1)+' '+q[1].toFixed(1)}return d+'Z'};
+const bboxOf=d=>{const n=d.match(/-?\d+\.?\d*/g).map(Number);let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(let i=0;i+1<n.length;i+=2){x0=Math.min(x0,n[i]);x1=Math.max(x1,n[i]);y0=Math.min(y0,n[i+1]);y1=Math.max(y1,n[i+1])}return{x0,x1,y0,y1,cx:(x0+x1)/2,cy:(y0+y1)/2,w:x1-x0,h:y1-y0}};
+const triD=(x,y,k)=>'M'+(x-8*k)+' '+y+'L'+x+' '+(y-16*k)+'L'+(x+8*k)+' '+y+'Z';
+const ISLES=[
+ {name:'Kauai',sub:'La Isla Jardín',d:'M97.9 35.1 L95.9 38.3 L97.0 47.5 L99.3 50.4 L103.4 50.4 L104.5 52.1 L104.2 53.9 L102.8 55.0 L97.0 54.2 L92.1 50.7 L86.9 50.7 L82.3 53.6 L83.5 62.2 L86.1 66.0 L85.8 67.4 L82.3 69.2 L81.4 72.0 L77.4 74.1 L75.4 77.2 L72.8 79.0 L71.9 81.8 L69.0 83.9 L67.6 89.1 L67.6 96.8 L65.9 99.2 L63.0 100.6 L62.4 109.2 L58.7 111.8 L56.6 115.3 L54.0 116.2 L52.6 119.1 L49.4 120.8 L47.4 124.2 L44.8 125.1 L43.1 128.9 L40.5 129.4 L39.6 131.8 L35.3 135.2 L35.0 172.7 L39.0 175.9 L41.3 182.5 L43.9 184.5 L46.0 192.6 L49.4 193.8 L51.7 197.8 L57.5 199.0 L61.8 203.6 L63.8 209.6 L70.8 211.1 L84.3 209.6 L89.5 212.2 L96.7 212.2 L101.3 216.6 L112.3 217.1 L113.8 221.7 L115.8 224.1 L122.7 227.2 L123.6 233.6 L127.0 234.7 L131.3 239.1 L133.4 244.0 L135.4 244.8 L137.7 248.3 L141.4 249.2 L143.5 253.2 L148.9 253.8 L151.2 258.1 L157.0 258.4 L160.8 256.9 L164.8 258.4 L176.3 258.1 L179.2 261.3 L184.1 262.7 L199.7 263.0 L201.2 264.2 L202.3 267.3 L204.6 267.0 L209.8 263.0 L220.5 263.0 L224.2 265.9 L228.3 267.3 L237.2 267.6 L240.1 271.7 L251.3 272.2 L253.9 275.4 L258.0 276.6 L260.6 275.7 L262.6 272.2 L269.5 271.9 L271.8 267.6 L278.5 265.9 L280.2 262.7 L283.4 261.8 L285.7 258.4 L288.6 257.2 L290.6 253.8 L297.2 252.0 L298.1 250.9 L298.1 245.7 L301.5 242.8 L303.0 239.9 L306.4 239.3 L307.3 236.7 L311.3 234.7 L313.4 231.6 L321.2 229.8 L325.8 224.6 L326.3 218.3 L332.7 215.4 L335.0 211.1 L335.3 181.4 L330.7 176.5 L330.7 172.1 L334.4 167.2 L333.3 164.3 L334.4 160.3 L331.8 156.8 L333.3 155.4 L335.9 155.4 L338.2 154.0 L339.9 144.7 L343.9 141.8 L344.5 129.4 L348.0 126.6 L350.3 122.2 L353.2 121.1 L353.8 112.1 L358.1 109.8 L358.1 86.8 L359.2 85.3 L361.2 85.0 L364.7 87.0 L364.7 73.8 L359.8 73.8 L357.2 70.6 L351.4 69.4 L349.1 68.0 L349.1 57.9 L348.0 53.0 L340.2 46.1 L338.5 42.0 L336.2 41.5 L331.0 36.8 L328.9 36.3 L321.2 28.2 L318.0 27.6 L313.4 28.8 L311.1 27.6 L304.4 27.3 L301.2 23.0 L270.7 23.0 L268.4 24.2 L264.9 23.0 L207.8 23.0 L205.2 27.0 L197.7 27.3 L194.8 23.0 L166.0 23.0 L163.1 27.0 L160.2 28.2 L158.2 32.2 L151.2 36.6 L142.9 36.8 L140.3 33.7 L135.1 32.8 L132.8 36.0 L127.0 37.1 L121.0 32.2 L119.2 32.5 L117.2 35.4 L114.9 35.1 L112.0 32.2 L110.3 32.5 L107.7 34.8Z',tours:[0,1,2,3,4,13],arch:[48,46,56],pin:[13,25],emo:'🌴'},
+ {name:'Oahu',sub:'Surf y discoteca',pts:[[58,102],[92,86],[150,62],[200,52],[245,70],[290,104],[332,138],[352,172],[338,204],[300,214],[262,206],[238,222],[206,214],[168,196],[128,176],[88,150],[62,128]],tours:[5,6,14,15],arch:[132,80,70],pin:[34,31],emo:'🏄',
+  mts:[[112,118,1.4],[134,138,1.1],[250,98,1.3],[286,122,1.2]],deco:[['🏄',64,254,26],['🦈',330,250,24]]},
+ {name:'Maui',sub:'Ballenas y volcán dormido',pts:[[55,100],[78,62],[122,50],[152,72],[162,104],[190,124],[222,108],[268,98],[318,116],[350,158],[344,206],[304,238],[252,246],[216,226],[192,192],[160,170],[122,166],[84,150],[58,128]],tours:[7,8,16,17],arch:[276,150,76],pin:[67,50],emo:'🐋',
+  mts:[[104,108,1.5],[278,168,2.1,'#2c7d4e']],deco:[['🐋',330,66,28],['🐳',44,230,24]]},
+ {name:'Isla Grande',sub:'Lava y estrellas',pts:[[188,36],[228,40],[268,70],[312,100],[346,136],[344,178],[322,208],[292,236],[256,262],[214,270],[172,254],[136,226],[100,192],[84,152],[98,112],[138,78]],tours:[9,10,18,19,20],arch:[332,230,122],pin:[84,76],emo:'🌋',
+  mts:[[232,98,2.1,'#2c7d4e'],[200,160,2.4,'#2c7d4e']],lava:[[270,214,13]],deco:[['🌋',270,232,22]]},
+ {name:'Molokai',sub:'Acantilados salvajes',pts:[[46,150],[78,120],[130,108],[190,112],[250,104],[310,92],[350,104],[352,130],[318,156],[262,170],[200,176],[140,184],[88,186],[56,172]],tours:[11,21,22],arch:[214,104,56],pin:[53,29],emo:'🐴',mts:[[190,136,1.5]]},
+ {name:'Lanai',sub:'La isla de la piña',pts:[[120,70],[190,52],[262,78],[300,138],[292,206],[240,254],[168,262],[116,222],[98,150]],tours:[12,23,24],arch:[196,152,32],pin:[49,60],emo:'🍍',mts:[[200,150,1.2]]},
+];
+ISLES.forEach((I,k)=>{if(!I.d)I.d=smoothD(I.pts);I.bb=bboxOf(I.d);I.tours.forEach(t=>{TOURS[t].isle=k})});
+function isleBase(I,u,full){const b=I.bb,tr=(sc,f)=>'<path d="'+I.d+'" fill="'+f+'" transform="translate('+b.cx+' '+b.cy+') scale('+sc+') translate('+(-b.cx)+' '+(-b.cy)+')"/>';
+  let h='<path d="'+I.d+'" fill="#fff" fill-opacity=".5" stroke="#fff" stroke-opacity=".5" stroke-width="'+(16*u)+'" stroke-linejoin="round"/><path d="'+I.d+'" fill="#ecd3a0" stroke="#2b3a5c" stroke-width="'+(2.6*u)+'" stroke-linejoin="round"/>'+tr(.9,'#62c26e')+tr(.66,'#3f9d5a')+tr(.4,'#2c7d4e');
+  (I.mts||[]).forEach(m=>{h+='<path d="'+triD(m[0],m[1],m[2])+'" fill="'+(m[3]||'#1d5a3a')+'" stroke="#143f2a" stroke-width="'+u+'" stroke-linejoin="round"/>'});
+  (I.lava||[]).forEach(l=>{h+='<circle cx="'+l[0]+'" cy="'+l[1]+'" r="'+l[2]+'" fill="#ff6a2a" stroke="#7a1a08" stroke-width="'+(1.6*u)+'"/><circle cx="'+l[0]+'" cy="'+l[1]+'" r="'+(l[2]*.5)+'" fill="#ffd34d"/>'});
+  if(full)(I.deco||[]).forEach(e=>{h+='<text x="'+e[1]+'" y="'+e[2]+'" font-size="'+(e[3]||24)+'" text-anchor="middle">'+e[0]+'</text>'});
+  return h}
+function isleSVG(k){const I=ISLES[k];return k===0?KAUAI_SVG:isleBase(I,1,true)}
+function archSVG(){let h='';ISLES.forEach(I=>{const b=I.bb,s=I.arch[2]/b.w;h+='<g transform="translate('+I.arch[0]+' '+I.arch[1]+') scale('+s+') translate('+(-b.cx)+' '+(-b.cy)+')">'+isleBase(I,.75/s,false)+'</g>'});
+  h+='<ellipse cx="20" cy="74" rx="7" ry="4.5" fill="#ecd3a0" stroke="#2b3a5c" stroke-width="1.2"/><ellipse cx="262" cy="188" rx="6" ry="4" fill="#ecd3a0" stroke="#2b3a5c" stroke-width="1.2"/>';return h}
+const isleStars=k=>{let n=0;ISLES[k].tours.forEach(t=>n+=tourStars(t));return n};
+const isleOpen=k=>ISLES[k].tours.some(tourOpen);
+const champ=()=>TOURS.every((_,t)=>gold(t));
+let mapMode='arch',curIsle=0;
 function renderMap(){
-  $('mapStars').textContent='⭐ '+totalStars()+' / '+MAXSTARS;
+  const arch=mapMode==='arch';$('mapTitle').textContent=arch?(champ()?'🏆 Campeón Hawaiano':'Campeonato Hawaiano'):ISLES[curIsle].name;
+  $('mapStars').textContent=arch?'⭐ '+totalStars()+' / '+MAXSTARS:'⭐ '+isleStars(curIsle)+' / '+ISLES[curIsle].tours.reduce((a,t)=>a+tourMax(t),0);
+  $('gLand').innerHTML=arch?archSVG():isleSVG(curIsle);$('mapBoat').setAttribute('transform',arch?'translate(34 272)':'translate(40 40)');
   const mb=$('mapbox');mb.querySelectorAll('.pin').forEach(e=>e.remove());
-  TOURS.forEach((o,t)=>{const op=tourOpen(t),b=document.createElement('button');b.className='pin'+(op?'':' lock');b.style.left=PINS[t][0]+'%';b.style.top=PINS[t][1]+'%';
-    b.innerHTML='<i style="background:'+o.col+'">'+(op?(t+1):'🔒')+'</i><span>'+o.name+'<small>'+(op?'★ '+tourStars(t)+' / 27 '+medalOf(t):'Necesitas '+o.need+' ⭐')+'</small></span>';b.onclick=()=>{S.ui();openTour(t)};mb.appendChild(b)});
+  if(arch){ISLES.forEach((I,k)=>{const op=isleOpen(k),b=document.createElement('button');b.className='pin'+(op?'':' lock');b.style.left=I.pin[0]+'%';b.style.top=I.pin[1]+'%';
+      const mx=I.tours.reduce((a,t)=>a+tourMax(t),0),cnt={};I.tours.forEach(t=>{const m=medalOf(t);if(m)cnt[m]=(cnt[m]||0)+1});const med=Object.keys(cnt).map(m=>m+(cnt[m]>1?'×'+cnt[m]:'')).join(' ');
+      b.innerHTML='<i style="background:'+TOURS[I.tours[0]].col+'">'+(op?I.emo:'🔒')+'</i><span>'+I.name+'<small>'+(op?'★ '+isleStars(k)+' / '+mx+' '+med:(TOURS[I.tours[0]].lockMsg?'🥇 en cada isla':'Necesitas '+Math.min(...I.tours.map(t=>TOURS[t].need))+' ⭐'))+'</small></span>';b.onclick=()=>{S.ui();openIsle(k)};mb.appendChild(b)})}
+  else{ISLES[curIsle].tours.forEach((t,j)=>{const o=TOURS[t],op=tourOpen(t),b=document.createElement('button');b.className='pin'+(op?'':' lock');b.style.left=o.pin[0]+'%';b.style.top=o.pin[1]+'%';
+      b.innerHTML='<i style="background:'+o.col+'">'+(op?(t===13?'🏆':j+1):'🔒')+'</i><span>'+o.name+'<small>'+(op?'★ '+tourStars(t)+' / '+tourMax(t)+' '+medalOf(t):(o.gate&&!o.gate()?'🥇 en otro torneo':'Necesitas '+o.need+' ⭐'))+'</small></span>';b.onclick=()=>{S.ui();openTour(t)};mb.appendChild(b)})}
   const dh=dailyHole(),td=todayStr(),dn=prog.d.bd===td;
   $('mapRow').innerHTML='<button class="btn big" id="bCont">▶ Continuar<small>'+HOLES[nextHole()].name+'</small></button><button class="btn big c2" id="bDaily">🎯 Reto del día<small>'+HOLES[dh].name+(dn?' · ✓ '+prog.d.bs:'')+(prog.d.streak?' · 🔥'+prog.d.streak:'')+'</small></button>';
-  $('bCont').onclick=()=>{const i=nextHole();startTour((i/TH)|0,i%TH)};$('bDaily').onclick=startDaily;
-  $('mapStats').textContent='⛳ '+prog.st.holes+' hoyos · 🏌️ '+prog.st.strokes+' golpes · 🏆 '+prog.st.aces+' hoyos en uno';
+  $('bCont').onclick=()=>{const i=nextHole();startTour(tourOf[i],posOf[i])};$('bDaily').onclick=startDaily;
+  let g=0,sv=0,br=0;TOURS.forEach((_,t)=>{const m=medalOf(t);if(m==='🥇')g++;else if(m==='🥈')sv++;else if(m==='🥉')br++});
+  $('mapStats').textContent='⛳ '+prog.st.holes+' hoyos · 🏌️ '+prog.st.strokes+' golpes · 🏆 '+prog.st.aces+' hoyos en uno · 🥇'+g+' 🥈'+sv+' 🥉'+br;
   const bl=$('balls');bl.innerHTML='<div class="lbl">Tu bola · se desbloquean con estrellas</div>';
   BALLS.forEach((o,i)=>{const op=ballOpen(i),c=document.createElement('button');c.className='chip'+(op?'':' lock')+(prog.ball===i?' sel':'');c.title=o.n+(op?'':' · '+o.need+' ⭐');
     c.style.backgroundImage='url('+ballTexFor(i).image.toDataURL()+')';c.innerHTML=op?'':'<b>🔒<br>'+o.need+'</b>';
     c.onclick=()=>{S.ui();if(!op){toast(o.n,'Consigue '+o.need+' ⭐ para desbloquearla',1600);return}prog.ball=i;saveProg();applyBall(i);renderMap()};bl.appendChild(c)})
 }
+function openIsle(k){const I=ISLES[k];if(I.tours.length===1){openTour(I.tours[0]);return}curIsle=k;mapMode='isle';renderMap()}
 function openTour(t){
-  const o=TOURS[t];
-  if(!tourOpen(t)){openPanel('<h2>🔒 '+o.name+'</h2><p>'+o.sub+'<br>Te faltan <b>'+(o.need-totalStars())+' ⭐</b> para abrirlo ('+o.need+' en total). ¡Repite hoyos para conseguir más estrellas!</p><button class="btn big" id="bClose">Vale</button>');$('bClose').onclick=()=>{S.ui();closePanel()};return}
-  const md=medalOf(t);let h='<h2>'+o.name+'</h2><p>'+o.sub+' · ★ '+tourStars(t)+' / 27 '+(md?'<span class="medal">'+md+'</span>':'')+'<br><small>🥉 14 ★ · 🥈 20 ★ · 🥇 25 ★</small></p><div class="tiles">';
-  for(let j=0;j<TH;j++){const i=t*TH+j,st=starsOf(i),bs=prog.b[i];h+='<button class="tile" data-j="'+j+'"><b>'+(j+1)+'</b><em>'+HOLES[i].name+'</em><span class="st'+(st?'':' z')+'">'+starStr(st)+'</span><em style="min-height:0">Par '+HOLES[i].par+(bs?' · mejor '+bs:'')+'</em></button>'}
+  const o=TOURS[t],I=ISLES[o.isle];
+  if(!tourOpen(t)){openPanel('<h2>🔒 '+o.name+'</h2><p>'+o.sub+'<br>'+(totalStars()<o.need?'Te faltan <b>'+(o.need-totalStars())+' ⭐</b> para abrirlo ('+o.need+' en total). ¡Repite hoyos para conseguir más estrellas!':'')+(o.lockMsg&&o.gate&&!o.gate()?(totalStars()<o.need?'<br>Además: ':'')+'<b>'+o.lockMsg+'</b>':'')+'</p><button class="btn big" id="bClose">Vale</button>');$('bClose').onclick=()=>{S.ui();closePanel()};return}
+  const md=medalOf(t);let h='<h2>'+o.name+'</h2><p>'+I.emo+' '+I.name+' · '+o.sub+'<br>★ '+tourStars(t)+' / '+tourMax(t)+' '+(md?'<span class="medal">'+md+'</span>':'')+' <small>🥉 '+medTh(t)[0]+' ★ · 🥈 '+medTh(t)[1]+' ★ · 🥇 '+medTh(t)[2]+' ★</small></p><div class="tiles'+(TOURS[t].h.length>9?' t18':'')+'">';
+  for(let j=0;j<TOURS[t].h.length;j++){const i=TOURS[t].h[j],st=starsOf(i),bs=prog.b[i];h+='<button class="tile" data-j="'+j+'"><b>'+(j+1)+'</b><em>'+HOLES[i].name+'</em><span class="st'+(st?'':' z')+'">'+starStr(st)+'</span><em style="min-height:0">Par '+HOLES[i].par+(bs?' · mejor '+bs:'')+'</em></button>'}
   h+='</div><button class="btn big" id="bGo">Jugar desde el hoyo 1</button><button class="btn big c2" id="bClose" style="font-size:17px;padding:9px 20px">Cerrar</button>';
   openPanel(h);$('bGo').onclick=()=>startTour(t,0);$('bClose').onclick=()=>{S.ui();closePanel()};$('pnl').querySelectorAll('.tile').forEach(e=>e.onclick=()=>startTour(t,+e.dataset.j))
 }
@@ -995,9 +1564,9 @@ function openPanel(h){$('pnl').innerHTML=h;$('dim').classList.add('on')}
 function closePanel(){$('dim').classList.remove('on')}
 function togglePause(){if(state==='title'||state==='final'||$('dim').classList.contains('on')&&!paused)return;paused=!paused;
   if(paused){aim=null;openPanel('<h2>Pausa</h2><p>Hoyo '+(hIdx+1)+' · '+HD.name+'</p><button class="btn big" id="bRes">Continuar</button><br><button class="btn big c2" id="bRst" style="font-size:17px;padding:9px 20px">Reiniciar hoyo</button><button class="btn big c2" id="bMenu" style="font-size:17px;padding:9px 20px">🗺️ Mapa</button>');
-    $('bRes').onclick=togglePause;if(MP.on&&$('bRst'))$('bRst').remove();$('bRst').onclick=()=>{paused=false;closePanel();startHole(hIdx)};$('bMenu').onclick=()=>{paused=false;closePanel();toMap()}}else closePanel()}
+    $('bRes').onclick=togglePause;if(MP.on&&$('bRst'))$('bRst').remove();else $('bRst').onclick=()=>{paused=false;closePanel();startHole(hIdx)};$('bMenu').onclick=()=>{paused=false;closePanel();toMap()}}else closePanel()}
 function toTitle(){state='title';showUI(false);$('banner').classList.remove('on');$('power').style.opacity=0;scores=[];buildHole(0);setPal(0);$('title').classList.add('on');$('best').textContent='⭐ '+totalStars()+' / '+MAXSTARS}
-$('bPlay').onclick=()=>{initAudio();S.ui();$('title').classList.remove('on');toggleFsOnce();toMap()};$('mapBack').onclick=()=>{S.ui();$('map').classList.remove('on');toTitle()};
+$('bPlay').onclick=()=>{initAudio();S.ui();$('title').classList.remove('on');toggleFsOnce();mapMode='arch';toMap()};$('mapBack').onclick=()=>{S.ui();if(mapMode==='isle'){mapMode='arch';renderMap()}else{$('map').classList.remove('on');toTitle()}};
 function toggleFsOnce(){try{const el=document.documentElement;if(!document.fullscreenElement&&!document.webkitFullscreenElement){(el.requestFullscreen||el.webkitRequestFullscreen||function(){}).call(el)}}catch(e){}}
 $('bFs').onclick=toggleFs;$('bPause').onclick=togglePause;$('bSnd').onclick=()=>{initAudio();setMuted(!muted)};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&!paused&&state!=='title'&&state!=='final'&&!$('dim').classList.contains('on'))togglePause()});
@@ -1040,9 +1609,13 @@ function ballTexFor(i){if(ballTexCache[i])return ballTexCache[i];if(i===0)return
   else if(i===6){const gr=g.createLinearGradient(0,0,256,128);gr.addColorStop(0,'#1a1040');gr.addColorStop(.5,'#5a2a8a');gr.addColorStop(1,'#14143a');g.fillStyle=gr;g.fillRect(0,0,256,128);for(let k=0;k<70;k++){g.fillStyle='rgba(255,255,255,'+(.4+Math.random()*.6)+')';const r=Math.random()*1.8+.6;g.beginPath();g.arc(Math.random()*256,Math.random()*128,r,0,7);g.fill()}g.fillStyle='rgba(255,120,220,.35)';g.beginPath();g.ellipse(120,64,70,18,.3,0,7);g.fill()}
   else if(i===7){const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#eaffff');gr.addColorStop(1,'#8fd8f5');g.fillStyle=gr;g.fillRect(0,0,256,128);g.strokeStyle='rgba(255,255,255,.95)';g.lineWidth=2.5;for(let k=0;k<14;k++){g.beginPath();g.moveTo(k*20,0);g.lineTo(k*20+30,128);g.stroke()}for(let k=0;k<5;k++){g.beginPath();g.moveTo(0,k*28);g.lineTo(256,k*28+16);g.stroke()}}
   else if(i===8){g.fillStyle='#0b0b16';g.fillRect(0,0,256,128);g.lineWidth=5;g.lineCap='round';[['#ff2ea6',20],['#18f0ff',64],['#ff2ea6',108]].forEach(([cl,y])=>{g.strokeStyle=cl;g.shadowColor=cl;g.shadowBlur=10;g.beginPath();for(let x=0;x<=256;x+=8)g.lineTo(x,y+Math.sin(x/16)*8);g.stroke()});g.shadowBlur=0}
+  else if(i===10){const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#2a6fd6');gr.addColorStop(.55,'#1b3f8f');gr.addColorStop(.56,'#e9f4ff');gr.addColorStop(1,'#bcd8f5');g.fillStyle=gr;g.fillRect(0,0,256,128);g.strokeStyle='rgba(255,255,255,.7)';g.lineWidth=3;for(let k=0;k<9;k++){g.beginPath();g.moveTo(k*30,71);g.lineTo(k*30+10,128);g.stroke()}g.fillStyle='#fff';[[40,30],[150,20],[220,40]].forEach(p=>{g.beginPath();g.arc(p[0],p[1],5,0,7);g.fill()})}
+  else if(i===11){const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#2a0a08');gr.addColorStop(1,'#5a1408');g.fillStyle=gr;g.fillRect(0,0,256,128);g.lineCap='round';for(let k=0;k<12;k++){let x=Math.random()*256,y=Math.random()*128;g.beginPath();g.moveTo(x,y);for(let j=0;j<4;j++){x+=Math.random()*36-18;y+=Math.random()*30-15;g.lineTo(x,y)}g.strokeStyle='#ff5a14';g.lineWidth=5;g.stroke();g.strokeStyle='#ffd34d';g.lineWidth=1.8;g.stroke()}}
+  else if(i===12){g.fillStyle='#b9c4d6';g.fillRect(0,0,256,128);for(let a=0;a<16;a++)for(let b=0;b<8;b++){const v=170+((a*7+b*13)%5)*18;g.fillStyle='rgb('+v+','+(v+8)+','+(v+16)+')';g.fillRect(a*16+1,b*16+1,14,14)}g.fillStyle='rgba(255,255,255,.95)';[[30,20],[110,70],[200,40],[70,100],[170,110]].forEach(p=>{g.beginPath();g.arc(p[0],p[1],3,0,7);g.fill()})}
+  else if(i===13){const gr=g.createLinearGradient(0,0,256,128);gr.addColorStop(0,'#fff0a0');gr.addColorStop(.5,'#f0b830');gr.addColorStop(1,'#a86a10');g.fillStyle=gr;g.fillRect(0,0,256,128);g.fillStyle='#14143a';g.fillRect(0,44,256,40);g.fillStyle='#ffd34d';g.font='bold 40px Arial';g.textAlign='center';g.fillText('★ ★ ★',128,76)}
   else{const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#fff0a0');gr.addColorStop(.5,'#f0b830');gr.addColorStop(1,'#a86a10');g.fillStyle=gr;g.fillRect(0,0,256,128);g.fillStyle=BRAND.color;g.fillRect(0,56,256,16);g.fillStyle='#fff';g.font='bold 22px Arial';g.textAlign='center';g.fillText(BRAND.name.toLowerCase(),128,70)}
   const t=new THREE.CanvasTexture(c);t.anisotropy=4;return ballTexCache[i]=t}
-const BALLS=[{n:'Clásica',need:0,tr:[1,.88,.6,0]},{n:'Hibisco',need:6,tr:[1,.45,.62,0]},{n:'Volcán',need:15,tr:[1,.5,.15,0]},{n:'Océano',need:27,tr:[.3,.9,1,0]},{n:'Arcoíris',need:40,tr:[1,1,1,1]},{n:'Piña',need:55,tr:[1,.9,.3,0]},{n:'Galaxia',need:72,tr:[.75,.45,1,0]},{n:'Cristal',need:90,tr:[.7,.95,1,0],mt:.25,ro:.1},{n:'Neón',need:110,tr:[1,.2,.7,0]},{n:'Oro',need:130,tr:[1,.85,.3,0],mt:.55,ro:.2}];
+const BALLS=[{n:'Clásica',need:0,tr:[1,.88,.6,0]},{n:'Hibisco',need:6,tr:[1,.45,.62,0]},{n:'Volcán',need:15,tr:[1,.5,.15,0]},{n:'Océano',need:27,tr:[.3,.9,1,0]},{n:'Arcoíris',need:40,tr:[1,1,1,1]},{n:'Piña',need:55,tr:[1,.9,.3,0]},{n:'Galaxia',need:72,tr:[.75,.45,1,0]},{n:'Cristal',need:90,tr:[.7,.95,1,0],mt:.25,ro:.1},{n:'Neón',need:110,tr:[1,.2,.7,0]},{n:'Oro',need:130,tr:[1,.85,.3,0],mt:.55,ro:.2},{n:'Ballena',need:150,tr:[.4,.7,1,0]},{n:'Lava Loca',need:185,tr:[1,.35,.1,0]},{n:'Disco',need:220,tr:[1,.6,1,0],mt:.7,ro:.15},{n:'Campeón',need:260,tr:[1,.9,.4,0],mt:.6,ro:.18}];
 function applyBall(i){const m=ballMesh.material;m.map=ballTexFor(i);const bd=BALLS[i];m.metalness=bd.mt||0;m.roughness=bd.ro||.26;m.needsUpdate=true;trailRGB=BALLS[i].tr}
 let prCur=PRMAX,fpsT=0,fpsN=0;function setPR(p){prCur=p;renderer.setPixelRatio(p);resize()}
 const NR=360,rainGeo=new THREE.BufferGeometry(),rainP=new Float32Array(NR*6),rX=new Float32Array(NR),rY=new Float32Array(NR),rZ=new Float32Array(NR);
@@ -1061,7 +1634,7 @@ function frame(now){
   // física
   if(state==='rolling'){const cd0=Math.hypot(HD.cup[0]-B.x,HD.cup[1]-B.z),bs0=Math.hypot(B.vx,B.vz);tsc+=(((cd0<1.3&&bs0<10)?.42:1)-tsc)*Math.min(1,dt*10);acc+=dt*tsc;let g=0;while(acc>=STEP&&g++<20){step(STEP);acc-=STEP;if(state!=='rolling')break}}else{simT+=dt;acc=0;tsc+=(1-tsc)*Math.min(1,dt*10)}
   if(state==='sink'){sinkT+=dt*.6;const k=Math.min(sinkT/.35,1);B.x=lerp(sinkFrom.x,HD.cup[0],sstep(Math.min(sinkT/.18,1)));B.z=lerp(sinkFrom.z,HD.cup[1],sstep(Math.min(sinkT/.18,1)));if(sinkT>.35){state='sunk';holeDone(false)}}
-  if(state==='water'){waterT+=dt;if(waterT>.9){B.x=lastPos.x;B.z=lastPos.z;B.vx=B.vz=0;strokes++;hud();state='aim';toast('¡AL AGUA!','+1 golpe de penalización',1300);if(strokes>=HD.par+4)holeDone(true)}}
+  if(state==='water'){waterT+=dt;if(waterT>.9){B.x=lastPos.x;B.z=lastPos.z;B.vx=B.vz=0;strokes++;hud();state='aim';toast(lavaHit?'¡LAVA!':'¡AL AGUA!','+1 golpe de penalización',1300);if(strokes>=HD.par+4)holeDone(true)}}
   // dinámicos
   for(const d of dyn){
     switch(d.t){
@@ -1126,8 +1699,9 @@ function frame(now){
 /* Sala de espera: cada jugador elige nombre y bola y pulsa «¡Listo!»; el anfitrión elige la copa y los hoyos y empieza.
    En la partida todos juegan el MISMO hoyo a la vez en su móvil y ven las bolas de los demás (sin chocar).
    Cuando todos han terminado el hoyo, sale el marcador y se pasa al siguiente. Gana quien menos golpes sume. */
-const MAXP=4,MPLEN=[3,6,9];
-const MP={on:false,host:false,me:0,peer:null,conn:null,code:'',phase:'off',players:[],ready:false,tour:0,n:9,first:0,res:{},sendT:0,last:'',ghosts:{},adv:null,shown:-1};
+const MAXP=4,MPLEN=[3,6,9,18];
+const mpLens=t=>{const L=(TOURS[t]||TOURS[0]).h.length;return MPLEN.filter(n=>n<=L)};
+const MP={seq:[],on:false,host:false,me:0,peer:null,conn:null,code:'',phase:'off',players:[],ready:false,tour:0,n:9,first:0,res:{},sendT:0,last:'',ghosts:{},adv:null,shown:-1};
 const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let mpName='';try{mpName=(localStorage.getItem('kauaigolf_name')||'').slice(0,12)}catch(e){}
 function mpSend(o){o.from=MP.me;
@@ -1194,7 +1768,7 @@ function mpRender(){
   const cp=$('mpCopa'),ln=$('mpLen');
   if(MP.host){
     cp.innerHTML=TOURS.map((o,t)=>tourOpen(t)?'<button class="btn mpopt'+(MP.tour===t?' sel':'')+'" data-t="'+t+'"><i style="background:'+o.col+'"></i>'+o.name+'</button>':'').join('');
-    ln.innerHTML=MPLEN.map(n=>'<button class="btn mpopt'+(MP.n===n?' sel':'')+'" data-n="'+n+'">'+n+' hoyos</button>').join('');
+    if(!mpLens(MP.tour).includes(MP.n))MP.n=Math.min(9,(TOURS[MP.tour]||TOURS[0]).h.length);ln.innerHTML=mpLens(MP.tour).map(n=>'<button class="btn mpopt'+(MP.n===n?' sel':'')+'" data-n="'+n+'">'+n+' hoyos</button>').join('');
     cp.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.ui();MP.tour=+b.dataset.t;mpLobbyBroadcast()});
     ln.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{S.ui();MP.n=+b.dataset.n;mpLobbyBroadcast()});
   }else{
@@ -1217,14 +1791,14 @@ function mpGo(){
 }
 /* ---------- partida ---------- */
 function mpBegin(tour,n,pl){
-  MP.tour=tour;MP.n=n;MP.first=tour*TH;MP.res={};MP.shown=-1;
+  MP.tour=tour;MP.n=n;MP.seq=TOURS[tour].h.slice(0,n);MP.first=MP.seq[0];MP.res={};MP.shown=-1;
   pl.forEach((q,i)=>{const p=MP.players[i]||(MP.players[i]={});p.name=q.name;p.b=q.b|0;p.left=false;p.h=-1;p.s='';p.x=p.z=0});
   MP.players.length=pl.length;MP.phase='game';
   closePanel();$('map').classList.remove('on');$('title').classList.remove('on');
   dailyMode=false;scores=[];runStart=totalStars();mpClearGhosts();mpBoard(true);startHole(MP.first);
 }
 function mpActive(){return MP.players.map((p,i)=>i).filter(i=>!MP.players[i].left)}
-function mpTotal(i){let t=0,d=0;for(let h=MP.first;h<MP.first+MP.n;h++){const r=MP.res[h];if(r&&r[i]!=null){t+=r[i];d+=r[i]-HOLES[h].par}}return{t,d}}
+function mpTotal(i){let t=0,d=0;for(const h of MP.seq){const r=MP.res[h];if(r&&r[i]!=null){t+=r[i];d+=r[i]-HOLES[h].par}}return{t,d}}
 function mpSendHole(s,pk){(MP.res[hIdx]=MP.res[hIdx]||{})[MP.me]=s;mpSend({t:'hole',h:hIdx,s,pk:pk?1:0});mpBoardRender();}
 function mpAfterHole(){if(!MP.on||MP.phase!=='game'){showHoleCard();return}mpBoardRender();mpCheck()}
 function mpCheck(){
@@ -1233,13 +1807,13 @@ function mpCheck(){
   const wait=mpActive().filter(i=>r[i]==null);
   if(wait.length){$('mpWait').textContent='⏳ Esperando a '+wait.map(i=>MP.players[i].name).join(', ')+'…';$('mpWait').classList.add('on');return}
   $('mpWait').classList.remove('on');MP.shown=hIdx;
-  const last=hIdx>=MP.first+MP.n-1;
+  const last=MP.seq.indexOf(hIdx)>=MP.seq.length-1;
   const rows=MP.players.map((p,i)=>({i,p,s:r[i],tot:mpTotal(i)})).filter(o=>o.s!=null||!o.p.left).sort((a,b)=>a.tot.t-b.tot.t||(a.s||99)-(b.s||99));
   if(last){mpFinal();return}
-  let h='<div class="mp"><h2>Hoyo '+((hIdx%TH)+1)+' · '+HD.name+'</h2><p>Par '+HD.par+'</p><table><tr><th></th><th>Jugador</th><th>Hoyo</th><th>Total</th></tr>';
+  let h='<div class="mp"><h2>Hoyo '+(MP.seq.indexOf(hIdx)+1)+' · '+HD.name+'</h2><p>Par '+HD.par+'</p><table><tr><th></th><th>Jugador</th><th>Hoyo</th><th>Total</th></tr>';
   rows.forEach((o,k)=>{const d=o.s!=null?o.s-HD.par:0;h+='<tr><td>'+(k+1)+'º</td><td style="text-align:left"><i class="chip mini" style="background-image:'+ballImg(o.p.b)+'"></i> '+esc(o.i===MP.me?'Tú':o.p.name)+'</td><td class="'+(d<0?'sc-good':d>0?'sc-bad':'')+'"><b>'+(o.s!=null?o.s:'—')+'</b></td><td><b>'+o.tot.t+'</b> <small>('+fmtD(o.tot.d)+')</small></td></tr>'});
   h+='</table><button class="btn big" id="mpNext">Siguiente hoyo ▶ <small id="mpCnt">5</small></button></div>';
-  openPanel(h);let c=5;const go=()=>{clearInterval(MP.adv);if(MP.phase!=='game')return;closePanel();startHole(hIdx+1)};
+  openPanel(h);let c=5;const go=()=>{clearInterval(MP.adv);if(MP.phase!=='game')return;closePanel();startHole(MP.seq[MP.seq.indexOf(hIdx)+1])};
   $('mpNext').onclick=()=>{S.ui();go()};
   clearInterval(MP.adv);MP.adv=setInterval(()=>{c--;const e=$('mpCnt');if(e)e.textContent=c;if(c<=0)go()},1000);
 }

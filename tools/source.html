@@ -223,6 +223,7 @@ body.hasglow .glow{opacity:1}
 .slide::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(7,6,15,.92) 0%,rgba(7,6,15,.65) 34%,rgba(7,6,15,0) 62%),linear-gradient(0deg,rgba(7,6,15,.6),transparent 40%)}
 .slide-c{position:absolute;z-index:2;left:clamp(20px,4vw,56px);bottom:clamp(22px,4vw,52px);max-width:min(520px,80%)}
 .slide-c .chip{position:static;display:inline-block;margin-bottom:14px}
+.slide-c .chip.nv{background:#fff;color:#0b0820;margin-right:6px;box-shadow:0 0 0 2px var(--sun)}
 .slide-c h3{font-size:clamp(1.7rem,4.4vw,3.4rem);line-height:1;letter-spacing:-.02em;margin:0 0 12px}
 .slide-c p{margin:0 0 20px;color:#e5e1f7;font-size:clamp(.95rem,1.4vw,1.08rem);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .slide-c .acts{display:flex;flex-wrap:wrap;gap:10px}
@@ -720,9 +721,9 @@ const GAMES=[
   {id:'mnac',kw:"juego del MNAC",cat:'marca',name:'MNAC Rush',
    blurb:"Juego de gestión ambientado en el Museu Nacional d'Art de Catalunya: atiende a los visitantes y amplía el museo, con obras y salas reales de la colección del MNAC.",
    tags:["Museo", "Arte", "Gestión"],play:'juegos/mnac/index.html'},
-  {id:'minigolf',kw:"juego de minigolf",cat:'marca',name:'Kauai Minigolf',note:'Torneos por la isla de Kauai',
-   blurb:"Juego de minigolf en 3D por la isla de Kauai: arrastra desde la bola hacia atrás, suelta y busca el hoyo en uno entre palmeras, cascadas, puentes y portales. 45 hoyos en cinco torneos, reto del día, bolas que se desbloquean y multijugador de 2 a 4 móviles jugando el mismo hoyo a la vez.",
-   tags:["Minigolf", "5 torneos", "2-4 móviles"],play:'juegos/minigolf/index.html'},
+  {id:'minigolf',kw:"juego de minigolf",cat:'marca',name:'Kauai Minigolf',note:'Campeonato Hawaiano en 6 islas',
+   blurb:"Campeonato Hawaiano de minigolf en 3D: arrastra desde la bola hacia atrás, suelta y busca el hoyo en uno. Empieza en Kauai y salta a Oahu, Maui, Isla Grande, Molokai y Lanai con torneos locos (discoteca volcánica, ríos de lava, gravedad cero, barcos piratas), Grandes Copas de 18 hoyos y la Gran Final de vuelta en Kauai. Reto del día, bolas que se desbloquean y multijugador de 2 a 4 móviles jugando el mismo hoyo a la vez.",
+   tags:["Minigolf", "6 islas", "2-4 móviles"],play:'juegos/minigolf/index.html'},
   {id:'olimpiadas',kw:"juegos de olimpiadas para niños",cat:'deporte',name:'Olimpiadas de la Granja',
    blurb:"Juegos de olimpiadas para niños pequeños: diez pruebas de verano e invierno con cuatro campeones de granja. Solo hay que tocar la pantalla, ideal a partir de 3 años.",
    tags:["Para peques", "Olimpiadas", "Un toque"],play:'juegos/olimpiadas/index.html'},
@@ -1504,7 +1505,7 @@ function track(cv,scene,t0,lite){
   items.push(it);byCanvas.set(cv,it);return it;
 }
 const slugify=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const slugOf=g=>(g.cat==='relax'?'relax-':g.cat==='catquiz'?'catquiz-':'')+slugify(g.name);
+const slugOf=g=>(g.cat==='relax'?'relax-':g.cat==='catquiz'&&!/^catquiz/i.test(g.name)?'catquiz-':'')+slugify(g.name);
 GAMES.forEach(g=>{g.slug=slugOf(g);});
 /* Idioma: los textos de la interfaz y, en catalán, las fichas traducidas (window.__CA lo inyecta la versión /ca/) */
 const LANG=/^ca/.test(document.documentElement.lang||'')?'ca':'es';
@@ -1621,12 +1622,14 @@ if(!reduce&&'IntersectionObserver' in window){
     chip:LANG==='ca'?'Web exclusiva · catquiz.cat':'Web exclusiva · catquiz.cat',
     blurb:LANG==='ca'?'catquiz.cat és la nostra web exclusiva de minijocs en català: Motle, Penjat, Anagrama, Sopa de lletres, Barbarismes i un quiz de futbol, per jugar i aprendre.':'catquiz.cat es nuestra web exclusiva de minijuegos en catalán: Motle (el Wordle en catalán), Penjat, Anagrama, Sopa de lletres, Barbarismes y un quiz de fútbol, para jugar y aprender.',
     go:LANG==='ca'?'Ves a catquiz.cat':'Ir a catquiz.cat',more:LANG==='ca'?'Juga-hi aquí':'Jugar aquí'}};
-  const FEAT=['rutacosmica','motofury','catquiz','paradon','aura','aventura','porrazo','towerstack','rx_linternas'];
+  /* Destacados = lo último: juegos nuevos o actualizados, el más reciente primero. Para destacar uno, ponerlo delante con su etiqueta. */
+  const NEWS={minigolf:'upd',cq_party:'new',strike:'new',loopingloco:'upd',monster:'upd',motofury:'upd',aventura:'upd'};
+  const FEAT=['minigolf','strike','cq_party','loopingloco','motofury','monster','aventura','rutacosmica','catquiz','paradon','aura','porrazo'];
   const list=FEAT.map(id=>EXT[id]||GAMES.find(g=>g.id===id)).filter(g=>g&&(g.ext||g.play)&&MEDIA.has(g.slug));
   const track=$('#fTrack'),dots=$('#fDots');if(!track||!list.length){const f=$('#destacados');if(f)f.hidden=true;return;}
   track.innerHTML=list.map((g,i)=>{const sl=g.slug,cat=CATS[g.cat];return '<article class="slide" style="--c:'+cat.c+'" aria-roledescription="diapositiva" aria-label="'+(i+1)+T.of+list.length+'">'+
     '<img src="media/'+sl+'.jpg" alt="" '+(i?'loading="lazy" ':'')+'decoding="async"><video muted loop playsinline disablepictureinpicture disableremoteplayback preload="none" poster="media/'+sl+'.jpg" data-src="media/'+sl+'"></video>'+
-    '<div class="slide-c"><span class="chip">'+esc(g.chip||cat.n)+'</span><h3>'+esc(g.name)+'</h3><p>'+esc(g.blurb)+'</p><div class="acts">'+
+    '<div class="slide-c">'+(NEWS[g.id]?'<span class="chip nv">'+(NEWS[g.id]==='new'?(LANG==='ca'?'✨ Nou':'✨ Nuevo'):(LANG==='ca'?'🔄 Actualitzat':'🔄 Actualizado'))+'</span> ':'')+'<span class="chip">'+esc(g.chip||cat.n)+'</span><h3>'+esc(g.name)+'</h3><p>'+esc(g.blurb)+'</p><div class="acts">'+
     (g.ext?'<a class="play" href="'+g.ext+'" target="_blank" rel="noopener" data-ext>'+esc(g.go)+' <span aria-hidden="true">↗</span></a><a class="more" href="#sec-catquiz">'+esc(g.more)+'</a>'
     :'<button class="play" type="button" data-play="'+esc(g.play)+'" data-title="'+esc(g.name)+'">'+T.now+' <span aria-hidden="true">▶</span></button>'+
     (window.claude?'':'<a class="more" href="'+LP(g)+'">'+T.sheet+'</a>'))+'</div></div></article>';}).join('');
