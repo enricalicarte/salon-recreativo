@@ -233,7 +233,7 @@ h2{font-size:clamp(36px,9vw,60px);text-shadow:0 4px 0 var(--cherry)}
 'use strict';
 const V3=THREE.Vector3;
 const $=id=>document.getElementById(id);
-const rnd=Math.random;
+let _rs=0;const rnd=()=>{if(_rs){_rs=_rs+0x6D2B79F5|0;let t=Math.imul(_rs^_rs>>>15,1|_rs);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}return Math.random();}; // con semilla en multijugador: misma vía y obstáculos para todos
 const R=(a,b)=>a+(b-a)*rnd();
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const smooth=t=>t*t*(3-2*t);
@@ -460,13 +460,14 @@ function addObs(el,s,lane,type){
 }
 
 function genStart(){
+  _rs=window.__porcSeed?(window.__porcSeed|0):0;
   T.c.set(0,3,0);T.h=0;T.th=0;T.ph=0;T.cumH=0;T.off.set(0,0,0);T.safe=0;T.lastRow=0;T.lastPower=0;T.prev='';T.finish=false;T.towerDone=false;
   T.loopSide=1;const built=[];for(const op of LV.ride.layout)built.push(runOp(op));
   const fin=built[built.length-1];LV.len=fin.s1-14;LV.invTotal=built.filter(e=>e.inv).length;
   finalize();planSpeeds();
   T.lastRow=0;for(const el of built){if(el.rows)placeRows(el);else if(el.show||el.type==='lift'||el.type==='launch')T.lastRow=Math.max(T.lastRow,el.s1+6);}
   T.finish=true;obs.push({s:LEVEL_END(),lane:0,type:'finish',len:1,hitDone:true});obs.sort((a,b)=>a.s-b.s);
-  T.prev='straight';
+  T.prev='straight';_rs=0;
 }
 function genNext(){
   const y=T.c.y,prev=T.prev;let type;
@@ -1300,7 +1301,7 @@ function startGame(ri,L){
 }
 function endGame(){
   G.state='end';G.demo=true;hud.hidden=true;show('count',false);G.countT=0;show('end',true);$('hint').hidden=true;$('endEyebrow').textContent=LV.title+' · se acabaron las vidas';
-  const dist=Math.max(0,G.s-G.startS);const total=Math.round(G.score+G.coins*10);const best=+store('ll2_best')||0;const rec=total>best;
+  const dist=Math.max(0,G.s-G.startS);const total=Math.round(G.score+G.coins*10);if(window.__porcMP)__porcMP.fin({t:total,c:0});const best=+store('ll2_best')||0;const rec=total>best;
   if(rec){store('ll2_best',total);store('ll2_dist',Math.round(dist));}
   $('results').innerHTML=`<div><span>Puntos</span><b>${fmt(total)}</b></div><div><span>Distancia</span><b>${fmt(dist)} m</b></div><div><span>Monedas</span><b>${fmt(G.coins)}</b></div>`+
     `<div><span>Saltos</span><b>${G.stats.jumps}</b></div><div><span>Por los pelos</span><b>${G.stats.near}</b></div>`;
@@ -1311,7 +1312,7 @@ function endGame(){
 function levelClear(){
   G.state='clear';G.demo=true;show('count',false);G.countT=0;$('hint').hidden=true;pop('¡Meta!',LV.ride.name+' · Nivel '+LV.L,false,1.4);fireworks();buzz([40,30,40,30,80]);
   let race=0;if(LV.ride.rival){race=G.s>=G.rs?1000:0;setTimeout(()=>pop(race?'¡Ganas la carrera!':'El rival gana por poco',race?'+1.000':'',!race,1.6),700);}
-  const bonusLives=G.lives*500,coinPts=G.coins*10;const total=Math.round(G.score+coinPts+bonusLives+race);
+  const bonusLives=G.lives*500,coinPts=G.coins*10;const total=Math.round(G.score+coinPts+bonusLives+race);if(window.__porcMP)__porcMP.fin({t:total,c:1});
   setCleared(LV.ri,LV.L);setStars(LV.ri,LV.L,clamp(G.lives,1,3));const best=+store('ll2_best')||0;if(total>best)store('ll2_best',total);
   Snd.cheer();Snd.power();setTimeout(()=>Snd.oink(0.9),300);setTimeout(()=>Snd.oink(1.3),520);confetti(new V3().setFromMatrixPosition(train[0].matrix).add(new V3(0,3,0)),120);
   $('clearTitle').textContent='¡Nivel '+LV.L+' superado! '+'★'.repeat(clamp(G.lives,1,3))+'☆'.repeat(3-clamp(G.lives,1,3));$('clearEyebrow').textContent=LV.ride.name+' · '+LV.ride.zone;
@@ -1608,9 +1609,11 @@ function frame(now){
   if(G.hintT>0){G.hintT-=dt;if(G.hintT<=0)$('hint').hidden=true;}
   renderer.render(scene,camera);
 }
+window.__porc={get G(){return G;},get LV(){return LV;},get obs(){return obs;},RIDES,startGame,toMenu};
 $('loading').remove();
 toMenu();placeTrain(0);updateCamera(0,true);
 requestAnimationFrame(frame);
 })();
 </script>
+<script src="../_porcmp/porc-mp.js"></script>
 </body></html>
