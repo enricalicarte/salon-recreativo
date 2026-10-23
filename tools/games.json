@@ -256,11 +256,11 @@
    "cat": "motor",
    "name": "Looping Loco",
    "note": "Motos, loopings y saltos de locura",
-   "blurb": "Juego de motos con loopings en 3D: corre a toda velocidad, gira por los loopings, salta rampas y esquiva las barreras con turbo, escudos y combos. Nueve circuitos, de Parque Neón a Galaxia Loca, y cinco vehículos para desbloquear, de la Moto Rayo al Cohete Fénix.",
+   "blurb": "Juego de motos con loopings en 3D: corre a toda velocidad, gira por los loopings, salta rampas y esquiva las barreras con turbo, escudos y combos. Nueve circuitos, de Parque Neón a Galaxia Loca, y cinco vehículos para desbloquear, de la Moto Rayo al Cohete Fénix. Y carrera con amigos de 2 a 4 móviles: el mismo nivel, salida a la vez y los rivales como fantasmas en la pista.",
    "tags": [
     "Motos",
     "Loopings",
-    "9 circuitos"
+    "Carrera 2-4"
    ],
    "play": "juegos/looping-loco/index.html"
   },
@@ -300,11 +300,11 @@
    "kw": "juego de monster truck",
    "cat": "motor",
    "name": "Monster Smash",
-   "blurb": "Juego de monster truck de scroll lateral: saltos, subidas imposibles y loopings en circuitos que van del espacio al fondo del mar. Corre contra el reloj y gana estrellas en cada pista.",
+   "blurb": "Juego de monster truck de scroll lateral: saltos, subidas imposibles y loopings en circuitos que van del espacio al fondo del mar. Corre contra el reloj y gana estrellas en cada pista, o reta a tus amigos en una carrera de 2 a 4 móviles con sus camiones como fantasmas a tu lado.",
    "tags": [
     "Monster truck",
     "Saltos",
-    "Contrarreloj"
+    "Carrera 2-4"
    ],
    "play": "juegos/monster/index.html"
   },
@@ -473,11 +473,11 @@
    "kw": "juego de motos",
    "cat": "motor",
    "name": "Moto Fury",
-   "blurb": "Juego de motos de trial y motocross: acelera, salta rampas, encadena loopings y haz trucos en el aire como el Superman o el Sin manos. Aterriza recto para ganar puntos y bate tu récord en cada circuito.",
+   "blurb": "Juego de motos de trial y motocross: acelera, salta rampas, encadena loopings y haz trucos en el aire como el Superman o el Sin manos. Aterriza recto para ganar puntos y bate tu récord en cada circuito, o corre contra tus amigos de 2 a 4 móviles en la misma pista.",
    "tags": [
     "Motos",
     "Trucos",
-    "Loopings"
+    "Carrera 2-4"
    ],
    "play": "juegos/moto-fury/index.html"
   },

@@ -1794,6 +1794,7 @@ function toMenu(){
   loadLevel(selLevel);
 }
 function showOver(){
+  if(window.__motorMP&&__motorMP.activo()) __motorMP.fuera({d:stats.maxX,k:crashes});
   const sc=scoreNow(), rec=!CIR.len&&sc>best;
   if(rec){ best=sc; try{localStorage.setItem(bestKey(LVL.id),String(best));}catch(e){} refreshCards(); }
   $('score').textContent=sc;
@@ -1811,7 +1812,7 @@ function winRun(){
   state='won'; winT=0;
   const t=raceT, s=t<=parT(CIR,3)?3:t<=parT(CIR,2)?2:1, o=pg(LVL.id,selCir);
   winData={t,s,rec:!o.t||t<o.t,prev:o.t,best:Math.min(o.t||1e9,t)};
-  saveProg(LVL.id,selCir,t,s); refreshCards();
+  saveProg(LVL.id,selCir,t,s); refreshCards(); if(window.__motorMP) __motorMP.fin({t,k:crashes});
   pop('¡META!','big2'); sfxRing(); sfxFlip(); vib([40,30,80]); flash('#ffffff',0.4); hitstop=0.1;
   confetti(T.x,T.y+3,60); setTimeout(()=>confetti(T.x+10,T.y+4,40),300);
 }
@@ -2053,6 +2054,10 @@ setInterval(()=>{ if(!CIR.len) $('best').textContent=Math.max(best,scoreNow()); 
 let _l0=0; try{ _l0=+localStorage.getItem('motoFuryLevel')||0; }catch(e){}
 loadLevel(_l0>=0&&_l0<LEVELS.length?_l0:0);
 requestAnimationFrame(frame);
+window.__motor={kind:'moto',nombre:'Moto Fury',get T(){return T;},get state(){return state;},get raceT(){return raceT;},get FIN(){return FIN;},get selLevel(){return selLevel;},LEVELS,CIRCUITS,scene,truck,
+  run(i,c){ initAudio(); loadLevel(i,c); state='play'; musicOn=true; paused=false; stp=0; nextT=0; ['menu','win','over','pausev'].forEach(id=>$(id).classList.add('hide')); $('hud').classList.remove('hide'); document.body.classList.remove('inmenu'); if(AC&&AC.state==='suspended') AC.resume(); },
+  toMenu(){ toMenu(); }};
 </script>
+<script src="../_motormp/motor-mp.js"></script>
 </body>
 </html>

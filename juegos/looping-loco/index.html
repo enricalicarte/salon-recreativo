@@ -801,6 +801,7 @@ function screenMenu(){
   p.appendChild(btn('JUGAR',()=>{fsEnter();screenLevels()}));
   p.appendChild(btn('GARAJE',()=>screenGarage(),'alt'));
   p.appendChild(btn('AJUSTES',()=>screenSettings(),'alt'));
+  if(window.__loopMP)__loopMP.boton(p);
 }
 function screenLevels(){
   setMode('menu');
@@ -874,6 +875,7 @@ function pauseGame(){
   if(st.mode!=='run'&&st.mode!=='count')return;
   B.prev=st.mode;setMode('pause');
   const p=scr();
+  if(window.__loopMP&&__loopMP.activo()){p.appendChild(el('h1',null,'PAUSA'));p.appendChild(el('p',null,'La carrera sigue para los demás'));p.appendChild(btn('CONTINUAR',()=>{hideScr();setMode(B.prev)}));p.appendChild(btn('SALIR DE LA CARRERA',()=>{engOff();__loopMP.sal();screenMenu()},'alt'));return;}
   p.appendChild(el('h1',null,'PAUSA'));
   p.appendChild(btn('CONTINUAR',()=>{hideScr();setMode(B.prev)}));
   p.appendChild(btn('REINICIAR NIVEL',()=>{st.attempt=1;startAttempt()},'alt'));
@@ -959,6 +961,10 @@ function startCrash(msg){
 function endCrash(){
   const pct=Math.min(99,Math.floor(B.s/LV.endS*100));
   const p=scr();
+  if(window.__loopMP&&__loopMP.activo()){p.appendChild(el('h1',null,'¡CATAPLUM!'));p.appendChild(el('p',null,st.msg));p.appendChild(el('p',null,'Has llegado al <span class="big">'+pct+'%</span>'));
+    if(st.attempt<3)p.appendChild(btn('INTENTO '+(st.attempt+1)+'/3',()=>{st.attempt++;startAttempt()}));
+    else{__loopMP.fuera();p.appendChild(el('p',null,'Te has quedado sin intentos.<br>Esperando a los demás…'));}
+    return;}
   p.appendChild(el('h1',null,'¡CATAPLUM!'));
   p.appendChild(el('p',null,st.msg));
   p.appendChild(el('p',null,'Has llegado al <span class="big">'+pct+'%</span>'));
@@ -989,6 +995,7 @@ function showResult(){
   const unlocked=VEH.filter(v=>v.need>before&&v.need<=after);
   saveSV();
   const p=scr();
+  if(window.__loopMP&&__loopMP.activo()){__loopMP.fin({sc:score,st:got,tot:total,at:st.attempt});p.appendChild(el('h1',null,'¡META!'));p.appendChild(el('p',null,'Estrellas '+got+'/'+total+' · intento '+st.attempt+'/3<br><span class="big">'+score+'</span> puntos'));p.appendChild(el('p',null,'Esperando a los demás…'));return;}
   p.appendChild(el('h1',null,'¡NIVEL SUPERADO!'));
   const sh=el('div',null,stars3(0));p.appendChild(sh);
   [0,1,2].forEach(i=>{if(i<n)setTimeout(()=>{sh.innerHTML=stars3(i+1);beep(660+i*220,.25,'triangle',.14);vib(25)},500+i*550)});
@@ -1249,9 +1256,14 @@ function loop(now){
   renderer.render(scene,camera);
 }
 buildLevel(1);
+window.__loop={get st(){return st},get B(){return B},get LV(){return LV},get SV(){return SV},VEH,BUILD,LNAME,MAXL,scene,camera,frame,totalStars,initAudio,
+  pct:s=>LV?Math.min(100,Math.floor(s/LV.endS*100)):0,
+  run(n,veh){try{initAudio()}catch(e){}if(veh&&VEH.some(v=>v.id===veh)){SV.veh=veh;saveSV()}st.level=n;st.attempt=1;hideScr();startAttempt()},
+  toMenu(){engOff();screenMenu()}};
 screenMenu();
 requestAnimationFrame(loop);
 })();
 </script>
+<script src="../_loopmp/loop-mp.js"></script>
 </body>
 </html>
