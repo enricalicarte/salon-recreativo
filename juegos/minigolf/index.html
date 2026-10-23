@@ -135,6 +135,24 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 #mpBoard .chip.mini{width:18px;height:18px}
 #mpWait{display:none;left:50%;transform:translateX(-50%);bottom:calc(60px + env(safe-area-inset-bottom));padding:7px 16px;font-weight:700;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
 #mpWait.on{display:block}
+
+/* paneles: siempre caben en pantalla (se desplazan si hace falta) y más compactos en móvil */
+#dim{padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))}
+.panel{max-height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+.panel .mp{max-height:none;overflow:visible;margin:0;padding:0}
+@media (max-width:520px),(max-height:700px){
+ .panel{padding:14px 14px 12px;border-radius:16px}
+ .panel h2{font-size:24px!important;line-height:1.05}
+ .panel p{margin:3px 0 8px;font-size:14px}
+ .stars{font-size:28px;margin:0 0 4px}
+ .news{font-size:13px;padding:3px 8px;margin:4px 0;border-width:2px}
+ table{font-size:13px;margin:4px 0 8px}
+ td,th{padding:2px 4px}
+ .panel .btn.big{font-size:17px;padding:9px 18px;margin:4px}
+ .panel .btn.big.c2,.sharebtn{font-size:15px!important;padding:7px 14px!important}
+}
+@media (max-height:480px){.panel{padding:10px 14px}.panel h2{font-size:20px!important}.stars{font-size:22px}table{font-size:12px;margin:2px 0 6px}td,th{padding:0 4px}.panel p{margin:2px 0 4px;font-size:13px}.panel .btn.big{font-size:15px;padding:6px 14px}}
+.pbtns{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}.pbtns .btn{flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -940,7 +958,7 @@ function showFinal(){
   if(BRAND.lead.enabled&&!prog.lead)h+='<div class="leadbox"><div style="font-weight:700;margin-bottom:4px">'+BRAND.lead.text+'</div><input id="leadMail" type="email" placeholder="tu@email.com"><button class="btn" id="leadGo" style="padding:7px 12px">Enviar</button></div>';
   const nxt=t<TOURS.length-1&&tourOpen(t+1);
   if(nxt)h+='<button class="btn big" id="bNT">Siguiente torneo ▶</button><br>';
-  h+='<button class="btn big'+(nxt?' c2':'')+'" id="bMap2" style="font-size:18px">🗺️ Mapa</button><button class="btn big c2" id="bAgain" style="font-size:18px">↺ Repetir</button><br><button class="btn big c2 sharebtn" id="bShare">📤 Compartir</button>';
+  h+='<div class="pbtns"><button class="btn big'+(nxt?' c2':'')+'" id="bMap2">🗺️ Mapa</button><button class="btn big c2" id="bAgain">↺ Repetir</button><button class="btn big c2 sharebtn" id="bShare">📤 Compartir</button></div>';
   openPanel(h);state='final';S.hole(true);burst(cupPos.x,.5,cupPos.z,80,[0xff6b6b,0xffd34d,0x4cd8c0,0x6aa8ff,0xff9ae0],6,9,.12,1.6,14);
   $('bAgain').onclick=()=>{S.ui();closePanel();startTour(t,0)};$('bMap2').onclick=()=>{S.ui();closePanel();toMap()};if($('bNT'))$('bNT').onclick=()=>{S.ui();closePanel();startTour(t+1,0)};
   $('bShare').onclick=()=>{S.ui();shareCard(t,rs,ts,tp)};
