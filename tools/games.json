@@ -226,11 +226,11 @@
    "kw": "juego tipo Guitar Hero",
    "cat": "ritmo",
    "name": "Martín, leyenda del rock",
-   "blurb": "Juego tipo Guitar Hero para el navegador: Martín, un abuelo guitarrista, toca un álbum de 10 canciones de rock ordenadas de fácil a difícil. Pulsa las notas a tiempo y llena el estadio.",
+   "blurb": "Juego tipo Guitar Hero para el navegador: Martín, un abuelo guitarrista, toca un álbum de 10 canciones de rock ordenadas de fácil a difícil. Pulsa las notas a tiempo y llena el estadio. Y en modo duelo, de 2 a 4 amigos tocan la misma canción a la vez, cada uno en su móvil.",
    "tags": [
     "Guitarra",
     "Rock",
-    "10 canciones"
+    "Duelo 2-4"
    ],
    "play": "juegos/martin/index.html"
   },
@@ -357,11 +357,11 @@
    "cat": "ritmo",
    "name": "Supernova Guitar",
    "note": "Antes: Leyenda del rock",
-   "blurb": "Juego de guitarra online ambientado en el año 3000: los clásicos del siglo XX suenan a sintetizador, nu-disco, house y vocoder. Toca las notas a tiempo y sube de nivel.",
+   "blurb": "Juego de guitarra online ambientado en el año 3000: los clásicos del siglo XX suenan a sintetizador, nu-disco, house y vocoder. Toca las notas a tiempo y sube de nivel. Y en modo duelo, de 2 a 4 amigos tocan la misma canción a la vez, cada uno en su móvil.",
    "tags": [
     "Guitarra",
     "Electrónica",
-    "Año 3000"
+    "Duelo 2-4"
    ],
    "play": "juegos/supernova/index.html"
   },
@@ -373,11 +373,11 @@
    "cat": "cosmico",
    "name": "Cosmic Guitar",
    "note": "Extra de la saga",
-   "blurb": "El concierto final de la saga cósmica: un juego de ritmo musical en el que tocas las canciones de los trece planetas de la Ruta del Ritmo, nota a nota, como en Guitar Hero.",
+   "blurb": "El concierto final de la saga cósmica: un juego de ritmo musical en el que tocas las canciones de los trece planetas de la Ruta del Ritmo, nota a nota, como en Guitar Hero. Y en modo duelo, de 2 a 4 amigos tocan la misma canción a la vez, cada uno en su móvil.",
    "tags": [
     "Ritmo",
     "Guitarra",
-    "13 canciones"
+    "Duelo 2-4"
    ],
    "play": "juegos/cosmic-guitar/index.html"
   },
