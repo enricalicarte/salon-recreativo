@@ -1243,39 +1243,105 @@ function buildPlayerTruck(colorIdx) {
 }
 /* ---- interior de la cabina (solo se ve en la cámara «Cabina») ---- */
 function buildCabinInterior() {
-  /* En la vista «Cabina» se oculta la carrocería del tractor y se dibuja esta cabina propia: morro con la pintura del camión,
-     marco del parabrisas, retrovisores, salpicadero y volante. Así no hay paneles que tapen la vista desde dentro. */
+  /* Cabina completa para la vista «Cabina»: se oculta la carrocería del tractor y se dibuja el interior por dentro
+     (suelo, techo, puertas con ventanilla, pared del dormitorio, asientos, salpicadero envolvente, consola, palanca y volante)
+     más lo que se ve por fuera: morro, retrovisores exteriores. El conductor va a la izquierda (x positiva). */
   const g = new THREE.Group(); g.visible = false;
-  const M = (c, r, e, met) => { const m = new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.85 : r, metalness: met || 0.05, envMapIntensity: met ? 1 : 0.15 }); if (e) m.emissive = new THREE.Color(e); return m; };
-  const frame = new THREE.MeshBasicMaterial({ color: 0x16181c }), dash = new THREE.MeshBasicMaterial({ color: 0x1b1e23 }), trim = M(0xc9ced6, 0.35, 0x1a1c20, 0.6), wood = M(0x7a5536, 0.6, 0x1c120a);
+  const M = (c, r, met) => { const m = new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.9 : r, metalness: met || 0, envMapIntensity: met ? 1.2 : 0.4 }); m.emissive = new THREE.Color(c).multiplyScalar(0.35); return m; };
+  const mDash = M(0x2c2f35), mDashTop = M(0x202227, 1), mPanel = M(0x8a7a62), mPanelDk = M(0x5c5040), mHead = M(0xb8b0a2, 1), mFloor = M(0x26282c, 1),
+        mSeat = M(0x5b3a26, 0.75), mSeatDk = M(0x3e271a, 0.8), mWood = M(0x6e4a2e, 0.55), mBlack = M(0x111214, 0.8), mTrim = M(0xc9ced6, 0.3, 0.8),
+        mCurt = M(0x34404f, 1), mRubber = M(0x18191b, 1);
   const paint = new THREE.MeshPhysicalMaterial({ color: truck.mats.paint.color.clone(), metalness: 0.4, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.2 });
   const accent = new THREE.MeshStandardMaterial({ color: truck.mats.accent.color.clone(), roughness: 0.4, metalness: 0.3 });
-  const chrome = new THREE.MeshStandardMaterial({ color: 0xe6e8ec, metalness: 1, roughness: 0.15, envMapIntensity: 1.6 });
+  const glow = c => new THREE.MeshBasicMaterial({ color: c });
   const add = (geo, m, x, y, z, rx, ry, rz) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.rotation.set(rx || 0, ry || 0, rz || 0); g.add(o); return o; };
   const box = (w, h, d, m, x, y, z, rx, ry, rz) => add(new THREE.BoxGeometry(w, h, d), m, x, y, z, rx, ry, rz);
-  // morro largo (como el del camión) con su franja y la mascota cromada
+  const cyl = (rt, rb, h, m, x, y, z, rx, ry, rz, seg) => add(new THREE.CylinderGeometry(rt, rb, h, seg || 16), m, x, y, z, rx, ry, rz);
+
+  /* ---- por fuera: morro y retrovisores ---- */
   add(roundedBox(1.72, 0.95, 2.15, 0.3), paint, 0, 1.88, 5.65);
   box(0.34, 0.02, 2.0, accent, 0, 2.37, 5.65);
-  for (const sx of [-1, 1]) box(0.08, 0.06, 1.7, chrome, sx * 0.82, 2.3, 5.6);
-  // parte baja de la cabina por delante del parabrisas (el "cuello" entre cabina y morro)
-  box(2.45, 0.3, 0.3, M(0x15171b, 1, 0x050607), 0, 2.2, 4.55);
-  // marco del parabrisas: travesaño de arriba, montantes y parasol
-  box(2.5, 0.16, 0.22, frame, 0, 3.6, 4.62);
-  box(2.4, 0.06, 0.55, paint, 0, 3.72, 4.85);
-  for (const sx of [-1, 1]) box(0.07, 1.15, 0.08, frame, sx * 1.16, 3.05, 4.66, -0.28);
-  // retrovisores
-  for (const sx of [-1, 1]) { box(0.5, 0.035, 0.04, chrome, sx * 1.42, 3.1, 4.6); box(0.11, 0.56, 0.24, frame, sx * 1.72, 2.85, 4.55);
-    box(0.02, 0.48, 0.19, M(0x9fb8d0, 0.1, 0x223040, 0.8), sx * 1.66, 2.85, 4.55); }
-  // salpicadero: queda abajo, se ve un poco como en un camión real
-  box(2.3, 0.5, 0.5, dash, 0, 2.5, 4.5);
-  box(2.32, 0.04, 0.56, new THREE.MeshBasicMaterial({ color: 0x17191d }), 0, 2.77, 4.48, -0.1);
-  for (const vx of [-0.9, -0.1, 0.95]) for (let k = 0; k < 4; k++) box(0.34, 0.012, 0.025, new THREE.MeshBasicMaterial({ color: 0x0a0b0d }), vx, 2.795, 4.62 - k * 0.05, -0.1);
-  box(0.62, 0.02, 0.3, wood, -0.45, 2.79, 4.36, -0.1);
-  // volante grande de camión
-  const wheel = new THREE.Group(); wheel.position.set(0.55, 2.86, 4.18); wheel.rotation.x = -1.15; g.add(wheel);
-  wheel.add(new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.034, 10, 40), frame));
-  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.06, 18), trim); hub.rotation.x = Math.PI / 2; wheel.add(hub);
-  for (const a of [Math.PI / 2, Math.PI * 7 / 6, -Math.PI / 6]) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.035, 0.025), trim); sp.rotation.z = a; sp.position.set(Math.cos(a) * 0.14, Math.sin(a) * 0.14, 0); wheel.add(sp); }
+  for (const sx of [-1, 1]) box(0.08, 0.06, 1.7, mTrim, sx * 0.82, 2.3, 5.6);
+  for (const sx of [-1, 1]) {
+    box(0.55, 0.04, 0.04, mTrim, sx * 1.47, 3.2, 4.45); box(0.04, 0.7, 0.04, mTrim, sx * 1.72, 2.9, 4.45);
+    box(0.12, 0.62, 0.26, mBlack, sx * 1.76, 2.9, 4.5); box(0.02, 0.54, 0.21, M(0x9fb8d0, 0.08, 0.9), sx * 1.69, 2.9, 4.5);
+  }
+
+  /* ---- caja de la cabina por dentro ---- */
+  const X = 1.2, ZB = 2.95, ZF = 4.72, YF = 1.75, YR = 3.82;
+  box(2 * X, 0.06, ZF - ZB, mFloor, 0, YF, (ZB + ZF) / 2);                                  // suelo
+  box(2 * X, 0.06, ZF - ZB + 0.1, mHead, 0, YR, (ZB + ZF) / 2);                              // techo tapizado
+  for (let k = 0; k < 4; k++) box(2 * X - 0.1, 0.02, 0.03, M(0x9c9588, 1), 0, YR - 0.035, ZB + 0.3 + k * 0.42);
+  // pared del fondo con la cortina del dormitorio
+  box(2 * X, YR - YF, 0.06, mPanel, 0, (YR + YF) / 2, ZB);
+  box(1.7, 1.25, 0.03, mCurt, 0, 3.08, ZB + 0.05);
+  for (let k = -8; k <= 8; k++) box(0.03, 1.25, 0.035, M(0x2a3441, 1), k * 0.1, 3.08, ZB + 0.06);
+  box(1.8, 0.05, 0.06, mTrim, 0, 3.72, ZB + 0.06);
+  // puertas: panel bajo, reposabrazos, tirador, marco de la ventanilla y montante B
+  for (const sx of [-1, 1]) {
+    const x = sx * X;
+    box(0.06, 1.0, ZF - ZB, mPanel, x, 2.25, (ZB + ZF) / 2);
+    box(0.05, 0.3, ZF - ZB - 0.2, mPanelDk, x - sx * 0.02, 2.0, (ZB + ZF) / 2);
+    box(0.12, 0.07, 0.6, mPanelDk, x - sx * 0.07, 2.62, 3.55);
+    box(0.04, 0.03, 0.16, mTrim, x - sx * 0.05, 2.85, 4.05);
+    box(0.08, 0.06, ZF - ZB, mRubber, x, 2.77, (ZB + ZF) / 2);                                 // borde de la ventanilla
+    box(0.08, 0.1, ZF - ZB, mPanel, x, 3.62, (ZB + ZF) / 2);                                   // marco superior
+    box(0.08, YR - 2.75, 0.14, mPanel, x, (YR + 2.75) / 2, ZB + 0.12);                         // montante B
+    box(0.07, 1.0, 0.09, mBlack, sx * 1.15, 3.17, 4.66, -0.26);                               // montante A
+  }
+  // parabrisas partido: travesaño de arriba, divisor central y parasoles
+  box(2 * X, 0.2, 0.18, mPanel, 0, 3.7, 4.62);
+  box(0.05, 0.9, 0.05, mBlack, 0, 3.18, 4.7, -0.26);
+  for (const sx of [-1, 1]) box(0.95, 0.03, 0.4, M(0xa69f92, 1), sx * 0.55, 3.66, 4.4, -0.25);
+  box(0.4, 0.12, 0.2, mBlack, -0.25, 3.7, 4.2); add(new THREE.PlaneGeometry(0.16, 0.04), glow(0xff7a2a), -0.25, 3.7, 4.098, 0, Math.PI, 0); // emisora CB
+
+  /* ---- salpicadero envolvente ---- */
+  box(2 * X, 0.48, 0.42, mDash, 0, 2.48, 4.52);
+  box(2 * X, 0.05, 0.5, mDashTop, 0, 2.74, 4.5, -0.12);
+  box(1.05, 0.03, 0.18, mWood, -0.62, 2.62, 4.3);                                            // moldura de madera (lado del copiloto)
+  box(0.62, 0.32, 0.06, mDash, -0.62, 2.42, 4.3);                                            // guantera
+  box(0.08, 0.02, 0.04, mTrim, -0.62, 2.5, 4.265);
+  for (const vx of [-1.0, -0.25, 0.95]) { box(0.2, 0.09, 0.03, mBlack, vx, 2.62, 4.305); for (let k = 0; k < 3; k++) box(0.18, 0.008, 0.035, mTrim, vx, 2.595 + k * 0.025, 4.3); }
+  // cuadro de relojes del conductor (tras el volante)
+  box(0.62, 0.24, 0.24, mDash, 0.55, 2.66, 4.4, -0.2);
+  box(0.66, 0.04, 0.3, mDashTop, 0.55, 2.79, 4.42, -0.2);
+  for (const [dx, r] of [[-0.17, 0.085], [0.17, 0.085], [0, 0.05]]) {
+    add(new THREE.CircleGeometry(r + 0.012, 28), mTrim, 0.55 + dx, 2.66, 4.274, -0.2, Math.PI, 0);
+    add(new THREE.CircleGeometry(r, 28), glow(0x0c1a22), 0.55 + dx, 2.66, 4.272, -0.2, Math.PI, 0);
+    const n = add(new THREE.PlaneGeometry(0.008, r * 0.8), glow(0xff5a2a), 0.55 + dx, 2.66, 4.27, -0.2, Math.PI, 0.7);
+    if (dx === -0.17) g.userData.needle = n;
+  }
+  // consola central con pantalla y palanca de cambios
+  box(0.42, 0.6, 0.35, mDash, 0.02, 2.1, 4.3, -0.15);
+  box(0.3, 0.17, 0.02, glow(0x2a6f86), 0.02, 2.36, 4.115, -0.15);
+  box(0.26, 0.13, 0.021, glow(0x7fdcff), 0.02, 2.36, 4.11, -0.15);
+  box(0.2, 0.25, 0.4, mDash, 0.08, 1.9, 3.75);
+  cyl(0.018, 0.022, 0.42, mTrim, 0.1, 2.2, 3.72, -0.2);
+  add(new THREE.SphereGeometry(0.045, 16, 12), mBlack, 0.1, 2.42, 3.68);
+  // pedales
+  for (const [px, w] of [[0.38, 0.1], [0.6, 0.14], [0.8, 0.09]]) box(w, 0.16, 0.03, mBlack, px, 1.95, 4.35, -0.5);
+
+  /* ---- asientos de piel acolchados ---- */
+  for (const sx of [1, -1]) {
+    const x = sx > 0 ? 0.55 : -0.6;
+    box(0.62, 0.38, 0.4, mSeatDk, x, 1.97, 3.55);                                           // base con suspensión
+    box(0.62, 0.16, 0.58, mSeat, x, 2.24, 3.55);                                            // cojín
+    box(0.62, 0.92, 0.16, mSeat, x, 2.78, 3.2, 0.12);                                       // respaldo
+    for (let k = 0; k < 4; k++) box(0.6, 0.012, 0.165, mSeatDk, x, 2.48 + k * 0.2, 3.2 + k * 0.022, 0.12);
+    box(0.36, 0.22, 0.14, mSeat, x, 3.36, 3.12, 0.12);                                      // reposacabezas
+    box(0.06, 0.06, 0.45, mSeatDk, x + 0.34 * (sx > 0 ? -1 : 1), 2.45, 3.45);                // reposabrazos
+  }
+  // cinturón del copiloto
+  box(0.05, 0.9, 0.01, M(0x1f2329, 1), -0.42, 2.7, 3.12, 0, 0, 0.45);
+
+  /* ---- volante grande de camión ---- */
+  const wheel = new THREE.Group(); wheel.position.set(0.55, 2.78, 4.12); wheel.rotation.x = -1.05; g.add(wheel);
+  wheel.add(new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.03, 12, 44), mRubber));
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.07, 20), mBlack); hub.rotation.x = Math.PI / 2; wheel.add(hub);
+  const logo = new THREE.Mesh(new THREE.CircleGeometry(0.04, 20), mTrim); logo.position.z = 0.036; wheel.add(logo);
+  for (const a of [0, Math.PI, -Math.PI / 2]) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.04, 0.03), mBlack); sp.rotation.z = a; sp.position.set(Math.cos(a) * 0.15, Math.sin(a) * 0.15, 0); wheel.add(sp); }
+  cyl(0.04, 0.05, 0.42, mBlack, 0.55, 2.62, 4.27, 0.52);
+
   g.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
   return { g, wheel };
 }
@@ -1514,7 +1580,7 @@ const post = (() => {
     }
     const u = matFinal.uniforms;
     u.tex.value = rtS.texture; u.b0.value = rtB[0].texture; u.b1.value = rtB[1].texture; u.b2.value = rtB[2].texture; u.b3.value = (rtB[3] || rtB[2]).texture;
-    u.exposure.value = ex; u.bloom.value = lerp(0.3, 0.85, tod.night) * (cam.mode === 3 ? 0 : 1); u.tilt.value = P.hi && cam.mode !== 3 ? 1 : 0; u.time.value = time % 10; u.night.value = tod.night;
+    u.exposure.value = ex * (cam.mode === 3 ? 1 + 0.25 * tod.night + 0.12 : 1); u.bloom.value = lerp(0.3, 0.85, tod.night) * (cam.mode === 3 ? 0 : 1); u.tilt.value = P.hi && cam.mode !== 3 ? 1 : 0; u.time.value = time % 10; u.night.value = tod.night;
     u.dusk.value = Math.exp(-Math.pow((tod.sunElev - 0.04) / 0.2, 2)) * tod.day;
     pass(matFinal, null);
   };
@@ -1884,17 +1950,17 @@ function updateCamera(dt) {
 }
 
 /* dentro de la cabina se oculta la carrocería del tractor y se ve la cabina propia */
-function cabinView(on) { truck.cabin.g.visible = on; truck.tractor.body.children.forEach(c => { if (c !== truck.cabin.g) c.visible = !on; }); }
+function cabinView(on) { truck.cabin.g.visible = on; truck.tractor.body.children.forEach(c => { if (c !== truck.cabin.g && c.isMesh) c.visible = !on; }); }
 /* vista desde el asiento del conductor (a la izquierda, como en los camiones americanos) */
 function cabinCam(dt) {
   const h = st.h, fx = Math.sin(h), fz = Math.cos(h), lx = Math.cos(h), lz = -Math.sin(h);
   const v = Math.abs(st.v), sp = clamp(v / 33, 0, 1);
-  if (truck.cabin) { if (!truck.cabin.g.visible) cabinView(true); truck.cabin.wheel.rotation.z = -st.steer * 2.6; }
+  if (truck.cabin) { if (!truck.cabin.g.visible) cabinView(true); truck.cabin.wheel.rotation.z = -st.steer * 2.6; const nd = truck.cabin.g.userData.needle; if (nd) nd.rotation.z = 1.2 - clamp((st.rpm || 900) / 2200, 0, 1) * 2.4; }
   cam.shake = Math.max(0, cam.shake - dt * 1.6); cam.shake = Math.max(cam.shake, st.shake); st.shake = Math.max(0, st.shake - dt * 2.2);
   const sh = cam.shake * cam.shake * 0.25, bump = Math.sin(performance.now() * 0.021) * 0.012 * sp;
-  const ex = st.x + fx * 3.85 + lx * 0.55, ez = st.z + fz * 3.85 + lz * 0.55, ey = 3.3 + st.pitch * -1.2 + bump;
+  const ex = st.x + fx * 3.5 + lx * 0.55, ez = st.z + fz * 3.5 + lz * 0.55, ey = 3.28 + st.pitch * -1.2 + bump;
   camera.position.set(ex + (rnd() - 0.5) * sh, ey + (rnd() - 0.5) * sh, ez + (rnd() - 0.5) * sh);
-  const yw = h + clamp(cam.yawOff, -2.6, 2.6), pt = -0.12 - cam.pitchOff * 0.6;
+  const yw = h + clamp(cam.yawOff, -2.6, 2.6), pt = -0.17 - cam.pitchOff * 0.6;
   const cp = Math.cos(pt);
   camera.up.set(0, 1, 0);
   camera.lookAt(ex + Math.sin(yw) * cp * 30, ey + Math.sin(pt) * 30, ez + Math.cos(yw) * cp * 30);
@@ -1948,7 +2014,7 @@ function syncModels(dt) {
   // faros
   const hx = st.x + fx_(st.h) * 6.8, hz = st.z + fz_(st.h) * 6.8;
   headSpot.position.set(hx, 1.8, hz); headSpot.target.position.set(st.x + fx_(st.h) * 40, 0, st.z + fz_(st.h) * 40);
-  headSpot.intensity = 600 * nf;
+  headSpot.intensity = 600 * nf * (cam.mode === 3 ? 1.9 : 1);
   headBeam.material.opacity = 0.32 * nf; tailGlow.material.opacity = (braking ? 0.9 : 0.35) * nf;
   if (!headBeam.parent) { T0.root.add(headBeam); T1.root.add(tailGlow); }
   lampHeadMat.color.setScalar(0.35 + 0.65 * nf).multiply(new THREE.Color(1, 0.85, 0.6));
@@ -2278,7 +2344,7 @@ function loop(now) {
 /* ---------- retrovisores (vista «Cabina»): lo que hay detrás, a cada lado del tráiler ---------- */
 const mirrors = (() => {
   const RW = 176, RH = 264, side = [1, -1];          // +1 = izquierdo (lado del conductor), -1 = derecho
-  const rts = side.map(() => new THREE.WebGLRenderTarget(RW, RH, { samples: 2 }));
+  const rts = side.map(() => new THREE.WebGLRenderTarget(RW, RH));
   const cams = side.map(() => new THREE.PerspectiveCamera(30, RW / RH, 0.5, 4500));
   const ovScene = new THREE.Scene(), ovCam = new THREE.OrthographicCamera(0, 1, 1, 0, -1, 1);
   const quads = side.map((sx, i) => {
@@ -2323,6 +2389,8 @@ const mirrors = (() => {
       skyMesh.position.copy(sp0);
       if (truck.cabin) truck.cabin.g.visible = true;
       renderer.shadowMap.autoUpdate = au;
+      const gain = renderer.toneMappingExposure / 0.72 * 1.12 * (1 + 0.25 * tod.night);
+      quads.forEach(q => q.userData.gl.material.color.setScalar(gain));
       renderer.setRenderTarget(null);
       const ac = renderer.autoClear; renderer.autoClear = false; renderer.clearDepth(); renderer.render(ovScene, ovCam); renderer.autoClear = ac;
     }
