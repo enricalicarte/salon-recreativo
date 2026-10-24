@@ -1247,7 +1247,7 @@ function buildCabinInterior() {
      marco del parabrisas, retrovisores, salpicadero y volante. Así no hay paneles que tapen la vista desde dentro. */
   const g = new THREE.Group(); g.visible = false;
   const M = (c, r, e, met) => { const m = new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.85 : r, metalness: met || 0.05, envMapIntensity: met ? 1 : 0.15 }); if (e) m.emissive = new THREE.Color(e); return m; };
-  const frame = M(0x22252b, 0.95, 0x0a0b0e), dash = M(0x1d2026, 1, 0x08090b), trim = M(0xc9ced6, 0.35, 0x1a1c20, 0.6), wood = M(0x7a5536, 0.6, 0x1c120a);
+  const frame = new THREE.MeshBasicMaterial({ color: 0x16181c }), dash = new THREE.MeshBasicMaterial({ color: 0x1b1e23 }), trim = M(0xc9ced6, 0.35, 0x1a1c20, 0.6), wood = M(0x7a5536, 0.6, 0x1c120a);
   const paint = new THREE.MeshPhysicalMaterial({ color: truck.mats.paint.color.clone(), metalness: 0.4, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.2 });
   const accent = new THREE.MeshStandardMaterial({ color: truck.mats.accent.color.clone(), roughness: 0.4, metalness: 0.3 });
   const chrome = new THREE.MeshStandardMaterial({ color: 0xe6e8ec, metalness: 1, roughness: 0.15, envMapIntensity: 1.6 });
@@ -1271,16 +1271,12 @@ function buildCabinInterior() {
   box(2.32, 0.04, 0.56, new THREE.MeshBasicMaterial({ color: 0x17191d }), 0, 2.77, 4.48, -0.1);
   for (const vx of [-0.9, -0.1, 0.95]) for (let k = 0; k < 4; k++) box(0.34, 0.012, 0.025, new THREE.MeshBasicMaterial({ color: 0x0a0b0d }), vx, 2.795, 4.62 - k * 0.05, -0.1);
   box(0.62, 0.02, 0.3, wood, -0.45, 2.79, 4.36, -0.1);
-  box(0.62, 0.24, 0.07, M(0x0a0c10, 0.4), 0.55, 2.98, 4.3, -0.35);
-  for (const dx of [-0.15, 0.15]) {
-    add(new THREE.CircleGeometry(0.09, 24), new THREE.MeshBasicMaterial({ color: 0x9fe6ff }), 0.55 + dx, 2.985, 4.262, -0.35, Math.PI, 0);
-    add(new THREE.PlaneGeometry(0.012, 0.075), new THREE.MeshBasicMaterial({ color: 0xff5a2a }), 0.55 + dx, 2.985, 4.258, -0.35, Math.PI, 0.6); }
   // volante grande de camión
   const wheel = new THREE.Group(); wheel.position.set(0.55, 2.86, 4.18); wheel.rotation.x = -1.15; g.add(wheel);
   wheel.add(new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.034, 10, 40), frame));
   const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.06, 18), trim); hub.rotation.x = Math.PI / 2; wheel.add(hub);
   for (const a of [Math.PI / 2, Math.PI * 7 / 6, -Math.PI / 6]) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.035, 0.025), trim); sp.rotation.z = a; sp.position.set(Math.cos(a) * 0.14, Math.sin(a) * 0.14, 0); wheel.add(sp); }
-  g.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = true; } });
+  g.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
   return { g, wheel };
 }
 function setTrailerType(t) {
@@ -1518,7 +1514,7 @@ const post = (() => {
     }
     const u = matFinal.uniforms;
     u.tex.value = rtS.texture; u.b0.value = rtB[0].texture; u.b1.value = rtB[1].texture; u.b2.value = rtB[2].texture; u.b3.value = (rtB[3] || rtB[2]).texture;
-    u.exposure.value = ex; u.bloom.value = lerp(0.3, 0.85, tod.night); u.tilt.value = P.hi ? 1 : 0; u.time.value = time % 10; u.night.value = tod.night;
+    u.exposure.value = ex; u.bloom.value = lerp(0.3, 0.85, tod.night) * (cam.mode === 3 ? 0 : 1); u.tilt.value = P.hi && cam.mode !== 3 ? 1 : 0; u.time.value = time % 10; u.night.value = tod.night;
     u.dusk.value = Math.exp(-Math.pow((tod.sunElev - 0.04) / 0.2, 2)) * tod.day;
     pass(matFinal, null);
   };
@@ -2276,7 +2272,62 @@ function loop(now) {
   if (zone.active) { zone.plane.material.opacity = 0.75 + Math.sin(tSec * 4) * 0.2 + st.zoneT * 0.2; zone.label.material.opacity = 0.9; zone.holder.scale.y = 1; }
   frame++;
   post.render(tSec);
+  if (cam.mode === 3 && st.started) mirrors.render();
 }
+
+/* ---------- retrovisores (vista «Cabina»): lo que hay detrás, a cada lado del tráiler ---------- */
+const mirrors = (() => {
+  const RW = 176, RH = 264, side = [1, -1];          // +1 = izquierdo (lado del conductor), -1 = derecho
+  const rts = side.map(() => new THREE.WebGLRenderTarget(RW, RH, { samples: 2 }));
+  const cams = side.map(() => new THREE.PerspectiveCamera(30, RW / RH, 0.5, 4500));
+  const ovScene = new THREE.Scene(), ovCam = new THREE.OrthographicCamera(0, 1, 1, 0, -1, 1);
+  const quads = side.map((sx, i) => {
+    const g = new THREE.Group();
+    const frameM = new THREE.MeshBasicMaterial({ color: 0x111317, toneMapped: false });
+    const fr = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), frameM); fr.position.z = -0.1; g.add(fr);
+    const tex = rts[i].texture; tex.wrapS = THREE.RepeatWrapping; tex.repeat.x = -1; tex.offset.x = 1;   // imagen de espejo
+    const gl = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: tex }));
+    g.add(gl); g.userData = { fr, gl }; ovScene.add(g); return g;
+  });
+  let k = 0;
+  const _p = new THREE.Vector3();
+  function layout(W, H) {
+    ovCam.right = W; ovCam.top = H; ovCam.updateProjectionMatrix();
+    const port = H > W, w = Math.round(Math.min(port ? W * 0.2 : H * 0.22, 120)), h = Math.round(w * RH / RW);
+    /* en apaisado el derecho va a la izquierda de la columna de botones */
+    const pos = port ? [[w / 2 + 8, H * 0.47], [W - w / 2 - 8, H * 0.47]] : [[w / 2 + 10, H * 0.52], [W - w / 2 - Math.min(200, W * 0.22), H * 0.52]];
+    quads.forEach((q, i) => {
+      q.position.set(pos[i][0], pos[i][1], 0);
+      q.userData.gl.scale.set(w, h, 1); q.userData.fr.scale.set(w + 10, h + 10, 1);
+      q.userData.gl.material.map.needsUpdate = false;
+    });
+  }
+  function aim(i) {
+    const sx = side[i], h = st.h, fx = Math.sin(h), fz = Math.cos(h), lx = Math.cos(h), lz = -Math.sin(h);
+    const c = cams[i];
+    c.position.set(st.x + fx * 4.5 + lx * 2.35 * sx, 3.05, st.z + fz * 4.5 + lz * 2.05 * sx);
+    const yaw = h + Math.PI - sx * 0.07;            // mirando hacia atrás, un pelín hacia fuera
+    _p.set(c.position.x + Math.sin(yaw) * 40, 1.6, c.position.z + Math.cos(yaw) * 40);
+    c.lookAt(_p);
+  }
+  return {
+    render() {
+      const W = renderer.domElement.clientWidth || innerWidth, H = renderer.domElement.clientHeight || innerHeight;
+      if (ovCam.right !== W || ovCam.top !== H) layout(W, H);
+      // se actualiza un espejo por fotograma (va alternando) para no cargar el móvil
+      const i = k++ % 2, au = renderer.shadowMap.autoUpdate;
+      aim(i); renderer.shadowMap.autoUpdate = false;
+      if (truck.cabin) truck.cabin.g.visible = false;
+      const sp0 = skyMesh.position.clone(); skyMesh.position.copy(cams[i].position);
+      renderer.setRenderTarget(rts[i]); renderer.clear(); renderer.render(scene, cams[i]);
+      skyMesh.position.copy(sp0);
+      if (truck.cabin) truck.cabin.g.visible = true;
+      renderer.shadowMap.autoUpdate = au;
+      renderer.setRenderTarget(null);
+      const ac = renderer.autoClear; renderer.autoClear = false; renderer.clearDepth(); renderer.render(ovScene, ovCam); renderer.autoClear = ac;
+    }
+  };
+})();
 
 /* ---------- arranque ---------- */
 buildPlayerTruck(0);
@@ -2290,7 +2341,7 @@ buildStartUI(); applyQuality(); applyTimeOfDay(true); updateCruiseUI();
 el.camName.textContent = cam.modes[0];
 syncModels(0); updateChunks(st.x, st.z);
 if (!isTouch) { const ks = $('keysHelp'); if (ks) ks.style.display = 'block'; } else { const th = $('touchHelp'); if (th) th.style.display = 'block'; }
-window.__game = { simStep, st, cam, tod, startGame, startJob, makeJobs, DEPOTS, traffic, setCam(m) { cam.mode = m; }, applyTimeOfDay, keys, touch, inp, respawn, resetPlayerAt, toggleCruise, showJobs, M, LEN, settings, renderer, scene, camera, zone, placeZone, roadFrame, RF };
+window.__game = { simStep, st, cam, truck, tod, startGame, startJob, makeJobs, DEPOTS, traffic, setCam(m) { cam.mode = m; }, applyTimeOfDay, keys, touch, inp, respawn, resetPlayerAt, toggleCruise, showJobs, M, LEN, settings, renderer, scene, camera, zone, placeZone, roadFrame, RF };
 requestAnimationFrame(loop);
 
 })();
