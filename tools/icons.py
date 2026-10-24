@@ -1450,6 +1450,29 @@ def _(I):
     I.add(f'<path d="M206 92 L226 132 L256 100 L286 132 L306 92 L298 150 H214Z" {st("#ffd24a", 7)}/>')
     sparkle(I, 70, 120, 18); sparkle(I, 450, 110, 16); sparkle(I, 440, 460, 12)
 
+@icon('sistema-sonoro')
+def _(I):
+    bg(I, '#2a1a6b', '#07061a')
+    stars_bg(I, 30, seed=11)
+    # órbitas
+    for r, o in ((92, .55), (150, .45), (206, .35)):
+        I.add(f'<ellipse cx="256" cy="262" rx="{r}" ry="{r*.62:.0f}" fill="none" stroke="#9f8cff" stroke-opacity="{o}" stroke-width="5" stroke-dasharray="14 10"/>')
+    # sol
+    g = I.rg('#fff6c9', '#ff9d2e', .45, .4, .6)
+    I.add(f'<circle cx="256" cy="262" r="62" fill="{g}"/>')
+    I.add('<circle cx="256" cy="262" r="62" fill="none" stroke="#1d1442" stroke-width="9"/>')
+    for k in range(10):
+        import math
+        a = k * math.pi / 5
+        I.add(f'<line x1="{256+78*math.cos(a):.0f}" y1="{262+78*math.sin(a)*.95:.0f}" x2="{256+96*math.cos(a):.0f}" y2="{262+96*math.sin(a)*.95:.0f}" stroke="#ffd24a" stroke-width="10" stroke-linecap="round"/>')
+    # planetas-sonido
+    planet(I, 348, 210, 30, '#ff8a6b', '#e8431c')
+    planet(I, 128, 330, 36, '#8f80ff', '#4a38c8', ring='#cfc6ff')
+    planet(I, 400, 360, 26, '#7fe8ff', '#1ba8d6')
+    planet(I, 210, 120, 22, '#6bffb0', '#1f9a5e')
+    note(I, 94, 150, 1.0, '#ffd24a'); note(I, 420, 112, .85, '#ff7ac8'); note(I, 300, 440, .9, '#7fe8ff')
+    sparkle(I, 460, 250, 14); sparkle(I, 60, 420, 12)
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-party','catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

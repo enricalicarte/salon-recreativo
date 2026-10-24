@@ -351,6 +351,21 @@
    "play": "juegos/anguera/index.html"
   },
   {
+   "id": "sistemasonoro",
+   "slug": "sistema-sonoro",
+   "kw": "juego para hacer música",
+   "cat": "ritmo",
+   "name": "Sistema Sonoro",
+   "note": "Haz música con planetas",
+   "blurb": "App musical cósmica para crear ritmos con planetas: un sol en el centro y, en cada órbita, planetas que son bombo, caja, hi-hat, bajo, pads o campanas, y suenan cada vez que pasan por el pulso. Mézclalo con el Sistema Solar real como si fueran los dos platos de una cabina de DJ, gira la vista 360° por un cielo con las constelaciones reales y carga canciones de nu-disco, french house, techno o lofi.",
+   "tags": [
+    "Música",
+    "Crea ritmos",
+    "Cosmos"
+   ],
+   "play": "juegos/sistema-sonoro/index.html"
+  },
+  {
    "slug": "supernova-guitar",
    "id": "supernova",
    "kw": "juego de guitarra online",
