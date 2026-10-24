@@ -614,6 +614,21 @@
    "play": "juegos/cabina/index.html"
   },
   {
+   "id": "strikekick",
+   "slug": "strike-kick",
+   "kw": "juego de bolos con cámara",
+   "cat": "camara",
+   "name": "Strike Kick",
+   "note": "Bolos con tu cuerpo",
+   "blurb": "Juego de bolos con la cámara: tu cuerpo es el mando. Apareces tú dentro de la bolera y golpeas el balón con la mano o con el pie; sale hacia donde te mueves y, cuanto más rápido, más fuerza. Diez tiradas, strikes, semiplenos y tres niveles de sensibilidad. Sin cámara, también se juega deslizando el dedo.",
+   "tags": [
+    "Cámara",
+    "Bolos",
+    "Tu cuerpo es el mando"
+   ],
+   "play": "juegos/strike-kick/index.html"
+  },
+  {
    "id": "porteroloco",
    "slug": "portero-loco",
    "kw": "juego de portero con cámara",

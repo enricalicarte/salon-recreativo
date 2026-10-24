@@ -1473,6 +1473,30 @@ def _(I):
     note(I, 94, 150, 1.0, '#ffd24a'); note(I, 420, 112, .85, '#ff7ac8'); note(I, 300, 440, .9, '#7fe8ff')
     sparkle(I, 460, 250, 14); sparkle(I, 60, 420, 12)
 
+@icon('strike-kick')
+def _(I):
+    bg(I, '#3a1f9e', '#0d0730', '#3df2ff', .1)
+    stars_bg(I, 10, seed=31)
+    # pista en perspectiva
+    I.add(f'<path d="M226 200 H330 L470 522 H86Z" fill="{I.lg("#ffe3b8", "#e8a86a")}" stroke="{INK}" stroke-width="9"/>'
+          f'<path d="M216 200 L74 522 M340 200 L482 522" stroke="#ff4fd8" stroke-width="10"/>')
+    # bolos al fondo, saltando
+    pin(I, 278, 176, .42, 0); pin(I, 244, 168, .4, -40); pin(I, 316, 160, .4, 38); pin(I, 196, 120, .4, -75); pin(I, 366, 112, .42, 70)
+    for x, y in ((230, 100), (330, 80), (420, 170), (150, 180)): sparkle(I, x, y, 12, '#ffe14d')
+    # jugador de neón (silueta de la cámara) dando una patada
+    seg = [(150, 250, 150, 360), (150, 280, 96, 318), (150, 280, 206, 300), (150, 360, 116, 452), (150, 360, 228, 404)]
+    def path(w, c, o=1):
+        return ''.join(f'<path d="M{a} {b} L{c2} {d}" stroke="{c}" stroke-width="{w}" stroke-linecap="round" opacity="{o}"/>' for a, b, c2, d in seg)
+    I.add(path(34, '#5dff9a', .3) + path(16, '#5dff9a'))
+    I.add('<circle cx="150" cy="222" r="24" fill="none" stroke="#5dff9a" stroke-width="10"/>')
+    # balón con estela hacia los bolos
+    I.add('<path d="M262 410 Q300 330 290 250" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" opacity=".35" stroke-dasharray="4 22"/>')
+    fball(I, 272, 392, 46, 18)
+    # marco de cámara en las esquinas
+    for x, y, dx, dy in ((40, 40, 1, 1), (472, 40, -1, 1), (40, 472, 1, -1), (472, 472, -1, -1)):
+        I.add(f'<path d="M{x} {y+dy*56} V{y} H{x+dx*56}" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>')
+    I.add('<circle cx="446" cy="66" r="10" fill="#ff3d5a"/>')
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-party','catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

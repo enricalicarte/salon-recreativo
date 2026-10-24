@@ -745,6 +745,9 @@ const GAMES=[
   {id:'cabina',kw:"app de DJ online",cat:'ritmo',name:'Cabina',
    blurb:"App de DJ para niños y principiantes: profesional por dentro y fácil por fuera, casi un juego. Mezcla canciones en el móvil, en horizontal y a pantalla completa.",
    tags:["DJ", "Música", "Para niños"],play:'juegos/cabina/index.html'},
+  {id:'strikekick',kw:"juego de bolos con cámara",cat:'camara',name:'Strike Kick',note:'Bolos con tu cuerpo',
+   blurb:"Juego de bolos con la cámara: tu cuerpo es el mando. Apareces tú dentro de la bolera y golpeas el balón con la mano o con el pie; sale hacia donde te mueves y, cuanto más rápido, más fuerza. Diez tiradas, strikes, semiplenos y tres niveles de sensibilidad. Sin cámara, también se juega deslizando el dedo.",
+   tags:["Cámara", "Bolos", "Tu cuerpo es el mando"],play:'juegos/strike-kick/index.html'},
   {id:'porteroloco',kw:"juego de portero con cámara",cat:'camara',name:'Portero Loco',note:"Para los disparos con tus manos",
    blurb:"Juego de portero con la cámara: ponte bajo los palos y para con las manos los disparos que llegan desde el punto de penalti. Casi todos van a la escuadra: tiros con efecto, vaselinas y cañonazos cada vez más rápidos que solo puedes parar con las manos, guantes de neón y un estadio que celebra cada parada. Tres goles y se acaba el partido.",
    tags:["Cámara", "Fútbol", "Portero"],play:'juegos/portero-loco/index.html'},
@@ -815,9 +818,9 @@ const GAMES=[
 
 /* ---------- Datos de uso: edad, partidas cortas, móvil, novedades ---------- */
 const AGE={olimpiadas:3,aventura:3,towerstack:3,miramar:16};               // por defecto +7; relax +3
-const SHORT=new Set(['minigolf','strike','porteroloco','balonloco','lluvialoca','muroloco','crucigiro','loopingloco','stu','bloquesneon','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
-const MOB=new Set(['sistemasonoro','cq_party','minigolf','strike','porteroloco','balonloco','lluvialoca','muroloco','boxeokids','yogakids','estirakids','crucigiro','loopingloco','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
-const NEW=new Set(['sistemasonoro','cq_party','minigolf','strike','porteroloco','balonloco','lluvialoca','muroloco','cq_castells','cq_roda','cq_pronoms','cq_esportistes','boxeokids','yogakids','estirakids','crucigiro','loopingloco','cq_futbol','cq_barbarismes','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
+const SHORT=new Set(['strikekick','minigolf','strike','porteroloco','balonloco','lluvialoca','muroloco','crucigiro','loopingloco','stu','bloquesneon','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','towerstack','cuberunner','paradon','monster','motofury','neoncoast','turbokart','aventura','porrazo','tirolimpio','olimpiadas','aura']);
+const MOB=new Set(['strikekick','sistemasonoro','cq_party','minigolf','strike','porteroloco','balonloco','lluvialoca','muroloco','boxeokids','yogakids','estirakids','crucigiro','loopingloco','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','olimpiadas','suo','mnac','towerstack','cuberunner','porrazo','anguera','tirolimpio','tiradora','aventura','cabina','paradon','motofury']);
+const NEW=new Set(['strikekick','sistemasonoro','cq_party','minigolf','strike','porteroloco','balonloco','lluvialoca','muroloco','cq_castells','cq_roda','cq_pronoms','cq_esportistes','boxeokids','yogakids','estirakids','crucigiro','loopingloco','cq_futbol','cq_barbarismes','stu','fifa11kids','tecnicakids','fuerzakids','carrevamp','bloquesneon','ciudadela','halfpipe','alasacero','dropin','grandescenso','gransalto','granpirueta','olaperfecta','miramar','cabina','rutacosmica','motofury','towerstack','cuberunner']);
 const ageOf=g=>AGE[g.id]||(g.cat==='relax'?3:7);
 const EMAIL='';
 
@@ -1626,8 +1629,8 @@ if(!reduce&&'IntersectionObserver' in window){
     blurb:LANG==='ca'?'catquiz.cat és la nostra web exclusiva de minijocs en català: Motle, Penjat, Anagrama, Sopa de lletres, Barbarismes i un quiz de futbol, per jugar i aprendre.':'catquiz.cat es nuestra web exclusiva de minijuegos en catalán: Motle (el Wordle en catalán), Penjat, Anagrama, Sopa de lletres, Barbarismes y un quiz de fútbol, para jugar y aprender.',
     go:LANG==='ca'?'Ves a catquiz.cat':'Ir a catquiz.cat',more:LANG==='ca'?'Juga-hi aquí':'Jugar aquí'}};
   /* Destacados = lo último: juegos nuevos o actualizados, el más reciente primero. Para destacar uno, ponerlo delante con su etiqueta. */
-  const NEWS={sistemasonoro:'new',minigolf:'upd',cq_party:'new',strike:'new',loopingloco:'upd',monster:'upd',motofury:'upd',aventura:'upd'};
-  const FEAT=['sistemasonoro','minigolf','strike','cq_party','loopingloco','motofury','monster','aventura','rutacosmica','catquiz','paradon','aura','porrazo'];
+  const NEWS={strikekick:'new',sistemasonoro:'new',minigolf:'upd',cq_party:'new',strike:'new',loopingloco:'upd',monster:'upd',motofury:'upd',aventura:'upd'};
+  const FEAT=['strikekick','sistemasonoro','minigolf','strike','cq_party','loopingloco','motofury','monster','aventura','rutacosmica','catquiz','paradon','aura','porrazo'];
   const list=FEAT.map(id=>EXT[id]||GAMES.find(g=>g.id===id)).filter(g=>g&&(g.ext||g.play)&&MEDIA.has(g.slug));
   const track=$('#fTrack'),dots=$('#fDots');if(!track||!list.length){const f=$('#destacados');if(f)f.hidden=true;return;}
   track.innerHTML=list.map((g,i)=>{const sl=g.slug,cat=CATS[g.cat];return '<article class="slide" style="--c:'+cat.c+'" aria-roledescription="diapositiva" aria-label="'+(i+1)+T.of+list.length+'">'+
