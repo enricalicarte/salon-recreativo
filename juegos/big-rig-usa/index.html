@@ -1243,25 +1243,44 @@ function buildPlayerTruck(colorIdx) {
 }
 /* ---- interior de la cabina (solo se ve en la cámara «Cabina») ---- */
 function buildCabinInterior() {
+  /* En la vista «Cabina» se oculta la carrocería del tractor y se dibuja esta cabina propia: morro con la pintura del camión,
+     marco del parabrisas, retrovisores, salpicadero y volante. Así no hay paneles que tapen la vista desde dentro. */
   const g = new THREE.Group(); g.visible = false;
-  const M = (c, r) => new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.8 : r, metalness: 0.1 });
-  const dark = M(0x1b1d22), dash = M(0x2a2d34, 0.6), trim = M(0x8a8f99, 0.35), seat = M(0x3a2a22, 0.9);
-  const box = (w, h, d, m, x, y, z, rx) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); b.position.set(x, y, z); if (rx) b.rotation.x = rx; g.add(b); return b; };
-  box(2.3, 0.42, 0.55, dash, 0, 2.3, 4.45);                       // salpicadero
-  box(2.3, 0.06, 0.62, dark, 0, 2.54, 4.52, -0.12);                 // tapa del salpicadero
-  for (const sx of [-1, 1]) box(0.12, 1.15, 0.12, dark, sx * 1.13, 3.0, 4.66, -0.28);   // montantes A
-  box(2.36, 0.12, 0.2, dark, 0, 3.52, 4.55);                       // borde del techo
-  box(2.36, 0.08, 1.1, M(0x50545c), 0, 3.6, 4.0);                  // techo
-  box(0.5, 0.22, 0.04, M(0x0a0c10, 0.3), 0.55, 2.66, 4.2, -0.5);   // cuadro de relojes
-  for (const dx of [-0.12, 0.12]) { const c = new THREE.Mesh(new THREE.CircleGeometry(0.075, 20), M(0xffe0a0, 0.5)); c.material.emissive = new THREE.Color(0x7a5a20); c.position.set(0.55 + dx, 2.67, 4.18); c.rotation.x = -0.5 + Math.PI; c.rotation.y = Math.PI; g.add(c); }
-  box(0.55, 0.12, 0.5, seat, -0.6, 2.3, 3.5);                      // asiento del acompañante
-  // volante
-  const wheel = new THREE.Group(); wheel.position.set(0.55, 2.66, 4.12); wheel.rotation.x = -1.05; g.add(wheel);
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.028, 8, 28), dark); wheel.add(rim);
-  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.05, 12), trim); hub.rotation.x = Math.PI / 2; wheel.add(hub);
-  for (const a of [0, 2.1, -2.1]) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.03, 0.02), dark); sp.rotation.z = a; sp.position.set(Math.cos(a) * 0.11, Math.sin(a) * 0.11, 0); wheel.add(sp); }
-  const col = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.5, 8), dark); col.position.set(0.55, 2.45, 4.25); col.rotation.x = 0.62; g.add(col);
-  g.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
+  const M = (c, r, e, met) => { const m = new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.85 : r, metalness: met || 0.05, envMapIntensity: met ? 1 : 0.15 }); if (e) m.emissive = new THREE.Color(e); return m; };
+  const frame = M(0x22252b, 0.95, 0x0a0b0e), dash = M(0x1d2026, 1, 0x08090b), trim = M(0xc9ced6, 0.35, 0x1a1c20, 0.6), wood = M(0x7a5536, 0.6, 0x1c120a);
+  const paint = new THREE.MeshPhysicalMaterial({ color: truck.mats.paint.color.clone(), metalness: 0.4, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.2 });
+  const accent = new THREE.MeshStandardMaterial({ color: truck.mats.accent.color.clone(), roughness: 0.4, metalness: 0.3 });
+  const chrome = new THREE.MeshStandardMaterial({ color: 0xe6e8ec, metalness: 1, roughness: 0.15, envMapIntensity: 1.6 });
+  const add = (geo, m, x, y, z, rx, ry, rz) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.rotation.set(rx || 0, ry || 0, rz || 0); g.add(o); return o; };
+  const box = (w, h, d, m, x, y, z, rx, ry, rz) => add(new THREE.BoxGeometry(w, h, d), m, x, y, z, rx, ry, rz);
+  // morro largo (como el del camión) con su franja y la mascota cromada
+  add(roundedBox(1.72, 0.95, 2.15, 0.3), paint, 0, 1.88, 5.65);
+  box(0.34, 0.02, 2.0, accent, 0, 2.37, 5.65);
+  for (const sx of [-1, 1]) box(0.08, 0.06, 1.7, chrome, sx * 0.82, 2.3, 5.6);
+  // parte baja de la cabina por delante del parabrisas (el "cuello" entre cabina y morro)
+  box(2.45, 0.3, 0.3, M(0x15171b, 1, 0x050607), 0, 2.2, 4.55);
+  // marco del parabrisas: travesaño de arriba, montantes y parasol
+  box(2.5, 0.16, 0.22, frame, 0, 3.6, 4.62);
+  box(2.4, 0.06, 0.55, paint, 0, 3.72, 4.85);
+  for (const sx of [-1, 1]) box(0.07, 1.15, 0.08, frame, sx * 1.16, 3.05, 4.66, -0.28);
+  // retrovisores
+  for (const sx of [-1, 1]) { box(0.5, 0.035, 0.04, chrome, sx * 1.42, 3.1, 4.6); box(0.11, 0.56, 0.24, frame, sx * 1.72, 2.85, 4.55);
+    box(0.02, 0.48, 0.19, M(0x9fb8d0, 0.1, 0x223040, 0.8), sx * 1.66, 2.85, 4.55); }
+  // salpicadero: queda abajo, se ve un poco como en un camión real
+  box(2.3, 0.5, 0.5, dash, 0, 2.5, 4.5);
+  box(2.32, 0.04, 0.56, new THREE.MeshBasicMaterial({ color: 0x17191d }), 0, 2.77, 4.48, -0.1);
+  for (const vx of [-0.9, -0.1, 0.95]) for (let k = 0; k < 4; k++) box(0.34, 0.012, 0.025, new THREE.MeshBasicMaterial({ color: 0x0a0b0d }), vx, 2.795, 4.62 - k * 0.05, -0.1);
+  box(0.62, 0.02, 0.3, wood, -0.45, 2.79, 4.36, -0.1);
+  box(0.62, 0.24, 0.07, M(0x0a0c10, 0.4), 0.55, 2.98, 4.3, -0.35);
+  for (const dx of [-0.15, 0.15]) {
+    add(new THREE.CircleGeometry(0.09, 24), new THREE.MeshBasicMaterial({ color: 0x9fe6ff }), 0.55 + dx, 2.985, 4.262, -0.35, Math.PI, 0);
+    add(new THREE.PlaneGeometry(0.012, 0.075), new THREE.MeshBasicMaterial({ color: 0xff5a2a }), 0.55 + dx, 2.985, 4.258, -0.35, Math.PI, 0.6); }
+  // volante grande de camión
+  const wheel = new THREE.Group(); wheel.position.set(0.55, 2.86, 4.18); wheel.rotation.x = -1.15; g.add(wheel);
+  wheel.add(new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.034, 10, 40), frame));
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.06, 18), trim); hub.rotation.x = Math.PI / 2; wheel.add(hub);
+  for (const a of [Math.PI / 2, Math.PI * 7 / 6, -Math.PI / 6]) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.035, 0.025), trim); sp.rotation.z = a; sp.position.set(Math.cos(a) * 0.14, Math.sin(a) * 0.14, 0); wheel.add(sp); }
+  g.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = true; } });
   return { g, wheel };
 }
 function setTrailerType(t) {
@@ -1868,8 +1887,8 @@ function updateCamera(dt) {
   if (Math.abs(camera.fov - cam.fov) > 0.01) { camera.fov = cam.fov; camera.updateProjectionMatrix(); }
 }
 
-/* dentro de la cabina se ocultan los cristales (desde dentro taparían la vista) */
-function cabinView(on) { truck.cabin.g.visible = on; truck.tractor.body.children.forEach(c => { if (c.material === truck.mats.glass) c.visible = !on; }); }
+/* dentro de la cabina se oculta la carrocería del tractor y se ve la cabina propia */
+function cabinView(on) { truck.cabin.g.visible = on; truck.tractor.body.children.forEach(c => { if (c !== truck.cabin.g) c.visible = !on; }); }
 /* vista desde el asiento del conductor (a la izquierda, como en los camiones americanos) */
 function cabinCam(dt) {
   const h = st.h, fx = Math.sin(h), fz = Math.cos(h), lx = Math.cos(h), lz = -Math.sin(h);
@@ -1877,14 +1896,16 @@ function cabinCam(dt) {
   if (truck.cabin) { if (!truck.cabin.g.visible) cabinView(true); truck.cabin.wheel.rotation.z = -st.steer * 2.6; }
   cam.shake = Math.max(0, cam.shake - dt * 1.6); cam.shake = Math.max(cam.shake, st.shake); st.shake = Math.max(0, st.shake - dt * 2.2);
   const sh = cam.shake * cam.shake * 0.25, bump = Math.sin(performance.now() * 0.021) * 0.012 * sp;
-  const ex = st.x + fx * 4.0 + lx * 0.55, ez = st.z + fz * 4.0 + lz * 0.55, ey = 3.18 + st.pitch * -1.2 + bump;
+  const ex = st.x + fx * 3.85 + lx * 0.55, ez = st.z + fz * 3.85 + lz * 0.55, ey = 3.3 + st.pitch * -1.2 + bump;
   camera.position.set(ex + (rnd() - 0.5) * sh, ey + (rnd() - 0.5) * sh, ez + (rnd() - 0.5) * sh);
-  const yw = h + clamp(cam.yawOff, -2.6, 2.6), pt = -0.1 - cam.pitchOff * 0.6;
+  const yw = h + clamp(cam.yawOff, -2.6, 2.6), pt = -0.12 - cam.pitchOff * 0.6;
   const cp = Math.cos(pt);
   camera.up.set(0, 1, 0);
   camera.lookAt(ex + Math.sin(yw) * cp * 30, ey + Math.sin(pt) * 30, ez + Math.cos(yw) * cp * 30);
   camera.rotateZ(-st.roll * 0.8);
-  const fov = clamp(64 / Math.sqrt(cam.zoom) + (st.turboOn ? 5 : 0) + sp * 4, 30, 90);
+  /* campo de visión pensado en horizontal (~82°): en apaisado no sobra techo ni morro y en vertical no se estrecha demasiado */
+  const vf = clamp(2 * Math.atan(Math.tan(41 * Math.PI / 180) / camera.aspect) * 180 / Math.PI, 42, 58);
+  const fov = clamp(vf / Math.sqrt(cam.zoom) + (st.turboOn ? 4 : 0) + sp * 3, 24, 90);
   cam.fov = damp(cam.fov, fov, 4, dt);
   if (camera.near !== 0.08 || Math.abs(camera.fov - cam.fov) > 0.01) { camera.near = 0.08; camera.fov = cam.fov; camera.updateProjectionMatrix(); }
   cam.tx = st.x; cam.tz = st.z; cam.head = h;
