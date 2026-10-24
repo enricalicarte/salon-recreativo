@@ -1497,6 +1497,31 @@ def _(I):
         I.add(f'<path d="M{x} {y+dy*56} V{y} H{x+dx*56}" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/>')
     I.add('<circle cx="446" cy="66" r="10" fill="#ff3d5a"/>')
 
+@icon('big-rig-usa')
+def _(I):
+    bg(I, '#ffb35c', '#ff5e7a', '#fff2b0', .14)
+    # sol y mesetas del desierto
+    I.add('<circle cx="380" cy="190" r="70" fill="#fff1a8" opacity=".9"/>')
+    I.add(f'<path d="M0 300 L40 230 H120 L150 300Z M300 300 L330 210 H430 L470 300Z" fill="#c2552f" stroke="{INK}" stroke-width="8" stroke-linejoin="round"/>')
+    I.add(f'<rect x="0" y="296" width="512" height="216" fill="{I.lg("#e9a35c", "#c9773f")}"/>')
+    # autopista en perspectiva
+    I.add(f'<path d="M196 300 H316 L512 512 H0Z" fill="#3b3a4f" stroke="{INK}" stroke-width="8"/>')
+    for k in range(4):
+        y0 = 312 + k * 52; w = 6 + k * 5
+        I.add(f'<rect x="{256-w/2}" y="{y0}" width="{w}" height="{26+k*6}" fill="#ffd23f"/>')
+    # camión americano de lado
+    I.add(f'<rect x="200" y="214" width="252" height="118" rx="10" {st("#f4f4fb")}/>')
+    I.add('<rect x="214" y="232" width="224" height="20" fill="#1e6bff"/><rect x="214" y="258" width="224" height="8" fill="#ff3d5a"/>')
+    I.add(f'<path d="M64 332 V258 Q66 236 92 232 L150 230 L176 196 H196 V332Z" {st("#e8352f")}/>')
+    I.add(f'<path d="M154 238 L178 206 H190 V244 H154Z" {st("#9fe3ff", 6)}/>')
+    I.add(f'<rect x="182" y="132" width="14" height="104" rx="6" {st("#d9dcef", 6)}/>')
+    I.add(f'<rect x="40" y="290" width="40" height="30" rx="6" {st("#d9dcef", 6)}/>')
+    I.add('<circle cx="58" cy="270" r="10" fill="#fff6c0"/>')
+    for x in (100, 168, 330, 400):
+        wheel(I, x, 344, 30)
+    I.add('<path d="M190 120 q-14 -20 4 -36 q16 -14 4 -30" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".7"/>')
+    sparkle(I, 470, 90, 16); sparkle(I, 60, 110, 12)
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-party','catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])

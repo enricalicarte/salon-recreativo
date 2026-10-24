@@ -295,6 +295,21 @@
    "play": "juegos/car-revamp/index.html"
   },
   {
+   "id": "bigrig",
+   "slug": "big-rig-usa",
+   "kw": "juego de camiones",
+   "cat": "motor",
+   "name": "Big Rig USA",
+   "note": "Simulador de camiones",
+   "blurb": "Simulador de camiones por las grandes autopistas americanas, con cámara a vista de pájaro: elige tu tráiler, acepta un encargo y llévalo a tiempo y sin golpes a través de desiertos, bosques, montañas y ciudades, entre el tráfico y con ciclo de día y noche. Conduces deslizando el dedo, giras la cámara 360° y haces zoom; hay control de crucero y asistente de carril.",
+   "tags": [
+    "Camiones",
+    "Simulador",
+    "Autopistas"
+   ],
+   "play": "juegos/big-rig-usa/index.html"
+  },
+  {
    "slug": "monster-smash",
    "id": "monster",
    "kw": "juego de monster truck",
