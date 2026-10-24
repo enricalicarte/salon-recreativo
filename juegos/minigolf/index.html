@@ -111,6 +111,47 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 .sharebtn{font-size:16px!important;padding:8px 16px!important}
 .leadbox{margin:8px 0}.leadbox input{font:inherit;font-weight:600;border:3px solid var(--ink);border-radius:12px;padding:7px 10px;width:min(100%,240px);margin-right:6px}
 @media (max-height:540px){.mapcard{padding:8px 10px}.maphead{margin-bottom:6px}}
+/* mapa: más claro y ordenado */
+.mapgrid{display:flex;flex-direction:column;gap:10px}
+.mapside{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pin span{font-size:clamp(10px,2.6vw,12px);padding:1px 7px}
+.pin.lock span{opacity:.85}
+.pin.lock small{display:none}
+.pin.lock i{width:clamp(30px,8vw,40px);height:clamp(30px,8vw,40px);font-size:clamp(14px,4vw,18px)}
+#mapNext{display:flex;align-items:center;gap:10px;background:var(--sun);border:3px solid var(--ink);border-radius:14px;padding:8px 10px;cursor:pointer;box-shadow:0 3px 0 rgba(43,58,92,.9);text-align:left}
+#mapNext .ne{font-size:28px;line-height:1}
+#mapNext b{display:block;font-size:16px;line-height:1.15}
+#mapNext small{display:block;font-size:12px;font-weight:600;opacity:.8}
+#mapNext .go{margin-left:auto;font-weight:700;font-size:15px;white-space:nowrap}
+#mapList{display:flex;flex-direction:column;gap:5px}
+.rstep{display:flex;align-items:center;gap:9px;background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:5px 9px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);width:100%;touch-action:manipulation}
+.rstep:active{transform:translateY(1px)}
+.rstep .n{width:24px;height:24px;flex:0 0 24px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.rstep .tx{flex:1;min-width:0}
+.rstep b{display:block;font-size:14px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rstep small{display:block;font-size:11.5px;font-weight:600;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rstep .bar{height:5px;border-radius:3px;background:rgba(43,58,92,.15);margin-top:3px;overflow:hidden}.rstep .bar i{display:block;height:100%;background:#ffb300}
+.rstep .r{font-size:15px;white-space:nowrap}
+.rstep.done{background:#fff6d6}
+.rstep.cur{border-color:#ef6f5a;box-shadow:0 0 0 2px #ef6f5a}
+.rstep.lock{opacity:.6}.rstep.lock .n{filter:grayscale(1)}
+#mapRow{margin-top:0}
+#ballsBox{border:2px solid var(--ink);border-radius:12px;background:var(--paper);padding:4px 8px}
+#ballsBox summary{cursor:pointer;font-weight:700;font-size:14px;list-style:none;padding:3px 0}
+#ballsBox summary::-webkit-details-marker{display:none}
+#ballsBox summary::after{content:' ▾';opacity:.6}#ballsBox[open] summary::after{content:' ▴'}
+#ballsBox small{font-weight:600;opacity:.65}
+#balls{margin:6px 0 4px}#balls .lbl{display:none}
+#balls .chip{width:38px;height:38px}
+#mapStats{margin-top:0;text-align:center}
+.linkbtn{background:none;border:0;font:inherit;font-size:12.5px;font-weight:700;color:#c4432f;text-decoration:underline;cursor:pointer;align-self:center;padding:2px 6px}
+/* horizontal: mapa a la izquierda, ruta y botones a la derecha, todo cabe sin hacer scroll */
+@media (orientation:landscape) and (min-width:600px){
+  .mapcard{width:min(97vw,1100px)}
+  .mapgrid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,1fr);align-items:start}
+  .mapbox{aspect-ratio:auto;height:min(calc(100vh - 110px),560px)}
+  .mapside{max-height:min(calc(100vh - 110px),560px);overflow-y:auto;padding-right:2px}
+}
 
 .panel .mp{max-height:min(84vh,760px);overflow:auto;margin:-6px -10px;padding:6px 10px}
 .mp input{font-family:inherit;font-weight:700;font-size:20px;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px 12px;text-align:center;width:100%;max-width:260px;user-select:text;-webkit-user-select:text;touch-action:manipulation}
@@ -193,7 +234,7 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
 </div>
 <div id="map" class="ov"><div class="card mapcard">
   <div class="maphead"><button class="btn ib" id="mapBack" title="Volver">‹</button><b id="mapTitle">Campeonato Hawaiano</b><span id="mapStars"></span></div>
-  <div class="mapbox" id="mapbox">
+  <div class="mapgrid"><div class="mapbox" id="mapbox">
    <svg id="mapSvg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
     <defs><linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fdcf0"/><stop offset="1" stop-color="#2f9fcf"/></linearGradient></defs>
     <rect width="400" height="300" fill="url(#sea)"/>
@@ -204,7 +245,7 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.65}
     <g id="mapBoat" transform="translate(40 40)"><path d="M-14 0h28l-5 8h-18z" fill="#fff" stroke="#2b3a5c" stroke-width="2"/><path d="M0 0V-18l12 12z" fill="#ef6f5a" stroke="#2b3a5c" stroke-width="1.5"/></g>
    </svg>
   </div>
-  <div id="mapRow"></div><div id="balls"></div><div id="mapStats"></div>
+  <div class="mapside"><div id="mapNext"></div><div id="mapRow"></div><div id="mapList"></div><details id="ballsBox"><summary>🎨 Tu bola <small id="ballsCnt"></small></summary><div id="balls"></div></details><div id="mapStats"></div><button class="linkbtn" id="bReset">↺ Empezar de cero</button></div></div>
  </div></div>
 <div id="mpBoard" class="ui card"></div><div id="mpWait" class="ui card"></div>
 <div id="dim" class="ov"><div class="card panel" id="pnl"></div></div>
@@ -1425,6 +1466,12 @@ function lockWhy(t,long){const o=TOURS[t],k=o.isle;
   return ''}
 /* siguiente paso de la ruta: el primer torneo abierto sin medalla; si no hay, el siguiente cerrado */
 function routeNext(){routeInit();const a=ROUTE.find(t=>routeOpen(t)&&!medalOf(t));if(a!=null)return{t:a,open:true};const b=ROUTE.find(t=>!routeOpen(t));return b!=null?{t:b,open:false}:null}
+/* hoyo para «Continuar»: el siguiente de la ruta. Si el siguiente torneo aún está cerrado por estrellas,
+   un hoyo de esa isla donde se puedan ganar estrellas (el que menos tenga). */
+function contHole(){routeInit();const n=routeNext();
+  if(n&&n.open){const H=TOURS[n.t].h;return H.find(i=>starsOf(i)<1)??H.find(i=>starsOf(i)<3)??H[0]}
+  if(n){const k=TOURS[n.t].isle;if(isleUnlocked(k)){let best=-1,bs=9;for(const t of ISLES[k].tours){if(!tourOpen(t))continue;for(const i of TOURS[t].h){const v=starsOf(i);if(v<bs){bs=v;best=i}}}if(best>=0&&bs<3)return best}}
+  return nextHole()}
 function routeAfter(t){routeInit();const k=ROUTE.indexOf(t);for(let q=k+1;q<ROUTE.length;q++)if(routeOpen(ROUTE[q]))return ROUTE[q];return -1}
 
 let dailyMode=false;
@@ -1584,18 +1631,42 @@ function renderMap(){
   else{ISLES[curIsle].tours.forEach((t,j)=>{const o=TOURS[t],op=tourOpen(t),b=document.createElement('button');b.className='pin'+(op?'':' lock');b.style.left=o.pin[0]+'%';b.style.top=o.pin[1]+'%';
       b.innerHTML='<i style="background:'+o.col+'">'+(op?(t===13?'🏆':j+1):'🔒')+'</i><span>'+o.name+'<small>'+(op?'★ '+tourStars(t)+' / '+tourMax(t)+' '+medalOf(t):lockWhy(t))+'</small></span>';b.onclick=()=>{S.ui();openTour(t)};mb.appendChild(b)})}
   const dh=dailyHole(),td=todayStr(),dn=prog.d.bd===td;
-  $('mapRow').innerHTML='<button class="btn big" id="bCont">▶ Continuar<small>'+HOLES[nextHole()].name+'</small></button><button class="btn big c2" id="bDaily">🎯 Reto del día<small>'+HOLES[dh].name+(dn?' · ✓ '+prog.d.bs:'')+(prog.d.streak?' · 🔥'+prog.d.streak:'')+'</small></button>';
-  $('bCont').onclick=()=>{const i=nextHole();startTour(tourOf[i],posOf[i])};
-  {const n=routeNext();if(n){const o=TOURS[n.t],I=ISLES[o.isle],d=document.createElement('div');d.className='routehint';
-    d.innerHTML='📍 '+(n.open?'Siguiente en la ruta: <b>'+I.emo+' '+o.name+'</b>':'Próximo: <b>'+I.emo+' '+o.name+'</b> · '+lockWhy(n.t));
-    d.onclick=()=>{S.ui();if(mapMode==='arch'&&ISLES[o.isle].tours.length>1){openIsle(o.isle)}else openTour(n.t)};$('mapRow').prepend(d)}}$('bDaily').onclick=startDaily;
+  const ch=contHole();
+  $('mapRow').innerHTML='<button class="btn big" id="bCont">▶ Continuar<small>'+TOURS[tourOf[ch]].name.replace(/^Copa /,'')+' · hoyo '+(posOf[ch]+1)+'</small></button><button class="btn big c2" id="bDaily">🎯 Reto del día<small>'+HOLES[dh].name+(dn?' · ✓ '+prog.d.bs:'')+(prog.d.streak?' · 🔥'+prog.d.streak:'')+'</small></button>';
+  $('bCont').onclick=()=>{const i=contHole();startTour(tourOf[i],posOf[i])};
+  {const n=routeNext(),mn=$('mapNext');if(n){const o=TOURS[n.t],I=ISLES[o.isle];
+    mn.style.display='';mn.innerHTML='<span class="ne">'+(n.open?'📍':'🔒')+'</span><span><small>'+(n.open?'Siguiente en la ruta':'Próximo torneo')+'</small><b>'+I.emo+' '+o.name+'</b>'+(n.open?'<small>'+I.name+' · '+o.sub+'</small>':'<small>'+lockWhy(n.t)+'</small>')+'</span><span class="go">'+(n.open?'Jugar ▶':'Ver')+'</span>';
+    mn.onclick=()=>{S.ui();if(n.open)startTour(n.t,Math.max(0,TOURS[n.t].h.findIndex(i=>starsOf(i)<1)));else openTour(n.t)}}else{mn.style.display='';mn.innerHTML='<span class="ne">🏆</span><span><b>¡Campeonato completado!</b><small>Mejora tus medallas o juega el reto del día</small></span>';mn.onclick=null}}
+  renderList();$('bDaily').onclick=startDaily;
   let g=0,sv=0,br=0;TOURS.forEach((_,t)=>{const m=medalOf(t);if(m==='🥇')g++;else if(m==='🥈')sv++;else if(m==='🥉')br++});
   $('mapStats').textContent='⛳ '+prog.st.holes+' hoyos · 🏌️ '+prog.st.strokes+' golpes · 🏆 '+prog.st.aces+' hoyos en uno · 🥇'+g+' 🥈'+sv+' 🥉'+br;
+  $('ballsCnt').textContent='· '+BALLS.filter((_,i)=>ballOpen(i)).length+' / '+BALLS.length+' desbloqueadas';$('bReset').onclick=()=>{S.ui();askReset()};
   const bl=$('balls');bl.innerHTML='<div class="lbl">Tu bola · se desbloquean con estrellas</div>';
   BALLS.forEach((o,i)=>{const op=ballOpen(i),c=document.createElement('button');c.className='chip'+(op?'':' lock')+(prog.ball===i?' sel':'');c.title=o.n+(op?'':' · '+o.need+' ⭐');
     c.style.backgroundImage='url('+ballTexFor(i).image.toDataURL()+')';c.innerHTML=op?'':'<b>🔒<br>'+o.need+'</b>';
     c.onclick=()=>{S.ui();if(!op){toast(o.n,'Consigue '+o.need+' ⭐ para desbloquearla',1600);return}prog.ball=i;saveProg();applyBall(i);renderMap()};bl.appendChild(c)})
 }
+/* lista de la derecha: en el archipiélago, la ruta isla a isla; dentro de una isla, sus torneos en orden */
+function renderList(){routeInit();const L=$('mapList');let h='';
+  if(mapMode==='arch'){
+    ISLES.forEach((I,k)=>{const op=isleOpen(k),dn=isleDone(k),cur=op&&!dn,mx=I.tours.filter(t=>t!==FINAL_T).reduce((a,t)=>a+tourMax(t),0),st=isleRouteStars(k);
+      const meds=I.tours.filter(t=>t!==FINAL_T).map(medalOf).join('');
+      h+='<button class="rstep'+(dn?' done':cur?' cur':op?'':' lock')+'" data-k="'+k+'"><span class="n" style="background:'+TOURS[I.tours[0]].col+'">'+(k+1)+'</span><span class="tx"><b>'+I.emo+' '+I.name+'</b><small>'+(op?st+' / '+mx+' ★ '+meds:'🔒 Termina '+ISLES[k-1].name)+'</small>'+(op?'<span class="bar"><i style="width:'+Math.round(st/mx*100)+'%"></i></span>':'')+'</span><span class="r">'+(dn?'✅':cur?'▶':op?'':'🔒')+'</span></button>'});
+    const fo=tourOpen(FINAL_T);
+    h+='<button class="rstep'+(medalOf(FINAL_T)?' done':fo?' cur':' lock')+'" data-t="'+FINAL_T+'"><span class="n" style="background:#ffc94d">🏆</span><span class="tx"><b>Gran Final Hawaiana</b><small>'+(fo?'18 hoyos en Kauai · ★ '+tourStars(FINAL_T)+' / '+tourMax(FINAL_T)+' '+medalOf(FINAL_T):'🥇 en la final de cada isla')+'</small></span><span class="r">'+(medalOf(FINAL_T)?'✅':fo?'▶':'🔒')+'</span></button>';
+  }else{
+    const ts=ROUTE.filter(t=>TOURS[t].isle===curIsle);
+    ts.forEach((t,j)=>{const o=TOURS[t],op=tourOpen(t),md=medalOf(t),nx=routeNext(),cur=nx&&nx.t===t;
+      h+='<button class="rstep'+(md?' done':cur?' cur':op?'':' lock')+'" data-t="'+t+'"><span class="n" style="background:'+o.col+'">'+(t===FINAL_T?'🏆':j+1)+'</span><span class="tx"><b>'+o.name+'</b><small>'+(op?'★ '+tourStars(t)+' / '+tourMax(t)+' · '+o.h.length+' hoyos':lockWhy(t))+'</small>'+(op?'<span class="bar"><i style="width:'+Math.round(tourStars(t)/tourMax(t)*100)+'%"></i></span>':'')+'</span><span class="r">'+(md||(op?'▶':'🔒'))+'</span></button>'});
+  }
+  L.innerHTML=h;
+  L.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{S.ui();openIsle(+b.dataset.k)});
+  L.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.ui();openTour(+b.dataset.t)});
+}
+/* empezar de cero: borra estrellas, récords, medallas, racha y estadísticas (se pide confirmación) */
+function askReset(){openPanel('<h2>↺ Empezar de cero</h2><p>Se borrarán todas tus estrellas, medallas, récords, bolas desbloqueadas y la racha del reto del día. Volverás a empezar el campeonato en Kauai.<br><b>No se puede deshacer.</b></p><div class="pbtns"><button class="btn big" id="bRsNo">Cancelar</button><button class="btn big c2" id="bRsYes" style="background:#ef6f5a;color:#fff">Borrar y empezar</button></div>');
+  $('bRsNo').onclick=()=>{S.ui();closePanel()};
+  $('bRsYes').onclick=()=>{S.ui();prog={s:{},b:{},ball:0,st:{holes:0,strokes:0,aces:0},d:{last:0,streak:0,bd:0,bs:0},lead:prog.lead||0};saveProg();applyBall(0);closePanel();mapMode='arch';renderMap();toast('Progreso borrado','¡A por el Campeonato Hawaiano!',2000)}}
 function openIsle(k){const I=ISLES[k];if(I.tours.length===1){openTour(I.tours[0]);return}curIsle=k;mapMode='isle';renderMap()}
 function openTour(t){
   const o=TOURS[t],I=ISLES[o.isle];
