@@ -223,11 +223,12 @@ const MAXANISO = renderer.capabilities.getMaxAnisotropy();
 const settings = {
   quality: isTouch ? 'media' : 'alta',
   units: 'kmh',
-  laneAssist: false,
+  laneAssist: true,
   cruise: isTouch,
   sound: true
 };
 try { const s = JSON.parse(localStorage.getItem('bigrig_settings') || '{}'); Object.assign(settings, s); } catch (e) {}
+if (!settings.v2) { settings.laneAssist = true; settings.v2 = 1; }  // conducción fácil: asistente de carril activado
 function saveSettings() { try { localStorage.setItem('bigrig_settings', JSON.stringify(settings)); } catch (e) {} }
 
 const scene = new THREE.Scene();
@@ -1522,11 +1523,13 @@ const post = (() => {
       gl_FragColor=vec4(s,1.); }`, { tex: { value: null }, dir: { value: new THREE.Vector2() } });
   const matCopy = mk(`uniform sampler2D tex; varying vec2 vUv; void main(){ gl_FragColor=vec4(texture2D(tex,vUv).rgb,1.); }`, { tex: { value: null } });
   const matFinal = mk(`
-    uniform sampler2D tex, b0, b1, b2, b3; uniform vec2 px; uniform float exposure, bloom, tilt, time, night, vig, dusk, hasB3; varying vec2 vUv;
+    uniform sampler2D tex, b0, b1, b2, b3; uniform vec2 px; uniform float exposure, bloom, tilt, time, night, vig, dusk, hasB3, spd; varying vec2 vUv;
     vec3 aces(vec3 x){ return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14),0.,1.); }
     float hash(vec2 p){ return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453); }
     void main(){
       vec2 uv=vUv; vec3 c=texture2D(tex,uv).rgb;
+      // sensación de velocidad: desenfoque radial hacia los bordes
+      if(spd>0.02){ vec2 d=(uv-vec2(0.5,0.55)); float k=spd*smoothstep(0.12,0.75,length(d))*0.06; vec3 sb=c; for(int i=1;i<7;i++){ sb+=texture2D(tex,uv-d*k*float(i)/6.).rgb; } c=sb/7.; }
       // tilt-shift suave: desenfoca arriba y abajo para dar aspecto de maqueta
       float band=smoothstep(0.30,0.52,abs(uv.y-0.47));
       float r=tilt*band*5.0;
@@ -1549,7 +1552,7 @@ const post = (() => {
       vec2 q=uv-.5; q.x*=1.1; float v=1.-vig*smoothstep(0.32,0.95,length(q)); c*=v;
       c+=(hash(uv*vec2(1731.,911.)+time)-.5)*0.018;
       gl_FragColor=vec4(c,1.);
-    }`, { tex: { value: null }, b0: { value: null }, b1: { value: null }, b2: { value: null }, b3: { value: null }, px: { value: new THREE.Vector2(1, 1) }, exposure: { value: 1 }, bloom: { value: 0.5 }, tilt: { value: 1 }, time: { value: 0 }, night: { value: 0 }, vig: { value: 0.38 }, dusk: { value: 0 }, hasB3: { value: 1 } });
+    }`, { tex: { value: null }, b0: { value: null }, b1: { value: null }, b2: { value: null }, b3: { value: null }, px: { value: new THREE.Vector2(1, 1) }, exposure: { value: 1 }, bloom: { value: 0.5 }, tilt: { value: 1 }, time: { value: 0 }, night: { value: 0 }, vig: { value: 0.38 }, dusk: { value: 0 }, spd: { value: 0 }, hasB3: { value: 1 } });
 
   let rtS = null, rtA = [], rtB = [];
   function dispose() { if (rtS) rtS.dispose(); rtA.forEach(t => t.dispose()); rtB.forEach(t => t.dispose()); rtA = []; rtB = []; }
@@ -1580,6 +1583,7 @@ const post = (() => {
     }
     const u = matFinal.uniforms;
     u.tex.value = rtS.texture; u.b0.value = rtB[0].texture; u.b1.value = rtB[1].texture; u.b2.value = rtB[2].texture; u.b3.value = (rtB[3] || rtB[2]).texture;
+    u.spd.value = st.started ? clamp((Math.abs(st.v) - 18) / 26, 0, 1) * (cam.mode === 1 ? 0.3 : 1) + (st.turboOn ? 0.35 : 0) : 0;
     u.exposure.value = ex * (cam.mode === 3 ? 1 + 0.25 * tod.night + 0.12 : 1); u.bloom.value = lerp(0.3, 0.85, tod.night) * (cam.mode === 3 ? 0 : 1); u.tilt.value = P.hi && cam.mode !== 3 ? 1 : 0; u.time.value = time % 10; u.night.value = tod.night;
     u.dusk.value = Math.exp(-Math.pow((tod.sunElev - 0.04) / 0.2, 2)) * tod.day;
     pass(matFinal, null);
@@ -1630,7 +1634,7 @@ function readInputs(dt) {
   inp.steerRaw = steerT;
   // crucero
   if (st.cruise && !rev) {
-    let vc = 27;
+    let vc = 34;
     if (st.job) {
       const dz = wrapD(zone.s - st.s);
       if (dz > -8 && dz < 190) vc = Math.min(vc, Math.sqrt(Math.max(0, 2 * 2.2 * (dz - 1.0))));
@@ -1651,15 +1655,21 @@ function readInputs(dt) {
       if (vc < 0.4 && st.v < 2) { thr = 0; brk = 1; }
     }
   }
+  // frenada de emergencia automática (con el asistente activado): si te echas encima del de delante, frena por ti
+  if (settings.laneAssist && st.side > 0 && st.v > 6 && !rev) {
+    let gapMin = 1e9, lead = null;
+    for (const v of traffic) { if (v.state !== 0 || v.dir !== 1) continue; if (Math.abs(LANE_C[v.lane] - st.lat) > 2.4) continue; const gp = v.rel - v.len / 2 - 7.5; if (gp > -2 && gp < gapMin) { gapMin = gp; lead = v; } }
+    if (lead) { const dv = st.v - lead.speed, need = dv > 0 ? dv * dv / (2 * 6.5) + 7 : 0; if (dv > 1 && gapMin < need) { brk = Math.max(brk, clamp((need - gapMin) / 6 + 0.4, 0, 1)); thr = 0; st.autoBrake = 1; } else st.autoBrake = 0; }
+  }
   // asistente de carril
-  if (settings.laneAssist && Math.abs(steerT) < 0.02 && st.v > 4 && !rev) {
+  if (settings.laneAssist && Math.abs(steerT) < 0.1 && st.v > 4 && !rev) {
     const hroad = Math.atan2(tx[st.idx], tz[st.idx]);
     const hr = Math.abs(angDiff(st.h, hroad)) > Math.PI / 2 ? hroad + Math.PI : hroad;
     const lat = Math.abs(st.lat); let lc = LANE_C[1], bd = 99; for (const c of LANE_C) { const d = Math.abs(lat - c); if (d < bd) { bd = d; lc = c; } }
     const e = lat - lc;                       // >0: a la derecha del centro del carril
     const hd = hr + clamp(0.045 * e, -0.2, 0.2);
     const om = 2.0 * angDiff(st.h, hd);
-    const dm = 0.6 / (1 + Math.pow(st.v / 9, 2));
+    const dm = 0.6 / (1 + Math.pow(st.v / 15, 2));
     steerT = clamp(-om * LW / (Math.max(st.v, 4) * dm), -1, 1);
     inp.analog = true; st.steerAssistOn = true;
   } else st.steerAssistOn = false;
@@ -1683,12 +1693,12 @@ function obbHit(ax, az, ah, ahl, ahw, bx, bz, bh, bhl, bhw) {
   }
   OBB.depth = minO; OBB.nx = nx; OBB.nz = nz; return true;
 }
-function gearOf(v) { const th = [0, 3.5, 7, 11, 15, 19, 23, 27, 40]; let g = 0; while (g < 7 && v > th[g + 1]) g++; return { g: g + 1, lo: th[g], hi: th[g + 1] }; }
+function gearOf(v) { const th = [0, 4, 8.5, 13, 18, 23, 28, 33, 52]; let g = 0; while (g < 7 && v > th[g + 1]) g++; return { g: g + 1, lo: th[g], hi: th[g + 1] }; }
 
 const sfx = { crash: () => {}, scrape: () => {}, deliver: () => {}, hiss: () => {} };
 
 function stepPlayer(dt) {
-  const vmaxF = st.turboOn ? 40 : 31.5;
+  const vmaxF = st.turboOn ? 50 : 38.5;
   // turbo
   if (inp.turbo && st.turbo > 0.03 && inp.thr > 0 && st.v > 2) { st.turboOn = true; st.turbo = Math.max(0, st.turbo - 0.26 * dt); st.turboCD = 1.2; }
   else { st.turboOn = false; st.turboCD -= dt; if (st.turboCD <= 0) st.turbo = Math.min(1, st.turbo + 0.09 * dt); }
@@ -1697,12 +1707,12 @@ function stepPlayer(dt) {
   if (inp.rev) { if (v > -6) a = -2.6; if (v > 0.5) a = -10; }
   else if (inp.thr > 0) {
     const frc = Math.max(0, 1 - Math.pow(Math.max(v, 0) / vmaxF, 1.6));
-    a += inp.thr * (st.turboOn ? 6.4 : 3.5) * frc; if (v < 0) a += inp.thr * 5;
+    a += inp.thr * (st.turboOn ? 9 : 5.4) * frc; if (v < 0) a += inp.thr * 5;
   }
   let braking = false;
-  if (inp.brk > 0) { a -= Math.sign(v || 1) * inp.brk * 10.5; braking = true; }
+  if (inp.brk > 0) { a -= Math.sign(v || 1) * inp.brk * 13; braking = true; }
   if (inp.hand) { a -= Math.sign(v || 1) * 15; braking = true; }
-  const drag = Math.sign(v) * (0.22 + 0.00075 * v * v); a -= drag;
+  const drag = Math.sign(v) * (0.2 + 0.0005 * v * v); a -= drag;
   let nv = v + a * dt;
   if ((braking || (!inp.thr && !inp.rev)) && v * nv < 0) nv = 0;
   if (nv > vmaxF) nv -= 5 * dt;
@@ -1710,12 +1720,12 @@ function stepPlayer(dt) {
   // dirección
   const absV = Math.abs(v);
   const target = inp.steer;
-  const rate = inp.analog ? 12 : (Math.abs(target) > Math.abs(st.steer) || Math.sign(target) !== Math.sign(st.steer) && Math.abs(target) > 0.01 ? 3.4 / (1 + absV / 14) : 6.5);
+  const rate = inp.analog ? 12 : (Math.abs(target) > Math.abs(st.steer) || Math.sign(target) !== Math.sign(st.steer) && Math.abs(target) > 0.01 ? 5.5 / (1 + absV / 30) : 8);
   st.steer += clamp(target - st.steer, -rate * dt, rate * dt);
-  const dmax = 0.6 / (1 + Math.pow(absV / 9, 2));
+  const dmax = 0.6 / (1 + Math.pow(absV / 15, 2));
   const delta = st.steer * dmax;
   let yaw = -(v * Math.tan(delta)) / LW;
-  if (absV > 1) yaw = clamp(yaw, -9 / absV, 9 / absV);
+  if (absV > 1) yaw = clamp(yaw, -12 / absV, 12 / absV);
   st.yaw = yaw;
   st.h += yaw * dt;
   const fx = Math.sin(st.h), fz = Math.cos(st.h);
@@ -1751,10 +1761,10 @@ function stepPlayer(dt) {
     const dd = angDiff(st.h, hr);
     if (!st.wallTouch) {
       const imp = Math.abs(st.v) * Math.abs(Math.sin(dd));
-      if (imp > 2.0) { const dm = clamp(imp * 0.55, 0.5, 9); st.damage += dm; st.jobDamage += dm; st.shake = Math.min(1, 0.25 + imp * 0.05); st.v *= (1 - clamp(imp * 0.03, 0, 0.35)); sfx.crash(imp / 10); flashDamage(); }
+      if (imp > 3.5) { const dm = clamp(imp * 0.35, 0.5, 6); st.damage += dm; st.jobDamage += dm; st.shake = Math.min(1, 0.25 + imp * 0.05); st.v *= (1 - clamp(imp * 0.02, 0, 0.25)); sfx.crash(imp / 10); flashDamage(); }
     }
-    st.h += dd * Math.min(1, 5 * dt);
-    st.v *= Math.exp(-0.7 * dt);
+    st.h += dd * Math.min(1, 7 * dt);
+    st.v *= Math.exp(-0.4 * dt);
     if (Math.abs(st.v) > 4 && rnd() < 0.6) {
       const k = (viol > 0 ? 1 : -1) * side;
       for (let q = 0; q < 2; q++) sparkPool.emit(st.x + fx * (R(-2, 7)) + rx[st.idx] * side * (viol > 0 ? 1.3 : -1.3), 0.6, st.z + fz * R(-2, 7), R(-3, 3) + fx * st.v * 0.3, R(1, 4), R(-3, 3) + fz * st.v * 0.3, R(0.3, 0.7), 0.25, 0.1, 1, 0.75, 0.3, 1, 9);
@@ -1880,7 +1890,7 @@ function updateTraffic(dt) {
         const dvp = -(j / MASS_P) * (nx * fx + nz * fz);
         st.v = Math.max(st.v + dvp, st.v * 0.55 - 0.5);
         if (v.state === 0 || v.cd <= 0) {
-          const imp = -vr; const dm = clamp(imp * 0.5, 0.6, 12); st.damage += dm; st.jobDamage += dm; st.shake = Math.min(1, 0.4 + imp * 0.04);
+          const imp = -vr; const dm = clamp(imp * 0.32, 0.5, 7); st.damage += dm; st.jobDamage += dm; st.shake = Math.min(1, 0.4 + imp * 0.04);
           sfx.crash(imp / 12); flashDamage();
           if (imp > 5) toast('¡Colisión!', 'bad');
           for (let q = 0; q < 14; q++) sparkPool.emit(v.x - nx * v.len * 0.3, 0.8, v.z - nz * v.len * 0.3, R(-5, 5), R(2, 7), R(-5, 5), R(0.3, 0.8), 0.3, 0.1, 1, 0.8, 0.35, 1, 10);
@@ -1922,7 +1932,7 @@ function startJob(j) {
 
 /* ---------- cámara ---------- */
 function updateCamera(dt) {
-  const v = Math.abs(st.v), sp = clamp(v / 33, 0, 1);
+  const v = Math.abs(st.v), sp = clamp(v / 42, 0, 1);
   const fx = Math.sin(st.h), fz = Math.cos(st.h);
   const m = cam.mode;
   const lead = m === 0 ? lerp(5, 24, sp) : m === 1 ? lerp(6, 26, sp) : lerp(8, 18, sp);
@@ -1933,14 +1943,14 @@ function updateCamera(dt) {
   if (truck.cabin && truck.cabin.g.visible) cabinView(false);
   if (camera.near !== 0.5) { camera.near = 0.5; camera.updateProjectionMatrix(); }
   let height, back, fov;
-  if (m === 0) { height = lerp(34, 60, sp); back = height * 0.9; fov = 42; }
+  if (m === 0) { height = lerp(32, 40, sp); back = height * lerp(0.9, 1.05, sp); fov = 42 + sp * 14; }
   else if (m === 1) { height = lerp(95, 140, sp); back = height * 0.06; fov = 40; }
-  else { height = lerp(13, 19, sp); back = lerp(25, 32, sp); fov = 52; }
-  if (st.turboOn) { height *= 1.06; fov += 4; }
+  else { height = lerp(13, 11, sp); back = lerp(25, 22, sp); fov = 52 + sp * 16; }
+  if (st.turboOn) { fov += 7; cam.shake = Math.max(cam.shake, 0.18); }
   cam.h = damp(cam.h, height, 3, dt); cam.fov = damp(cam.fov, fov, 3, dt);
   const cfx = Math.sin(cam.head), cfz = Math.cos(cam.head);
   cam.shake = Math.max(0, cam.shake - dt * 1.6); cam.shake = Math.max(cam.shake, st.shake); st.shake = Math.max(0, st.shake - dt * 2.2);
-  const sh = cam.shake * cam.shake * 1.0;
+  const sh = cam.shake * cam.shake * 1.0 + sp * sp * 0.06;
   const jx = (rnd() - 0.5) * sh, jz = (rnd() - 0.5) * sh, jy = (rnd() - 0.5) * sh * 0.6;
   { const el0 = Math.atan2(cam.h, Math.max(0.5, back)), D = Math.hypot(cam.h, back) * cam.zoom;
     const el1 = clamp(el0 + cam.pitchOff, 0.1, 1.5), yw = cam.head + cam.yawOff, ce = Math.cos(el1);
@@ -1954,7 +1964,7 @@ function cabinView(on) { truck.cabin.g.visible = on; truck.tractor.body.children
 /* vista desde el asiento del conductor (a la izquierda, como en los camiones americanos) */
 function cabinCam(dt) {
   const h = st.h, fx = Math.sin(h), fz = Math.cos(h), lx = Math.cos(h), lz = -Math.sin(h);
-  const v = Math.abs(st.v), sp = clamp(v / 33, 0, 1);
+  const v = Math.abs(st.v), sp = clamp(v / 42, 0, 1);
   if (truck.cabin) { if (!truck.cabin.g.visible) cabinView(true); truck.cabin.wheel.rotation.z = -st.steer * 2.6; const nd = truck.cabin.g.userData.needle; if (nd) nd.rotation.z = 1.2 - clamp((st.rpm || 900) / 2200, 0, 1) * 2.4; }
   cam.shake = Math.max(0, cam.shake - dt * 1.6); cam.shake = Math.max(cam.shake, st.shake); st.shake = Math.max(0, st.shake - dt * 2.2);
   const sh = cam.shake * cam.shake * 0.25, bump = Math.sin(performance.now() * 0.021) * 0.012 * sp;
@@ -1967,7 +1977,7 @@ function cabinCam(dt) {
   camera.rotateZ(-st.roll * 0.8);
   /* campo de visión pensado en horizontal (~82°): en apaisado no sobra techo ni morro y en vertical no se estrecha demasiado */
   const vf = clamp(2 * Math.atan(Math.tan(41 * Math.PI / 180) / camera.aspect) * 180 / Math.PI, 42, 58);
-  const fov = clamp(vf / Math.sqrt(cam.zoom) + (st.turboOn ? 4 : 0) + sp * 3, 24, 90);
+  const fov = clamp(vf / Math.sqrt(cam.zoom) + (st.turboOn ? 8 : 0) + sp * 12, 24, 100);
   cam.fov = damp(cam.fov, fov, 4, dt);
   if (camera.near !== 0.08 || Math.abs(camera.fov - cam.fov) > 0.01) { camera.near = 0.08; camera.fov = cam.fov; camera.updateProjectionMatrix(); }
   cam.tx = st.x; cam.tz = st.z; cam.head = h;
@@ -2251,7 +2261,7 @@ addEventListener('orientationchange', () => setTimeout(resize, 200));
   const endDrive = () => { drv = null; touch.active = false; touch.steer = 0; touch.gas = touch.brake = touch.turbo = false; ring.style.display = dot.style.display = 'none'; };
   const setDrive = (x, y) => {
     let dx = x - ox, dy = y - oy; const m = Math.hypot(dx, dy), R = 60; if (m > R) { dx *= R / m; dy *= R / m; }
-    touch.steer = clamp(dx / 55, -1, 1); touch.active = true;
+    { const r = clamp(dx / 58, -1, 1), a0 = Math.max(0, Math.abs(r) - 0.12) / 0.88; touch.steer = Math.sign(r) * Math.pow(a0, 1.35); } touch.active = true;
     touch.gas = dy < 24; touch.brake = dy >= 24; touch.turbo = dy < -52;
     dot.style.left = (ox + dx) + 'px'; dot.style.top = (oy + dy) + 'px';
   };
