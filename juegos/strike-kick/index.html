@@ -92,6 +92,21 @@
   .steps b{color:var(--gd)}
   .seg{display:flex;gap:5px;background:rgba(255,255,255,.08);padding:4px;border-radius:14px;margin:0 0 4px}
   .seg button{flex:1;border:0;border-radius:10px;padding:8px 4px;font-size:13px;font-weight:900;background:transparent;color:#fff;opacity:.7;cursor:pointer}
+  #players{display:flex;flex-direction:column;gap:6px;margin:4px 0 6px}
+  #players input{width:100%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;border-radius:12px;padding:8px 12px;font-size:15px;font-weight:800;outline:none}
+  #players input:focus{border-color:#ffe14d}
+  #pbar{display:flex;gap:5px;max-width:680px;margin:5px auto 0;flex-wrap:wrap;justify-content:center}
+  #pbar div{display:flex;align-items:center;gap:6px;background:rgba(10,16,48,.62);border:1.5px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:900;color:#fff}
+  #pbar div.on{border-color:#ffe14d;background:rgba(80,60,0,.55)}
+  #pbar i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  #pbar b{font-family:var(--display);font-weight:400;font-size:15px;color:#ffe14d}
+  #mpRank{display:flex;flex-direction:column;gap:6px;margin:10px 0 4px}
+  #mpRank div{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:8px 12px;text-align:left}
+  #mpRank div.w{border-color:#ffe14d;background:rgba(255,210,63,.16)}
+  #mpRank em{font-style:normal;font-size:20px;width:28px;text-align:center}
+  #mpRank span{flex:1;font-weight:900;font-size:16px}
+  #mpRank small{opacity:.7;font-weight:700;font-size:12px;display:block}
+  #mpRank b{font-family:var(--display);font-weight:400;font-size:24px;color:#ffe14d}
   .seg button.on{background:linear-gradient(180deg,#ffe14d,#f59e0b);color:#4a2500;opacity:1}
   .lbl{font-size:11px;letter-spacing:1.4px;opacity:.65;text-align:left;margin:4px 4px 5px;font-weight:900}
   button.big{display:block;width:100%;border:0;border-radius:18px;padding:15px;font-size:19px;font-family:var(--display);font-weight:400;letter-spacing:.6px;cursor:pointer;margin-top:10px}
@@ -130,6 +145,7 @@
     </div>
   </div>
   <div id="board"></div>
+  <div id="pbar"></div>
   <div id="camChip"></div>
 </div>
 <div id="rack"><em>BOLOS</em></div>
@@ -145,6 +161,9 @@
       <div><em>🦵</em><span><b>Golpea el balón</b> con la mano o el pie, moviéndote rápido.</span></div>
       <div><em>🎯</em><span>Sale hacia <b>donde mueves</b>. Más rápido, más fuerza.</span></div>
     </div>
+    <div class="lbl">JUGADORES · EN ESTE MISMO DISPOSITIVO</div>
+    <div class="seg" id="npSeg"><button data-np="1">1</button><button data-np="2">2</button><button data-np="3">3</button><button data-np="4">4</button></div>
+    <div id="players"></div>
     <div class="lbl">SENSIBILIDAD DEL GOLPE</div>
     <div class="seg" data-seg><button data-sens="easy">Fácil</button><button data-sens="normal">Normal</button><button data-sens="pro">Pro</button></div>
     <button class="big b1" id="goCam">📷 EMPEZAR CON CÁMARA</button>
@@ -167,6 +186,7 @@
 <div class="overlay hidden" id="over">
   <div class="card">
     <div class="logo" style="font-size:40px">PARTIDA<span>TERMINADA</span></div>
+    <div id="mpRank"></div>
     <div id="final">0</div>
     <div id="stars"></div>
     <div id="newbest">🏆 ¡NUEVO RÉCORD!</div>
@@ -601,9 +621,9 @@ function updateHud(){
     d.querySelector('.cm').textContent = fr.cum ?? '';
     d.classList.toggle('cur', f === G.frame && G.state !== 'over');
   }
-  targetScore = sc.total;
+  targetScore = sc.total; renderPBar();
   $('#frameTxt').textContent = Math.min(G.frame+1,10) + '/10';
-  $('#ballTxt').textContent = 'Bola ' + G.ball;
+  $('#ballTxt').textContent = (NPL > 1 && PL[cur] ? PL[cur].name + ' · ' : '') + 'Bola ' + G.ball;
   pins.forEach((p,i) => rackDots[i].classList.toggle('dn', p.knocked));
 }
 let targetScore = 0;
@@ -637,6 +657,28 @@ function pill(x,y,text,bg,fg,size=14){
 }
 
 /* ================= estado del juego ================= */
+/* ===== varios jugadores en el mismo dispositivo: se turnan, un turno (frame) cada uno ===== */
+const PCOL = ['#ffe14d','#38e8ff','#ff5fb0','#7CFF6B'];
+let NPL = Math.min(4, Math.max(1, parseInt(store.get('sk-np','1'),10) || 1));
+let PNAMES = (() => { try { const a = JSON.parse(store.get('sk-names','[]')); return Array.isArray(a) ? a : []; } catch(e){ return []; } })();
+const PL = [];   // {name, rolls, tenth, streak}
+let cur = 0;
+function renderPlayers(){
+  document.querySelectorAll('#npSeg button').forEach(b => b.classList.toggle('on', +b.dataset.np === NPL));
+  const box = $('#players'); box.innerHTML = '';
+  if(NPL < 2) return;
+  for(let i=0;i<NPL;i++){ const inp = document.createElement('input'); inp.maxLength = 12; inp.placeholder = 'Jugador ' + (i+1); inp.value = PNAMES[i] || ''; inp.style.borderLeft = '6px solid ' + PCOL[i];
+    inp.addEventListener('input', () => { PNAMES[i] = inp.value.trim().slice(0,12); store.set('sk-names', JSON.stringify(PNAMES)); });
+    inp.addEventListener('keydown', e => e.stopPropagation()); box.appendChild(inp); }
+}
+document.querySelectorAll('#npSeg button').forEach(b => b.addEventListener('click', () => { NPL = +b.dataset.np; store.set('sk-np', String(NPL)); renderPlayers(); }));
+renderPlayers();
+const pname = i => PNAMES[i] || ('Jugador ' + (i+1));
+function useCur(){ const p = PL[cur]; G.rolls = p.rolls; G.tenth = p.tenth; G.streak = p.streak; }
+function renderPBar(){
+  const pb = $('#pbar'); if(NPL < 2){ pb.innerHTML = ''; return; }
+  pb.innerHTML = PL.map((p,i) => '<div class="'+(i===cur && G.state!=='over'?'on':'')+'"><i style="background:'+PCOL[i]+'"></i>'+p.name.replace(/[<&]/g,'')+' <b>'+scoreGame(p.rolls).total+'</b></div>').join('');
+}
 const G = {state:'menu', frame:0, ball:1, rolls:[], tenth:[], streak:0, rollT:0, wait:0, next:null, mode:'cam', readyT:0, paused:false};
 let dollyT = 0, dolly = 0, followX = 0, slowT = 0, ts = 1, flash = 0;
 let sens = store.get('sk-sens','normal'); if(!['easy','normal','pro'].includes(sens)) sens = 'normal';
@@ -647,8 +689,10 @@ setSens(sens);
 let best = parseInt(store.get('sk-best','0'),10) || 0;
 
 function newGame(){
-  G.frame = 0; G.ball = 1; G.rolls = []; G.tenth = []; G.streak = 0; G.paused = false; G.next = null; dollyT = 0; shownScore = 0; targetScore = 0; $('#score').textContent = '0';
+  PL.length = 0; for(let i=0;i<NPL;i++) PL.push({name: NPL>1 ? pname(i) : 'Tú', rolls:[], tenth:[], streak:0}); cur = 0;
+  G.frame = 0; G.ball = 1; useCur(); G.paused = false; G.next = null; dollyT = 0; shownScore = 0; targetScore = 0; $('#score').textContent = '0';
   resetPins(true); spawnBall(); updateHud();
+  if(NPL > 1) setTimeout(() => showBanner('TURNO DE<br>'+PL[0].name.toUpperCase(), 'Turno 1 de 10'), 300);
 }
 function spawnBall(){
   B.x = BALL_START.x; B.y = BALL_START.y; B.z = BALL_START.z; B.vx = B.vz = 0; B.gutter = false; B.done = false; B.t = 0;
@@ -733,7 +777,18 @@ function finishRoll(){
   }
   G.state = 'between'; G.wait = (strike||spare) ? 2.4 : 1.5;
   updateHud();
+  if(PL[cur]) PL[cur].streak = G.streak;
   G.next = () => {
+    if(NPL > 1 && (over || frameEnd)){
+      // pasa el turno al siguiente jugador; cuando todos han tirado su turno, se avanza de turno
+      let nx = cur + 1, fr = G.frame;
+      if(nx >= NPL){ nx = 0; fr++; }
+      if(fr > 9){ endGame(); return; }
+      cur = nx; G.frame = fr; G.ball = 1; useCur();
+      resetPins(true); shownScore = scoreGame(G.rolls).total; $('#score').textContent = shownScore;
+      showBanner('TURNO DE<br>'+PL[cur].name.toUpperCase(), 'Turno ' + (G.frame+1) + ' de 10');
+      spawnBall(); return;
+    }
     if(over){ endGame(); return; }
     if(frameEnd){ G.frame++; G.ball = 1; }
     if(reset) resetPins(true);
@@ -743,6 +798,19 @@ function finishRoll(){
 }
 function endGame(){
   G.state = 'over'; updateHud();
+  const rk = $('#mpRank');
+  if(NPL > 1){
+    const res = PL.map((p,i) => { const sc = scoreGame(p.rolls), m = sc.frames.flatMap(f => f.marks); return {i, name:p.name, total:sc.total, x:m.filter(v=>v==='X').length, sp:m.filter(v=>v==='/').length}; }).sort((a,b) => b.total - a.total);
+    const med = ['🥇','🥈','🥉','4º'];
+    rk.innerHTML = res.map((r,k) => '<div class="'+(r.total===res[0].total?'w':'')+'"><em>'+(r.total===res[0].total?'🥇':med[k])+'</em><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+PCOL[r.i]+';margin-right:6px"></i>'+r.name.replace(/[<&]/g,'')+'<small>'+r.x+' strikes · '+r.sp+' spares</small></span><b>'+r.total+'</b></div>').join('');
+    rk.style.display = 'flex';
+    $('#final').style.display = 'none'; $('#stars').style.display = 'none'; $('#newbest').style.display = 'none'; document.querySelector('#over .stats').style.display = 'none';
+    const tie = res.length > 1 && res[0].total === res[1].total;
+    $('#rank').textContent = tie ? '¡Empate en lo más alto! 🤝' : '¡Gana ' + res[0].name + '! 🏆';
+    setTimeout(() => { if(G.state === 'over') $('#over').classList.remove('hidden'); }, 600);
+    confetti(180); sfxSpare(); return;
+  }
+  rk.style.display = 'none'; $('#final').style.display = ''; $('#stars').style.display = ''; document.querySelector('#over .stats').style.display = '';
   const sc = scoreGame(G.rolls), total = sc.total;
   const all = sc.frames.flatMap(f => f.marks);
   const isBest = total > best; if(isBest){ best = total; store.set('sk-best', String(best)); }
@@ -999,6 +1067,7 @@ $('#fs').onclick = () => { if(document.fullscreenElement) document.exitFullscree
 document.addEventListener('visibilitychange', () => { if(document.hidden && G.state !== 'menu' && G.state !== 'over') togglePause(true); });
 setMuted(muted);
 updateHud();
+window.__sk = { G, PL, pins, finishRoll };
 </script>
 </body>
 </html>

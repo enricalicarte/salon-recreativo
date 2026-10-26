@@ -635,11 +635,11 @@
    "cat": "camara",
    "name": "Strike Kick",
    "note": "Bolos con tu cuerpo",
-   "blurb": "Juego de bolos con la cámara: tu cuerpo es el mando. Apareces tú dentro de la bolera y golpeas el balón con la mano o con el pie; sale hacia donde te mueves y, cuanto más rápido, más fuerza. Diez tiradas, strikes, semiplenos y tres niveles de sensibilidad. Sin cámara, también se juega deslizando el dedo.",
+   "blurb": "Juego de bolos con la cámara: tu cuerpo es el mando. Apareces tú dentro de la bolera y golpeas el balón con la mano o con el pie; sale hacia donde te mueves y, cuanto más rápido, más fuerza. Diez tiradas, strikes, semiplenos y tres niveles de sensibilidad. Y partida de 2 a 4 jugadores en el mismo móvil u ordenador, por turnos, con clasificación al final. Sin cámara, también se juega deslizando el dedo.",
    "tags": [
     "Cámara",
     "Bolos",
-    "Tu cuerpo es el mando"
+    "2-4 por turnos"
    ],
    "play": "juegos/strike-kick/index.html"
   },
