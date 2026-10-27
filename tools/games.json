@@ -512,6 +512,21 @@
    "play": "juegos/moto-fury/index.html"
   },
   {
+   "id": "kauairush",
+   "slug": "kauai-rush",
+   "kw": "juego de gestión de agencia",
+   "cat": "marca",
+   "name": "Kauai Rush",
+   "note": "Construye la agencia de Kauai",
+   "blurb": "Juego de gestión en 3D al estilo de Monkey Mart: eres Micky, el CEO de Kauai, y empiezas en un garaje. Cada cliente llega con un problema; recoge en las mesas del equipo las piezas que lo resuelven, entrégalas en recepción, cobra e invierte para fichar al equipo y abrir la agencia, la consultoría y la productora. Con combos, clientes VIP, momentos virales y agentes de IA que reparten por ti.",
+   "tags": [
+    "Gestión",
+    "3D",
+    "Kauai"
+   ],
+   "play": "juegos/kauai-rush/index.html"
+  },
+  {
    "slug": "mnac-rush",
    "id": "mnac",
    "kw": "juego del MNAC",
