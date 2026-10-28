@@ -1,6 +1,6 @@
 /* © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este código en otros sitios sin permiso escrito. */
 /* Alta Temporada · multijugador de 2 a 4 móviles (WebRTC / PeerJS)
-   Lo usan El Gran Salto, La Gran Pirueta y El Gran Descenso. Los rivales del campeonato pasan a ser tus amigos:
+   Lo usan El Gran Salto, La Gran Pirueta, El Gran Descenso y El Gran Slalom. Los rivales del campeonato pasan a ser tus amigos:
    sala de espera (nombre y «¡Listo!»; el anfitrión elige el campeonato), cada uno hace su salto o bajada
    en su móvil y, al acabar cada ronda, la clasificación espera a que todos hayan terminado.
    El juego expone window.__alta (puente) y llama a window.__altaMP en initTour, showResult, nextRound y showFinal. */
@@ -13,7 +13,8 @@ const $m=id=>document.getElementById(id);
 const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const M={on:false,host:false,me:0,peer:null,conn:null,code:'',fase:'off',jug:[],listo:false,ti:0,riv:[]};
 let miNom='';try{miNom=(localStorage.getItem('altatemp-nom')||'').slice(0,12);}catch(e){}
-const PALABRA={salto:['salto','saltos'],pirueta:['salto','saltos'],descenso:['bajada','bajadas']};
+const PALABRA={salto:['salto','saltos'],pirueta:['salto','saltos'],descenso:['bajada','bajadas'],slalom:['manga','mangas']};
+const TIEMPO=()=>{const k=A()&&A().kind;return k==='descenso'||k==='slalom';};
 
 /* ---------- estilos e interfaz ---------- */
 const css=document.createElement('style');css.textContent=`
@@ -98,13 +99,13 @@ function empieza(){if(!M.host||$m('mpEmp').disabled)return;elige();const jug=M.j
 function arranca(ti,jug){
   jug.forEach((q,i)=>{const j=M.jug[i]||(M.jug[i]={});j.nom=q.nom;j.fuera=false;j.v=[];});M.jug.length=jug.length;
   M.ti=ti;M.fase='juego';cierra();
-  const a=A(),des=a.kind==='descenso',R=a.TOURS[ti].rounds;
+  const a=A(),des=TIEMPO(),R=a.TOURS[ti].rounds;
   // rivales = los demás jugadores; sus puntos (o tiempos) se rellenan cuando llegan
   M.riv=M.jug.map((j,i)=>i===M.me?null:{name:j.nom,cc:'',idx:i,[des?'times':'scores']:Array.from({length:R},()=>0)}).filter(Boolean);
   a.startTour(ti);
-  if(a.kind==='descenso')iniciaFantasmas();
+  if(des)iniciaFantasmas();
 }
-const valor=r=>A().kind==='descenso'?r.time:r.total;
+const valor=r=>TIEMPO()?r.time:r.total;
 function ronda(n,r){
   if(!activo())return;const v=Math.round(valor(r)*1000)/1000;
   M.jug[M.me].v[n-1]=v;envia({t:'r',n,v});refresca();
@@ -145,7 +146,7 @@ intercepta('againBtn',volver);
 intercepta('toursBtn',()=>{sal();A().openTours();});
 intercepta('quitBtn',()=>{$m('pause').classList.remove('show');A().P.paused=false;sal();A().openTours();});
 
-/* ---------- El Gran Descenso: trineos de los demás como fantasmas ---------- */
+/* ---------- El Gran Descenso y El Gran Slalom: los demás bajan como fantasmas ---------- */
 let fT=null,fR=0;
 function iniciaFantasmas(){
   clearInterval(fT);cancelAnimationFrame(fR);

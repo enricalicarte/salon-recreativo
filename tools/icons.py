@@ -957,6 +957,40 @@ def _(I):
     sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
 
 
+@icon('el-gran-slalom')
+def _(I):
+    alpine(I)
+    # pista ancha que sube en perspectiva
+    I.add(f'<path d="M-20 560 L150 300 L362 300 L540 560Z" fill="#f7f2e4" stroke="{INK}" stroke-width="8"/>'
+          f'<path d="M256 560 C150 500 330 440 250 390 C190 352 300 330 262 302" fill="none" stroke="#7cc8ff" stroke-width="9" stroke-dasharray="3 16" stroke-linecap="round"/>')
+    # puertas en zigzag (rojas y azules), más pequeñas cuanto más lejos
+    for x, y, k, c in ((300, 312, .42, '#2462d0'), (210, 352, .58, '#d8342a'), (330, 410, .78, '#2462d0'), (150, 478, 1.0, '#d8342a')):
+        for dx in (-34, 34):
+            px = x + dx * k
+            I.add(f'<path d="M{px} {y} V{y-120*k}" stroke="{INK}" stroke-width="{14*k+4}" stroke-linecap="round"/><path d="M{px} {y} V{y-120*k}" stroke="{c}" stroke-width="{8*k+2}" stroke-linecap="round"/>')
+            fx = px - (dx > 0) * 40 * k
+            I.add(f'<rect x="{fx}" y="{y-118*k}" width="{40*k}" height="{32*k}" fill="{c}" stroke="{INK}" stroke-width="{4*k+2}"/><rect x="{fx}" y="{y-104*k}" width="{40*k}" height="{6*k}" fill="#fff"/>')
+    # esquiador inclinado en el giro y nieve que salta del canto
+    for i, (x, y, r) in enumerate(((330, 470, 14), (356, 452, 10), (372, 492, 9), (392, 470, 7), (404, 446, 6))):
+        I.add(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#fff" stroke="#cfe6ff" stroke-width="3" opacity="{.95-i*.12}"/>')
+    # esquiador de frente, inclinado hacia dentro del giro
+    E = '#13795b'
+    g = ('<g transform="translate(286 372) rotate(-14) scale(.74)">'
+         f'<path d="M-92 74 L66 104" stroke="{INK}" stroke-width="20" stroke-linecap="round"/><path d="M-92 74 L66 104" stroke="#14b8ff" stroke-width="10" stroke-linecap="round"/>'
+         f'<path d="M-70 100 L88 130" stroke="{INK}" stroke-width="20" stroke-linecap="round"/><path d="M-70 100 L88 130" stroke="#14b8ff" stroke-width="10" stroke-linecap="round"/>'
+         f'<path d="M-14 84 L-26 40 L4 6 M24 110 L18 62 L40 20" fill="none" stroke="{INK}" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>'
+         f'<path d="M-14 84 L-26 40 L4 6 M24 110 L18 62 L40 20" fill="none" stroke="{E}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>'
+         f'<ellipse cx="24" cy="-34" rx="40" ry="48" transform="rotate(14 24 -34)" {st(E, 8)}/>'
+         f'<path d="M-6 -62 Q24 -76 54 -58" fill="none" stroke="#f7f2e4" stroke-width="12" stroke-linecap="round"/>'
+         f'<rect x="4" y="-40" width="34" height="30" rx="4" fill="#fff" stroke="{INK}" stroke-width="5" transform="rotate(14 21 -25)"/><text x="21" y="-17" text-anchor="middle" font-size="22" font-weight="900" fill="{INK}" transform="rotate(14 21 -25)">7</text>'
+         f'<path d="M-10 -46 L-56 -6 L-70 96" fill="none" stroke="{INK}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M-10 -46 L-56 -6" stroke="{E}" stroke-width="10" stroke-linecap="round"/><path d="M-56 -6 L-70 96" stroke="#c9d3df" stroke-width="5" stroke-linecap="round"/>'
+         f'<path d="M58 -40 L96 -2 L118 92" fill="none" stroke="{INK}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M58 -40 L96 -2" stroke="{E}" stroke-width="10" stroke-linecap="round"/><path d="M96 -2 L118 92" stroke="#c9d3df" stroke-width="5" stroke-linecap="round"/>'
+         f'<circle cx="40" cy="-104" r="32" {st(I.rg("#1d3d6b", "#0b2545", .4, .35, .8), 8)}/><path d="M12 -112 Q40 -134 68 -112" fill="none" stroke="#c9ab62" stroke-width="8" stroke-linecap="round"/>'
+         f'<path d="M14 -100 h52 a10 10 0 0 1 0 20 h-52 a10 10 0 0 1 0 -20Z" {st("#ffb347", 6)}/><path d="M24 -94 h30" stroke="#fff3c4" stroke-width="5" stroke-linecap="round"/>'
+         '</g>')
+    I.add(g)
+    sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
+
 @icon('alas-de-acero')
 def _(I):
     bg(I, '#8fd0ff', '#2b6fd0', '#ffffff', .14)

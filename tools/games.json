@@ -208,6 +208,22 @@
    "play": "juegos/gran-descenso/index.html"
   },
   {
+   "id": "granslalom",
+   "slug": "el-gran-slalom",
+   "kw": "juego de slalom de esquí",
+   "cat": "invierno",
+   "sg": 1,
+   "name": "El Gran Slalom",
+   "note": "Alta Temporada · Slalom",
+   "blurb": "Juego de slalom en 3D: baja entre puertas rojas y azules deslizando el dedo; el esquiador va al momento hacia donde lo llevas y se inclina en cada giro. Pasa pegado al palo de dentro para hacer «¡Perfecta!» y ganar velocidad; si te saltas una puerta, sumas segundos. Dos mangas contra siete rivales en seis sedes, con saltos en las pistas más difíciles. Y en multijugador, de 2 a 4 amigos bajan a la vez y ven a los demás esquiadores.",
+   "tags": [
+    "Slalom",
+    "Esquí alpino",
+    "Campeonatos"
+   ],
+   "play": "juegos/gran-slalom/index.html"
+  },
+  {
    "slug": "kings-league-mini-game",
    "id": "kings",
    "cat": "deporte",
