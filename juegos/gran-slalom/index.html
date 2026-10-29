@@ -863,7 +863,7 @@ function boxSmooth(arr,win,passes){
 // s: metros recorridos por la pista desde la varilla de salida · y: posición lateral (+ derecha) · PW: media anchura de la pista
 const GRAV=9.81,DS=1,PW=13,S0=45,SX=170,DEG=Math.PI/180;
 // control tipo Ruta Cósmica: el esquiador persigue un punto objetivo con un muelle amortiguado
-const KS=26,CS=8.2,AXM=34,MU=0.045,KD=0.0034,KC=0.03,PR=0.3,PUSHA=3.8,PUSHT=1.5;
+const KS=32,CS=9.4,AXM=44,MU=0.038,KD=0.0026,KC=0.03,PR=0.3,PUSHA=3.8,PUSHT=1.5;
 function genCourse(d){
   const r=mulberry(d.seed),R=(a,b)=>a+(b-a)*r(),L=d.len,n=Math.round((S0+L+SX)/DS)+1,S=i=>i*DS-S0;
   const raw=new Float64Array(n);let i=0;

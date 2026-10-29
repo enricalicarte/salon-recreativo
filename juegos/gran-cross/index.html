@@ -891,7 +891,7 @@ function boxSmooth(arr,win,passes){
 /* ===================== CIRCUITO Y FÍSICA (sin dependencias) ===================== */
 // s: metros de circuito desde la salida · y: posición lateral (+ derecha) · PW: media anchura del canal
 const GRAV=9.81,DS=1,PW=6.2,S0=45,SX=150,DEG=Math.PI/180,V0=17;
-const KS=24,CS=8,AXM=28,MU=0.045,KD=0.0036,KC=0.018,PUSHA=4.2,PUSHT=1.1,RAD=.72;
+const KS=28,CS=8.8,AXM=33,MU=0.038,KD=0.0028,KC=0.018,PUSHA=4.2,PUSHT=1.1,RAD=.72;
 function genCross(d){
   const r=mulberry(d.seed),R=(a,b)=>a+(b-a)*r(),L=d.len,n=Math.round((S0+L+SX)/DS)+1,S=i=>i*DS-S0,I=s=>clamp(Math.round((s+S0)/DS),0,n-1);
   const thB=new Float64Array(n),kh=new Float64Array(n),roll=new Float64Array(n);
