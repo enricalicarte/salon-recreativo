@@ -224,6 +224,22 @@
    "play": "juegos/gran-slalom/index.html"
   },
   {
+   "id": "grancross",
+   "slug": "el-gran-cross",
+   "kw": "juego de snowboard cross",
+   "cat": "invierno",
+   "sg": 1,
+   "name": "El Gran Cross",
+   "note": "Alta Temporada · Snowboard cross",
+   "blurb": "Juego de snowboard cross en 3D: cuatro riders en la puerta de salida y solo dos pasan de ronda. Sal en cuanto caiga la puerta, entra por dentro en los peraltes pisando las flechas de turbo, coge el rebufo del de delante y aterriza recto en los saltos. Cuartos, semifinal y final en seis sedes, con K. Lindahl esperando en la última carrera. Y en multijugador, de 2 a 4 amigos bajan a la vez y ven a los demás riders.",
+   "tags": [
+    "Snowboard",
+    "Carreras",
+    "Campeonatos"
+   ],
+   "play": "juegos/gran-cross/index.html"
+  },
+  {
    "slug": "kings-league-mini-game",
    "id": "kings",
    "cat": "deporte",

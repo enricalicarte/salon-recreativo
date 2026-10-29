@@ -991,6 +991,35 @@ def _(I):
     I.add(g)
     sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
 
+def boarder(I, x, y, rot, s, suit, board, helm):
+    """Rider de snowboard agachado sobre la tabla, brazos abiertos."""
+    I.add(f'<g transform="translate({x} {y}) rotate({rot}) scale({s})">'
+          f'<path d="M-110 70 Q-118 92 -92 92 L96 92 Q122 92 112 70Z" {st(board, 7)}/><path d="M-80 82 H84" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>'
+          f'<path d="M-48 72 L-30 30 L4 6 M46 72 L40 30 L10 6" fill="none" stroke="{INK}" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<path d="M-48 72 L-30 30 L4 6 M46 72 L40 30 L10 6" fill="none" stroke="#1b2a4a" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<ellipse cx="14" cy="-34" rx="38" ry="44" transform="rotate(18 14 -34)" {st(suit, 8)}/>'
+          f'<path d="M-8 -50 L-70 -28 L-104 -40 M36 -46 L90 -10 L118 -16" fill="none" stroke="{INK}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<path d="M-8 -50 L-70 -28 L-104 -40 M36 -46 L90 -10 L118 -16" fill="none" stroke="{suit}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>'
+          f'<circle cx="34" cy="-96" r="30" {st(helm, 8)}/><path d="M10 -92 h46 a10 10 0 0 1 0 20 h-46 a10 10 0 0 1 0 -20Z" {st("#ffb347", 6)}/><path d="M20 -86 h26" stroke="#fff3c4" stroke-width="5" stroke-linecap="round"/>'
+          '</g>')
+
+@icon('el-gran-cross')
+def _(I):
+    alpine(I)
+    # canal de nieve con peralte que gira
+    I.add(f'<path d="M-20 560 C40 470 60 400 170 360 C270 324 380 330 420 300 L540 300 L540 560Z" fill="#f7f2e4" stroke="{INK}" stroke-width="8"/>'
+          f'<path d="M-20 520 C30 440 70 380 170 340 C270 302 380 306 430 278" fill="none" stroke="#cfe6ff" stroke-width="26" stroke-linecap="round"/>'
+          f'<path d="M-20 520 C30 440 70 380 170 340 C270 302 380 306 430 278" fill="none" stroke="#7cc8ff" stroke-width="6" stroke-dasharray="2 14" stroke-linecap="round"/>')
+    for x, y, r in ((330, 330, 0), (250, 352, -8), (170, 384, -18)):
+        I.add(f'<path d="M{x-16} {y+12} l16 -18 l16 18" fill="none" stroke="#f2c94c" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" transform="rotate({r} {x} {y})"/>')
+    # rivales detrás y el nuestro delante
+    boarder(I, 360, 300, -8, .42, '#d8342a', '#ffd23f', '#ffffff')
+    boarder(I, 150, 360, 6, .5, '#2462d0', '#ff6a3d', '#1b2433')
+    for i, (x, y, r) in enumerate(((392, 470, 14), (414, 452, 10), (428, 492, 9), (446, 468, 7))):
+        I.add(f'<circle cx="{x}" cy="{y}" r="{r}" fill="#fff" stroke="#cfe6ff" stroke-width="3" opacity="{.95-i*.15}"/>')
+    boarder(I, 290, 430, -10, .78, '#13795b', '#f7f2e4', '#c9ab62')
+    sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
+
 @icon('alas-de-acero')
 def _(I):
     bg(I, '#8fd0ff', '#2b6fd0', '#ffffff', .14)
