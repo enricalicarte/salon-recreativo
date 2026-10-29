@@ -1020,6 +1020,32 @@ def _(I):
     boarder(I, 290, 430, -10, .78, '#13795b', '#f7f2e4', '#c9ab62')
     sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
 
+@icon('tragaciudad')
+def _(I):
+    bg(I, '#9be7ff', '#3a8fe0', '#ffffff', .14)
+    # suelo de ciudad en perspectiva: manzanas y calles
+    I.add(f'<path d="M-20 300 L532 300 L532 532 L-20 532Z" fill="#4a4f5e"/>'
+          f'<path d="M-20 300 L120 300 L60 532 L-20 532Z M392 300 L532 300 L532 532 L452 532Z" fill="#e9e3d5"/>'
+          f'<path d="M150 300 L362 300" stroke="#e9e3d5" stroke-width="10"/>'
+          + ''.join(f'<rect x="{x}" y="{y}" width="{w}" height="10" fill="#f4f1e8" opacity=".9"/>' for x, y, w in ((214, 330, 26), (246, 330, 26), (278, 330, 26))))
+    # edificios al fondo
+    for x, w, h, c in ((10, 70, 170, '#ff4fa3'), (88, 60, 120, '#ffd23f'), (380, 64, 150, '#4ade80'), (450, 70, 190, '#9b6bff')):
+        I.add(f'<rect x="{x}" y="{300-h}" width="{w}" height="{h}" {st(c, 7)}/>')
+        for yy in range(300 - h + 18, 290, 26): I.add(f'<rect x="{x+10}" y="{yy}" width="{w-20}" height="10" fill="#24304a" opacity=".75"/>')
+    # el agujero con su aro brillante
+    I.add(f'<ellipse cx="256" cy="420" rx="196" ry="74" fill="#38e5ff" opacity=".35" filter="url(#bk)"/>'
+          f'<ellipse cx="256" cy="420" rx="170" ry="62" fill="#07040f" stroke="#38e5ff" stroke-width="12"/>'
+          f'<ellipse cx="256" cy="432" rx="136" ry="42" fill="#000"/>')
+    # cosas cayendo dentro: coche, casa y árbol inclinados
+    I.add(f'<g transform="translate(176 380) rotate(28)"><rect x="-46" y="-26" width="92" height="40" rx="10" {st("#e23b3b", 7)}/><rect x="-26" y="-46" width="50" height="24" rx="6" {st("#24304a", 6)}/>'
+          f'<circle cx="-26" cy="16" r="12" {st("#1b1d24", 5)}/><circle cx="26" cy="16" r="12" {st("#1b1d24", 5)}/></g>')
+    I.add(f'<g transform="translate(316 360) rotate(-24)"><rect x="-44" y="-50" width="88" height="70" {st("#fff3dc", 7)}/><path d="M-56 -48 L0 -96 L56 -48Z" {st("#d9483b", 7)}/><rect x="-12" y="-8" width="24" height="28" fill="#7a4a2a"/></g>')
+    I.add(f'<g transform="translate(246 330) rotate(10)"><rect x="-7" y="-10" width="14" height="40" fill="#7a4a2a" stroke="{INK}" stroke-width="5"/><circle cx="0" cy="-30" r="34" {st("#47b34a", 7)}/></g>')
+    # personita volando hacia el agujero
+    I.add(f'<g transform="translate(400 250) rotate(-30)"><rect x="-12" y="-6" width="24" height="34" rx="6" {st("#ffd23f", 5)}/><circle cx="0" cy="-20" r="14" {st("#f3c9a4", 5)}/>'
+          f'<path d="M-12 4 L-30 -14 M12 4 L30 -14" stroke="{INK}" stroke-width="7" stroke-linecap="round"/></g>')
+    for x, y, r in ((120, 120, 14), (420, 90, 18), (60, 230, 10), (250, 470, 12)): sparkle(I, x, y, r)
+
 @icon('alas-de-acero')
 def _(I):
     bg(I, '#8fd0ff', '#2b6fd0', '#ffffff', .14)

@@ -356,6 +356,21 @@
    "play": "juegos/monster/index.html"
   },
   {
+   "id": "tragaciudad",
+   "slug": "tragaciudad",
+   "kw": "juego de agujero que se traga la ciudad",
+   "cat": "accion",
+   "name": "Tragaciudad",
+   "note": "Trágatelo todo y crece",
+   "blurb": "Eres un agujero negro en una ciudad de colores: trágate conos, personas, coches, casas y rascacielos, y crece hasta poder con la noria. Partidas de 2 minutos contra 7 agujeros rivales en las que puedes tragarte a los pequeños y huir de los grandes, y un modo Solo para dejar un barrio entero sin nada antes de que acabe el tiempo.",
+   "tags": [
+    "Arcade",
+    "Partidas cortas",
+    "3D"
+   ],
+   "play": "juegos/tragaciudad/index.html"
+  },
+  {
    "slug": "aura-battle",
    "id": "aura",
    "kw": "juego de bailes de moda",
