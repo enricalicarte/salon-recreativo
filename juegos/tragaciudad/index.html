@@ -203,14 +203,14 @@ const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.par
 const TXT={
  es:{logo:'<span class="w">Traga</span><span class="w w2">ciudad</span><i class="hole"></i>',tag:'¡Trágatelo todo y crece!',play:'Jugar',solo:'Modo Solo',soloT:'Modo Solo',soloP:'Trágate el 100% del barrio antes de que acabe el tiempo.',back:'Volver',
   howT:'Cómo se juega',h1:'Arrastra el dedo (o mueve el ratón) para llevar el agujero.',h2:'Trágate todo lo que quepa: cuanto más comes, más grande eres.',h3:'Crece hasta tragarte casas, rascacielos ¡y la noria!',h4:'Trágate a los agujeros más pequeños y huye de los grandes.',
-  ok:'¡Vale!',pause:'Pausa',resume:'Seguir',quit:'Salir',again:'Otra vez',menu:'Menú',hint:'Arrastra para moverte',hintPc:'Mueve el ratón para llevar el agujero',eaten:'Tragado',level:'Nivel',
+  ok:'¡Vale!',pause:'Pausa',resume:'Seguir',quit:'Salir',again:'Otra vez',menu:'Menú',hint:'Arrastra para moverte',hintPc:'Apunta con el ratón hacia donde quieras ir',eaten:'Tragado',level:'Nivel',
   you:'Tú',best:'Récord',lvlUp:'¡Nivel {n}!',ate:'¡Te has tragado a {n}!',deadBy:'¡Te ha tragado {n}!',youWin:'¡Has ganado!',place:'Puesto {n} de {m}',points:'{n} puntos',
   soloWin:'¡Barrio tragado!',soloLose:'¡Se acabó el tiempo!',time:'en {t}',left:'Quedan {n}',
   B:[['🏡','Pueblo','Casitas, granjas y parques'],['🏙️','Ciudad','Tiendas, edificios y atascos'],['🎡','Metrópolis','Rascacielos y la gran noria']],
   bots:['Tragaldabas','Don Remolino','La Aspiradora','Señor Tragón','Ñam Ñam','Bocazas','Sumidero','Barriga Llena','Hoyo Negro','Glotón','Desagüe','La Boca']},
  en:{logo:'<span class="w">City</span><span class="w w2">Gulp</span><i class="hole"></i>',tag:'Swallow everything and grow!',play:'Play',solo:'Solo Mode',soloT:'Solo Mode',soloP:'Swallow 100% of the district before time runs out.',back:'Back',
   howT:'How to play',h1:'Drag your finger (or move the mouse) to steer the hole.',h2:'Swallow everything that fits: the more you eat, the bigger you get.',h3:'Grow until you can swallow houses, skyscrapers and the Ferris wheel!',h4:'Swallow smaller holes and run from bigger ones.',
-  ok:'Got it!',pause:'Paused',resume:'Resume',quit:'Quit',again:'Play again',menu:'Menu',hint:'Drag to move',hintPc:'Move the mouse to steer the hole',eaten:'Eaten',level:'Level',
+  ok:'Got it!',pause:'Paused',resume:'Resume',quit:'Quit',again:'Play again',menu:'Menu',hint:'Drag to move',hintPc:'Point the mouse where you want to go',eaten:'Eaten',level:'Level',
   you:'You',best:'Best',lvlUp:'Level {n}!',ate:'You swallowed {n}!',deadBy:'{n} swallowed you!',youWin:'You win!',place:'{n} of {m}',points:'{n} points',
   soloWin:'District swallowed!',soloLose:'Time is up!',time:'in {t}',left:'{n} left',
   B:[['🏡','Village','Cottages, farms and parks'],['🏙️','City','Shops, offices and traffic jams'],['🎡','Metropolis','Skyscrapers and the giant wheel']],
@@ -659,18 +659,25 @@ function popPts(v){popAcc+=v;const now=performance.now();if(now-popAt<130)return
 const inp={keys:{},joy:null,mouse:null};
 canvas.addEventListener('pointerdown',e=>{if(!playing())return;ensureAudio();if(e.pointerType==='mouse'){inp.mouse={x:e.clientX,y:e.clientY};return;}inp.joy={id:e.pointerId,x0:e.clientX,y0:e.clientY,x:e.clientX,y:e.clientY};try{canvas.setPointerCapture(e.pointerId);}catch(_){}const j=$('joy');j.style.display='block';j.style.left=e.clientX+'px';j.style.top=e.clientY+'px';j.firstChild.style.transform='';$('hint').style.opacity=0;});
 canvas.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){inp.mouse={x:e.clientX,y:e.clientY};if(playing())$('hint').style.opacity=0;return;}const J=inp.joy;if(!J||J.id!==e.pointerId)return;J.x=e.clientX;J.y=e.clientY;
-  let dx=J.x-J.x0,dy=J.y-J.y0;const L=Math.hypot(dx,dy),M=56;if(L>M){J.x0+=dx*(1-M/L);J.y0+=dy*(1-M/L);dx=J.x-J.x0;dy=J.y-J.y0;const j=$('joy');j.style.left=J.x0+'px';j.style.top=J.y0+'px';}$('joy').firstChild.style.transform=`translate(${dx}px,${dy}px)`;});
+  let dx=J.x-J.x0,dy=J.y-J.y0;const L=Math.hypot(dx,dy),M=72;if(L>M){J.x0+=dx*(1-M/L);J.y0+=dy*(1-M/L);dx=J.x-J.x0;dy=J.y-J.y0;const j=$('joy');j.style.left=J.x0+'px';j.style.top=J.y0+'px';}$('joy').firstChild.style.transform=`translate(${dx}px,${dy}px)`;});
 const jEnd=e=>{if(inp.joy&&inp.joy.id===e.pointerId){inp.joy=null;$('joy').style.display='none';}};
 canvas.addEventListener('pointerup',jEnd);canvas.addEventListener('pointercancel',jEnd);
 document.addEventListener('mouseleave',()=>{inp.mouse=null;});
 addEventListener('keydown',e=>{inp.keys[e.code]=1;if(e.code==='Escape'||e.code==='KeyP'){if(G.paused)resume();else pause();}if(e.code==='KeyM')setMute(!muted);});
 addEventListener('keyup',e=>{inp.keys[e.code]=0;});
+const _hit=new THREE.Vector3();
 function readInput(){
   let x=0,z=0;const K=inp.keys;
   if(K.ArrowLeft||K.KeyA)x-=1;if(K.ArrowRight||K.KeyD)x+=1;if(K.ArrowUp||K.KeyW)z-=1;if(K.ArrowDown||K.KeyS)z+=1;
   if(x||z){const l=Math.hypot(x,z);return [x/l,z/l];}
-  if(inp.joy){const dx=inp.joy.x-inp.joy.x0,dy=inp.joy.y-inp.joy.y0,l=Math.hypot(dx,dy);if(l<6)return [0,0];const m=Math.min(1,l/40);return [dx/l*m,dy/l*m];}
-  if(inp.mouse){const dx=inp.mouse.x-innerWidth/2,dy=inp.mouse.y-innerHeight*.55,l=Math.hypot(dx,dy);if(l<14)return [0,0];const m=Math.min(1,l/(Math.min(innerWidth,innerHeight)*.22));return [dx/l*m,dy/l*m];}
+  if(inp.joy){const dx=inp.joy.x-inp.joy.x0,dy=inp.joy.y-inp.joy.y0,l=Math.hypot(dx,dy);if(l<4)return [0,0];
+    // rango analógico amplio: poco recorrido = paso lento y preciso, a 64px velocidad máxima
+    let m=clamp((l-4)/60,0,1);m=.18+.82*m*(2-m);return [dx/l*m,dy/l*m];}
+  if(inp.mouse&&G.me){
+    // dirección = del agujero (su posición real en pantalla) al cursor; cuanto más lejos, más rápido
+    const h=G.me;_hit.set(h.x,0,h.z).project(camera);const hx=(_hit.x+1)/2*innerWidth,hy=(1-_hit.y)/2*innerHeight;
+    const dx=inp.mouse.x-hx,dy=inp.mouse.y-hy,l=Math.hypot(dx,dy);if(l<10)return [0,0];
+    let m=clamp((l-10)/(Math.min(innerWidth,innerHeight)*.2),0,1);m=.15+.85*m*(2-m);return [dx/l*m,dy/l*m];}
   return [0,0];
 }
 const speedOf=h=>(8.5+h.Rv*1.05)*(h.me?(G.mode==='solo'?1.15:1):.9*(h.skill||1));
@@ -691,7 +698,7 @@ function brain(h,dt){
   const dx=a.tx-h.x,dz=a.tz-h.z,l=Math.hypot(dx,dz);if(l<.4)return [0,0];return [dx/l,dz/l];
 }
 function moveHole(h,dir,dt){
-  const sp=speedOf(h);h.vx=damp(h.vx,dir[0]*sp,7,dt);h.vz=damp(h.vz,dir[1]*sp,7,dt);
+  const sp=speedOf(h);const k=h.me?13:7;h.vx=damp(h.vx,dir[0]*sp,k,dt);h.vz=damp(h.vz,dir[1]*sp,k,dt);
   h.x+=h.vx*dt;h.z+=h.vz*dt;const lim=WORLD.H-h.R*.4;h.x=clamp(h.x,-lim,lim);h.z=clamp(h.z,-lim,lim);
 }
 function swallowTest(h){
@@ -818,7 +825,7 @@ function updCam(dt){
   if(h){x=h.x;z=h.z;R=h.Rv;}
   const port=camera.aspect<1,H=(menu?36+R*2.4:(24+R*3.3))*(port?1.3:1);
   _p.set(x+(menu?Math.sin(G.clock*.15)*H*.3:0),H,z+H*.62);
-  if(camInit){camP.copy(_p);camL.set(x,0,z);camInit=false;}else{camP.lerp(_p,1-Math.exp(-(menu?2:6)*dt));camL.lerp(_s.set(x,0,z-R*.2),1-Math.exp(-(menu?3:8)*dt));}
+  if(camInit){camP.copy(_p);camL.set(x,0,z);camInit=false;}else{camP.lerp(_p,1-Math.exp(-(menu?2:9)*dt));camL.lerp(_s.set(x,0,z-R*.2),1-Math.exp(-(menu?3:11)*dt));}
   camera.position.copy(camP);
   shake=Math.max(0,shake-dt*2.5);if(shake>0){const s=shake*shake*.6;camera.position.x+=(Math.random()-.5)*s;camera.position.y+=(Math.random()-.5)*s;}
   camera.lookAt(camL);
