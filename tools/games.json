@@ -691,6 +691,21 @@
    "play": "juegos/cabina/index.html"
   },
   {
+   "id": "baileloco",
+   "slug": "baile-loco",
+   "kw": "juego de baile con cámara",
+   "cat": "camara",
+   "name": "Baile Loco",
+   "note": "Baila y copia los pasos",
+   "blurb": "Juego de baile con la cámara: las poses llegan al ritmo de la música y tienes que copiarlas con tu cuerpo justo en el golpe. Perfecto, Genial o Bien según cómo te salga, con combos, movimiento libre con estelas de luz, «¡Congélate!» y una pose final que te hace una foto. Cinco canciones, del pop al electro, y modo de dos jugadores delante de la misma cámara. La imagen se procesa en tu dispositivo.",
+   "tags": [
+    "Baile",
+    "Cámara",
+    "Música"
+   ],
+   "play": "juegos/baile-loco/index.html"
+  },
+  {
    "id": "strikekick",
    "slug": "strike-kick",
    "kw": "juego de bolos con cámara",

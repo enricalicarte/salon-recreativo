@@ -1046,6 +1046,42 @@ def _(I):
           f'<path d="M-12 4 L-30 -14 M12 4 L30 -14" stroke="{INK}" stroke-width="7" stroke-linecap="round"/></g>')
     for x, y, r in ((120, 120, 14), (420, 90, 18), (60, 230, 10), (250, 470, 12)): sparkle(I, x, y, r)
 
+@icon('baile-loco')
+def _(I):
+    bg(I, '#a43cff', '#24075a', '#ff7ad9', .14)
+    # pista de baile iluminada
+    cols = ['#ff3dd2', '#35f0ff', '#ffd23f', '#7a2cff']
+    for r in range(3):
+        y0, y1 = 400 + r * 40, 440 + r * 40
+        for c in range(-3, 4):
+            sp0, sp1 = .7 + r * .15, .85 + r * .15
+            x = lambda u, sp: 256 + u * 74 * sp
+            I.add(f'<path d="M{x(c-.5,sp0):.0f} {y0}L{x(c+.5,sp0):.0f} {y0}L{x(c+.5,sp1):.0f} {y1}L{x(c-.5,sp1):.0f} {y1}Z" fill="{cols[(r+c)%4]}" opacity="{.55 if (r*3+c)%2 else .25}"/>')
+    # bola de espejos
+    I.add(f'<path d="M256 0V46" stroke="{INK}" stroke-width="6"/><circle cx="256" cy="92" r="50" {st(I.rg("#ffffff", "#7d88b0", .35, .3, .8), 8)}/>')
+    for k in range(-2, 3):
+        I.add(f'<path d="M{212} {92+k*18}H{300}" stroke="#3a3f66" stroke-width="3" opacity=".55"/><path d="M{256+k*18} 46V138" stroke="#3a3f66" stroke-width="3" opacity=".45"/>')
+    for x, y in ((236, 76), (276, 104), (250, 118)): I.add(f'<rect x="{x}" y="{y}" width="12" height="12" fill="#fff" opacity=".9"/>')
+    # dos bailarines en pose (silueta tipo pictograma)
+    def dancer(cx, cy, s, col, arms):
+        (a1, a2), (b1, b2) = arms
+        import math
+        def seg(x, y, ang, L): return x + math.cos(math.radians(ang)) * L * s, y + math.sin(math.radians(ang)) * L * s
+        lsx, lsy, rsx, rsy = cx - 34 * s, cy, cx + 34 * s, cy
+        le = seg(lsx, lsy, a1, 52); lw = seg(*le, a2, 48); re = seg(rsx, rsy, b1, 52); rw = seg(*re, b2, 48)
+        hx, hy = cx, cy + 86 * s
+        lk = seg(hx - 20 * s, hy, 112, 64); rk = seg(hx + 20 * s, hy, 70, 64)
+        la = seg(*lk, 95, 60); ra = seg(*rk, 86, 60)
+        path = f'M{lw[0]:.0f} {lw[1]:.0f}L{le[0]:.0f} {le[1]:.0f}L{lsx:.0f} {lsy:.0f}L{rsx:.0f} {rsy:.0f}L{re[0]:.0f} {re[1]:.0f}L{rw[0]:.0f} {rw[1]:.0f}M{cx:.0f} {cy:.0f}L{hx:.0f} {hy:.0f}M{la[0]:.0f} {la[1]:.0f}L{lk[0]:.0f} {lk[1]:.0f}L{hx-20*s:.0f} {hy:.0f}L{hx+20*s:.0f} {hy:.0f}L{rk[0]:.0f} {rk[1]:.0f}L{ra[0]:.0f} {ra[1]:.0f}'
+        I.add(f'<path d="{path}" fill="none" stroke="{col}" stroke-width="{48*s:.0f}" stroke-linecap="round" stroke-linejoin="round" opacity=".35" filter="url(#bk)"/>')
+        I.add(f'<path d="{path}" fill="none" stroke="{INK}" stroke-width="{34*s:.0f}" stroke-linecap="round" stroke-linejoin="round"/>')
+        I.add(f'<path d="{path}" fill="none" stroke="{col}" stroke-width="{22*s:.0f}" stroke-linecap="round" stroke-linejoin="round"/>')
+        I.add(f'<circle cx="{cx:.0f}" cy="{cy-40*s:.0f}" r="{26*s:.0f}" {st(col, 7)}/>')
+    dancer(170, 250, 1.0, '#35f0ff', ((-140, -140), (35, 125)))
+    dancer(348, 240, 1.0, '#ff4fa3', ((-55, -150), (-40, -40)))
+    note(I, 92, 150, .9, '#ffd23f'); note(I, 430, 170, .8, '#7af0b0')
+    sparkle(I, 452, 92, 16); sparkle(I, 66, 300, 12); sparkle(I, 300, 180, 10)
+
 @icon('alas-de-acero')
 def _(I):
     bg(I, '#8fd0ff', '#2b6fd0', '#ffffff', .14)
