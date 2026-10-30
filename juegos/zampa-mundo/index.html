@@ -92,7 +92,7 @@ body.msolo #solo{display:block}body.msolo #rank{display:none}
 .how{display:grid;gap:10px;text-align:left;margin:6px 0 12px}
 .how div{display:flex;gap:12px;align-items:center;font-weight:500;font-size:16.5px;line-height:1.3}
 .how em{flex:none;width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-style:normal;font-size:24px;background:linear-gradient(180deg,#efeaff,#ddd3ff);box-shadow:0 3px 0 #b9acec}
-#soloList{display:grid;gap:10px;margin:8px 0 14px}
+#soloList{display:grid;gap:10px;margin:8px 0 14px;max-height:60vh;overflow-y:auto;padding:4px 4px 8px;touch-action:pan-y}
 .card.wide{width:min(760px,96vw)}
 #worldList{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;margin:8px 0 14px;max-height:60vh;overflow-y:auto;padding:4px 2px 8px;touch-action:pan-y}
 .wb{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;border:3px solid #fff;border-radius:22px;padding:12px 8px 10px;background:linear-gradient(180deg,var(--wc1,#f6f3ff),var(--wc2,#e7e0ff));color:var(--ink);font-family:var(--f);cursor:pointer;box-shadow:0 4px 0 #b9acec;transition:transform .12s}
@@ -103,10 +103,12 @@ body.msolo #solo{display:block}body.msolo #rank{display:none}
 .wb small{font-size:12.5px;font-weight:500;opacity:.78;line-height:1.2}
 .wb span{position:absolute;top:6px;right:8px;font-size:12px;font-weight:700;background:var(--y);padding:2px 8px;border-radius:999px;box-shadow:0 2px 0 var(--ink)}
 @media (max-width:420px){#worldList{grid-template-columns:1fr 1fr;gap:8px}.wb em{font-size:34px}.wb b{font-size:15px}.wb small{font-size:11.5px}}
-.sb{display:flex;align-items:center;gap:12px;border:3px solid #fff;border-radius:22px;padding:12px 14px;background:linear-gradient(180deg,#f6f3ff,#e7e0ff);color:var(--ink);font-family:var(--f);text-align:left;cursor:pointer;box-shadow:0 4px 0 #b9acec}
+.sb{display:flex;align-items:center;gap:12px;border:3px solid #fff;border-radius:22px;padding:12px 14px;background:linear-gradient(180deg,var(--wc1,#f6f3ff),var(--wc2,#e7e0ff));color:var(--ink);font-family:var(--f);text-align:left;cursor:pointer;box-shadow:0 4px 0 #b9acec}
 .sb em{font-style:normal;font-size:32px}
 .sb b{display:block;font-size:20px;font-weight:700}.sb small{font-size:14px;font-weight:500;opacity:.75}
-.sb span{margin-left:auto;font-weight:700;font-size:17px;background:var(--y);padding:4px 12px;border-radius:999px;box-shadow:0 3px 0 var(--ink)}
+.sb span{margin-left:auto;font-weight:700;font-size:17px;background:var(--y);padding:4px 12px;border-radius:999px;box-shadow:0 3px 0 var(--ink);white-space:nowrap;flex-shrink:0}
+.sb div{min-width:0;flex:1}.sb small.tl{display:block;font-size:12.5px;opacity:.65;margin-top:1px}
+@media (max-width:480px){.sb{gap:9px;padding:10px 11px}.sb em{font-size:27px}.sb b{font-size:17px}.sb small{font-size:12.5px}.sb span{font-size:13.5px;padding:3px 9px}}
 /* Final con podio */
 #end .card{padding-top:16px}
 #endT{font-size:34px}
@@ -218,18 +220,18 @@ const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.par
 
 /* ===================== TEXTOS (ES / EN) ===================== */
 const TXT={
- es:{logo:'<span class="w">Zampa</span><span class="w w2">Mundo</span><i class="hole"></i>',tag:'¡Trágatelo todo y crece!',play:'Jugar',solo:'Modo Solo',soloT:'Modo Solo',soloP:'Trágate el 100% del barrio antes de que acabe el tiempo.',back:'Volver',
+ es:{logo:'<span class="w">Zampa</span><span class="w w2">Mundo</span><i class="hole"></i>',tag:'¡Trágatelo todo y crece!',play:'Jugar',solo:'Modo Solo',soloT:'Modo Solo',soloP:'Elige un mundo y trágatelo al 100% antes de que acabe el tiempo.',back:'Volver',
   howT:'Cómo se juega',h1:'Arrastra el dedo (o mueve el ratón) para llevar el agujero.',h2:'Trágate todo lo que quepa: cuanto más comes, más grande eres.',h3:'Crece hasta tragarte lo más grande de cada mundo: ¡la noria, la pirámide, el cohete…!',pickW:'Elige mundo',pickP:'Cada mundo tiene sus cosas para tragar y un gigante final.',world:'Mundo',h4:'Trágate a los agujeros más pequeños y huye de los grandes.',
   ok:'¡Vale!',pause:'Pausa',resume:'Seguir',quit:'Salir',again:'Otra vez',menu:'Menú',hint:'Arrastra para moverte',hintPc:'Apunta con el ratón hacia donde quieras ir',eaten:'Tragado',level:'Nivel',
   you:'Tú',best:'Récord',lvlUp:'¡Nivel {n}!',giantGo:'¡Ya puedes con el gigante! Sigue la flecha',ate:'¡Te has tragado a {n}!',deadBy:'¡Te ha tragado {n}!',youWin:'¡Has ganado!',place:'Puesto {n} de {m}',points:'{n} puntos',
-  soloWin:'¡Barrio tragado!',soloLose:'¡Se acabó el tiempo!',time:'en {t}',left:'Quedan {n}',
+  soloWin:'¡Todo tragado!',soloLose:'¡Se acabó el tiempo!',time:'en {t}',left:'Quedan {n}',
   B:[['🏡','Pueblo','Casitas, granjas y parques'],['🏙️','Ciudad','Tiendas, edificios y atascos'],['🎡','Metrópolis','Rascacielos y la gran noria']],
   bots:['Tragaldabas','Don Remolino','La Aspiradora','Señor Tragón','Ñam Ñam','Bocazas','Sumidero','Barriga Llena','Hoyo Negro','Glotón','Desagüe','La Boca']},
- en:{logo:'<span class="w">Gobble</span><span class="w w2">World</span><i class="hole"></i>',tag:'Swallow everything and grow!',play:'Play',solo:'Solo Mode',soloT:'Solo Mode',soloP:'Swallow 100% of the district before time runs out.',back:'Back',
+ en:{logo:'<span class="w">Gobble</span><span class="w w2">World</span><i class="hole"></i>',tag:'Swallow everything and grow!',play:'Play',solo:'Solo Mode',soloT:'Solo Mode',soloP:'Pick a world and swallow 100% of it before time runs out.',back:'Back',
   howT:'How to play',h1:'Drag your finger (or move the mouse) to steer the hole.',h2:'Swallow everything that fits: the more you eat, the bigger you get.',h3:'Grow until you can swallow the biggest thing in each world: the Ferris wheel, the pyramid, the rocket…!',pickW:'Pick a world',pickP:'Every world has its own things to gobble and a giant at the end.',world:'World',h4:'Swallow smaller holes and run from bigger ones.',
   ok:'Got it!',pause:'Paused',resume:'Resume',quit:'Quit',again:'Play again',menu:'Menu',hint:'Drag to move',hintPc:'Point the mouse where you want to go',eaten:'Eaten',level:'Level',
   you:'You',best:'Best',lvlUp:'Level {n}!',giantGo:'You can eat the giant now! Follow the arrow',ate:'You swallowed {n}!',deadBy:'{n} swallowed you!',youWin:'You win!',place:'{n} of {m}',points:'{n} points',
-  soloWin:'District swallowed!',soloLose:'Time is up!',time:'in {t}',left:'{n} left',
+  soloWin:'All swallowed!',soloLose:'Time is up!',time:'in {t}',left:'{n} left',
   B:[['🏡','Village','Cottages, farms and parks'],['🏙️','City','Shops, offices and traffic jams'],['🎡','Metropolis','Skyscrapers and the giant wheel']],
   bots:['Gobbler','Mr Swirl','Vacuum Queen','Big Gulp','Nom Nom','Loudmouth','Sinkhole','Full Belly','Black Hole','Greedy','Drainpipe','Mouthful']}
 };
@@ -973,10 +975,10 @@ function themeLayout(th,R){const NB=8,L=[];for(let j=0;j<NB;j++){L.push([]);for(
   const ctr=spots.filter(([i,j])=>i>=2&&i<=5&&j>=2&&j<=5);const [li,lj]=ctr[0];L[lj][li]=th.land;let n=0;
   for(const b of th.big)for(let r=0;r<3;r++){while(n<spots.length&&(spots[n][0]===li&&spots[n][1]===lj))n++;const [i,j]=spots[n++];L[j][i]=b;}
   return L;}
-function makeThemeWorld(th,seed){
+function makeThemeWorld(th,seed,fixed){
   if(WORLD)disposeWorld(WORLD);
   const R=mulberry(seed),Rn=(a,b)=>a+(b-a)*R(),pick=a=>a[(R()*a.length)|0];
-  const layout=themeLayout(th,R);
+  const layout=fixed||themeLayout(th,R);
   const NB=layout.length,S=NB*CELL+ROAD,H=S/2;
   const w={S,H,NB,objs:[],grid:[],gw:Math.ceil(S/GC)+1,meshes:{},group:new THREE.Group(),movers:[],halos:[],theme:th.id};
   scene.add(w.group);
@@ -1197,6 +1199,12 @@ const SOLO=[
   {seed:301,time:165,L:[['res','parque','granja'],['res','plaza','res'],['granja','parque','res']]},
   {seed:302,time:165,L:[['centro','res','parque'],['parking','centro','res'],['plaza','centro','centro']]},
   {seed:303,time:180,L:[['torres','centro','parque'],['centro','feria','torres'],['plaza','torres','centro']]}];
+// Modo Solo en los mundos nuevos: una zona compacta de cada mundo (3×3 manzanas, gigante en una esquina)
+const SOLO_T={granja:160,puerto:115,feria:130,dinos:130,luna:140,polo:155,desierto:130,super:135,medieval:125,mar:145};
+THEMES.forEach((t,k)=>{if(SOLO_T[t.id])SOLO.push({w:t.id,seed:401+k,time:SOLO_T[t.id]});});
+const soloLayout=(th,seed)=>{const R=mulberry(seed*7+3),pk=a=>a[(R()*a.length)|0],L=[];for(let j=0;j<3;j++){L.push([]);for(let i=0;i<3;i++)L[j].push(pk(th.mix));}L[2][2]=th.land;L[0][2]=pk(th.big);return L;};
+const soloKey=i=>SOLO[i].w?'zm_solo_'+SOLO[i].w:'tc_solo'+i;
+const soloName=i=>{const S=SOLO[i];if(S.w){const t=THM[S.w];return t.emoji+' '+(t.name[LANG]||t.name.es);}const b=TXT[LANG].B[i];return b[0]+' '+b[1];};
 const CLASSIC=[['granja','res','parque','res','res','parking','res','granja'],['res','plaza','centro','res','parque','centro','plaza','res'],['parque','centro','torres','centro','centro','torres','centro','parque'],['res','centro','centro','feria','plaza','centro','res','res'],['parking','res','plaza','torres','torres','centro','parque','res'],['res','parque','centro','centro','plaza','centro','centro','parking'],['res','centro','res','parque','res','centro','plaza','res'],['granja','res','parking','res','granja','res','parque','granja']];
 const G={wid:LS.get('zm_world','ciudad'),mode:'menu',sub:0,time:0,left:0,holes:[],me:null,demo:null,paused:false,over:false,lastTick:0,clock:0};
 let auto=false;
@@ -1207,7 +1215,7 @@ function newGame(mode,sub){
   G.mode=mode;G.sub=sub||0;G.over=false;G.paused=false;
   const seed=mode==='solo'?SOLO[G.sub].seed:((Math.random()*1e9)|0);
   if(!THM[G.wid])G.wid='ciudad';
-  if(mode==='solo'){applyTheme(CITY_T);WORLD=makeWorld(SOLO[G.sub].L,seed);}else WORLD=buildAnyWorld(G.wid,seed);
+  if(mode==='solo'){const S=SOLO[G.sub];if(S.w){const th=THM[S.w];applyTheme(th);WORLD=makeThemeWorld(th,seed,soloLayout(th,seed));}else{applyTheme(CITY_T);WORLD=makeWorld(S.L,seed);}}else WORLD=buildAnyWorld(G.wid,seed);
   G.time=mode==='solo'?SOLO[G.sub].time:120;G.left=G.time;G.lastTick=0;
   const me=makeHole(tx('you'),HCOL[0],true);G.me=me;G.holes.push(me);
   if(mode==='classic'){const names=TXT[LANG].bots.slice().sort(()=>Math.random()-.5);for(let i=0;i<7;i++){const b=makeHole(names[i],HCOL[i+1],false);b.skill=.72+Math.random()*.3;G.holes.push(b);}}
@@ -1361,11 +1369,11 @@ function finish(win){
     $('endSub').textContent=(THM[G.wid]||CITY_T).emoji+' '+wname(G.wid)+' · '+tx('points',{n:me.score})+' · '+tx('best')+' '+Math.max(wb,me.score);
     $('endRank').innerHTML=st.slice(3).map((h,i)=>`<div class="${h.me?'me':''}"><b>${i+4}</b><i style="background:${hex(h.col)}"></i><span>${esc(h.name)}</span><b>${h.score}</b></div>`).join('');
   }else{
-    const pct=Math.floor(WORLD.eaten/WORLD.total*100),used=G.time-G.left,key='tc_solo'+G.sub,b=LS.get(key,{p:0,t:0});
+    const pct=Math.floor(WORLD.eaten/WORLD.total*100),used=G.time-G.left,key=soloKey(G.sub),b=LS.get(key,{p:0,t:0});
     if(pct>b.p||(pct===b.p&&pct===100&&(!b.t||used<b.t)))LS.set(key,{p:pct,t:pct===100?used:0});
     $('podium').style.display='none';$('endBig').style.display='block';
     $('endT').textContent=win?tx('soloWin'):tx('soloLose');$('endBig').textContent=pct+'%';
-    $('endSub').textContent=(win?tx('time',{t:fmtT(used)})+' · ':'')+TXT[LANG].B[G.sub][1];$('endRank').innerHTML='';
+    $('endSub').textContent=(win?tx('time',{t:fmtT(used)})+' · ':'')+soloName(G.sub);$('endRank').innerHTML='';
   }
   setTimeout(()=>{if(G.over)showOv('end');},900);
   if(window.__ho)__ho.lastEnd={mode:G.mode,score:me.score,lvl:me.lvl,win,pct:Math.floor(WORLD.eaten/WORLD.total*100),rank:G.holes.slice().sort((a,b)=>b.score-a.score).map(h=>[h.name,h.score,h.lvl,h.kills,h.deaths])};
@@ -1424,7 +1432,9 @@ function toMenu(keepOv){G.paused=false;G.over=false;G.mode='menu';G.menuReset=0;
   {const ids=THEMES.map(t=>t.id);WORLD=buildAnyWorld(ids[(Math.random()*ids.length)|0],7+((Math.random()*5)|0));}G.demo=makeHole('',HCOL[(Math.random()*HCOL.length)|0],false);G.demo.lab.visible=false;G.demo.skill=1;spawn(G.demo,true);G.demo.x=0;G.demo.z=0;
   document.body.classList.remove('play','msolo');if(!keepOv)showOv('menu');refreshBest();camInit=true;}
 function refreshBest(){const b=LS.get('tc_best',0);$('best').textContent=b?'🏆 '+tx('best')+': '+b:'';}
-function buildSoloList(){$('soloList').innerHTML=TXT[LANG].B.map((b,i)=>{const r=LS.get('tc_solo'+i,{p:0,t:0});return `<button class="sb" data-i="${i}"><em>${b[0]}</em><div><b>${b[1]}</b><small>${b[2]}</small></div><span>${r.p?r.p+'%'+(r.t?' · '+fmtT(r.t):''):'▶'}</span></button>`;}).join('');
+function buildSoloList(){$('soloList').innerHTML=SOLO.map((S,i)=>{const r=LS.get(soloKey(i),{p:0,t:0});let em,nm,ds,c;
+    if(S.w){const t=THM[S.w];em=t.emoji;nm=t.name[LANG]||t.name.es;ds=t.desc[LANG]||t.desc.es;c=WCOL[S.w]||[];}else{const b=TXT[LANG].B[i];em=b[0];nm=b[1];ds=b[2];c=WCOL.ciudad;}
+    return `<button class="sb${S.w?'':' city'}" data-i="${i}" style="--wc1:${c[0]};--wc2:${c[1]}"><em>${em}</em><div><b>${esc(nm)}</b><small>${esc(ds)}</small><small class="tl">⏱ ${fmtT(S.time)}</small></div><span>${r.p?r.p+'%'+(r.t?' · '+fmtT(r.t):''):'▶'}</span></button>`;}).join('');
   $('soloList').querySelectorAll('.sb').forEach(el=>el.onclick=()=>{goFull();newGame('solo',+el.dataset.i);});}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&playing())pause();});
@@ -1469,7 +1479,7 @@ applyQ();toMenu(true);
 setMute(muted);applyLang();
 $('loading').remove();
 requestAnimationFrame(frame);
-window.__ho={setMap(id){if(!THM[id])return false;G.wid=id;return true;},get worlds(){return THEMES.map(t=>t.id);},get G(){return G;},get W(){return WORLD;},set auto(v){auto=v;if(v)$('hint').style.opacity=0;},get auto(){return auto;},newGame,TYPES,get Q(){return QL[Q];},setQ(q){Q=QL.indexOf(q);applyQ();},
+window.__ho={get SOLO(){return SOLO;},setMap(id){if(!THM[id])return false;G.wid=id;return true;},get worlds(){return THEMES.map(t=>t.id);},get G(){return G;},get W(){return WORLD;},set auto(v){auto=v;if(v)$('hint').style.opacity=0;},get auto(){return auto;},newGame,TYPES,get Q(){return QL[Q];},setQ(q){Q=QL.indexOf(q);applyQ();},
   sim(sec){const n=Math.round(sec*30);for(let i=0;i<n&&!G.over;i++){step(1/30);}return {left:G.left,eaten:WORLD.eaten,total:WORLD.total,me:G.me?[G.me.score,G.me.lvl]:null};}};
 window.__ready=true;
 </script>
