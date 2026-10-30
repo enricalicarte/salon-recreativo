@@ -371,6 +371,21 @@
    "play": "juegos/tragaciudad/index.html"
   },
   {
+   "id": "islatropiezo",
+   "slug": "isla-tropiezo",
+   "kw": "juego de carreras de obstáculos eliminatorias",
+   "cat": "accion",
+   "name": "Isla Tropiezo",
+   "note": "Corre, salta y empuja hasta la final",
+   "blurb": "El concurso más loco de una isla tropical: carreras eliminatorias contra 29 rivales sobre flotadores en el mar, troncos rodantes y lianas en la selva, martillos y cocos en un templo tiki, y una gran final sobre lava donde solo gana el último en pie. Personaliza tu muñeco de vinilo con disfraces, gorros y colores que se desbloquean jugando.",
+   "tags": [
+    "Party",
+    "Carreras",
+    "3D"
+   ],
+   "play": "juegos/isla-tropiezo/index.html"
+  },
+  {
    "slug": "aura-battle",
    "id": "aura",
    "kw": "juego de bailes de moda",

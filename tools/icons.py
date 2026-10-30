@@ -1672,6 +1672,50 @@ def _(I):
     I.add(f'<rect x="196" y="40" width="120" height="70" rx="14" {st("#ffffff")}/><text x="256" y="95" font-size="54" text-anchor="middle" fill="#1d1442" {FONT}>K</text>')
     sparkle(I, 80, 90, 16); sparkle(I, 460, 70, 14)
 
+@icon('isla-tropiezo')
+def _(I):
+    bg(I, '#9fe6ff', '#2a8fe0', '#ffffff', .14)
+    # volcán al fondo
+    I.add(f'<path d="M300 250 L372 120 Q392 104 412 120 L500 250Z" {st(I.lg("#6a4a6a", "#3a2440"), 7)}/>')
+    I.add(f'<path d="M366 130 Q392 150 418 130 L410 160 Q392 172 374 160Z" fill="#ff7a20" stroke="{INK}" stroke-width="5"/>')
+    I.add(f'<circle cx="372" cy="86" r="18" fill="#bfb0c8" opacity=".8"/><circle cx="398" cy="70" r="24" fill="#d8cce0" opacity=".8"/><circle cx="420" cy="48" r="16" fill="#e8e0f0" opacity=".8"/>')
+    # mar
+    I.add(f'<path d="M-10 250 C120 236 380 236 522 250 V522 H-10Z" fill="{I.lg("#4fe0f0", "#1478c8")}"/>')
+    for y in (300, 360, 430):
+        I.add(f'<path d="M20 {y} q30 -10 60 0 t60 0" fill="none" stroke="#fff" stroke-width="6" opacity=".5" stroke-linecap="round"/><path d="M330 {y+16} q30 -10 60 0 t60 0" fill="none" stroke="#fff" stroke-width="6" opacity=".5" stroke-linecap="round"/>')
+    # flotadores de colores
+    for x, y, c in ((110, 430, '#ff4fa3'), (400, 446, '#ffd23f'), (250, 470, '#38e5ff')):
+        I.add(f'<ellipse cx="{x}" cy="{y}" rx="74" ry="26" {st(c, 7)}/><ellipse cx="{x}" cy="{y-6}" rx="44" ry="13" fill="#ffffff" stroke="{INK}" stroke-width="5"/>')
+    # palmera
+    I.add(f'<path d="M64 400 Q52 300 86 236" fill="none" stroke="{INK}" stroke-width="22" stroke-linecap="round"/><path d="M64 400 Q52 300 86 236" fill="none" stroke="#b07a42" stroke-width="12" stroke-linecap="round"/>')
+    for d in ('M86 236 Q44 206 8 232 Q48 220 86 242Z', 'M86 236 Q124 192 170 216 Q124 212 88 244Z', 'M86 236 Q74 182 102 156 Q92 196 92 238Z'):
+        I.add(f'<path d="{d}" {st("#3fd06a", 6)}/>')
+    # personaje de vinilo saltando con capucha de tiburón
+    I.add(f'<ellipse cx="262" cy="452" rx="58" ry="12" fill="#000" opacity=".18"/>')
+    I.add(f'<ellipse cx="226" cy="388" rx="20" ry="15" {st("#ffffff", 6)} transform="rotate(-20 226 388)"/><ellipse cx="298" cy="380" rx="20" ry="15" {st("#ffffff", 6)} transform="rotate(25 298 380)"/>')
+    I.add(f'<ellipse cx="262" cy="330" rx="62" ry="68" {st(I.rg("#7af0ff", "#1fb0d8", .35, .3, .9))}/>')
+    I.add(f'<ellipse cx="262" cy="342" rx="36" ry="42" fill="#ffffff" opacity=".9"/>')
+    I.add(f'<ellipse cx="190" cy="270" rx="18" ry="22" {st("#38d0f0", 6)}/><ellipse cx="334" cy="262" rx="18" ry="22" {st("#38d0f0", 6)}/>')
+    I.add(f'<path d="M262 104 L282 150 L244 150Z" {st("#8fa8c8", 7)}/>')
+    I.add(f'<circle cx="262" cy="210" r="86" {st(I.rg("#c8d8ec", "#7f98ba", .35, .3, .9))}/>')
+    I.add(f'<ellipse cx="262" cy="232" rx="62" ry="54" fill="#40d8f8" stroke="{INK}" stroke-width="6"/>')
+    for k in range(5):
+        x = 222 + k * 20
+        I.add(f'<path d="M{x} 182 l8 14 l8 -14Z" fill="#ffffff" stroke="{INK}" stroke-width="3" stroke-linejoin="round"/>')
+    eyes(I, 262, 230, 1.0, 22); smile(I, 262, 258, .9, True)
+    I.add(f'<ellipse cx="216" cy="250" rx="10" ry="6" fill="#ff8fb0" opacity=".8"/><ellipse cx="308" cy="250" rx="10" ry="6" fill="#ff8fb0" opacity=".8"/>')
+    shine(I, 226, 168, 22, 12, -30, .6); shine(I, 232, 300, 12, 18, -20, .45)
+    # flor en la capucha
+    for k in range(6):
+        a = k * math.pi / 3
+        I.add(f'<circle cx="{330 + 16*math.cos(a):.0f}" cy="{150 + 16*math.sin(a):.0f}" r="12" fill="#ff4fa3" stroke="{INK}" stroke-width="4"/>')
+    I.add(f'<circle cx="330" cy="150" r="10" fill="#ffd23f" stroke="{INK}" stroke-width="4"/>')
+    # líneas de movimiento
+    for y in (300, 330, 360):
+        I.add(f'<path d="M150 {y} H118" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".85"/>')
+    sparkle(I, 454, 300, 16); sparkle(I, 60, 120, 14); sparkle(I, 180, 80, 10)
+
+
 # CatQuiz: la mascota gata asoma en la esquina
 for _s in ['catquiz-party','catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
