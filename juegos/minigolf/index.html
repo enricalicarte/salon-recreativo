@@ -1200,6 +1200,87 @@ const HOLES=[
   ramps:[{x:-1,z:4.6,dx:0,dz:-1,l:2.4,w:2.6,h:.7}],waters:[{x0:-4,x1:4,z0:-2.8,z1:2.2,bridges:[{x0:2.9,x1:4}]}],
   sands:[{x:-1,z:-5.2,r:1.3}],circles:[{x:2,z:-6.2,r:.45,t:'barrel'},{x:-3,z:-7.6,r:.5,t:'rock'}]});
 })();
+/* ===== v15 · generador de obstáculos: añade la familia nueva a los hoyos existentes, en huecos libres de su recorrido =====
+   Plantillas: túnel tiki (recto, curvo, dos salidas), rampa de salto (sobre arena, agua/lava nueva o agua que ya había),
+   balancín, tótem giratorio, olas que empujan, cascada que arrastra, cañón de bambú, rizo (loop) y volcán.
+   Además los puentes de agua pasan a ser puentes colgantes que se balancean o plataformas móviles.
+   Dificultad por isla (0 Kauai … 5 Lanai) y más espectáculo en las Grandes Copas de 18 y la Gran Final.
+   GEN_SKIP: plantillas vetadas por hoyo (las que el bot no pudo superar). GEN_PAR: par corregido tras probar con el bot. */
+const GEN_SKIP={16:['bridge'],32:'all',89:['bridge'],93:'all',150:['cannon'],167:['bridge'],197:['cannon'],215:['saw','bridge'],217:['cannon']},
+  GEN_PAR={36:3,63:3,82:4,191:5,283:5,53:4,79:3,179:5,260:5,289:3,233:5};
+const GEN_INFO=[];
+(()=>{
+ const tourOfI=i=>{if(i<126)return Math.floor(i/9);let idx=126;for(const [t,n] of [[14,9],[15,18],[16,9],[17,18],[18,18],[19,18],[20,18],[21,9],[22,18],[23,9],[24,18]]){if(i<idx+n)return t;idx+=n}return 13};
+ const ISL=[[0,1,2,3,4,13],[5,6,14,15],[7,8,16,17],[9,10,18,19,20],[11,21,22],[12,23,24]],BIG=[4,13,15,17,20,22,24];
+ const isleOfT=t=>ISL.findIndex(a=>a.includes(t));
+ const LIST=[
+  ['tiki','ramp_sand','tiki_curve','saw','tiki2','totem','ramp_water','tiki','stream','tiki_curve','loop','cannon','ramp_pool'],
+  ['wave','ramp_water','ramp_pool','tiki_curve','totem','loop','cannon','tiki','saw'],
+  ['stream','saw','ramp_water','tiki','cannon','totem','tiki_curve','ramp_pool','wave'],
+  ['volcano','ramp_pool','ramp_water','tiki','volcano','ramp_sand','totem','loop','saw','tiki_curve','cannon'],
+  ['saw','stream','ramp_pool','tiki_curve','totem','cannon','tiki','ramp_water','loop'],
+  ['tiki2','totem','wave','ramp_sand','loop','cannon','saw','tiki','ramp_pool']];
+ const SPECT=['loop','tiki2','cannon','volcano','ramp_pool','tiki_curve'];
+ function freeRect(H,cx,cz,dx,dz,L,W,m,water){const nx=-dz,nz=dx;
+  for(let i=0;i<=8;i++)for(let j=0;j<=4;j++){const a=(i/8-.5)*L,b=(j/4-.5)*W,x=cx+dx*a+nx*b,z=cz+dz*a+nz*b;
+   if(polyDist(H.poly,x,z)>-m)return false;
+   if(Math.hypot(x-H.tee[0],z-H.tee[1])<1.6||Math.hypot(x-H.cup[0],z-H.cup[1])<2)return false;
+   for(const c of H.circles||[])if(Math.hypot(x-c.x,z-c.z)<c.r+.45)return false;
+   for(const s of H.sands||[])if(Math.hypot(x-s.x,z-s.z)<s.r+.25)return false;
+   if(!water)for(const w of H.waters||[])if(x>w.x0-.3&&x<w.x1+.3&&z>w.z0-.3&&z<w.z1+.3)return false;
+   for(const o of H.boosts||[]){const rx=x-o.x,rz=z-o.z;if(Math.abs(rx*o.dx+rz*o.dz)<o.l/2+.4&&Math.abs(-rx*o.dz+rz*o.dx)<o.w/2+.4)return false}
+   for(const p of H.portals||[])for(const q of[p.a,p.b])if(Math.hypot(x-q[0],z-q[1])<p.r+.6)return false;
+   for(const r of H.rotors||[])if(Math.hypot(x-r.x,z-r.z)<r.len+.5)return false;
+   for(const g of H.gates||[])if(Math.abs(z-g.z)<.8&&Math.abs(x-g.x0)<g.amp+g.hw+.4)return false;
+   for(const k of H._fp||[]){const rx=x-k.x,rz=z-k.z;if(Math.abs(rx*k.dx+rz*k.dz)<k.L/2+.4&&Math.abs(-rx*k.dz+rz*k.dx)<k.W/2+.4)return false}}
+  return true}
+ const inside=(H,x,z,m)=>polyDist(H.poly,x,z)<-(m||.3);
+ const wetAt=(H,x,z)=>(H.waters||[]).some(w=>x>w.x0-.2&&x<w.x1+.2&&z>w.z0-.2&&z<w.z1+.2);
+ function place(H,tp,isl,lvl,big,si){
+  const pts=[H.tee].concat(H.via||[],[H.cup]);const segs=[];for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1],L=Math.hypot(b[0]-a[0],b[1]-a[1]);if(L>3)segs.push({a,b,L,dx:(b[0]-a[0])/L,dz:(b[1]-a[1])/L})}
+  segs.sort((p,q)=>q.L-p.L);
+  const TS=[.5,.42,.58,.34,.66,.27,.73],LAT=[0,.7,-.7,1.4,-1.4,2.1,-2.1];
+  for(const sg of segs){const dx=sg.dx,dz=sg.dz,nx=-dz,nz=dx,s=((si+H._n)%2)?1:-1;
+   const P=(cx,cz,al,la)=>[cx+dx*al+nx*la,cz+dz*al+nz*la],ax=Math.abs(dx)<.03||Math.abs(dz)<.03;
+   for(const t of TS)for(const lat of LAT){const c=P(sg.a[0],sg.a[1],sg.L*t,lat),cx=c[0],cz=c[1];
+    const fp=(L,W,ox,oy,m,w)=>{const q=P(cx,cz,ox||0,oy||0);if(!freeRect(H,q[0],q[1],dx,dz,L,W,m||.35,w))return null;return{x:q[0],z:q[1],dx,dz,L,W}};
+    const ahead=(a0,a1)=>{for(let a=a0;a<=a1;a+=1){const q=P(cx,cz,a,0);if(!inside(H,q[0],q[1],.4))return false}return true};
+    const R=v=>Math.round(v*100)/100,Q=(al,la,y)=>{const q=P(cx,cz,al,la);return y==null?[R(q[0]),R(q[1])]:[R(q[0]),R(q[1]),y]};
+    let f=null;
+    switch(tp){
+     case'tiki':{f=fp(5.8,2.4,-.1);if(!f)break;(H.tracks=H.tracks||[]).push({kind:'tiki',col:isl===3?0x3e383c:null,pts:[Q(-2.2,0),Q(-1,0),Q(.4,0),Q(1.7,0)]});break}
+     case'tiki_curve':{f=fp(6.2,3.5,0,s*.6);if(!f)break;(H.tracks=H.tracks||[]).push({kind:'tiki',col:isl===3?0x3e383c:null,pts:[Q(-2.4,0),Q(-1.2,0),Q(.6,s*.6),Q(2.2,s*1.3)]});break}
+     case'tiki2':{f=fp(6.8,5);if(!f)break;(H.tracks=H.tracks||[]).push({kind:'tiki',pts:[Q(-2.6,0),Q(-1.4,0),Q(.2,s*.5),Q(2.4,s*1.2)],alt:{v:7.5+lvl*.6,pts:[Q(-2.6,0),Q(-1.4,0),Q(-.2,-s*.9),Q(1.4,-s*2)]}});break}
+     case'ramp_sand':{f=fp(5.2,2.6,.1);if(!f||!ahead(2,3))break;(H.ramps=H.ramps||[]).push({x:Q(-1.6,0)[0],z:Q(-1.6,0)[1],dx,dz,l:2.2,w:2.4,h:R(.5+.05*lvl)});const sq=Q(1.8,0);(H.sands=H.sands||[]).push({x:sq[0],z:sq[1],r:1});break}
+     case'ramp_pool':{if(!ax)break;f=fp(8.4,3.4,.4);if(!f||!ahead(3,5))break;const h=R(.6+.04*lvl),rc=Q(-2.7,0);(H.ramps=H.ramps||[]).push({x:rc[0],z:rc[1],dx,dz,l:2.2,w:2.4,h});
+       const a=Q(-1.2,-1.5),b=Q(1.6+.1*lvl,1.5);(H.waters=H.waters||[]).push({x0:R(Math.min(a[0],b[0])),x1:R(Math.max(a[0],b[0])),z0:R(Math.min(a[1],b[1])),z1:R(Math.max(a[1],b[1])),bridges:[],lava:isl===3?1:undefined});break}
+     case'saw':{const l=4.4+.2*Math.min(lvl,5);f=fp(l+.6,2);if(!f)break;(H.saws=H.saws||[]).push({x:R(cx),z:R(cz),dx,dz,l,w:1.4,h:.42});break}
+     case'totem':{f=fp(3.9,3.9);if(!f)break;const w=(.8+.14*lvl)*(s>0?1:-1);(H.rotors=H.rotors||[]).push({x:R(cx),z:R(cz),len:1.45,w:R(w),a0:R(si*.7),arms:lvl>=3?4:2,t:'totem'});(H.circles=H.circles||[]).push({x:R(cx),z:R(cz),r:.42,t:'totem'});break}
+     case'wave':{f=fp(2.8,3.2);if(!f)break;(H.waves=H.waves||[]).push({x:R(cx),z:R(cz),dx:R(nx*s),dz:R(nz*s),l:3.2,w:2.6,a:10+2*lvl,sp:R(1.5+.1*lvl),ph:R(si*1.3)});break}
+     case'stream':{f=fp(1.9,4.6,0,0,.55);if(!f)break;(H.streams=H.streams||[]).push({x:R(cx),z:R(cz),dx:R(nx*s),dz:R(nz*s),l:4.2,w:1.5,a:7+lvl});break}
+     case'cannon':{f=fp(3,2.4);if(!f||!ahead(3,8))break;(H.tracks=H.tracks||[]).push({kind:'cannon',pts:[Q(-1.2,0,0),Q(-.5,0,.25),Q(.5,0,.6)],pump:8,exitDir:[dx,dz],exitK:.4,exitB:4.4,launch:4.6});break}
+     case'loop':{f=fp(5.6,2.8,0,s*.45);if(!f)break;const Rr=.85,lp=[Q(-2.5,0,0),Q(-1.3,0,0)];for(let k=0;k<=12;k++){const a=k/12*Math.PI*2;lp.push(Q(Rr*Math.sin(a),s*.9*k/12,R(Rr*(1-Math.cos(a)))))}lp.push(Q(1.3,s*.9,0),Q(2.5,s*.9,0));(H.tracks=H.tracks||[]).push({kind:'loop',pts:lp});break}
+     case'volcano':{if(isl!==3)break;f=fp(4.8,2.8,-.2);if(!f||!ahead(3,6))break;(H.tracks=H.tracks||[]).push({kind:'volcano',sc:.62,col:0x5a4a4a,cx:R(cx),cz:R(cz),cr:1.15,ch:1.4,pts:[Q(-2.2,0,0),Q(-1.5,0,.3),Q(-.7,0,.9),Q(0,0,1.4)],pump:7,exitDir:[dx,dz],exitK:.4,exitB:4,launch:5.5});break}
+     case'ramp_water':{for(const w of H.waters||[]){if(!ax)break;let e=null;for(let a=1;a<sg.L;a+=.1){const q=[sg.a[0]+dx*a,sg.a[1]+dz*a];if(q[0]>w.x0&&q[0]<w.x1&&q[1]>w.z0&&q[1]<w.z1){e=a;break}}if(e==null)continue;
+        let ex=e;while(ex<sg.L){const q=[sg.a[0]+dx*ex,sg.a[1]+dz*ex];if(!(q[0]>w.x0&&q[0]<w.x1&&q[1]>w.z0&&q[1]<w.z1))break;ex+=.1}if(ex-e>4.6||e<4)continue;
+        const rc=[sg.a[0]+dx*(e-1.7),sg.a[1]+dz*(e-1.7)];if(!freeRect(H,rc[0],rc[1],dx,dz,2.4,2.8,.35,false))continue;const ld=[sg.a[0]+dx*(ex+1.2),sg.a[1]+dz*(ex+1.2)];if(!inside(H,ld[0],ld[1],.4)||wetAt(H,ld[0],ld[1]))continue;
+        (H.ramps=H.ramps||[]).push({x:R(rc[0]),z:R(rc[1]),dx,dz,l:2.2,w:2.4,h:R(.62+.03*lvl)});f={x:rc[0],z:rc[1],dx,dz,L:2.4,W:2.8};break}
+       if(f)return f;return null}
+    }
+    if(f)return f}}
+  return null}
+ for(let i=2;i<HOLES.length;i++){const H=HOLES[i];if(H.tracks||H.ramps||H.saws||H.deck)continue;
+  const t=tourOfI(i),isl=isleOfT(t),big=BIG.includes(t),pos=i<126?i%9:0,lvl=isl+(big?1:0)+(t===13?1:0);H._n=i;H._fp=[];
+  const skip=GEN_SKIP[i]||[];if(skip==='all')continue;
+  const want=big||t===13?2:(isl>=3&&i%2)?2:1,base=LIST[isl],got=[];
+  let order=base.map((_,k)=>base[(k+i*3)%base.length]);if(i%4){order=order.filter(x=>x!=='cannon');order.push('cannon')}if(big){const sp=SPECT.filter(x=>base.includes(x)&&(x!=='cannon'||i%3===0));order=sp.map((_,k)=>sp[(k+i)%sp.length]).concat(order)}
+  for(const tp of order){if(got.length>=want)break;if(skip.includes(tp)||got.includes(tp))continue;const f=place(H,tp,isl,lvl,big,got.length+i);if(f){H._fp.push(f);got.push(tp)}}
+  // puentes colgantes que se balancean y plataformas móviles sobre el agua que ya había
+  if(!skip.includes('bridge'))for(const w of H.waters||[])for(const br of w.bridges||[]){const lf=br.x0-w.x0,rt=w.x1-br.x1,am=Math.min(lf,rt,1.5);
+    if(am>=.6&&(i+isl)%2===0){br.mv=Math.round(am*(.4+.05*Math.min(lvl,5))*100)/100;br.sp=.6+.06*lvl;br.ph=i%6;got.push('plataforma')}else{br.sw=Math.round(Math.min(.35,Math.max(.2,am*.6))*100)/100;br.sp=1.1+.1*lvl;br.ph=i%6;got.push('puente')}break}
+  if(GEN_PAR[i])H.par=GEN_PAR[i];
+  if(got.length)GEN_INFO.push([i,isl,got.join('+')]);delete H._fp}
+})();
 
 /* ============ física ============ */
 const BR=.22,STEP=1/240;
@@ -1245,6 +1326,9 @@ function step(h){
   if(sl>.01){B.vx-=G3*S0.gx*h;B.vz-=G3*S0.gz*h}
   let boosted=false;
   if(low)for(const o of HD.boosts||[]){const rx=B.x-o.x,rz=B.z-o.z,al=rx*o.dx+rz*o.dz,pe=-rx*o.dz+rz*o.dx;if(Math.abs(al)<o.l/2&&Math.abs(pe)<o.w/2){B.vx+=o.dx*o.a*h;B.vz+=o.dz*o.a*h;boosted=true}}
+  if(low){for(const o of HD.waves||[]){const r=rLoc(o,B.x,B.z);if(Math.abs(r[0])<o.w/2&&Math.abs(r[1])<o.l/2){const pu=Math.max(0,Math.sin(simT*o.sp+o.ph));const f=o.a*pu*pu;B.vx+=o.dx*f*h;B.vz+=o.dz*f*h;if(pu>.2)boosted=true}}
+    for(const o of HD.streams||[]){const r=rLoc(o,B.x,B.z);if(Math.abs(r[0])<o.l/2&&Math.abs(r[1])<o.w/2){B.vx+=o.dx*o.a*h;B.vz+=o.dz*o.a*h;const k2=Math.exp(-1.2*h);B.vx*=k2;B.vz*=k2;boosted=true}}}
+  brStep(simT);
   if(boosted){if(simT-boostSnd>.5){boostSnd=simT;S.boost()}}
   if(low&&HD.portals&&simT>portCd){for(const p of HD.portals){let hit=false;for(let q=0;q<2&&!hit;q++){const A=q?p.b:p.a,Z=q?p.a:p.b;if((B.x-A[0])**2+(B.z-A[1])**2<p.r*p.r){hit=true;burst(A[0],.3,A[1],22,[p.c,0xffffff],3,3,.1,.6,9);B.x=Z[0];B.z=Z[1];portCd=simT+.5;trPos.length=0;burst(Z[0],.3,Z[1],22,[p.c,0xffffff],3,3,.1,.6,9);S.boost();shake=Math.max(shake,.05)}}}}
   sp=Math.hypot(B.vx,B.vz);if(sp>30){B.vx*=30/sp;B.vz*=30/sp;sp=30}
@@ -1260,7 +1344,7 @@ function step(h){
   if(!inPoly(lv?HD.deck.poly:HD.poly,B.x,B.z)){B.x=px;B.z=pz;B.vx*=-.4;B.vz*=-.4}
   if(inSand&&sp>1.5){sandAcc+=h;if(sandAcc>.035){sandAcc=0;emit(B.x,.15,B.z,rand(-.6,.6),rand(.6,1.6),rand(-.6,.6),0xe9cf94,.1,.45,5)}}
   // agua
-  if(!lv&&B.y<.05)for(const w of HD.waters||[]){if(B.x>w.x0&&B.x<w.x1&&B.z>w.z0&&B.z<w.z1){let on=false;for(const br of w.bridges)if(B.x>br.x0&&B.x<br.x1)on=true;
+  if(!lv&&B.y<.05)for(const w of HD.waters||[]){if(B.x>w.x0&&B.x<w.x1&&B.z>w.z0&&B.z<w.z1){let on=false;for(const br of w.bridges)if(B.x>br.x0+(br._o||0)&&B.x<br.x1+(br._o||0))on=true;
     if(!on){if(sp>15){if(Math.random()<.4)burst(B.x,.1,B.z,3,[0xffffff,0xbfeaff],1.5,2.5,.08,.4,9);B.vx*=1-.35*h*60/60;B.vz*=1-.35*h*60/60;if(Math.random()<.02)S.sand()}
       else{state='water';waterT=0;lavaHit=!!w.lava;burst(B.x,.15,B.z,26,w.lava?[0xffd34d,0xff7a2a,0xff3a1a]:[0xffffff,0xbfeaff,0x7fd0f0],3,5,.12,.8,12);S.splash();vib(70);return}}}}
   // hoyo
@@ -1306,18 +1390,21 @@ function prepObs(){
   if(HD.deck){const D=HD.deck.poly;dsegs=D.map((p,i)=>{const q=D[(i+1)%D.length];return[p[0],p[1],q[0],q[1]]})}
   for(const k of HD.blocks||[]){const c=[[k.x0,k.z0],[k.x1,k.z0],[k.x1,k.z1],[k.x0,k.z1]];for(let i=0;i<4;i++){const p=c[i],q=c[(i+1)%4];segs.push([p[0],p[1],q[0],q[1]])}}
   for(const o of HD.ramps||[]){nrm(o);o._e=rEdges(o)}
+  for(const o of(HD.waves||[]).concat(HD.streams||[]))nrm(o);
+  for(const w of HD.waters||[])for(const br of w.bridges||[])br._o=0;
   for(const o of HD.saws||[]){nrm(o);o.th=o.th0==null?1:o.th0;o.om=0;o._e=rEdges(o);circ.push(cc(o.x,o.z,.32,.38))}
   for(const T of HD.tracks||[]){T.lv=T.lv||0;T.A=mkPath(T.pts);T.B=T.alt?mkPath(T.alt.pts):null;const p0=pAt(T.A,0),p1=pAt(T.A,.35);let ex=p1.x-p0.x,ez=p1.z-p0.z;const l=Math.hypot(ex,ez)||1;
     T.ex=ex/l;T.ez=ez/l;T.mx=T.pts[0][0];T.mz=T.pts[0][1];T.flash=0;T.erupt=0;const nx=-T.ez,nz=T.ex,sc=T.sc||1;
-    if(T.kind==='slide'){
-      for(const P of[T.A]){for(let u=.6;u<P.L-.7;u+=1.3){const q=pAt(P,u);if(q.y>.45&&!(HD.deck&&inPoly(HD.deck.poly,q.x,q.z)))circ.push(cc(q.x,q.z,.1))}
+    if(T.kind==='slide'||T.kind==='loop'){
+      for(const P of[T.A]){if(T.kind==='loop'){for(let u=.8;u<P.L-.8;u+=.4){const q=pAt(P,u);if(q.y<=.3)circ.push(cc(q.x,q.z,.36,q.y+.5))}break}for(let u=.6;u<P.L-.7;u+=1.3){const q=pAt(P,u);if(q.y>.45&&!(HD.deck&&inPoly(HD.deck.poly,q.x,q.z)))circ.push(cc(q.x,q.z,.1))}
         for(let u=.6;u<P.L-.75;u+=.4){const q=pAt(P,u);if(q.y<=.45)circ.push(cc(q.x,q.z,.4,q.y+.55))}}
       if(T.pole)circ.push(cc(T.pole[0],T.pole[1],.26))}
+    else if(T.kind==='cannon'){const e=pAt(T.A,T.A.L);for(const s of[-1,1])circ.push(cc(T.mx+nx*s*.62+T.ex*.1,T.mz+nz*s*.62+T.ez*.1,.24));circ.push(cc((T.mx+e.x)/2+T.ex*.25,(T.mz+e.z)/2+T.ez*.25,.5,.9))}
     else{
       const hd=.1+.65*sc,hx=T.mx+T.ex*hd,hz=T.mz+T.ez*hd;
       for(const s of[-1,1]){circ.push(cc(T.mx+nx*s*.85*sc+T.ex*.15,T.mz+nz*s*.85*sc+T.ez*.15,.35*sc));circ.push(cc(hx+nx*s*.75*sc,hz+nz*s*.75*sc,.48*sc))}
       circ.push(cc(hx+T.ex*.12,hz+T.ez*.12,.42*sc));
-      if(T.kind==='volcano')circ.push(cc(T.cx,T.cz,T.cr||1.9,1.5));
+      if(T.kind==='volcano')circ.push(cc(T.cx,T.cz,T.cr||1.9,(T.ch||1.8)-.3));
       else for(const P of[T.A,T.B]){if(!P)continue;for(let u=1.3;u<P.L-.55;u+=.45){const q=pAt(P,u);circ.push(cc(q.x,q.z,.42))}}}}
 }
 function obsCovers(x,z){if(HD.deck&&inPoly(HD.deck.poly,x,z))return true;for(const k of HD.blocks||[])if(x>k.x0-.15&&x<k.x1+.15&&z>k.z0-.15&&z<k.z1+.15)return true;
@@ -1328,22 +1415,26 @@ function sawStep(h){if(!HD||!HD.saws)return;for(const o of HD.saws){let tq=0;
   o.om+=(tq*(o.k||5.5)-o.om*1.4)*h;o.th+=o.om*h;
   if(o.th>1){o.th=1;if(o.om>.45)sawThud(o,o.om);o.om=0}else if(o.th<-1){o.th=-1;if(o.om<-.45)sawThud(o,-o.om);o.om=0}}}
 function sawThud(o,v){S.wall(6+v*4);shake=Math.max(shake,Math.min(.1,.03+v*.03));vib(16);const e=o.th>0?-1:1;burst(o.x+o.dx*e*o.l/2,.1,o.z+o.dz*e*o.l/2,8,[0xfff7e6,0xe2ae75],2,1.2,.08,.4,8)}
+/* puentes colgantes y plataformas móviles: se desplazan y llevan consigo la bola que está encima */
+function brOff(br,t){return br.mv?br.mv*Math.sin(t*br.sp+br.ph):br.sw?br.sw*Math.sin(t*br.sp+br.ph):0}
+function brStep(t){if(!HD||!HD.waters)return;for(const w of HD.waters){if(!w.bridges)continue;for(const br of w.bridges){if(!br.mv&&!br.sw)continue;const o=brOff(br,t),d=o-(br._o||0);
+  if(d&&!B.trk&&!(B.lv|0)&&(B.y||0)<.05&&B.z>w.z0&&B.z<w.z1&&B.x>br.x0+(br._o||0)-.02&&B.x<br.x1+(br._o||0)+.02&&state!=='water'&&state!=='sink')B.x+=d;br._o=o}}}
 /* tubos: túnel tiki (oculto), tobogán (visible) y volcán (empuja y lanza) */
-function trkEnter(T){const v=Math.hypot(B.vx,B.vz),useB=T.B&&v<T.alt.v;B.trk={T,P:useB?T.B:T.A,u:0,v:Math.max(v,1.2),v0:v,hide:T.kind!=='slide'};
+function trkEnter(T){const v=Math.hypot(B.vx,B.vz),useB=T.B&&v<T.alt.v;B.trk={T,P:useB?T.B:T.A,u:0,v:Math.max(v,1.2),v0:v,hide:T.kind!=='slide'&&T.kind!=='loop'};
   T.flash=1;S.boost();vib(18);shake=Math.max(shake,.04);
-  burst(T.mx,.35+(B.y||0),T.mz,12,T.kind==='slide'?[0xffe08a,0xffffff]:[0xffd34d,0xff8a5c,0xffffff],2.4,2,.09,.5,8);if(B.trk.hide)trPos.length=0}
+  if(T.kind==='cannon')T.flash=1;burst(T.mx,.35+(B.y||0),T.mz,12,T.kind==='slide'||T.kind==='loop'?[0xffe08a,0xffffff]:[0xffd34d,0xff8a5c,0xffffff],2.4,2,.09,.5,8);if(B.trk.hide)trPos.length=0}
 function trkStep(h){const K=B.trk,T=K.T,P=K.P;let q=pAt(P,K.u);
   if(T.pump)K.v+=(T.pump-K.v)*Math.min(1,h*5);
-  else{K.v-=G3*q.ty*h;const fr=T.kind==='slide'?.9:.45;K.v-=Math.sign(K.v)*(fr+.035*Math.abs(K.v))*h;if(K.hide&&K.v<1.6)K.v=1.6}
+  else{K.v-=G3*q.ty*h;const fr=T.kind==='slide'?.9:T.kind==='loop'?.55:.45;K.v-=Math.sign(K.v)*(fr+.035*Math.abs(K.v))*h;if(K.hide&&K.v<1.6)K.v=1.6}
   K.v=clamp(K.v,-24,24);K.u+=K.v*h;
   if(K.u>=P.L){trkExit();return}
   if(K.u<=0){B.trk=null;const v=Math.abs(K.v);B.x=T.mx-T.ex*.12;B.z=T.mz-T.ez*.12;B.vx=-T.ex*v;B.vz=-T.ez*v;B.lv=T.lv;B.y=surf(B.x,B.z,B.lv,9).y;B.air=false;B.vy=0;return}
-  q=pAt(P,K.u);B.x=q.x;B.y=q.y;B.z=q.z;const hl=Math.hypot(q.tx,q.tz)||1;B.vx=q.tx/hl*K.v;B.vz=q.tz/hl*K.v;
+  q=pAt(P,K.u);B.x=q.x;B.y=q.y;B.z=q.z;const hl=Math.hypot(q.tx,q.tz)||1;B.vx=q.tx/hl*K.v;B.vz=q.tz/hl*K.v;if(T.kind==='loop'){if(!T._s)T._s=loopSide(P);const tl=Math.hypot(q.tx,q.ty,q.tz)||1;K.n=loopNrm(T._s[0],T._s[1],q.tx/tl,q.ty/tl,q.tz/tl)}
   if(!K.hide&&Math.abs(K.v)>5&&Math.random()<.3)emit(B.x,B.y+.2,B.z,rand(-.3,.3),rand(.2,.6),rand(-.3,.3),0xfff3c4,.07,.3,0)}
 function trkExit(){const K=B.trk,T=K.T,P=K.P,e=pAt(P,P.L-.01);let dx=e.tx,dz=e.tz;if(T.exitDir){dx=T.exitDir[0];dz=T.exitDir[1]}const l=Math.hypot(dx,dz)||1;dx/=l;dz/=l;
   let v=Math.abs(K.v);if(T.exitK!=null)v=T.exitB+T.exitK*K.v0;const off=T.kind==='volcano'?0:.35;
   B.trk=null;B.x=e.x+dx*off;B.z=e.z+dz*off;B.vx=dx*v;B.vz=dz*v;B.y=e.y;B.lv=T.out||0;trPos.length=0;
-  if(T.launch){B.air=true;B.vy=T.launch;T.erupt=1;S.splash();S.bump(12);shake=Math.max(shake,.16);vib([30,30,60]);burst(B.x,B.y+.3,B.z,30,[0xffd34d,0xff7a2a,0xff3a1a,0x555555],4,6,.13,.9,10)}
+  if(T.launch){B.air=true;B.vy=T.launch;T.erupt=1;if(T.kind==='cannon'){S.bump(14);S.boost();shake=Math.max(shake,.1);vib([20,20,40]);burst(B.x,B.y+.3,B.z,22,[0xffffff,0xdddddd,0xffd34d,0x9a8a7a],3.5,2.5,.14,.8,4)}else{S.splash();S.bump(12);shake=Math.max(shake,.16);vib([30,30,60]);burst(B.x,B.y+.3,B.z,30,[0xffd34d,0xff7a2a,0xff3a1a,0x555555],4,6,.13,.9,10)}}
   else{const s=surf(B.x,B.z,B.lv,B.y+.2);if(B.y>s.y+.06){B.air=true;B.vy=0}else{B.y=s.y;B.air=false;B.vy=0}
     S.boost();vib(14);burst(B.x,B.y+.3,B.z,14,T.kind==='slide'?[0xffe08a,0xffffff,0x9fe07a]:[0xffd34d,0xff8a5c,0xffffff],3,2,.09,.5,8);shake=Math.max(shake,.05)}}
 
@@ -1353,7 +1444,7 @@ const bambooTex=(()=>{const c=cvs(64,128),g=c.getContext('2d');const gr=g.create
 const rampTex=(()=>{const c=cvs(128,128),g=c.getContext('2d');g.fillStyle='#ef6f5a';g.fillRect(0,0,128,128);g.fillStyle='#fff7e6';for(let i=0;i<4;i++){g.beginPath();const y=i*32+6;g.moveTo(20,y+22);g.lineTo(64,y);g.lineTo(108,y+22);g.lineTo(108,y+30);g.lineTo(64,y+8);g.lineTo(20,y+30);g.closePath();g.fill()}
   g.fillStyle='rgba(0,0,0,.12)';g.fillRect(0,0,6,128);g.fillRect(122,0,6,128);return mkTex(c)})();
 const deckTex=(()=>{const t=new THREE.CanvasTexture(plankCanvas);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(.45,.9);t.anisotropy=4;t.rotation=Math.PI/2;return t})();
-function makeTikiHead(sc,col){const g=new THREE.Group(),wd=M(col||0x8a5a35),dk=M(0x5a3a22),add=(geo,mat,x,y,z,o)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);if(o)outline(m,1.04);g.add(m);return m};
+function makeTikiHead(sc,col,noT){const g=new THREE.Group(),wd=M(col||0x8a5a35),dk=M(0x5a3a22),add=(geo,mat,x,y,z,o)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);if(o)outline(m,1.04);g.add(m);return m};
   add(new THREE.BoxGeometry(.66,1.0,1.3),wd,-.77,.5,0,1);add(new THREE.BoxGeometry(.66,1.0,1.3),wd,.77,.5,0,1);add(new THREE.BoxGeometry(2.2,1.6,1.3),wd,0,1.8,0,1);
   add(new THREE.BoxGeometry(.9,1.0,1.26),new THREE.MeshBasicMaterial({color:0x140a06,side:THREE.BackSide}),0,.5,0);
   add(new THREE.BoxGeometry(1.36,.14,.12),M(0xef6f5a),0,1.06,.67);
@@ -1364,7 +1455,7 @@ function makeTikiHead(sc,col){const g=new THREE.Group(),wd=M(col||0x8a5a35),dk=M
     const br=add(new THREE.BoxGeometry(.62,.13,.22),dk,s*.52,2.4,.66);br.rotation.z=-s*.22}
   add(new THREE.BoxGeometry(2.24,.14,1.34),M(0x2fb7a8),0,2.62,0);add(new THREE.BoxGeometry(2.24,.1,1.34),M(0xffc94d),0,1.18,0);
   const fc=[0xef6f5a,0xffc94d,0x2fb7a8,0x5fb870];for(let i=0;i<7;i++){const a=(i-3)*.32,f=new THREE.Mesh(new THREE.ConeGeometry(.17,1.05,5),M(fc[i%4]));f.position.set(Math.sin(a)*.75,2.65+Math.cos(a)*.5,-.1);f.rotation.z=-a;g.add(f)}
-  for(const s of[-1,1]){const tg=new THREE.Group();tg.position.set(s*1.5,0,.45);const pl=new THREE.Mesh(new THREE.CylinderGeometry(.05,.07,1.7,6),M(0x8a5a35));pl.position.y=.85;tg.add(pl);const cp=new THREE.Mesh(new THREE.CylinderGeometry(.14,.08,.2,8),M(0x5a3a22));cp.position.y=1.75;tg.add(cp);
+  if(!noT)for(const s of[-1,1]){const tg=new THREE.Group();tg.position.set(s*1.5,0,.45);const pl=new THREE.Mesh(new THREE.CylinderGeometry(.05,.07,1.7,6),M(0x8a5a35));pl.position.y=.85;tg.add(pl);const cp=new THREE.Mesh(new THREE.CylinderGeometry(.14,.08,.2,8),M(0x5a3a22));cp.position.y=1.75;tg.add(cp);
     const fm=new THREE.Mesh(new THREE.ConeGeometry(.13,.4,6),new THREE.MeshBasicMaterial({color:0xffb347}));fm.position.y=2.05;tg.add(fm);const gl=new THREE.Mesh(new THREE.SphereGeometry(.5,8,6),new THREE.MeshBasicMaterial({color:0xffa030,transparent:true,opacity:.2,depthWrite:false,blending:THREE.AdditiveBlending}));gl.position.y=2.0;tg.add(gl);dyn.push({t:'flame',m:fm,gl,ph:srand()*6});g.add(tg)}
   g.scale.setScalar(sc||1);g.userData.eye=eyeM;return g}
 function tubeMesh(P,col,y0){const step=Math.max(1,Math.round(.3/(P.L/P.P.length))),pts=[];for(let i=0;i<P.P.length;i+=step)pts.push(new THREE.Vector3(P.P[i][0],y0,P.P[i][2]));const lp=P.P[P.P.length-1];pts.push(new THREE.Vector3(lp[0],y0,lp[2]));
@@ -1383,7 +1474,45 @@ function slideMesh(P){const R=.4,N=10,pos=[],uv=[],ix=[],rimA=[],rimB=[];let row
   const tx=bambooTex.clone();tx.needsUpdate=true;const g=new THREE.Group(),m=new THREE.Mesh(geo,M(0xffffff,{map:tx,side:THREE.DoubleSide}));m.castShadow=m.receiveShadow=true;g.add(m);
   for(const rim of[rimA,rimB]){const t=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rim),rim.length*2,.06,6,false),M(0x8a6a35));t.castShadow=true;g.add(t)}
   return g}
+const waveTex=(()=>{const c=cvs(128,128),g=c.getContext('2d');const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'rgba(40,170,230,.75)');gr.addColorStop(1,'rgba(120,220,240,.55)');g.fillStyle=gr;g.fillRect(0,0,128,128);
+  g.strokeStyle='rgba(255,255,255,.95)';g.lineWidth=7;g.lineCap='round';for(let k=0;k<2;k++){g.beginPath();for(let x=0;x<=128;x+=4)g.lineTo(x,20+k*64+Math.sin(x/128*Math.PI*4)*6);g.stroke()}
+  g.fillStyle='rgba(255,255,255,.5)';for(let i=0;i<30;i++)g.fillRect(Math.random()*128,Math.random()*128,3,2);return mkTex(c)})();
+const streamTex=(()=>{const c=cvs(64,128),g=c.getContext('2d');g.fillStyle='rgba(70,180,225,.85)';g.fillRect(0,0,64,128);g.strokeStyle='rgba(255,255,255,.8)';g.lineWidth=2.5;
+  for(let i=0;i<9;i++){const x=Math.random()*64,y=Math.random()*128;g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.random()*4-2,y+18+Math.random()*16);g.stroke()}g.fillStyle='rgba(255,255,255,.7)';g.fillRect(0,0,4,128);g.fillRect(60,0,4,128);return mkTex(c)})();
+/* rizo: medio tubo que da una vuelta completa (con deriva lateral para no chocar consigo mismo) */
+function loopSide(P){const a0=P.P[0],a1=P.P[P.P.length-1];let dx=a1[0]-a0[0],dz=a1[2]-a0[2];const l=Math.hypot(dx,dz)||1;return[-dz/l,dx/l]}
+function loopNrm(sx,sz,tx,ty,tz){const nx=-sz*ty,ny=sz*tx-sx*tz,nz=sx*ty,l=Math.hypot(nx,ny,nz)||1;return[nx/l,ny/l,nz/l]}
+function loopMesh(P){const R=.4,N=10,pos=[],uv=[],ix=[],rimA=[],rimB=[];const st=Math.max(1,Math.round(.12/(P.L/P.P.length)));const id=[];for(let i=0;i<P.P.length;i+=st)id.push(i);if(id[id.length-1]!==P.P.length-1)id.push(P.P.length-1);
+  const [sx,sz]=loopSide(P);
+  id.forEach((i,k)=>{const p=P.P[i],a=P.P[Math.max(0,i-1)],b=P.P[Math.min(P.P.length-1,i+1)];let tx=b[0]-a[0],ty=b[1]-a[1],tz=b[2]-a[2];const tl=Math.hypot(tx,ty,tz)||1;
+    const n=loopNrm(sx,sz,tx/tl,ty/tl,tz/tl);
+    for(let j=0;j<=N;j++){const th=-1.9+3.8*j/N,sn=Math.sin(th),cs=1-Math.cos(th);pos.push(p[0]+n[0]*R*cs+sx*R*sn,p[1]+n[1]*R*cs,p[2]+n[2]*R*cs+sz*R*sn);uv.push(j/N,P.s[i]/1.1)}
+    for(const [arr,sg] of[[rimA,-1],[rimB,1]]){const sn=Math.sin(1.9)*sg,cs=1-Math.cos(1.9);arr.push(new THREE.Vector3(p[0]+n[0]*R*cs+sx*R*sn,p[1]+n[1]*R*cs,p[2]+n[2]*R*cs+sz*R*sn))}
+    if(k){const o=(k-1)*(N+1);for(let j=0;j<N;j++)ix.push(o+j,o+j+N+1,o+j+1,o+j+1,o+j+N+1,o+j+N+2)}});
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));geo.setIndex(ix);geo.computeVertexNormals();
+  const tx=rampTex.clone();tx.needsUpdate=true;tx.repeat.set(1,.5);const g=new THREE.Group(),m=new THREE.Mesh(geo,M(0xffffff,{map:tx,side:THREE.DoubleSide}));m.castShadow=true;g.add(m);
+  for(const rim of[rimA,rimB]){const t=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rim),rim.length*2,.06,6,false),M(0xffc94d));g.add(t)}
+  return g}
+/* cañón de bambú: la bola entra por la culata, la empuja la pólvora y sale volando */
+function makeCannon(T){const g=new THREE.Group(),e=pAt(T.A,T.A.L),L=Math.hypot(e.x-T.mx,e.z-T.mz)+.4;
+  const base=new THREE.Mesh(new THREE.BoxGeometry(1.1,.42,L*.8),M(0x8a5a35));base.position.set(0,.21,L*.45);outline(base,1.03);g.add(base);
+  for(const s of[-1,1]){const wh=new THREE.Mesh(new THREE.CylinderGeometry(.32,.32,.14,14).rotateZ(Math.PI/2),M(0xef6f5a));wh.position.set(s*.62,.32,L*.55);outline(wh,1.05);g.add(wh);
+    const hb=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,.18,8).rotateZ(Math.PI/2),M(0xffc94d));hb.position.set(s*.7,.32,L*.55);g.add(hb)}
+  const tx=bambooTex.clone();tx.needsUpdate=true;tx.repeat.set(1,2);
+  const br=new THREE.Mesh(new THREE.CylinderGeometry(.34,.4,L,14,1,true).rotateX(Math.PI/2),M(0xffffff,{map:tx,side:THREE.DoubleSide}));br.position.set(0,.62,L*.5);br.rotation.x=-.32;outline(br,1.03);g.add(br);
+  for(const z of[.15,.5,.85]){const r=new THREE.Mesh(new THREE.TorusGeometry(.4,.06,6,16),M(0x2fb7a8));r.position.set(0,.62+(z-.5)*L*Math.sin(.32),L*z);r.rotation.x=-.32;g.add(r)}
+  const fun=new THREE.Mesh(new THREE.ConeGeometry(.62,.55,16,1,true).rotateX(-Math.PI/2),M(0xd9b45a,{side:THREE.DoubleSide}));fun.position.set(0,.28,-.05);g.add(fun);
+  const dk=new THREE.Mesh(new THREE.CircleGeometry(.3,14),new THREE.MeshBasicMaterial({color:0x140a06}));dk.position.set(0,.3,.2);g.add(dk);
+  const fz=new THREE.Mesh(new THREE.SphereGeometry(.09,8,6),new THREE.MeshBasicMaterial({color:0xffd34d}));fz.position.set(0,1.0,L*.3);g.add(fz);dyn.push({t:'fuse',m:fz,T});
+  g.position.set(T.mx,0,T.mz);g.rotation.y=Math.atan2(T.ex,T.ez);shadowed(g);return g}
 function buildObs(){
+  for(const o of HD.waves||[]){const tx=waveTex.clone();tx.needsUpdate=true;const m=new THREE.Mesh(new THREE.PlaneGeometry(o.w,o.l).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:.85,depthWrite:false}));
+    m.position.set(o.x,.025,o.z);m.rotation.y=Math.atan2(-o.dz,o.dx)+Math.PI/2;course.add(m);dyn.push({t:'wave',m,tx,o})}
+  for(const o of HD.streams||[]){const tx=streamTex.clone();tx.needsUpdate=true;tx.repeat.set(1,o.l/1.2);const m=new THREE.Mesh(new THREE.PlaneGeometry(o.w,o.l).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:.92,depthWrite:false}));
+    m.position.set(o.x,.024,o.z);m.rotation.y=Math.atan2(-o.dx,-o.dz);course.add(m);dyn.push({t:'stream',tx});
+    const sx=o.x-o.dx*(o.l/2+.55),sz=o.z-o.dz*(o.l/2+.55);if(inPoly(HD.poly,sx,sz)){const rk=makeRock(.55);rk.position.set(sx,0,sz);shadowed(rk);course.add(rk);circ.push(cc(sx,sz,.6))}
+    const fx=new THREE.Mesh(new THREE.PlaneGeometry(o.w*.8,1.1),new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:.8,depthWrite:false,side:THREE.DoubleSide}));fx.position.set(o.x-o.dx*(o.l/2+.15),.55,o.z-o.dz*(o.l/2+.15));fx.rotation.y=Math.atan2(o.dx,o.dz);fx.rotation.x=-.15;course.add(fx);
+    const fo=new THREE.Mesh(new THREE.RingGeometry(.2,.55,14).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.55,depthWrite:false}));fo.position.set(o.x-o.dx*(o.l/2-.3),.04,o.z-o.dz*(o.l/2-.3));course.add(fo);dyn.push({t:'foam',m:fo})}
   // terraza elevada
   if(HD.deck){const D=HD.deck,dy=D.y,sh=new THREE.Shape();D.poly.forEach((p,i)=>i?sh.lineTo(p[0],-p[1]):sh.moveTo(p[0],-p[1]));
     const eg=new THREE.ExtrudeGeometry(sh,{depth:dy,bevelEnabled:false});eg.rotateX(-Math.PI/2);const dm=new THREE.Mesh(eg,[M(0xe2b57a,{map:deckTex}),M(0x9d8672)]);dm.castShadow=dm.receiveShadow=true;course.add(dm);
@@ -1425,11 +1554,13 @@ function buildObs(){
         const rf=new THREE.Mesh(new THREE.ConeGeometry(1.3,.9,10),M(0xc9a24a));rf.position.set(T.pole[0],my+1.7,T.pole[1]);outline(rf,1.04);shadowed(rf);course.add(rf)}
       const nx=-T.ez,nz=T.ex,y0=HD.deck&&T.lv===1?HD.deck.y:0;for(const s of[-1,1]){const p=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,1.5,6),M(0xd9b45a,{map:bambooTex}));p.position.set(T.mx+nx*s*.65,y0+.75,T.mz+nz*s*.65);course.add(p)}
       const bar=new THREE.Mesh(new THREE.BoxGeometry(1.6,.28,.08),M(0xef6f5a));bar.position.set(T.mx,y0+1.45,T.mz);bar.rotation.y=Math.atan2(-T.ez,T.ex)+Math.PI/2;outline(bar,1.04);course.add(bar);continue}
+    if(T.kind==='loop'){course.add(loopMesh(T.A));for(let u=1.6;u<T.A.L-1.6;u+=1.1){const q=pAt(T.A,u);if(q.y<.3)continue;const po=new THREE.Mesh(new THREE.CylinderGeometry(.05,.06,q.y,6),M(0x9a7a45));po.position.set(q.x,q.y/2,q.z);course.add(po)}continue}
+    if(T.kind==='cannon'){course.add(makeCannon(T));continue}
     const head=makeTikiHead(sc,T.col);const hd=.1+.65*sc;head.position.set(T.mx+T.ex*hd,0,T.mz+T.ez*hd);head.rotation.y=Math.atan2(-T.ex,-T.ez);shadowed(head);course.add(head);dyn.push({t:'tiki',T,eye:head.userData.eye});
-    if(T.kind==='volcano'){const cr=T.cr||1.9,cn=new THREE.Mesh(new THREE.CylinderGeometry(.75,cr,1.8,16,2),M(T.col||0x5a4a4a));cn.position.set(T.cx,.9,T.cz);outline(cn,1.02);shadowed(cn);course.add(cn);
-      const lv=new THREE.Mesh(new THREE.CircleGeometry(.66,20).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xff6a2a}));lv.position.set(T.cx,1.81,T.cz);course.add(lv);
-      const gl=new THREE.Mesh(new THREE.SphereGeometry(.9,12,8),new THREE.MeshBasicMaterial({color:0xff7a2a,transparent:true,opacity:.3,depthWrite:false,blending:THREE.AdditiveBlending}));gl.position.set(T.cx,1.9,T.cz);course.add(gl);
-      for(let i=0;i<5;i++){const a=i*1.26+.4,d=new THREE.Mesh(new THREE.BoxGeometry(.16,.9,.08),new THREE.MeshBasicMaterial({color:i%2?0xff7a2a:0xffb347}));d.position.set(T.cx+Math.cos(a)*1.05,1.4,T.cz+Math.sin(a)*1.05);d.rotation.y=-a;d.rotation.z=.0;d.lookAt(T.cx,1.4,T.cz);d.rotateX(-.5);course.add(d)}
+    if(T.kind==='volcano'){const cr=T.cr||1.9,ch=T.ch||1.8,cn=new THREE.Mesh(new THREE.CylinderGeometry(.75*cr/1.9,cr,ch,16,2),M(T.col||0x5a4a4a));cn.position.set(T.cx,ch/2,T.cz);outline(cn,1.02);shadowed(cn);course.add(cn);
+      const lv=new THREE.Mesh(new THREE.CircleGeometry(.66,20).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xff6a2a}));lv.scale.setScalar(cr/1.9);lv.position.set(T.cx,ch+.01,T.cz);course.add(lv);
+      const gl=new THREE.Mesh(new THREE.SphereGeometry(.9,12,8),new THREE.MeshBasicMaterial({color:0xff7a2a,transparent:true,opacity:.3,depthWrite:false,blending:THREE.AdditiveBlending}));gl.position.set(T.cx,ch+.1,T.cz);course.add(gl);
+      for(let i=0;i<5;i++){const a=i*1.26+.4,d=new THREE.Mesh(new THREE.BoxGeometry(.16,.9,.08),new THREE.MeshBasicMaterial({color:i%2?0xff7a2a:0xffb347}));d.position.set(T.cx+Math.cos(a)*1.05*cr/1.9,ch*.78,T.cz+Math.sin(a)*1.05*cr/1.9);d.lookAt(T.cx,ch*.78,T.cz);d.rotateX(-.5);course.add(d)}
       dyn.push({t:'volc',T,gl,lv});continue}
     course.add(tubeMesh(T.A,T.col?0x6a5e60:0xd9b45a,.34));if(T.B)course.add(tubeMesh(T.B,T.col?0x6a5e60:0xc9a24a,.34))}
 }
@@ -1459,7 +1590,7 @@ function makeTower(r,light){const g=new THREE.Group();
   return g}
 function makeRotor(r){const g=new THREE.Group();const n=r.arms/2;
   for(let j=0;j<n;j++){const arm=new THREE.Group();arm.rotation.y=-j*Math.PI/2;const segN=6,L=r.len*2/segN;
-    for(let i=0;i<segN;i++){const b=new THREE.Mesh(new THREE.BoxGeometry(L*1.01,.26,.2),M(i%2?0xfff7e6:(r.t==='beam'?0xffc94d:0xef6f5a)));b.position.set(-r.len+L*(i+.5),.45,0);arm.add(b)}
+    for(let i=0;i<segN;i++){const b=new THREE.Mesh(new THREE.BoxGeometry(L*1.01,.26,.2),M(r.t==='totem'?(i%2?0x2fb7a8:0x8a5a35):i%2?0xfff7e6:(r.t==='beam'?0xffc94d:0xef6f5a)));b.position.set(-r.len+L*(i+.5),.45,0);arm.add(b)}
     if(r.t==='mill'){for(const s of[-1,1]){const sail=new THREE.Mesh(new THREE.BoxGeometry(r.len*.8,.05,.55),M(s>0?0x2fb7a8:0xffc94d));sail.position.set(s*r.len*.55,.6,.0);arm.add(sail)}}
     g.add(arm)}
   return g}
@@ -1532,7 +1663,11 @@ function buildHole(idx){
     for(const br of w.bridges){const bw=br.x1-br.x0,g=new THREE.Group();const n=Math.ceil((Hh+1)/.55);
       for(let i=0;i<n;i++){const pl=new THREE.Mesh(new THREE.BoxGeometry(bw,.12,.5),M(i%2?0xd49a5e:0xe2ae75));pl.position.set(0,.09,-(Hh+1)/2+(i+.5)*(Hh+1)/n);pl.castShadow=pl.receiveShadow=true;g.add(pl)}
       for(const sx of[-1,1])for(const sz of[-1,1]){const po=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.5,6),M(0x8a5a35));po.position.set(sx*(bw/2+.03),.3,sz*(Hh+1)/2);po.castShadow=true;g.add(po)}
-      g.position.set((br.x0+br.x1)/2,0,(w.z0+w.z1)/2);course.add(g)}}
+      g.position.set((br.x0+br.x1)/2,0,(w.z0+w.z1)/2);course.add(g);
+      if(br.mv||br.sw){g.children.filter(c=>c.geometry&&c.geometry.type==='CylinderGeometry').forEach(c=>{g.remove(c);c.position.x+=g.position.x;c.position.z+=g.position.z;if(br.sw)course.add(c)});
+        if(br.mv){for(const sz of[-1,1]){const bl=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,bw*.9,10).rotateZ(Math.PI/2),M(0xef6f5a));bl.position.set(0,.02,sz*(Hh/2-.35));g.add(bl)}}
+        else{for(const sx of[-1,1]){const rp=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,Hh+1,5).rotateX(Math.PI/2),M(0xc9a24a));rp.position.set(sx*(bw/2+.03),.5,0);g.add(rp)}}
+        dyn.push({t:'bridge',m:g,br,x0:g.position.x})}}}
   // aceleradores
   for(const o of HD.boosts||[]){const tx=chevTex.clone();tx.needsUpdate=true;tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.repeat.set(1,o.l/1.1);
     const m=new THREE.Mesh(new THREE.PlaneGeometry(o.w,o.l).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:tx,transparent:true,opacity:.95}));m.position.set(o.x,.022,o.z);m.rotation.y=Math.atan2(-o.dx,-o.dz);course.add(m);dyn.push({t:'boost',tx})}
@@ -1540,7 +1675,7 @@ function buildHole(idx){
     g.add(mk(new THREE.RingGeometry(p.r*.78,p.r,40).rotateX(-Math.PI/2),.95));g.add(mk(new THREE.CircleGeometry(p.r*.78,40).rotateX(-Math.PI/2),.35));const cl=mk(new THREE.CylinderGeometry(p.r*.7,p.r*.7,1.8,24,1,true),.16);cl.position.y=.9;g.add(cl);
     g.position.set(q[0],.03,q[1]);course.add(g);dyn.push({t:'portal',m:g,ph:k*2,c:p.c,x:q[0],z:q[1]})})}
   // obstáculos
-  for(const c of circ){if(c.nomesh)continue;let g;if(c.t==='rock')g=makeRock(c.r);else if(c.t==='palm'){g=makePalm(2.7,.18*(c.x>0?-1:1));dyn.push({t:'sway',m:g.userData.crown,ph:Math.random()*6})}else if(c.t==='barrel'){g=makeBarrel(c.r);dyn.push({t:'glow',m:g.userData.glow,c})}else if(c.t==='tower')g=makeTower(c.r,false);else if(c.t==='light'){g=makeTower(c.r,true);dyn.push({t:'lamp',m:g.userData.lamp})}
+  for(const c of circ){if(c.nomesh)continue;let g;if(c.t==='rock')g=makeRock(c.r);else if(c.t==='palm'){g=makePalm(2.7,.18*(c.x>0?-1:1));dyn.push({t:'sway',m:g.userData.crown,ph:Math.random()*6})}else if(c.t==='barrel'){g=makeBarrel(c.r);dyn.push({t:'glow',m:g.userData.glow,c})}else if(c.t==='tower')g=makeTower(c.r,false);else if(c.t==='light'){g=makeTower(c.r,true);dyn.push({t:'lamp',m:g.userData.lamp})}else if(c.t==='totem'){g=new THREE.Group();const a=makeTikiHead(.36,0x8a5a35,1),b=makeTikiHead(.33,0xa86a3e,1);b.position.y=.98;g.add(a,b);g.rotation.y=srand()*6}
     g.position.set(c.x,0,c.z);shadowed(g);course.add(g);c.mesh=g;
     const bl=new THREE.Mesh(new THREE.PlaneGeometry(c.r*3.8,c.r*3.8).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false,opacity:.55}));bl.position.set(c.x,.02,c.z);course.add(bl)}
   for(const r of HD.rotors||[]){const g=makeRotor(r);g.position.set(r.x,0,r.z);shadowed(g);course.add(g);dyn.push({t:'rotor',m:g,r});
@@ -1999,7 +2134,7 @@ function frame(now){
   requestAnimationFrame(frame);const raw=(now-last)/1000;let dt=Math.min(raw,.05);last=now;if(paused)dt=0;T+=dt;if(T>2.5&&!paused&&raw<.25&&state!=='title'){fpsT+=raw;fpsN++;if(fpsT>1.3){const f=fpsN/fpsT;fpsN=0;fpsT=0;if(f<46&&prCur>.75)setPR(Math.max(.75,prCur-.2));else if(f>57&&prCur<PRMAX)setPR(Math.min(PRMAX,prCur+.1))}}
   applyPal(1-Math.exp(-dt*1.2),false);
   // física
-  if(state==='rolling'){const cd0=Math.hypot(HD.cup[0]-B.x,HD.cup[1]-B.z),bs0=Math.hypot(B.vx,B.vz);tsc+=(((cd0<1.3&&bs0<10)?.42:1)-tsc)*Math.min(1,dt*10);acc+=dt*tsc;let g=0;while(acc>=STEP&&g++<20){step(STEP);acc-=STEP;if(state!=='rolling')break}}else{simT+=dt;sawStep(Math.min(dt,.05));acc=0;tsc+=(1-tsc)*Math.min(1,dt*10)}
+  if(state==='rolling'){const cd0=Math.hypot(HD.cup[0]-B.x,HD.cup[1]-B.z),bs0=Math.hypot(B.vx,B.vz);tsc+=(((cd0<1.3&&bs0<10)?.42:1)-tsc)*Math.min(1,dt*10);acc+=dt*tsc;let g=0;while(acc>=STEP&&g++<20){step(STEP);acc-=STEP;if(state!=='rolling')break}}else{simT+=dt;sawStep(Math.min(dt,.05));if(state!=='title')brStep(simT);acc=0;tsc+=(1-tsc)*Math.min(1,dt*10)}
   if(state==='sink'){sinkT+=dt*.6;const k=Math.min(sinkT/.35,1);B.x=lerp(sinkFrom.x,HD.cup[0],sstep(Math.min(sinkT/.18,1)));B.z=lerp(sinkFrom.z,HD.cup[1],sstep(Math.min(sinkT/.18,1)));if(sinkT>.35){state='sunk';holeDone(false)}}
   if(state==='water'){waterT+=dt;if(waterT>.9){B.x=lastPos.x;B.z=lastPos.z;B.vx=B.vz=0;B.lv=lastPos.lv|0;B.trk=null;B.air=false;B.vy=0;B.y=surf(B.x,B.z,B.lv,9).y;strokes++;hud();state='aim';toast(lavaHit?'¡LAVA!':'¡AL AGUA!','+1 golpe de penalización',1300);if(strokes>=HD.par+4)holeDone(true)}}
   // dinámicos
@@ -2020,9 +2155,13 @@ function frame(now){
       case'flame':d.m.scale.set(1,.85+.3*Math.sin(T*11+d.ph),1);d.gl.material.opacity=.16+.1*Math.sin(T*9+d.ph)+.2*nightF();break;
       case'rooster':{const s=Math.sin(T*d.sp+d.ph);d.m.position.x=d.x0+s*1.0;d.m.rotation.y=Math.cos(T*d.sp+d.ph)>0?0:Math.PI;d.hd.position.y=.65-Math.max(0,Math.sin(T*4.5+d.ph))*.22;d.hd.rotation.z=-Math.max(0,Math.sin(T*4.5+d.ph))*.7;d.m.position.y=-.3+Math.abs(Math.sin(T*6+d.ph))*.03;break}
       case'roll':d.m.rotation.y+=dt*.4;break;
+      case'wave':{const o=d.o,pu=Math.max(0,Math.sin(simT*o.sp+o.ph));d.tx.offset.y=-(simT*o.sp/Math.PI)%1;d.m.material.opacity=.35+.6*pu;break}
+      case'stream':d.tx.offset.y=(T*1.4)%1;break;
+      case'bridge':{const br=d.br;d.m.position.x=d.x0+(br._o||0);if(br.sw)d.m.rotation.z=Math.cos(simT*br.sp+br.ph)*.12;else d.m.position.y=Math.sin(T*2.2+br.ph)*.03;break}
+      case'fuse':d.m.material.color.setHSL(.1+.05*Math.sin(T*20),1,.55+.3*d.T.flash);d.m.scale.setScalar(1+Math.random()*.4+d.T.flash);d.T.flash=Math.max(0,d.T.flash-dt*2);break;
       case'saw':d.m.rotation.z=Math.atan(d.o.th*d.o.h/(d.o.l/2));break;
       case'tiki':{const K=d.T;K.flash=Math.max(0,K.flash-dt*1.5);d.eye.color.setRGB(1,.8-.55*K.flash+.08*Math.sin(T*3),.3-.3*K.flash);break}
-      case'volc':{const K=d.T;K.erupt=Math.max(0,K.erupt-dt*.8);d.gl.material.opacity=.25+.1*Math.sin(T*3)+.2*K.erupt;d.gl.scale.setScalar(1+.08*Math.sin(T*2.3)+.45*K.erupt);if(Math.random()<.12+K.erupt)emit(K.cx+rand(-.4,.4),2,K.cz+rand(-.4,.4),rand(-.2,.2),rand(.8,1.6),rand(-.2,.2),Math.random()<.3?0xff7a2a:0x8a8080,.16,1.6,-.15,2);break}
+      case'volc':{const K=d.T;K.erupt=Math.max(0,K.erupt-dt*.8);d.gl.material.opacity=.25+.1*Math.sin(T*3)+.2*K.erupt;d.gl.scale.setScalar(1+.08*Math.sin(T*2.3)+.45*K.erupt);if(Math.random()<.12+K.erupt)emit(K.cx+rand(-.4,.4),(K.ch||1.8)+.2,K.cz+rand(-.4,.4),rand(-.2,.2),rand(.8,1.6),rand(-.2,.2),Math.random()<.3?0xff7a2a:0x8a8080,.16,1.6,-.15,2);break}
       case'crab':{const s=Math.sin(T*d.sp+d.ph);d.m.position.x=d.x0+s*1.2;d.m.rotation.y=Math.cos(T*d.sp+d.ph)>0?Math.PI/2:-Math.PI/2;d.m.position.y=-.3+Math.abs(Math.sin(T*10+d.ph))*.03;break}
     }}
   for(const c of circ){if(c.hit>0){c.hit=Math.max(0,c.hit-dt*5);if(c.mesh){const s=1+.14*Math.sin(c.hit*Math.PI);c.mesh.scale.set(s,1/s*.4+.6,s)}}else if(c.mesh&&c.mesh.scale.x!==1)c.mesh.scale.set(1,1,1)}
@@ -2038,7 +2177,7 @@ function frame(now){
   if(state==='water'){by=BR*1.2-sstep(Math.min(waterT/.6,1))*.5;sc=1-Math.min(waterT/.6,1)*.8}
   const gY=B.air?surf(B.x,B.z,B.lv|0,bY).y:bY,hid=B.trk&&B.trk.hide;
   ballMesh.visible=state!=='title'&&!(state==='sunk'||state==='done'&&holed||state==='final')&&!hid;
-  ballMesh.position.set(B.x,by,B.z);ballBlob.visible=ballMesh.visible;ballBlob.position.set(B.x,gY+.03,B.z);ballBlob.scale.setScalar(sc*.95*clamp(1-(bY-gY)*.25,.4,1));
+  if(B.trk&&B.trk.n&&state==='rolling'){const n=B.trk.n;ballMesh.position.set(B.x+n[0]*BR*1.2,bY+n[1]*BR*1.2,B.z+n[2]*BR*1.2)}else ballMesh.position.set(B.x,by,B.z);ballBlob.visible=ballMesh.visible;ballBlob.position.set(B.x,gY+.03,B.z);ballBlob.scale.setScalar(sc*.95*clamp(1-(bY-gY)*.25,.4,1));
   if(sp>.05&&state==='rolling'){ax.set(B.vz,0,-B.vx).normalize();q.setFromAxisAngle(ax,sp*dt/BR);ballMesh.quaternion.premultiply(q)}
   ballMesh.scale.setScalar(sc*1.2);updTrail(sp);
   if(state==='rolling'&&sp>5&&!hid&&!B.air&&Math.random()<.9){emit(B.x,.18+bY,B.z,rand(-.3,.3),rand(0,.4),rand(-.3,.3),sp>14?0xfff0b0:0xffffff,.1+sp*.004,.3+sp*.004,0)}
