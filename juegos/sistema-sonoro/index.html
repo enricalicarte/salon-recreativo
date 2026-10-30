@@ -1073,7 +1073,7 @@ function onHit(p){
   spawnWave(p.grp.position,T.color,T.size*1.3);
   emit(p.grp.position,T.color,p.type===0?22:12);
   spawnArc(p);
-  if(p.type===0&&running&&navigator.vibrate)try{navigator.vibrate(8);}catch(e){}
+  if(p.type===0&&running&&navigator.vibrate)try{navigator.vibrate(20);}catch(e){}
   orbitFlash[p.orbit]=1;
   sunFlash=Math.max(sunFlash,p.type===0?.5:.15);
   if(p.type===0)kickFlash=1;

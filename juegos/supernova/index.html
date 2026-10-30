@@ -810,7 +810,7 @@ function fire(e){
 function press(l){
   held[l]=true;pressFx[l]=1;
   if(!S||!ac)return;
-  if(navigator.vibrate)try{navigator.vibrate(7);}catch(e){}
+  if(navigator.vibrate)try{navigator.vibrate(20);}catch(e){}
   const at=ac.currentTime;
   if(S.free){
     const m=60+LANES[l].pc+(l<2?12:0);
