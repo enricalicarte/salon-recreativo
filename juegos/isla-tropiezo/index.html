@@ -58,8 +58,9 @@ body.play #hud{display:block}
 #diveB{bottom:max(118px,calc(env(safe-area-inset-bottom) + 100px));right:max(150px,calc(env(safe-area-inset-right) + 134px));width:84px;height:84px;background:linear-gradient(180deg,#e6fbff,#7af0ff 50%,#38b6ff)}
 body.touch .ab{display:grid}
 body.touch #prog{left:16px;transform:none;width:min(40vw,240px)}
-#hint{position:absolute;left:50%;top:70%;transform:translateX(-50%);font-weight:600;font-size:16px;border-radius:999px;padding:9px 20px;transition:opacity .6s;white-space:nowrap}
-@media (max-width:600px){#hint{white-space:normal;width:min(86vw,330px);text-align:center;font-size:15px;border-radius:18px;top:62%}}
+#hint{position:absolute;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);max-width:calc(100vw - 200px);font-weight:600;font-size:16px;border-radius:999px;padding:9px 20px;transition:opacity .6s;white-space:nowrap}
+@media (max-width:600px){#hint{white-space:normal;width:min(86vw,330px);max-width:none;text-align:center;font-size:15px;border-radius:18px}}
+@media (max-aspect-ratio:1/1){#hint{top:calc(112px + env(safe-area-inset-top,0px))}}
 #chk{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);display:none;border-radius:999px;padding:8px 22px;font-weight:700;font-size:22px;background:linear-gradient(180deg,#eafff2,#4ade80 60%,#14b86a);color:var(--ink);border:3px solid #fff;box-shadow:0 5px 0 var(--ink)}
 #chk.on{display:block;animation:chk 1.3s cubic-bezier(.2,1.4,.4,1) forwards}
 @keyframes chk{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-90%)}}
@@ -714,7 +715,7 @@ function buildBeach(){
   // B · flotadores sobre el agua
   const lanes=[-6.5,0,6.5],rows=[];for(let i=0;i<6;i++){const z=73+i*6.6,row=[];rows.push(row);for(let l=0;l<3;l++){const x=lanes[l]+(i%2?1.2:-1.2)*(l-1);const mv=(i===2||i===4)&&l===1;const base=x;
       const ring=new THREE.MeshStandardMaterial({color:[0xff4fa3,0xffd23f,0x38e5ff][(i+l)%3],roughness:.5});
-      const c=cyl(x,-.6,z,2.4,.7,ring,{range:mv?4:0,upd(c,t){c.y=-.6+Math.sin(t*1.3+i+l)*.16;if(mv)c.x=base+Math.sin(t*.7+i)*3.2;}});row.push(c);
+      const c=cyl(x,-.6,z,2.75,.7,ring,{range:mv?4:0,upd(c,t){c.y=-.6+Math.sin(t*1.3+i+l)*.14;if(mv)c.x=base+Math.sin(t*.6+i)*2.4;}});row.push(c);
       const cap=mk(GEO.cyl,MAT.white,0,.55,0,1.5,.25,1.5,c.mesh);cap.scale.set(1.5/2.4,.25/.7,1.5/2.4);occDyn(c.mesh);}}
   plat(0,0,114,26,12,3,MAT.sand);W.cps.push({x:0,y:0,z:112});
   // C · olas que empujan
@@ -816,7 +817,7 @@ function buildTemple(){
   W.cps.push({x:0,y:1,z:28});
   plat(0,1,74,14,8,3,MAT.stone);W.cps.push({x:0,y:1,z:74});
   // B · baldosas que se hunden
-  for(let i=0;i<14;i++)for(let l=0;l<6;l++){if((i*5+l*3)%7===0&&i>0&&i<13)continue;const x=-7.5+l*3,z=80+i*2.6;const c=plat(x,1,z,2.7,2.3,.5,(i+l)%2?MAT.stone:MAT.stoneD,{st:0,oy:.75});c.onStand=()=>{if(c.st===0)c.st=.001;};c.upd=(c,t,dt)=>{if(c.st>0){c.st+=dt;if(c.st>.6)c.y-=Math.min(4,(c.st-.6)*6)*dt;if(c.st>3.4){c.st=0;c.y=c.oy;}}};}
+  for(let i=0;i<14;i++)for(let l=0;l<6;l++){if((i*5+l*3)%7===0&&i>0&&i<13)continue;const x=-7.5+l*3,z=80+i*2.6;const c=plat(x,1,z,2.7,2.3,.5,(i+l)%2?MAT.stone:MAT.stoneD,{st:0,oy:.75});c.onStand=()=>{if(c.st===0)c.st=.001;};c.upd=(c,t,dt)=>{if(c.st>0){c.st+=dt;if(c.st>1.0)c.y-=Math.min(4,(c.st-1.0)*6)*dt;if(c.st>3.0){c.st=0;c.y=c.oy;}}};}
   plat(0,1,120,16,8,3,MAT.stone);W.cps.push({x:0,y:1,z:120});
   // C · cañones de coco
   plat(0,1,142,14,36,3,MAT.stone);for(let i=0;i<4;i++){const z=128+i*8,dir=i%2?1:-1;cannon(dir*-9,1,z,dir,2.6,i*.37,9,19);}
@@ -968,7 +969,7 @@ function raceStart(W,mat,colA,colB,title,top){top=top||0;const H=W.deep||3+Math.
 function raceFinish(W,z,top,mat,colA){W.finishZ=z;W.len=z;const H=W.deep||3+Math.max(0,top);gate(0,z,top,colA,0xffffff,'META');plat(0,top,z-1,30,16,H,mat);plat(0,top,z+14,40,14,H,mat);
   const g1=grandstand(-21,z,Math.PI/2,20),g2=grandstand(21,z,-Math.PI/2,20);g1.position.y=g2.position.y=top;W.wps.push({x:0,y:top,z:z-7,w:6},{x:0,y:top,z:z+6,w:8});}
 // péndulo genérico (oscila en X) colgado de un pórtico
-function pendulum(cx,cz,pivotY,arm,A,w,ph,top,headMat,beamMat,headR){headR=headR||1.2;const g=new THREE.Group();g.position.set(cx,pivotY,cz);mk(GEO.cyl,M2.rope,0,-arm/2,0,.1,arm,.1,g);const head=mk(GEO.sph,headMat,0,-arm,0,headR,headR,headR,g);LEVEL.add(g);
+function pendulum(cx,cz,pivotY,arm,A,w,ph,top,headMat,beamMat,headR){headR=headR||1.2;const g=new THREE.Group();g.position.set(cx,pivotY,cz);mk(GEO.cyl,M2.rope,0,-arm/2,0,.1,arm,.1,g);const head=mk(GEO.sph,headMat,0,-arm,0,headR,headR,headR,g);LEVEL.add(g);occDyn(g);
   const bm=beamMat||MAT.woodP;occ(mk(GEO.box,bm,-6.4,(pivotY-top)/2+top,cz,.8,pivotY-top,.8));occ(mk(GEO.box,bm,6.4,(pivotY-top)/2+top,cz,.8,pivotY-top,.8));occ(mk(GEO.box,bm,0,pivotY+.3,cz,13.6,.8,1));
   return {g,head,hz:hazard({x:cx,y:pivotY-arm,z:cz,r:headR,pow:10,solid:true,noSync:true,upd(h,t){const a=A*Math.sin(w*t+ph);g.rotation.z=a;h.x=cx+Math.sin(a)*arm;h.y=pivotY-Math.cos(a)*arm;},warn:1,onHit(){sfx.thud();}})};}
 // objeto que rueda hacia -Z por una pendiente (o plano) y reaparece arriba
@@ -1020,8 +1021,8 @@ function buildPier(){
   plat(0,1,86,12,28,.5,MAT.wood);for(let z=72;z<100;z+=4){for(const s of[-1,1])INS.trunk.add(s*5.6,-.2,z,.3,2.6,.3);}
   const buoyM=[MAT.red,MAT.white];for(let i=0;i<4;i++){const p=pendulum(0,75+i*7,8.2,5.6,1.0,1.45+i*.1,i*1.3,1,buoyM[i%2],MAT.woodP,1.15);mk(GEO.torus,MAT.white,0,-5.6,0,1.18,1.18,1.18,p.g).rotation.x=Math.PI/2;}
   // C · balsas que se deslizan de lado
-  const rows=[];for(let i=0;i<4;i++){const z=105+i*7,row=[];rows.push(row);for(const s of[-1,1]){const base=s*5,ph=i*1.1+(s>0?Math.PI:0);
-      const c=plat(base,1,z,6,5,.6,MAT.wood,{range:4,upd(c,t){c.x=base+Math.sin(t*.8+ph)*3;c.y=.7+Math.sin(t*1.7+i+s)*.06;}});row.push(c);occDyn(c.mesh);}}
+  const rows=[];for(let i=0;i<4;i++){const z=104+i*7,row=[];rows.push(row);for(const s of[-1,1]){const base=s*5,ph=i*1.1+(s>0?Math.PI:0);
+      const c=plat(base,1,z,6.4,6,.6,MAT.wood,{range:4,upd(c,t){c.x=base+Math.sin(t*.7+ph)*2.4;c.y=.7+Math.sin(t*1.7+i+s)*.06;}});row.push(c);occDyn(c.mesh);}}
   plat(0,1,134,18,8,.5,MAT.wood);W.cps.push({x:0,y:1,z:134});
   // D · barriles que ruedan por el muelle alto
   ramp(0,138,146,16,1,3,MAT.wood,.6);plat(0,3,168,16,44,.6,MAT.wood);ramp(0,190,194,16,3,1,MAT.wood,.6);
@@ -1040,7 +1041,7 @@ function buildPier(){
   farIslets(r,0,110,7,120,190);
   W.wps.push({x:0,y:1,z:32,w:6},{x:0,y:1,z:42,w:6},{x:0,y:1,z:52,w:6},{x:0,y:1,z:62,w:6},{x:0,y:1,z:68,w:4},
     {x:0,y:1,z:73,w:3,haz:1},{x:0,y:1,z:80,w:3,haz:1},{x:0,y:1,z:87,w:3,haz:1},{x:0,y:1,z:94,w:3,haz:1},{x:0,y:1,z:99,w:3},
-    {cols:rows[0],y:1,z:105},{cols:rows[1],y:1,z:112},{cols:rows[2],y:1,z:119},{cols:rows[3],y:1,z:126},{x:0,y:1,z:133,w:4},
+    {cols:rows[0],y:1,z:104},{cols:rows[1],y:1,z:111},{cols:rows[2],y:1,z:118},{cols:rows[3],y:1,z:125},{x:0,y:1,z:133,w:4},
     {x:0,y:3,z:148,w:5},{lanes:[-5.5,-2.75,0,2.75,5.5],y:3,z:158,w:0,haz:1},{lanes:[-5.5,-2.75,0,2.75,5.5],y:3,z:172,w:0,haz:1},{lanes:[-5.5,-2.75,0,2.75,5.5],y:3,z:186,w:0,haz:1});
   raceFinish(W,200,1,MAT.sand,0xff9f1c);return W;}
 
@@ -1050,25 +1051,25 @@ function buildRiver(){
   setAmbient('river');waterPlane(-.9,0,100,700,0x1f9a8a,0x7fe8d0);cloudsDeco();initInst();const r=mulberry(72);
   raceStart(W,MAT.grass,0x4ade80,0x38e5ff,'¡RÍO!');
   const logRow=(z,i,len,A,sp)=>{const row=[];for(const s of[-1,1]){const base=s*6.5,ph=i*1.7+(s>0?2:0),dir=i%2?1:-1;
-      const c=plat(base,0,z,len,2.2,1,MAT.wood,{mesh:false,range:A+.5,upd(c,t){c.x=base+dir*Math.sin(t*sp+ph)*A;c.y=-.5+Math.sin(t*2+z)*.05;m.position.set(c.x,c.y-.2,c.z);m.rotation.x=Math.sin(t*1.3+z)*.06;}});
-      const m=mk(GEO.cyl,MAT.trunk,base,-.7,z,.78,len,.78);m.rotation.z=Math.PI/2;
+      const c=plat(base,0,z,len,2.6,1,MAT.wood,{mesh:false,range:A+.5,upd(c,t){c.x=base+dir*Math.sin(t*sp+ph)*A;c.y=-.5+Math.sin(t*2+z)*.05;m.position.set(c.x,c.y-.2,c.z);m.rotation.x=Math.sin(t*1.3+z)*.06;}});
+      const m=mk(GEO.cyl,MAT.trunk,base,-.7,z,.95,len,.95);m.rotation.z=Math.PI/2;
       for(const q of[-.5,.5]){mk(GEO.cyl,MAT.trunkR,0,q,0,1.04,.03,1.04,m);}occDyn(m);for(let k=0;k<3;k++){const l=mk(GEO.sphL,MAT.leaf2,0,-.35+k*.3,.7,.35,.12,.25,m);}row.push(c);}return row;};
   // A · troncos flotantes
-  const rows=[];for(let i=0;i<5;i++)rows.push(logRow(31+i*4,i,8,3.6,.7+i*.08));
+  const rows=[];for(let i=0;i<5;i++)rows.push(logRow(31+i*4,i,9.5,2.6,.6+i*.07));
   plat(0,0,54,24,8,3,MAT.grass);W.cps.push({x:0,y:0,z:54});
   // B · norias de agua giratorias
-  plat(0,0,77,18,38,3,MAT.grass);
+  plat(0,0,77.5,18,39,3,MAT.grass);
   const mill=(x,z,w0,ph)=>{const hz=sweepBar(x,0,z,5.2,t=>w0*(1+t*.004),MAT.woodP,.38);for(let k=0;k<6;k++){const p=mk(GEO.box,MAT.wood,0,.75,0,.9,1.2,.2,hz.g);p.position.x=-5+k*2;p.rotation.y=Math.PI/2;}mk(GEO.cyl,MAT.trunk,0,.5,0,.5,1.2,.5,hz.g);hz.ang=ph;};
   mill(-3.5,64,1.3,0);mill(3.5,76,-1.5,1);mill(-3.5,88,1.7,2);
   for(const s of[-1,1])for(let z=58;z<96;z+=3)iBush(s*(9.6+r()*.5),0,z,.7+r()*.4);
-  W.cps.push({x:0,y:0,z:96});
+  W.cps.push({x:0,y:0,z:93});
   // C · piedras que suben y bajan
   const stones=[];for(let i=0;i<8;i++){const z=99+i*4,row=[];stones.push(row);for(let l=0;l<3;l++){const x=(l-1)*5.2+(i%2?1.2:-1.2),ph=i*.9+l*2.1;
-      const c=cyl(x,-1.5,z,1.55,1.5,MAT.rock,{geo:GEO.cyl8,safe:t=>Math.sin(t*.9+ph)>-.42,upd(c,t){const v=Math.sin(t*.9+ph);c.y=-1.5+(v>-.55?0:(v+.55)*1.3);c.slip=v<-.55?1:0;c.mesh.material=v>-.35?MAT.rock:M2.slide;}});row.push(c);
+      const c=cyl(x,-1.5,z,1.85,1.5,MAT.rock,{geo:GEO.cyl8,safe:t=>Math.sin(t*.9+ph)>-.6,upd(c,t){const v=Math.sin(t*.9+ph);c.y=-1.5+(v>-.72?0:(v+.72)*1.3);c.slip=v<-.72?1:0;c.mesh.material=v>-.52?MAT.rock:M2.slide;}});row.push(c);
       mk(GEO.rock,MAT.rock,0,.5,0,1.05,.55,1.05,c.mesh).scale.set(.75,.35,.75);}}
-  plat(0,0,135,22,8,3,MAT.grass);W.cps.push({x:0,y:0,z:135});
+  plat(0,0,134,22,10,3,MAT.grass);W.cps.push({x:0,y:0,z:135});
   // D · cocodrilos en el río y troncos grandes
-  const rows2=[];for(let i=0;i<5;i++)rows2.push(logRow(143+i*4,i+5,9,3,.9+i*.1));
+  const rows2=[];for(let i=0;i<5;i++)rows2.push(logRow(143+i*4,i+5,10,2.4,.75+i*.08));
   for(let i=0;i<3;i++){const z=145+i*4,dir=i%2?1:-1,ph=i*2;const g=new THREE.Group();LEVEL.add(g);const crocM=new THREE.MeshStandardMaterial({color:0x4aa04a,roughness:.5});
     mk(GEO.sph,crocM,0,-.7,0,2.2,.45,.7,g);mk(GEO.sph,crocM,1.9*dir,-.62,0,.9,.32,.5,g);for(const q of[-1,1]){mk(GEO.sph,MAT.white,1.4*dir,-.3,q*.3,.16,.16,.16,g);mk(GEO.sph,MAT.ink,1.45*dir,-.28,q*.3,.08,.08,.08,g);}
     g.position.set(0,-.25,z);g.userData.croc={dir,ph};(W.crocs||(W.crocs=[])).push(g);}
@@ -1107,7 +1108,7 @@ function buildCave(){
   plat(0,0,76,18,8,3,M2.caveRock);
   for(let i=0;i<3;i++){const x=(i-1)*5.5,z=83;cyl(x,-1,z,1.7,1.25,M2.mush,{mesh:false,onStand(h){if(h.state==='fall')return;h.vy=16;h.vz=Math.max(h.vz,9);h.vx*=.5;h.ground=null;h.state='jump';h.sq=1.5;if(h.me){sfx.jump();shake=Math.max(shake,.15);}burst(h.x,h.y,h.z,10,0xff6ad8,4,4,.5,.5);}});
     mk(GEO.half,M2.mush,x,.0,z,1.9,.75,1.9);mk(GEO.cyl,M2.mushS,x,-3,z,.6,6,.6);for(let k=0;k<5;k++)mk(GEO.sph,M2.mushS,x+Math.cos(k*1.3)*1.1,.55,z+Math.sin(k*1.3)*1.1,.22,.12,.22);}
-  plat(0,0,94.5,20,17,3,M2.caveRock);W.cps.push({x:0,y:0,z:76},{x:0,y:0,z:92});
+  plat(0,0,93.7,20,18.6,3,M2.caveRock);W.cps.push({x:0,y:0,z:76},{x:0,y:0,z:92});
   // C · estalactitas que caen
   plat(0,0,123,14,40,3,M2.caveRock);
   for(let i=0;i<6;i++)occ(mk(GEO.box,MAT.rockD,(i%2?1:-1)*7.6,7,108+i*7,1.4,14,1.4));
@@ -1119,7 +1120,7 @@ function buildCave(){
   for(let i=0;i<3;i++){const z=156+i*11,w0=(i%2?-1:1)*(.8+i*.15);const c=cyl(0,-6,z,4.6,6,M2.caveRock,{geo:GEO.cyl8,upd(c,t){c.ry=w0*t;}});for(let k=0;k<6;k++){mk(GEO.crys,[M2.crys,M2.crysC,M2.crysP][k%3],Math.cos(k*1.047)*3.6/4.6,.5,Math.sin(k*1.047)*3.6/4.6,.12,.18,.12,c.mesh);}occDyn(c.mesh);}
   plat(0,0,190,14,12,3,M2.caveRock);
   // decorado: paredes de roca, arcos y racimos de cristales brillantes
-  {const gm=new THREE.MeshBasicMaterial({color:0x8af0ff});for(const [z0,z1,w] of [[-11,72,9],[72,80,9],[86,103,10],[103,143,7],[143,149,8],[184,196,7]])for(const s of[-1,1])mk(GEO.box,gm,s*(w-.08),.03,(z0+z1)/2,.16,.06,z1-z0);}
+  {const gm=new THREE.MeshBasicMaterial({color:0x8af0ff});for(const [z0,z1,w] of [[-11,72,9],[72,80,9],[84.4,103,10],[103,143,7],[143,149,8],[184,196,7]])for(const s of[-1,1])mk(GEO.box,gm,s*(w-.08),.03,(z0+z1)/2,.16,.06,z1-z0);}
   for(const s of[-1,1]){for(let z=-10;z<240;z+=14){mk(GEO.box,MAT.rockD,s*(22+r()*4),6,z,8+r()*4,20+r()*14,14);cluster(s*(16+r()*3),-1+r()*2,z+r()*6,1.6+r()*1.4,(z/14)|0);}}
   for(let z=20;z<230;z+=26){const a=new THREE.Group();a.position.set(0,0,z);mk(GEO.arc,MAT.rockD,0,0,0,19,19,30,a).rotation.y=0;LEVEL.add(a);}
   for(let i=0;i<40;i++){const x=(r()-.5)*40,z=r()*230;if(Math.abs(x)<10)continue;cluster(x,-6,z,1+r()*2,i);}
@@ -1184,9 +1185,9 @@ function buildSlide(){
   plat(0,0,123,22,14,3,M2.pool);W.cps.push({x:0,y:0,z:124});
   // C · piscina con flotadores que se mueven
   const lanes=[-6,0,6],rows=[];for(let i=0;i<5;i++){const z=134+i*5.4,row=[];rows.push(row);for(let l=0;l<3;l++){const x=lanes[l]+(i%2?1.4:-1.4);const mv=i%2===1;const base=x;
-      const c=cyl(x,-.6,z,2.1,.7,[M2.slideP,MAT.yellow,M2.slide][(i+l)%3],{geo:GEO.cyl,range:mv?3:0,upd(c,t){c.y=-.6+Math.sin(t*1.4+i+l)*.15;if(mv)c.x=base+Math.sin(t*.8+i)*2.2;}});row.push(c);
+      const c=cyl(x,-.6,z,2.5,.7,[M2.slideP,MAT.yellow,M2.slide][(i+l)%3],{geo:GEO.cyl,range:mv?2.5:0,upd(c,t){c.y=-.6+Math.sin(t*1.4+i+l)*.12;if(mv)c.x=base+Math.sin(t*.45+i)*1.0;}});row.push(c);
       mk(GEO.cyl,MAT.white,0,.55,0,1,.2,1,c.mesh).scale.set(.6,.3,.6);occDyn(c.mesh);}}
-  plat(0,0,165,22,10,3,M2.pool);W.cps.push({x:0,y:0,z:165});
+  plat(0,0,163.5,22,13,3,M2.pool);W.cps.push({x:0,y:0,z:165});
   // D · aspersores giratorios
   plat(0,0,184,22,28,3,M2.pool);
   for(let i=0;i<2;i++){const hz=sweepBar((i?1:-1)*4.5,0,177+i*10,5.5,t=>(i?-1:1)*(1.4+t*.004),MAT.yellow,.35);mk(GEO.cyl,M2.slide,0,.9,0,.5,1.8,.5,hz.g);
@@ -1298,9 +1299,9 @@ function buildFalls(){
   setAmbient('falls');waterPlane(-.9,0,100,700,0x2a9ac0,0x9af0ff);cloudsDeco();initInst();const r=mulberry(78);
   raceStart(W,MAT.grass,0x38b6ff,0xffffff,'¡CASCADA!');
   // A · arroyo con piedras que suben (la corriente empuja hacia atrás)
-  const lanes=[-5,0,5],rows=[];for(let i=0;i<8;i++){const z=30+i*3.6,top=.4+i*.42,row=[];rows.push(row);for(let l=0;l<3;l++){const x=lanes[l]+(i%2?1.3:-1.3);
-      const c=cyl(x,-1.5,z,1.65,1.5+top,MAT.rock,{mesh:false});row.push(c);mk(GEO.rock,MAT.rock,x,top-.55,z,1.75,.75,1.75);mk(GEO.cyl,MAT.rockD,x,(top-1.5)/2-.5,z,1.45,top+1,1.45);}}
-  const st=mk(GEO.box,M2.water,0,.6,43,16,.1,30);st.rotation.x=-Math.atan(3.4/30);zone({x:0,z:44,w:16,d:30,y0:-1,y1:6,fx:0,fz:-2});
+  const lanes=[-5,0,5],rows=[];for(let i=0;i<8;i++){const z=30+i*3.6,top=.4+i*.42,row=[];rows.push(row);for(let l=0;l<3;l++){const x=lanes[l]+(i%2?.6:-.6);
+      const c=cyl(x,-1.5,z,2.0,1.5+top,MAT.rock,{mesh:false});row.push(c);mk(GEO.rock,MAT.rock,x,top-.55,z,2.1,.75,2.1);mk(GEO.cyl,MAT.rockD,x,(top-1.5)/2-.5,z,1.75,top+1,1.75);}}
+  const st=mk(GEO.box,M2.water,0,.6,43,16,.1,30);st.rotation.x=-Math.atan(3.4/30);zone({x:0,z:44,w:16,d:30,y0:-1,y1:6,fx:0,fz:-1.2});
   plat(0,3.8,63,18,10,6,M2.mossRock);W.cps.push({x:0,y:3.8,z:64});
   // B · terrazas con troncos que bajan rodando
   for(let k=0;k<4;k++){const top=5+k*1.15,z=72+k*8;plat(0,top,z,16,8,top+2,M2.mossRock);rollingLog(0,z+3.6,z-3.6,top,13,5+k*.4,k*.27,.5);}
@@ -1709,24 +1710,27 @@ function raceBrain(h,dt){const W=WORLD,out={mx:0,mz:0,jump:false,dive:false};
     return out;}
   const l=Math.hypot(dx,dz)||1;let mx=dx/l,mz=dz/l;
   // zigzag / imprecisión según habilidad
-  h.wobT-=dt;if(h.wobT<=0){h.wobT=.5+Math.random();h.wob=(Math.random()-.5)*(1.2-h.skill)*1.1;}
+  h.wobT-=dt;if(h.wobT<=0){h.wobT=.5+Math.random();h.wob=h.me?0:(Math.random()-.5)*(1.2-h.skill)*1.1;}
   const ang=Math.atan2(mx,mz)+h.wob;mx=Math.sin(ang);mz=Math.cos(ang);
   // peligros: frenar si viene algo (los hábiles lo hacen casi siempre)
   {const d=dangerAt(h.x+mx*1.2,h.z+mz*1.2,h.y,.9);
-    if(d){if(!h.dec)h.dec=new WeakMap();let ok=h.dec.get(d);if(ok==null||ok.t<G.t-2){ok={v:Math.random()<h.skill*1.08,t:G.t};h.dec.set(d,ok);}
+    if(d){if(!h.dec)h.dec=new WeakMap();let ok=h.dec.get(d);if(ok==null||ok.t<G.t-2){ok={v:h.me||Math.random()<h.skill*1.08,t:G.t};h.dec.set(d,ok);}
       if(ok.v){
       // tronco: saltar justo a tiempo (velocidad relativa); martillo o cangrejo: esperar
       if(d.log){const rel=Math.abs(d.vz||7)+Math.max(0,h.vz);const tt=(d.z-h.z-d.r)/rel;if(h.ground&&tt<.3+h.seed%5*.01)out.jump=true;}
-      else{h.waitHz=true;out.mx=-mx*.3;out.mz=-mz*.3;return out;}}}}
+      else if(!(h.me&&(h.wt=(h.wt||0)+dt)>1.3)){h.waitHz=true;out.mx=-mx*.3;out.mz=-mz*.3;return out;}}}
+    else if(h.me)h.wt=Math.max(0,(h.wt||0)-dt*.5);}
   // huecos: saltar (y plancha si el hueco es grande)
   if(h.ground&&h.state==='run'){const a1=groundAhead(h,mx,mz,1.2),a2=groundAhead(h,mx,mz,4.2),a3=groundAhead(h,mx,mz,6.2);
-    if(!a1){if(a2||a3){out.jump=true;if(!a2&&h.skill>.5)h.diveAt=.25;}else if(Math.random()<.3){out.jump=true;}}}
+    if(!a1){if(a2||a3){out.jump=true;if(!a2&&(h.skill>.5||h.me)&&!(h.me&&groundAhead(h,mx,mz,5.4)))h.diveAt=.25;}else if(Math.random()<.3){out.jump=true;}}}
   if(h.diveAt!=null){h.diveAt-=dt;if(h.diveAt<=0){out.dive=true;h.diveAt=null;}}
   // bordes laterales: si delante-lateral no hay suelo, corregir hacia el centro
   if(h.ground&&!groundAhead(h,mx,mz,1.0)&&wp.lanes==null&&wp.cols==null){const cx=wp.x-h.x;mx+=clamp(cx,-1,1)*.8;const l2=Math.hypot(mx,mz)||1;mx/=l2;mz/=l2;}
   // empujones a quien tiene delante
-  if(h.skill>.45&&h.ground&&h.diveCD<=0&&Math.random()<dt*.35){for(const o of G.chars){if(o===h||o.state==='dead'||o.state==='done')continue;const ox=o.x-h.x,oz=o.z-h.z;if(oz>.4&&oz<2.2&&Math.abs(ox)<.9&&groundAhead(h,0,1,3)){out.dive=true;break;}}}
-  if(h.unst>0){h.unst-=dt;mx=h.unX*.85;mz=.5;if(h.ground&&Math.random()<.1)out.jump=true;}
+  if(!h.me&&h.skill>.45&&h.ground&&h.diveCD<=0&&Math.random()<dt*.35){for(const o of G.chars){if(o===h||o.state==='dead'||o.state==='done')continue;const ox=o.x-h.x,oz=o.z-h.z;if(oz>.4&&oz<2.2&&Math.abs(ox)<.9&&groundAhead(h,0,1,3)){out.dive=true;break;}}}
+  if(h.unst>0){h.unst-=dt;if(h.me&&h.ground&&!groundAhead(h,h.unX*.85,.5,1.4))h.unX=-h.unX;mx=h.unX*.85;mz=.5;if(h.ground&&Math.random()<.1)out.jump=true;}
+  // jugador automático: si choca contra un escalón o algo bajo, salta
+  if(h.me&&h.ground&&h.state==='run'&&!h.waitHz){const sp=Math.hypot(h.vx,h.vz);h.blk=sp<1.6?(h.blk||0)+dt:0;if(h.blk>.35){out.jump=true;h.blk=0;}}
   out.mx=mx;out.mz=mz;return out;}
 function finalBrain(h,dt){const W=WORLD,out={mx:0,mz:0,jump:false,dive:false};
   h.think=(h.think||0)-dt;
@@ -1879,7 +1883,7 @@ canvas.addEventListener('pointerup',jEnd);canvas.addEventListener('pointercancel
 const bindBtn=(id,k)=>{const b=$(id);const on=e=>{e.preventDefault();ensureAudio();inp[k]=true;buzz();inp[k+'Held']=true;b.classList.add('on');$('hint').style.opacity=0;};const off=e=>{e.preventDefault();inp[k+'Held']=false;b.classList.remove('on');};
   b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off);};
 bindBtn('jumpB','jump');bindBtn('diveB','dive');
-function buzz(){try{navigator.vibrate&&navigator.vibrate(12);}catch(_){}}
+function buzz(){try{navigator.vibrate&&navigator.vibrate(25);}catch(_){}}
 function tapJump(){inp.jump=true;buzz();const b=$('jumpB');b.classList.add('on');clearTimeout(tapJump.t);tapJump.t=setTimeout(()=>b.classList.remove('on'),130);$('hint').style.opacity=0;}
 addEventListener('keydown',e=>{if(e.repeat)return;inp.keys[e.code]=1;if(e.code==='Space'){inp.jump=true;e.preventDefault();}if(e.code==='ShiftLeft'||e.code==='ShiftRight'||e.code==='KeyE'){inp.dive=true;}
   if(e.code==='Escape'||e.code==='KeyP'){if(G.paused)resume();else pause();}if(e.code==='KeyM')setMute(!muted);if(playing())$('hint').style.opacity=0;});
