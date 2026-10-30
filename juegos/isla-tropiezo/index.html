@@ -50,14 +50,16 @@ body.play #hud{display:block}
 @keyframes cnt{0%{transform:translate(-50%,-50%) scale(2.2);opacity:0}30%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{opacity:1}}
 #joy{position:absolute;width:128px;height:128px;margin:-64px 0 0 -64px;border-radius:50%;border:3px solid rgba(255,255,255,.7);background:radial-gradient(circle,rgba(255,255,255,.08),rgba(27,42,74,.22));display:none;box-shadow:0 6px 20px rgba(27,42,74,.25)}
 #joy u{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#d9ecff);box-shadow:0 5px 0 rgba(27,42,74,.4),0 0 0 3px rgba(255,255,255,.6)}
-.ab{position:absolute;right:max(18px,env(safe-area-inset-right));width:84px;height:84px;border-radius:50%;border:4px solid #fff;display:none;place-items:center;font-weight:700;font-size:15px;color:var(--ink);pointer-events:auto;box-shadow:0 6px 0 var(--ink),0 12px 24px rgba(27,42,74,.3);line-height:1;text-align:center}
-.ab em{font-style:normal;font-size:30px;display:block;margin-bottom:2px}
-.ab:active,.ab.on{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
-#jumpB{bottom:max(26px,env(safe-area-inset-bottom));background:linear-gradient(180deg,#fff3a8,#ffd23f 50%,#ffa51c)}
-#diveB{bottom:max(26px,env(safe-area-inset-bottom));right:max(116px,calc(env(safe-area-inset-right) + 98px));width:72px;height:72px;background:linear-gradient(180deg,#e6fbff,#7af0ff 50%,#38b6ff)}
+.ab{position:absolute;right:max(16px,env(safe-area-inset-right));width:112px;height:112px;border-radius:50%;border:4px solid #fff;display:none;place-items:center;font-weight:700;font-size:15px;color:var(--ink);pointer-events:auto;box-shadow:0 6px 0 var(--ink),0 12px 24px rgba(27,42,74,.3);line-height:1;text-align:center}
+.ab em{font-style:normal;font-size:40px;display:block;margin-bottom:2px;pointer-events:none}.ab span{pointer-events:none}
+.ab::before{content:'';position:absolute;inset:-22px;border-radius:50%}
+.ab:active,.ab.on{transform:translateY(5px) scale(.94);box-shadow:0 1px 0 var(--ink),0 0 0 8px rgba(255,255,255,.35)}
+#jumpB{bottom:max(22px,env(safe-area-inset-bottom));font-size:17px;background:linear-gradient(180deg,#fff3a8,#ffd23f 50%,#ffa51c)}
+#diveB{bottom:max(118px,calc(env(safe-area-inset-bottom) + 100px));right:max(150px,calc(env(safe-area-inset-right) + 134px));width:84px;height:84px;background:linear-gradient(180deg,#e6fbff,#7af0ff 50%,#38b6ff)}
 body.touch .ab{display:grid}
 body.touch #prog{left:16px;transform:none;width:min(40vw,240px)}
 #hint{position:absolute;left:50%;top:70%;transform:translateX(-50%);font-weight:600;font-size:16px;border-radius:999px;padding:9px 20px;transition:opacity .6s;white-space:nowrap}
+@media (max-width:600px){#hint{white-space:normal;width:min(86vw,330px);text-align:center;font-size:15px;border-radius:18px;top:62%}}
 #chk{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);display:none;border-radius:999px;padding:8px 22px;font-weight:700;font-size:22px;background:linear-gradient(180deg,#eafff2,#4ade80 60%,#14b86a);color:var(--ink);border:3px solid #fff;box-shadow:0 5px 0 var(--ink)}
 #chk.on{display:block;animation:chk 1.3s cubic-bezier(.2,1.4,.4,1) forwards}
 @keyframes chk{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}30%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-90%)}}
@@ -237,7 +239,7 @@ const URLQ=new URLSearchParams(location.search);
 const TXT={
  es:{logo:'<span class="w">Isla</span><span class="w w2">Tropiezo</span><span class="tv">EN DIRECTO</span>',tag:'¡El concurso más loco de la isla!',play:'Jugar',ward:'Vestuario',wardT:'Vestuario',tCos:'Disfraz',tHat:'Gorro',tCol:'Color',
   howT:'Cómo se juega',h1:'Muévete con el joystick o con WASD / flechas.',h2:'Salta con el botón o con Espacio. ¡Puedes agarrarte a los bordes!',h3:'Tírate en plancha (botón o Shift / E) para saltar más lejos y empujar.',h4:'Pasa cada ronda entre los clasificados. En el volcán, sé el último en pie.',
-  ok:'¡Vale!',pause:'Pausa',resume:'Seguir',quit:'Salir',again:'Otra vez',menu:'Menú',next:'Siguiente ronda',hint:'Arrastra para moverte · Salto · Plancha',hintPc:'WASD / flechas · Espacio salto · Shift plancha',
+  ok:'¡Vale!',pause:'Pausa',resume:'Seguir',quit:'Salir',again:'Otra vez',menu:'Menú',next:'Siguiente ronda',hint:'Izquierda: arrastra para moverte · Derecha: toca para saltar',hintPc:'WASD / flechas · Espacio salto · Shift plancha',
   round:'Ronda',posL:'Puesto',qualL:'Clasifican',survL:'Quedan',jump:'Salto',dive:'Plancha',chk:'¡Punto de control!',you:'Tú',go:'¡YA!',
   qualified:'¡Clasificado!',elim:'Eliminado',elimT:'¡Eliminado!',winT:'¡CAMPEÓN!',finalT:'Gran final',youWin:'¡Has ganado Isla Tropiezo!',place:'Puesto {n} de {m}',placeR:'{n}.º de {m}',
   fell:'¡Al agua!',lava:'¡A la lava!',outMsg:'¡Fuera!',qualMsg:'¡CLASIFICADO!',lastOne:'¡Último en pie!',spec:'Eliminado · viendo la ronda',unlock:'🎁 ¡Nuevo desbloqueo: {n}!',
@@ -249,7 +251,7 @@ const TXT={
   bots:['Coco Loco','Mango','Lola Ola','Pepe Palmera','Tiki Tako','Surfi','Kiwi','Marea','Chispa','Bongo','Nube','Piña Pin','Rulo','Guayaba','Calamar','Tortuga Tina','Remo','Brisa','Pulpo Paco','Sandía','Capitán Flan','Cocodrila','Papaya','Mojito','Perla','Arenita','Taco','Fresón','Kaimán','Lima','Trueno','Burbuja','Gambón','Rayo','Caracol']},
  en:{logo:'<span class="w">Stumble</span><span class="w w2">Island</span><span class="tv">LIVE</span>',tag:'The island\'s craziest game show!',play:'Play',ward:'Wardrobe',wardT:'Wardrobe',tCos:'Costume',tHat:'Hat',tCol:'Color',
   howT:'How to play',h1:'Move with the joystick or WASD / arrows.',h2:'Jump with the button or Space. You can grab ledges!',h3:'Dive (button or Shift / E) to jump further and shove others.',h4:'Qualify in every round. In the volcano, be the last one standing.',
-  ok:'Got it!',pause:'Paused',resume:'Resume',quit:'Quit',again:'Play again',menu:'Menu',next:'Next round',hint:'Drag to move · Jump · Dive',hintPc:'WASD / arrows · Space jump · Shift dive',
+  ok:'Got it!',pause:'Paused',resume:'Resume',quit:'Quit',again:'Play again',menu:'Menu',next:'Next round',hint:'Left: drag to move · Right: tap to jump',hintPc:'WASD / arrows · Space jump · Shift dive',
   round:'Round',posL:'Place',qualL:'Qualify',survL:'Left',jump:'Jump',dive:'Dive',chk:'Checkpoint!',you:'You',go:'GO!',
   qualified:'Qualified!',elim:'Eliminated',elimT:'Eliminated!',winT:'CHAMPION!',finalT:'Grand final',youWin:'You won Stumble Island!',place:'{n} of {m}',placeR:'{n} of {m}',
   fell:'Splash!',lava:'Into the lava!',outMsg:'Out!',qualMsg:'QUALIFIED!',lastOne:'Last one standing!',spec:'Eliminated · watching the round',unlock:'🎁 New unlock: {n}!',
@@ -1171,13 +1173,18 @@ function nextRound(){if(G.matchOver){newMatch();return;}G.round++;startRound();}
 
 /* ===================== ENTRADA ===================== */
 const inp={keys:{},joy:null,jump:false,dive:false,jumpHeld:false,diveHeld:false};
-canvas.addEventListener('pointerdown',e=>{if(!playing())return;ensureAudio();if(e.pointerType==='mouse')return;if(inp.joy)return;inp.joy={id:e.pointerId,x0:e.clientX,y0:e.clientY,x:e.clientX,y:e.clientY};try{canvas.setPointerCapture(e.pointerId);}catch(_){}const j=$('joy');j.style.display='block';j.style.left=e.clientX+'px';j.style.top=e.clientY+'px';j.firstChild.style.transform='';$('hint').style.opacity=0;});
+canvas.addEventListener('pointerdown',e=>{if(!playing())return;ensureAudio();if(e.pointerType==='mouse')return;
+  // mitad derecha de la pantalla = zona de salto (no hace falta acertar el botón)
+  if(e.clientX>innerWidth*.5){tapJump();return;}
+  if(inp.joy)return;inp.joy={id:e.pointerId,x0:e.clientX,y0:e.clientY,x:e.clientX,y:e.clientY};try{canvas.setPointerCapture(e.pointerId);}catch(_){}const j=$('joy');j.style.display='block';j.style.left=e.clientX+'px';j.style.top=e.clientY+'px';j.firstChild.style.transform='';$('hint').style.opacity=0;});
 canvas.addEventListener('pointermove',e=>{const J=inp.joy;if(!J||J.id!==e.pointerId)return;J.x=e.clientX;J.y=e.clientY;let dx=J.x-J.x0,dy=J.y-J.y0;const L=Math.hypot(dx,dy),M=64;if(L>M){J.x0+=dx*(1-M/L);J.y0+=dy*(1-M/L);dx=J.x-J.x0;dy=J.y-J.y0;const j=$('joy');j.style.left=J.x0+'px';j.style.top=J.y0+'px';}$('joy').firstChild.style.transform=`translate(${dx}px,${dy}px)`;});
 const jEnd=e=>{if(inp.joy&&inp.joy.id===e.pointerId){inp.joy=null;$('joy').style.display='none';}};
 canvas.addEventListener('pointerup',jEnd);canvas.addEventListener('pointercancel',jEnd);
-const bindBtn=(id,k)=>{const b=$(id);const on=e=>{e.preventDefault();ensureAudio();inp[k]=true;inp[k+'Held']=true;b.classList.add('on');$('hint').style.opacity=0;};const off=e=>{e.preventDefault();inp[k+'Held']=false;b.classList.remove('on');};
+const bindBtn=(id,k)=>{const b=$(id);const on=e=>{e.preventDefault();ensureAudio();inp[k]=true;buzz();inp[k+'Held']=true;b.classList.add('on');$('hint').style.opacity=0;};const off=e=>{e.preventDefault();inp[k+'Held']=false;b.classList.remove('on');};
   b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('pointerleave',off);};
 bindBtn('jumpB','jump');bindBtn('diveB','dive');
+function buzz(){try{navigator.vibrate&&navigator.vibrate(12);}catch(_){}}
+function tapJump(){inp.jump=true;buzz();const b=$('jumpB');b.classList.add('on');clearTimeout(tapJump.t);tapJump.t=setTimeout(()=>b.classList.remove('on'),130);$('hint').style.opacity=0;}
 addEventListener('keydown',e=>{if(e.repeat)return;inp.keys[e.code]=1;if(e.code==='Space'){inp.jump=true;e.preventDefault();}if(e.code==='ShiftLeft'||e.code==='ShiftRight'||e.code==='KeyE'){inp.dive=true;}
   if(e.code==='Escape'||e.code==='KeyP'){if(G.paused)resume();else pause();}if(e.code==='KeyM')setMute(!muted);if(playing())$('hint').style.opacity=0;});
 addEventListener('keyup',e=>{inp.keys[e.code]=0;});
