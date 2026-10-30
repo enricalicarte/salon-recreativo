@@ -156,6 +156,17 @@ video::-webkit-media-controls,video::-webkit-media-controls-start-playback-butto
 .former{margin:4px 0 0;font-size:.8rem;color:var(--mute)}
 .blurb{margin:8px 0 0;font-size:.92rem;line-height:1.5;color:var(--mute);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .grid.big .blurb{-webkit-line-clamp:4}
+/* móvil: las sagas en carrusel horizontal con la saga completa */
+.cdots{display:none}
+@media (max-width:760px){
+  #tri,#sagaInv,#sagaEnt{display:flex;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(-1 * var(--gx,16px));padding:4px var(--gx,16px) 6px;scroll-padding:0 var(--gx,16px)}
+  #tri::-webkit-scrollbar,#sagaInv::-webkit-scrollbar,#sagaEnt::-webkit-scrollbar{display:none}
+  #tri>*,#sagaInv>*,#sagaEnt>*{flex:0 0 84%;max-width:360px;scroll-snap-align:start;min-width:0}
+  .cdots{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:12px}
+  .cdots button{width:8px;height:8px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.28);transition:width .25s,background .25s;cursor:pointer}
+  .cdots button[aria-current="true"]{width:22px;background:var(--c,#fff)}
+  .cdots .cn{margin-left:8px;font-size:.78rem;color:var(--mute);font-variant-numeric:tabular-nums}
+}
 .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px 18px}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none;min-width:0}
 .tags li{font-size:.72rem;font-weight:500;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 9px;white-space:nowrap}
@@ -1636,6 +1647,14 @@ GAMES.forEach((g,i)=>{
   el.style.setProperty('--d',(grid.children.length%4)*.07+'s');
   grid.appendChild(el);
   if(!g.tri&&!g.sg)gridCards.push(el);
+});
+/* carrusel de sagas en móvil: puntos e indicador */
+[['tri','#9a8cff'],['sagaInv','#7cc8ff'],['sagaEnt','#a3e635']].forEach(([id,c])=>{const g=$('#'+id);if(!g||!g.children.length)return;
+  const n=g.children.length,d=document.createElement('div');d.className='cdots';d.style.setProperty('--c',c);
+  d.innerHTML=Array.from({length:n},(_,i)=>'<button type="button" aria-label="'+(i+1)+T.of+n+'"'+(i?'':' aria-current="true"')+'></button>').join('')+'<span class="cn">1/'+n+'</span>';
+  g.after(d);const bs=d.querySelectorAll('button'),cn=d.querySelector('.cn');
+  bs.forEach((b,i)=>b.addEventListener('click',()=>g.scrollTo({left:g.children[i].offsetLeft-g.children[0].offsetLeft,behavior:reduce?'auto':'smooth'})));
+  let raf=0;g.addEventListener('scroll',()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const w=g.children[0].getBoundingClientRect().width+14;let k=Math.round(g.scrollLeft/w);if(g.scrollLeft+g.clientWidth>=g.scrollWidth-4)k=n-1;k=Math.max(0,Math.min(n-1,k));bs.forEach((b,i)=>b.setAttribute('aria-current',i===k));cn.textContent=(k+1)+'/'+n;});},{passive:true});
 });
 if(!fine&&!reduce&&'IntersectionObserver' in window){      // móvil: el clip de la carta que está a la vista
   const vio=new IntersectionObserver(es=>es.forEach(e=>{e.intersectionRatio>.7?playVid(e.target):stopVid(e.target);}),{threshold:[0,.7,1]});
