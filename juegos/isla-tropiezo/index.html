@@ -502,6 +502,8 @@ function clearDeco(){OCC.length=0;for(const o of DECO.children)o.traverse(c=>{if
 
 /* ===================== FÍSICA ===================== */
 const CR=.42,CH=1.25,GRAV=30,RUN=7.6,JV=10.2,DIVEV=11.5;
+// ayudas del jugador: más rápido, salta más y control más fácil
+const ME={spd:1.22,jv:1.2,acc:1.5,air:2.2,turn:1.6,coy:.2,buf:.2,slip:.5,knock:.6};
 const COL=[];   // colisionadores del escenario
 const HAZ=[];   // esferas que golpean (martillos, cocos, rocas)
 const ZONES=[]; // zonas de empuje (olas, corriente)
@@ -588,20 +590,20 @@ function stepChar(h,inp,dt){
     if((inp.jump&&h.st>.25)||h.st>2.6){h.state='jump';h.vineCD=.7;h.vz=v.vbz*1.15+1.5;h.vy=Math.max(v.vby,0)*.6+6.5;h.vx=inp.mx*3;h.sq=1.3;h.vine=null;if(h.me)sfx.jump();}
     else return;}
   // control
-  let ctrl=1,spd=RUN*(h.spdMul||1);
-  if(h.state==='knock'){h.st-=dt;ctrl=0;if(h.st<=0){h.state='run';}}
+  let ctrl=1,spd=RUN*(h.spdMul||1)*(h.me?ME.spd:1);
+  if(h.state==='knock'){h.st-=dt*(h.me?1/ME.knock:1);ctrl=0;if(h.st<=0){h.state='run';}}
   else if(h.state==='dive'){h.st-=dt;ctrl=.15;if(h.st<=0||(h.ground&&h.st<.3)){h.state='prone';h.st=.45;if(h.ground){burst(h.x,h.y+.1,h.z,8,0xfff0d0,3,2,.5,.4);}}}
   else if(h.state==='prone'){h.st-=dt;ctrl=0;if(h.st<=0)h.state='run';}
-  const grounded=!!h.ground,slip=grounded&&h.ground.slip?h.ground.slip:0;
+  const grounded=!!h.ground,slip=grounded&&h.ground.slip?h.ground.slip*(h.me?ME.slip:1):0;
   const mx=inp.mx*ctrl,mz=inp.mz*ctrl,ml=Math.hypot(mx,mz);
-  if(ml>.01){h.yaw=damp2(h.yaw,Math.atan2(mx,mz),grounded?14:8,dt);}
-  const acc=grounded?(slip?12:42):14,fr=grounded?(slip?1.5:(h.state==='prone'?5:10)):.6;
+  if(ml>.01){h.yaw=damp2(h.yaw,Math.atan2(mx,mz),(grounded?14:8)*(h.me?ME.turn:1),dt);}
+  const acc=(grounded?(slip?12:42):14*(h.me?ME.air/ME.acc:1))*(h.me?ME.acc:1),fr=grounded?(slip?1.5:(h.state==='prone'?5:10)):(h.me&&h.state!=='knock'?2.5:.6);
   const tvx=mx*spd,tvz=mz*spd;
   if(ml>.01&&ctrl>0){h.vx=damp(h.vx,tvx,acc/spd*3,dt);h.vz=damp(h.vz,tvz,acc/spd*3,dt);}
   else{h.vx=damp(h.vx,0,fr,dt);h.vz=damp(h.vz,0,fr,dt);}
   // salto (con coyote y buffer)
-  h.coy=grounded?.12:h.coy-dt;if(inp.jump)h.jb=.12;else h.jb=Math.max(0,h.jb-dt);
-  if(h.jb>0&&h.coy>0&&ctrl>.5&&h.state!=='dive'){h.vy=JV;h.jb=0;h.coy=0;h.ground=null;h.state='jump';h.sq=1.35;if(h.me)sfx.jump();burst(h.x,h.y+.05,h.z,6,0xffffff,2.5,1.5,.5,.35);}
+  h.coy=grounded?(h.me?ME.coy:.12):h.coy-dt;if(inp.jump)h.jb=h.me?ME.buf:.12;else h.jb=Math.max(0,h.jb-dt);
+  if(h.jb>0&&h.coy>0&&ctrl>.5&&h.state!=='dive'){h.vy=JV*(h.me?ME.jv:1);h.jb=0;h.coy=0;h.ground=null;h.state='jump';h.sq=1.35;if(h.me)sfx.jump();burst(h.x,h.y+.05,h.z,6,0xffffff,2.5,1.5,.5,.35);}
   // plancha
   if(inp.dive&&ctrl>.5&&h.state!=='dive'&&h.state!=='prone'&&h.diveCD<=0){h.state='dive';h.st=.55;h.diveCD=1.1;const dy=Math.sin(h.yaw),dz=Math.cos(h.yaw);h.vx=dy*DIVEV;h.vz=dz*DIVEV;h.vy=grounded?4.2:Math.max(h.vy,2.5);h.ground=null;if(h.me)sfx.dive();}
   h.diveCD=Math.max(0,h.diveCD-dt);
