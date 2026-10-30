@@ -221,14 +221,14 @@ const TXT={
  es:{logo:'<span class="w">Zampa</span><span class="w w2">Mundo</span><i class="hole"></i>',tag:'¡Trágatelo todo y crece!',play:'Jugar',solo:'Modo Solo',soloT:'Modo Solo',soloP:'Trágate el 100% del barrio antes de que acabe el tiempo.',back:'Volver',
   howT:'Cómo se juega',h1:'Arrastra el dedo (o mueve el ratón) para llevar el agujero.',h2:'Trágate todo lo que quepa: cuanto más comes, más grande eres.',h3:'Crece hasta tragarte lo más grande de cada mundo: ¡la noria, la pirámide, el cohete…!',pickW:'Elige mundo',pickP:'Cada mundo tiene sus cosas para tragar y un gigante final.',world:'Mundo',h4:'Trágate a los agujeros más pequeños y huye de los grandes.',
   ok:'¡Vale!',pause:'Pausa',resume:'Seguir',quit:'Salir',again:'Otra vez',menu:'Menú',hint:'Arrastra para moverte',hintPc:'Apunta con el ratón hacia donde quieras ir',eaten:'Tragado',level:'Nivel',
-  you:'Tú',best:'Récord',lvlUp:'¡Nivel {n}!',ate:'¡Te has tragado a {n}!',deadBy:'¡Te ha tragado {n}!',youWin:'¡Has ganado!',place:'Puesto {n} de {m}',points:'{n} puntos',
+  you:'Tú',best:'Récord',lvlUp:'¡Nivel {n}!',giantGo:'¡Ya puedes con el gigante! Sigue la flecha',ate:'¡Te has tragado a {n}!',deadBy:'¡Te ha tragado {n}!',youWin:'¡Has ganado!',place:'Puesto {n} de {m}',points:'{n} puntos',
   soloWin:'¡Barrio tragado!',soloLose:'¡Se acabó el tiempo!',time:'en {t}',left:'Quedan {n}',
   B:[['🏡','Pueblo','Casitas, granjas y parques'],['🏙️','Ciudad','Tiendas, edificios y atascos'],['🎡','Metrópolis','Rascacielos y la gran noria']],
   bots:['Tragaldabas','Don Remolino','La Aspiradora','Señor Tragón','Ñam Ñam','Bocazas','Sumidero','Barriga Llena','Hoyo Negro','Glotón','Desagüe','La Boca']},
  en:{logo:'<span class="w">Gobble</span><span class="w w2">World</span><i class="hole"></i>',tag:'Swallow everything and grow!',play:'Play',solo:'Solo Mode',soloT:'Solo Mode',soloP:'Swallow 100% of the district before time runs out.',back:'Back',
   howT:'How to play',h1:'Drag your finger (or move the mouse) to steer the hole.',h2:'Swallow everything that fits: the more you eat, the bigger you get.',h3:'Grow until you can swallow the biggest thing in each world: the Ferris wheel, the pyramid, the rocket…!',pickW:'Pick a world',pickP:'Every world has its own things to gobble and a giant at the end.',world:'World',h4:'Swallow smaller holes and run from bigger ones.',
   ok:'Got it!',pause:'Paused',resume:'Resume',quit:'Quit',again:'Play again',menu:'Menu',hint:'Drag to move',hintPc:'Point the mouse where you want to go',eaten:'Eaten',level:'Level',
-  you:'You',best:'Best',lvlUp:'Level {n}!',ate:'You swallowed {n}!',deadBy:'{n} swallowed you!',youWin:'You win!',place:'{n} of {m}',points:'{n} points',
+  you:'You',best:'Best',lvlUp:'Level {n}!',giantGo:'You can eat the giant now! Follow the arrow',ate:'You swallowed {n}!',deadBy:'{n} swallowed you!',youWin:'You win!',place:'{n} of {m}',points:'{n} points',
   soloWin:'District swallowed!',soloLose:'Time is up!',time:'in {t}',left:'{n} left',
   B:[['🏡','Village','Cottages, farms and parks'],['🏙️','City','Shops, offices and traffic jams'],['🎡','Metropolis','Skyscrapers and the giant wheel']],
   bots:['Gobbler','Mr Swirl','Vacuum Queen','Big Gulp','Nom Nom','Loudmouth','Sinkhole','Full Belly','Black Hole','Greedy','Drainpipe','Mouthful']}
@@ -1089,6 +1089,9 @@ function buildAnyWorld(id,seed){const th=THM[id]||CITY_T;applyTheme(th);return t
 const LV=[0,12,40,100,220,450,850,1500,2600,4200,6500,9999999];
 const RL=[1.15,1.6,2.2,3.0,4.0,5.2,6.8,8.6,10.6,13,15.5];
 const FIT=.88;
+// el gigante final cabe con nivel 8 (más margen que el resto)
+const fitOf=o=>o.t.v>=650?1.05:FIT;
+const giantOf=()=>{const W=WORLD;if(!W)return null;if(W.giant===undefined)W.giant=W.objs.find(o=>o.t.v>=650)||null;const g=W.giant;return g&&g.st===0?g:null;};
 const wellTex=tex(4,128,(g)=>{const gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'#3a1d6e');gr.addColorStop(.12,'#170a33');gr.addColorStop(.4,'#05020c');gr.addColorStop(1,'#000');g.fillStyle=gr;g.fillRect(0,0,4,128);});
 const discMat=new THREE.MeshBasicMaterial({colorWrite:false,depthWrite:false,stencilWrite:true,stencilRef:1,stencilFunc:THREE.AlwaysStencilFunc,stencilZPass:THREE.ReplaceStencilOp});
 const wellMat=new THREE.MeshBasicMaterial({map:wellTex,side:THREE.BackSide,fog:false});
@@ -1258,12 +1261,13 @@ function brain(h,dt){
   if(a.t<=0){a.t=.35+Math.random()*.25;const W=WORLD;
     let threat=null,td=1e9,prey=null,pd=1e9;
     for(const o of G.holes){if(o===h||o.dead>0)continue;const d=Math.hypot(o.x-h.x,o.z-h.z);if(o.R>=h.R*1.22&&d<o.R+14+h.R&&d<td&&o.inv<=0){threat=o;td=d;}if(h.R>=o.R*1.25&&o.inv<=0&&d<26+h.R&&d<pd){prey=o;pd=d;}}
-    if(threat){const dx=h.x-threat.x,dz=h.z-threat.z,l=Math.hypot(dx,dz)||1;a.tx=h.x+dx/l*30;a.tz=h.z+dz/l*30;}
+    const gg=giantOf();if(!threat&&gg&&gg.t.r<=h.R*1.05&&(h.me||(h.gw!==undefined?h.gw:(h.gw=Math.random()<.5)))&&Math.hypot(gg.x-h.x,gg.z-h.z)<(h.me?1e9:140)){a.tx=gg.x;a.tz=gg.z;}
+    else if(threat){const dx=h.x-threat.x,dz=h.z-threat.z,l=Math.hypot(dx,dz)||1;a.tx=h.x+dx/l*30;a.tz=h.z+dz/l*30;}
     else if(prey&&(h.me||Math.random()<.8)){a.tx=prey.x+prey.vx*.5;a.tz=prey.z+prey.vz*.5;}
     else{
       let best=null,bs=0;const rad=34+h.R*1.5,i0=((h.x-rad+W.H)/GC)|0,i1=((h.x+rad+W.H)/GC)|0,j0=((h.z-rad+W.H)/GC)|0,j1=((h.z+rad+W.H)/GC)|0;
       for(let j=Math.max(0,j0);j<=Math.min(W.gw-1,j1);j++)for(let i=Math.max(0,i0);i<=Math.min(W.gw-1,i1);i++){const c=W.grid[j*W.gw+i];
-        for(const o of c){if(o.st!==0||o.t.r>h.R*FIT)continue;const d=Math.hypot(o.x-h.x,o.z-h.z);const s=G.mode==='solo'?Math.pow(o.t.v,.35)/(d+2):o.t.v/(d+6+(h.me?0:Math.random()*8));if(s>bs){bs=s;best=o;}}}
+        for(const o of c){if(o.st!==0||o.t.r>h.R*fitOf(o))continue;const d=Math.hypot(o.x-h.x,o.z-h.z);const s=G.mode==='solo'?Math.pow(o.t.v,.35)/(d+2):o.t.v/(d+6+(h.me?0:Math.random()*8));if(s>bs){bs=s;best=o;}}}
       if(best){a.tx=best.x;a.tz=best.z;}else if(Math.hypot(a.tx-h.x,a.tz-h.z)<4||Math.random()<.2){a.tx=(Math.random()*2-1)*(W.H-15);a.tz=(Math.random()*2-1)*(W.H-15);}
     }
   }
@@ -1278,7 +1282,7 @@ function swallowTest(h){
   for(let j=Math.max(0,j0);j<=Math.min(W.gw-1,j1);j++)for(let i=Math.max(0,i0);i<=Math.min(W.gw-1,i1);i++){const c=W.grid[j*W.gw+i];
     for(let n=c.length-1;n>=0;n--){const o=c[n];if(o.st!==0)continue;const r=o.t.r,dx=h.x-o.x,dz=h.z-o.z,d2=dx*dx+dz*dz;if(d2>(R+r)*(R+r))continue;const d=Math.sqrt(d2)||.001;
       o.ax=dx/d;o.az=dz/d;
-      if(r<=R*FIT){
+      if(r<=R*fitOf(o)){
         if(d<R-r*.2){o.st=1;o.owner=h;o.vy=0;o.tilt=o.lean;o.lean=0;o.spin=0;o.spV=(Math.random()<.5?-1:1)*(1.5+3/(r+.6));gridDel(W,o);falling.push(o);leaning.delete(o);if(o.hi>=0)setHalo(o);}
         else{o.leanT=clamp((R+r-d)/(r*1.4),0,1)*.45;o.leanAt=G.clock;leaning.add(o);}
       }else{o.leanT=Math.sin(G.clock*14+o.x)*.035*clamp((R+r-d)/r,0,1)*Math.min(1,R/r*1.2);o.leanAt=G.clock;leaning.add(o);}
@@ -1379,7 +1383,9 @@ function updHud(){
 // modo Solo: flecha hacia lo que queda cuando falta poco
 const arrow=new THREE.Mesh(new THREE.ConeGeometry(.7,1.8,4),new THREE.MeshBasicMaterial({color:0xffd23f}));arrow.geometry.rotateX(Math.PI/2);arrow.visible=false;scene.add(arrow);
 function updArrow(){
-  arrow.visible=false;if(G.mode!=='solo'||G.over||!G.me)return;const left=WORLD.total-WORLD.eaten;if(left>15||left<=0)return;
+  arrow.visible=false;if(G.over||!G.me)return;
+  if(G.mode!=='solo'){const h=G.me,g=giantOf();if(!g||h.dead>0||g.t.r>h.R*1.05){h.gTold=false;return;}if(!h.gTold){h.gTold=true;flashMsg(tx('giantGo'));}const d=Math.hypot(g.x-h.x,g.z-h.z);if(d<h.Rv+g.t.r*.6)return;const a=Math.atan2(g.x-h.x,g.z-h.z),r=h.Rv+2.2;arrow.visible=true;arrow.position.set(h.x+Math.sin(a)*r,1+Math.sin(G.clock*6)*.2,h.z+Math.cos(a)*r);arrow.rotation.set(0,a,0);arrow.scale.setScalar(1+h.Rv*.12);return;}
+  if(G.mode!=='solo')return;const left=WORLD.total-WORLD.eaten;if(left>15||left<=0)return;
   const h=G.me;let best=null,bd=1e9;for(const o of WORLD.objs)if(o.st===0){const d=Math.hypot(o.x-h.x,o.z-h.z);if(d<bd){bd=d;best=o;}}
   if(!best||bd<h.Rv+2)return;const a=Math.atan2(best.x-h.x,best.z-h.z),r=h.Rv+2.2;arrow.visible=true;arrow.position.set(h.x+Math.sin(a)*r,1+Math.sin(G.clock*6)*.2,h.z+Math.cos(a)*r);arrow.rotation.set(0,a,0);arrow.scale.setScalar(1+h.Rv*.12);
 }
