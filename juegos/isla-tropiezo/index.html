@@ -1183,6 +1183,9 @@ function readInput(){let x=0,z=0;const K=inp.keys;
   if(K.ArrowLeft||K.KeyA)x-=1;if(K.ArrowRight||K.KeyD)x+=1;if(K.ArrowUp||K.KeyW)z+=1;if(K.ArrowDown||K.KeyS)z-=1;
   let mx=0,mz=0;if(x||z){const l=Math.hypot(x,z);mx=x/l;mz=z/l;}
   else if(inp.joy){const dx=inp.joy.x-inp.joy.x0,dy=inp.joy.y-inp.joy.y0,l=Math.hypot(dx,dy);if(l>=5){let m=clamp((l-5)/50,0,1);m=.25+.75*m;mx=dx/l*m;mz=-dy/l*m;}}
+  // relativo a la cámara: derecha de pantalla = derecha del jugador
+  if(mx||mz){let fx=camL.x-camP.x,fz=camL.z-camP.z;const fl=Math.hypot(fx,fz);if(fl>.001){fx/=fl;fz/=fl;}else{fx=0;fz=1;}
+    const wx=-fz*mx+fx*mz,wz=fx*mx+fz*mz;mx=wx;mz=wz;}
   const o={mx,mz,jump:inp.jump,dive:inp.dive};inp.jump=false;inp.dive=false;return o;}
 
 /* ===================== PASO DE JUEGO ===================== */
