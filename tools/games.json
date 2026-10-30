@@ -357,18 +357,18 @@
   },
   {
    "id": "tragaciudad",
-   "slug": "tragaciudad",
-   "kw": "juego de agujero que se traga la ciudad",
+   "slug": "zampa-mundo",
+   "kw": "juego del agujero que se lo traga todo",
    "cat": "accion",
-   "name": "Tragaciudad",
+   "name": "Zampa Mundo",
    "note": "Trágatelo todo y crece",
-   "blurb": "Eres un agujero negro en una ciudad de colores: trágate conos, personas, coches, casas y rascacielos, y crece hasta poder con la noria. Partidas de 2 minutos contra 7 agujeros rivales en las que puedes tragarte a los pequeños y huir de los grandes, y un modo Solo para dejar un barrio entero sin nada antes de que acabe el tiempo.",
+   "blurb": "Eres un agujero negro con mucha hambre: elige entre 11 mundos —ciudad, granja, puerto, parque de atracciones, selva jurásica, base lunar, Polo Norte, desierto, supermercado, reino medieval y fondo del mar— y trágatelo todo, de lo más pequeño a lo más grande, hasta poder con el gigante final de cada mundo. Partidas de 2 minutos contra 7 agujeros rivales en las que puedes tragarte a los pequeños y huir de los grandes, y un modo Solo para dejar un barrio entero sin nada antes de que acabe el tiempo.",
    "tags": [
     "Arcade",
     "Partidas cortas",
     "3D"
    ],
-   "play": "juegos/tragaciudad/index.html"
+   "play": "juegos/zampa-mundo/index.html"
   },
   {
    "id": "islatropiezo",

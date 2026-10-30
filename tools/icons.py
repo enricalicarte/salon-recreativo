@@ -1020,7 +1020,7 @@ def _(I):
     boarder(I, 290, 430, -10, .78, '#13795b', '#f7f2e4', '#c9ab62')
     sparkle(I, 440, 110, 16); sparkle(I, 80, 150, 12)
 
-@icon('tragaciudad')
+@icon('zampa-mundo')
 def _(I):
     bg(I, '#9be7ff', '#3a8fe0', '#ffffff', .14)
     # suelo de ciudad en perspectiva: manzanas y calles
