@@ -1,0 +1,32 @@
+<!doctype html><!-- © 2026 Enric Alicarte · Alica Games Studio · Salón Recreativo. Todos los derechos reservados. Prohibida la copia, redistribución o publicación de este juego o de su código en otros sitios sin permiso escrito. -->
+<html lang="es"><head><meta charset="utf-8"><script data-sr="g">(function(){var d=function(s){return atob(s).split(",")},P=d("ZW5yaWNhbGljYXJ0ZS5naXRodWIuaW8sbG9jYWxob3N0LDEyNy4wLjAuMQ=="),E=P.concat(d("Y2xhdWRlLmFpLGNsYXVkZXVzZXJjb250ZW50LmNvbQ==")),ok=function(x,L){x=String(x||"").toLowerCase().replace(/^www\./,"");for(var i=0;i<L.length;i++){var a=L[i];if(x===a||x.slice(-a.length-1)==="."+a)return 1}return 0},hn=function(u){try{return new URL(u).hostname}catch(e){return ""}},bad=!ok(location.hostname,P);if(!bad&&window.top!==window.self){var an=location.ancestorOrigins;if(an&&an.length){for(var j=0;j<an.length;j++)if(!ok(hn(an[j]),E))bad=1}else{try{if(!ok(top.location.hostname,E))bad=1}catch(e){var r=document.referrer;if(!r||!ok(hn(r),E))bad=1}}}if(!bad)return;try{window.stop()}catch(e){}var H=atob("aHR0cHM6Ly9lbnJpY2FsaWNhcnRlLmdpdGh1Yi5pby9zYWxvbi1yZWNyZWF0aXZvLw==");document.documentElement.innerHTML=('<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Salón Recreativo</title></head><body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#07060f;color:#f5f2ff;font:18px system-ui,sans-serif;text-align:center;padding:24px"><div><h1 style="font-size:26px">Este juego es del Salón Recreativo</h1><p style="opacity:.8">Solo se puede jugar en su web oficial.</p><p><a target="_top" style="display:inline-block;background:#ffd23f;color:#1a1300;font-weight:800;padding:12px 22px;border-radius:999px;text-decoration:none" href="'+H+'">Jugar en el Salón Recreativo</a></p><p style="font-size:13px;opacity:.55">© 2026 Enric Alicarte · Alica Games Studio</p></div></body>');throw 0})();</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Prueba de vibración · Salón Recreativo</title>
+<style>:root{--bg:#0b1020;--fg:#fff;--mut:#a9b3d6;--ok:#36d399;--ko:#ff6b6b;--y:#ffd23f}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,sans-serif;padding:16px;max-width:560px;margin:auto}
+h1{font-size:22px;margin:8px 0 4px}p{color:var(--mut);margin:6px 0 14px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:700 16px system-ui;border:0;border-radius:14px;padding:16px 10px;background:var(--y);color:#111;cursor:pointer}
+button.b{background:#38b6ff}
+#log{margin-top:14px;background:#141a33;border-radius:12px;padding:12px;font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap;min-height:120px}
+.ok{color:var(--ok)}.ko{color:var(--ko)}iframe{width:100%;height:120px;border:2px dashed #38b6ff;border-radius:12px;margin-top:12px;background:#141a33}</style></head>
+<body><h1>Prueba de vibración</h1>
+<p>Toca cada botón y fíjate si el móvil vibra. Abajo verás qué responde el navegador.</p>
+<div class="g">
+<button data-v="15">Corta (15 ms)</button>
+<button data-v="40">Media (40 ms)</button>
+<button data-v="200">Larga (200 ms)</button>
+<button data-v="[100,80,100,80,300]">Patrón</button>
+</div>
+<p style="margin-top:14px">Y lo mismo dentro de un recuadro, como cuando juegas desde la ficha del Salón:</p>
+<iframe id="fr" title="prueba dentro de recuadro"></iframe>
+<div id="log"></div>
+<script>
+const log=(t,c)=>{const d=document.createElement('div');if(c)d.className=c;d.textContent=t;document.getElementById('log').prepend(d);};
+log('Navegador: '+navigator.userAgent);
+log('¿Tiene vibración?: '+('vibrate' in navigator?'sí':'NO'),('vibrate' in navigator)?'ok':'ko');
+function vib(v,where){let r;try{r=navigator.vibrate(v);}catch(e){r='error: '+e.message;}
+  log((where||'Página')+' → vibrate('+JSON.stringify(v)+') = '+r,r===true?'ok':'ko');}
+document.querySelectorAll('button[data-v]').forEach(b=>b.onclick=()=>vib(JSON.parse(b.dataset.v)));
+const fr=document.getElementById('fr');
+fr.srcdoc='<style>body{margin:0;display:grid;place-items:center;height:100vh;font:700 16px system-ui}button{font:700 16px system-ui;border:0;border-radius:14px;padding:16px 22px;background:#38b6ff}</style><button>Vibrar dentro del recuadro (200 ms)</button><script>document.querySelector("button").onclick=function(){var r;try{r=navigator.vibrate(200)}catch(e){r="error"}parent.postMessage({r:r},"*")}<\/script>';
+addEventListener('message',e=>{if(e.data&&'r' in e.data)log('Recuadro → vibrate(200) = '+e.data.r,e.data.r===true?'ok':'ko');});
+</script></body></html>
