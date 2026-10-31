@@ -386,6 +386,21 @@
    "play": "juegos/isla-tropiezo/index.html"
   },
   {
+   "id": "vaquillaparty",
+   "slug": "vaquilla-party",
+   "kw": "juego de pruebas pueblo contra pueblo",
+   "cat": "accion",
+   "name": "Vaquilla Party",
+   "note": "Pueblo contra pueblo en las fiestas",
+   "blurb": "La tarde más loca de las fiestas del pueblo: tu pueblo contra el de al lado en cinco pruebas al azar sobre una piscina gigante en la plaza mayor. Cruza las tarimas sin que te embista la vaquilla, pasa los rodillos, corre con cabezudos, sube la cucaña, tira los bolos humanos, llena el cántaro sin derramar y aguanta en las colchonetas. Cada prueba suma puntos y la final vale doble.",
+   "tags": [
+    "Party",
+    "Por equipos",
+    "3D"
+   ],
+   "play": "juegos/vaquilla-party/index.html"
+  },
+  {
    "slug": "aura-battle",
    "id": "aura",
    "kw": "juego de bailes de moda",

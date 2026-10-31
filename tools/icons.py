@@ -1717,6 +1717,36 @@ def _(I):
 
 
 # CatQuiz: la mascota gata asoma en la esquina
+@icon('vaquilla-party')
+def _(I):
+    bg(I, '#ffd27a', '#ff7a3c', '#fff3c4', .14)
+    I.add(f'<path d="M-10 70 Q256 130 522 70" fill="none" stroke="{INK}" stroke-width="5"/>')
+    cols = ('#ff3a7a', '#ffd23f', '#38b6ff', '#3fd06a', '#ff8f1c', '#9a6cff')
+    for k in range(9):
+        x = 20 + k * 58; y = 70 + 60 * (1 - ((x - 256) / 266) ** 2) * .62
+        I.add(f'<path d="M{x-20:.0f} {y-6:.0f} L{x+20:.0f} {y-2:.0f} L{x:.0f} {y+38:.0f}Z" {st(cols[k % 6], 5)}/>')
+    I.add(f'<path d="M-10 360 H522 V522 H-10Z" fill="{I.lg("#5fe4ff", "#1478c8")}"/>')
+    for y in (400, 452):
+        I.add(f'<path d="M30 {y} q30 -10 60 0 t60 0" fill="none" stroke="#fff" stroke-width="6" opacity=".55" stroke-linecap="round"/><path d="M340 {y+14} q30 -10 60 0 t60 0" fill="none" stroke="#fff" stroke-width="6" opacity=".55" stroke-linecap="round"/>')
+    I.add(f'<rect x="-10" y="344" width="532" height="24" {st("#ffffff", 6)}/>')
+    I.add(f'<ellipse cx="256" cy="470" rx="120" ry="16" fill="#000" opacity=".16"/>')
+    I.add(f'<ellipse cx="256" cy="380" rx="112" ry="82" {st(I.rg("#ffffff", "#e9dfd2", .35, .3, .9))}/>')
+    I.add(f'<ellipse cx="196" cy="360" rx="34" ry="26" fill="#c8823c" stroke="{INK}" stroke-width="5"/><ellipse cx="318" cy="404" rx="28" ry="20" fill="#c8823c" stroke="{INK}" stroke-width="5"/>')
+    I.add(f'<path d="M178 168 Q150 120 176 96 Q182 132 204 150Z" {st("#fff3c4", 6)}/><path d="M334 168 Q362 120 336 96 Q330 132 308 150Z" {st("#fff3c4", 6)}/>')
+    I.add(f'<ellipse cx="146" cy="200" rx="40" ry="20" {st("#c8823c", 6)} transform="rotate(-20 146 200)"/><ellipse cx="366" cy="200" rx="40" ry="20" {st("#c8823c", 6)} transform="rotate(20 366 200)"/>')
+    I.add(f'<circle cx="256" cy="230" r="98" {st(I.rg("#ffffff", "#efe6da", .35, .3, .9))}/>')
+    I.add(f'<ellipse cx="300" cy="186" rx="30" ry="22" fill="#c8823c" stroke="{INK}" stroke-width="5"/>')
+    I.add(f'<ellipse cx="256" cy="284" rx="64" ry="42" {st("#ffb3c8", 6)}/>')
+    I.add(f'<ellipse cx="234" cy="282" rx="9" ry="12" fill="{INK}"/><ellipse cx="278" cy="282" rx="9" ry="12" fill="{INK}"/>')
+    eyes(I, 256, 222, 1.0, 34)
+    blush(I, 256, 252, 1, 70)
+    I.add(f'<path d="M168 318 Q256 352 344 318 L330 350 Q256 384 182 350Z" {st("#38b6ff", 6)}/>')
+    for x, y in ((206, 338), (240, 350), (276, 350), (310, 338)):
+        I.add(f'<circle cx="{x}" cy="{y}" r="6" fill="#fff"/>')
+    I.add(f'<path d="M236 362 H276 L284 408 Q256 418 228 408Z" {st("#ffd23f", 6)}/><circle cx="256" cy="412" r="8" fill="{INK}"/>')
+    shine(I, 214, 176, 24, 12, -30, .55)
+    sparkle(I, 430, 170, 16); sparkle(I, 80, 260, 12); sparkle(I, 452, 300, 10)
+
 for _s in ['catquiz-party','catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
 
