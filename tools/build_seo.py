@@ -18,6 +18,7 @@ OWNER = dict(name='', nif='', addr='', email='')
 GOATCOUNTER = ''
 # =================================================
 
+SERIES_SLUGS = []  # lo rellena build_studio.py
 ROBOTS = 'index,follow,max-image-preview:large' if INDEXABLE else 'noindex,nofollow'
 TODAY = datetime.date.today().isoformat()
 UPDATED = '16 de octubre de 2026'
@@ -126,10 +127,10 @@ def share_bar(ca):
 
 def header(p, ca, alt=None):
     """p: prefijo hasta la raíz. alt: enlace a la otra versión de idioma."""
-    home = p
+    home = p + 'salon/'
     lng = f'<a href="{alt}" hreflang="{"es" if ca else "ca"}" lang="{"es" if ca else "ca"}">{"ES" if ca else "CA"}</a>' if alt else ''
     return (f'<header class="t"><div class="w"><a class="br" href="{home}"><i></i>SALÓN RECREATIVO</a><nav>'
-            f'<a href="{home}">{"Tots els jocs" if ca else "Todos los juegos"}</a>{lng}</nav></div></header>')
+            f'<a href="{home}">{"Tots els jocs" if ca else "Todos los juegos"}</a><a href="{p}play/">Alica Play</a><a href="{p}">Alica Studio</a>{lng}</nav></div></header>')
 
 def footer(p, ca):
     return (f'<footer class="f"><div class="w"><p>© 2026 <b>Alica Games Studio</b> · Salón Recreativo · {"Minijocs en línia gratuïts" if ca else "Minijuegos online gratis"}</p>'
@@ -184,7 +185,7 @@ def landing(g0, lang):
         h2a, ptxt, reltitle = 'Cómo se juega', "Pulsa «Jugar» y empieza: el juego se carga aquí mismo. En el móvil se abre a pantalla completa.", 'Más minijuegos'
         agel = f'Edad recomendada: +{age(g)}'
     jgame = {"@context": "https://schema.org", "@type": "VideoGame", "name": g['name'], "description": g['blurb'], "url": url, "image": img, "genre": cat, "gamePlatform": "Web browser", "applicationCategory": "Game", "operatingSystem": "Any", "inLanguage": 'ca' if (ca or g['cat'] == 'catquiz' or g['id'] == 'verano') else 'es', "isAccessibleForFree": True, "typicalAgeRange": f"{age(g)}-", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Organization", "name": "Alica Games Studio", "url": BASE + 'estudio/'}, "keywords": ", ".join(([kw] if kw else []) + g['tags'])}
-    home = BASE + ('ca/' if ca else '')
+    home = BASE + ('ca/' if ca else '') + 'salon/'
     bc = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Salón Recreativo", "item": home}, {"@type": "ListItem", "position": 2, "name": cat, "item": home + '#sec-' + g['cat']}, {"@type": "ListItem", "position": 3, "name": g['name'], "item": url}]}
     relhtml = ''.join(f'<li><a href="../{x["slug"]}/"><img src="{p}img/{x["slug"]}.jpg" alt="{"Portada de" if not ca else "Portada de"} {e(x["name"])}" loading="lazy" width="344" height="216"><b>{e(x["name"])}</b></a></li>' for x in rel)
     hm = has_media(g)
@@ -195,7 +196,7 @@ def landing(g0, lang):
 <style>{CSS}</style></head>
 <body>{header(p, ca)}
 <main class="w">
-<nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="{p}{'ca/' if ca else ''}">{'Inici' if ca else 'Inicio'}</a> › <a href="{p}{'ca/' if ca else ''}#{ {'cosmico': 'trilogia', 'invierno': 'saga-invierno', 'entrenos': 'saga-entrenos'}.get(g['cat'], 'sec-' + g['cat']) }">{e(cat)}</a> › {e(g['name'])}</nav>
+<nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="{p}{'ca/' if ca else ''}salon/">Salón Recreativo</a> › <a href="{p}{'ca/' if ca else ''}salon/#{ {'cosmico': 'trilogia', 'invierno': 'saga-invierno', 'entrenos': 'saga-entrenos'}.get(g['cat'], 'sec-' + g['cat']) }">{e(cat)}</a> › {e(g['name'])}</nav>
 <h1>{e(g['name'])}</h1>
 <p class="lead">{e(g['blurb'])}</p>
 <div class="stage" id="stage">{vid}<button class="xfs" id="xfs" type="button" aria-label="{'Tornar' if ca else 'Volver'}">‹<i></i></button><button class="go" id="go" type="button" style="background-image:linear-gradient(rgba(7,6,15,.25),rgba(7,6,15,.25)){'' if hm else ',url(' + p + 'img/' + g['slug'] + '.jpg)'}" aria-label="{'Juga a' if ca else 'Jugar a'} {e(g['name'])}"><span>▶ {'Juga' if ca else 'Jugar'}</span></button></div>
@@ -267,10 +268,10 @@ for H in HUBS:
 <style>{CSS}
 {HUB_CSS}</style></head>
 <body>{header('../', ca)}
-<main class="w"><nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="../">{'Inici' if ca else 'Inicio'}</a> › {e(H['h1'])}</nav>
+<main class="w"><nav class="bc" aria-label="{'Molles de pa' if ca else 'Migas de pan'}"><a href="../salon/">Salón Recreativo</a> › {e(H['h1'])}</nav>
 <h1>{e(H['h1'])}</h1>{''.join('<p class="lead">' + e(t) + '</p>' if i == 0 else '<p>' + e(t) + '</p>' for i, t in enumerate(H['intro']))}
 <ul class="hub">{cards}</ul>
-<h2>{'Més col·leccions' if ca else 'Más colecciones'}</h2><p class="more">{others} <a href="../">{'Tots els jocs' if ca else 'Todos los juegos'}</a></p>
+<h2>{'Més col·leccions' if ca else 'Más colecciones'}</h2><p class="more">{others} <a href="../salon/">{'Tots els jocs' if ca else 'Todos los juegos'}</a></p>
 </main>{footer('../', ca)}</body></html>"""
     W(H['slug'] + '/index.html', page)
 
@@ -280,7 +281,7 @@ def simple(slug, title, desc, h1, body, robots=None, extra_css='', extra_js=''):
     page = head('es', title, desc, url, '../', robots=robots) + f"""
 <style>{CSS}{extra_css}</style></head>
 <body>{header('../', False)}
-<main class="w"><nav class="bc" aria-label="Migas de pan"><a href="../">Inicio</a> › {e(h1)}</nav>
+<main class="w"><nav class="bc" aria-label="Migas de pan"><a href="../">Alica Studio</a> › {e(h1)}</nav>
 {body}
 </main>{footer('../', False)}{extra_js}</body></html>"""
     W(slug + '/index.html', page)
@@ -365,9 +366,12 @@ head_part0 = src[:i]; body0 = src[i:]
 head_part0 = re.sub(r'<title>.*?</title>\s*', '', head_part0, flags=re.S)
 head_part0 = re.sub(r'<meta name="claude:viewport-fit-sides"[^>]*>\s*', '', head_part0)
 
+# La portada del Salón vive en salon/ pero usa <base href="../">: las rutas relativas siguen apuntando a la raíz.
+# Este parche hace que pushState/replaceState con '#id' o '' se queden en salon/ y no salten a la raíz.
+HISTFIX = '<script>(function(){var H=history;["pushState","replaceState"].forEach(function(k){var o=H[k].bind(H);H[k]=function(s,t,u){if(typeof u==="string"&&!/^([a-z]+:|\\/)/i.test(u)){u=u===""?location.href:(u.charAt(0)==="#"?location.pathname+location.search+u:u)}return arguments.length>2?o(s,t,u):o(s,t)}})})();</script>'
 def home(lang):
     ca = lang == 'ca'
-    url = BASE + ('ca/' if ca else '')
+    url = BASE + ('ca/' if ca else '') + 'salon/'
     head_part, body = head_part0, body0
     if ca:
         for a, b in CA_UI:
@@ -381,7 +385,7 @@ def home(lang):
     site = {"@context": "https://schema.org", "@type": "WebSite", "name": "Salón Recreativo", "url": url, "inLanguage": lang, "description": HD, "publisher": {"@type": "Organization", "name": "Alica Games Studio", "url": BASE + 'estudio/'}}
     lst = {"@context": "https://schema.org", "@type": "ItemList", "name": 'Minijocs en línia gratis' if ca else 'Minijuegos online gratis', "itemListElement": items}
     alts = None
-    pre = ('<base href="../">' if ca else '')
+    pre = ('<base href="../../">' if ca else '<base href="../">') + HISTFIX
     extra = '<link rel="preload" href="assets/fonts/unbounded-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>'
     if ca:
         CA = {'g': {k: {kk: vv for kk, vv in v.items() if kk in ('name', 'blurb', 'tags', 'note', 'kw')} for k, v in CA_G.items()}, 'cats': CA_CATS, 'catd': CA_CATD}
@@ -411,30 +415,33 @@ def home(lang):
     body = body.replace('<!--FLINKS-->', fl).replace('</button></div>\n</footer>', '</button>' + about + nav + '</div>\n</footer>').replace('<!--LNG-->', lng)
     assert nav in body
     out = h + '<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}</style>\n' + head_part.replace('<link rel="stylesheet" href="assets/fonts.css">', '') + '</head><body>' + body + '</body></html>'
-    W(('ca/' if ca else '') + 'index.html', out)
+    W(('ca/' if ca else '') + 'salon/index.html', out)
 
 home('es')
 
+# ================= ALICA STUDIO (portada) y ALICA PLAY (series) =================
+exec(open(os.path.join(root, 'tools/build_studio.py'), encoding='utf-8').read())
+
 # ================= SITEMAP / ROBOTS / 404 =================
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-for u, pr, fq in [(BASE, '1.0', 'weekly')] + [(BASE + 'jugar/' + g['slug'] + '/', '0.7', 'monthly') for g in play]:
+for u, pr, fq in [(BASE, '1.0', 'weekly'), (BASE + 'salon/', '0.9', 'weekly'), (BASE + 'play/', '0.9', 'weekly')] + [(BASE + 'play/' + x + '/', '0.7', 'monthly') for x in SERIES_SLUGS] + [(BASE + 'jugar/' + g['slug'] + '/', '0.7', 'monthly') for g in play]:
     sm += f'<url><loc>{u}</loc><lastmod>{TODAY}</lastmod><changefreq>{fq}</changefreq><priority>{pr}</priority></url>\n'
 for u in [BASE + H['slug'] + '/' for H in HUBS] + [BASE + 'estudio/']:
     sm += f'<url><loc>{u}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>\n'
 sm += '</urlset>\n'
 W('sitemap.xml', sm)
 W('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n' if INDEXABLE else 'User-agent: *\nDisallow: /juegos/\nDisallow: /media/\n')
-W('404.html', f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Página no encontrada | Salón Recreativo</title><meta name="robots" content="noindex"><style>body{{margin:0;min-height:100vh;display:grid;place-items:center;background:#07060f;color:#f5f2ff;font:18px system-ui;text-align:center}}a{{color:#ffd23f}}</style></head><body><div><h1>Esta página no existe</h1><p><a href="{BASE}">Volver al Salón Recreativo</a></p></div></body></html>')
+W('404.html', f'<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Página no encontrada | Salón Recreativo</title><meta name="robots" content="noindex"><style>body{{margin:0;min-height:100vh;display:grid;place-items:center;background:#07060f;color:#f5f2ff;font:18px system-ui;text-align:center}}a{{color:#ffd23f}}</style></head><body><div><h1>Esta página no existe</h1><p><a href="{BASE}">Volver a Alica Studio</a> · <a href="{BASE}salon/">Salón Recreativo</a> · <a href="{BASE}play/">Alica Play</a></p></div></body></html>')
 
 # ================= APP INSTALABLE =================
 manifest = {"name": "Salón Recreativo · Alica Games Studio", "short_name": "Salón", "description": "Minijuegos gratis para el navegador, sin anuncios ni descargas.",
-            "lang": "es", "start_url": "./?app=1", "scope": "./", "display": "standalone", "orientation": "any", "background_color": "#07060f", "theme_color": "#07060f",
+            "lang": "es", "start_url": "./salon/?app=1", "scope": "./", "display": "standalone", "orientation": "any", "background_color": "#07060f", "theme_color": "#07060f",
             "icons": [{"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
                       {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}],
-            "shortcuts": [{"name": "Juegos relajantes", "url": "./#sec-relax"}, {"name": "CatQuiz", "url": "./#sec-catquiz"}, {"name": "Saga cósmica", "url": "./#trilogia"}]}
+            "shortcuts": [{"name": "Alica Play", "url": "./play/"}, {"name": "Juegos relajantes", "url": "./salon/#sec-relax"}, {"name": "Saga cósmica", "url": "./salon/#trilogia"}]}
 W('manifest.webmanifest', json.dumps(manifest, ensure_ascii=False, indent=1))
 W('sw.js', """/* Salón Recreativo: service worker. Portada y recursos básicos disponibles sin conexión; los juegos se guardan al jugarlos. */
-const V='sr-""" + TODAY + """',CORE=['./','assets/fonts.css','assets/lenis.min.js','manifest.webmanifest','icons/icon-192.png'];
+const V='sr-""" + TODAY + """',CORE=['./','salon/','play/','assets/fonts.css','assets/lenis.min.js','manifest.webmanifest','icons/icon-192.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==V).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{
@@ -442,7 +449,7 @@ self.addEventListener('fetch',e=>{
   if(r.method!=='GET'||u.origin!==location.origin||r.headers.has('range')||/\\/media\\//.test(u.pathname))return;
   const put=res=>{if(res&&res.status===200&&res.type==='basic'){const c=res.clone();caches.open(V).then(x=>x.put(r,c));}return res;};
   if(r.mode==='navigate'||/\\/(juegos)\\//.test(u.pathname)){
-    e.respondWith(fetch(r).then(put).catch(()=>caches.match(r).then(m=>m||caches.match('./'))));return;}
+    e.respondWith(fetch(r).then(put).catch(()=>caches.match(r).then(m=>m||caches.match('salon/'))));return;}
   e.respondWith(caches.match(r).then(m=>{const f=fetch(r).then(put).catch(()=>m);return m||f;}));
 });
 """)
@@ -457,7 +464,7 @@ if __name__ == '__main__':
     import shutil, subprocess, sys as _sys
     if shutil.which('node'):
         _chk = "const s=require('fs').readFileSync(process.argv[1],'utf8');let bad=0;for(const m of s.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)){try{new Function(m[1])}catch(e){console.log('ERROR JS en la portada:',e.message);bad=1}}process.exit(bad)"
-        for _f in ('index.html', 'tools/source.html'):
+        for _f in ('index.html', 'salon/index.html', 'play/index.html', 'tools/source.html'):
             _p = os.path.join(ROOT if 'ROOT' in globals() else os.path.dirname(os.path.dirname(os.path.abspath(__file__))), _f)
             if os.path.exists(_p) and subprocess.run(['node', '-e', _chk, _p]).returncode:
                 print('¡OJO! Error de sintaxis en', _f); _sys.exit(1)

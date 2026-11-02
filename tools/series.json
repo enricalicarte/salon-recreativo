@@ -1,0 +1,85 @@
+{
+  "_ayuda": "Catálogo de Alica Play. Para publicar un episodio: súbelo a YouTube como 'Oculto' y pon su código (lo que va después de watch?v= o de shorts/) en 'yt'. Sin 'yt' el episodio sale como 'Muy pronto'. estado: 'emision' (se ve), 'pronto' (próximamente). vertical: true para vídeos 9:16.",
+  "destacada": "lloguer",
+  "destacada_peques": "tico",
+  "series": [
+    {
+      "slug": "lloguer",
+      "titulo": "LLOGUER",
+      "logo": "lloguer",
+      "estado": "emision",
+      "peques": false,
+      "edad": "16+",
+      "anio": 2026,
+      "generos": ["Animación para adultos", "Crítica social", "Barcelona"],
+      "idiomas": "Castellano y catalán",
+      "gancho": "El piso lo ha visto todo. Y ahora habla.",
+      "sinopsis": "Un piso del Eixample de Barcelona cuenta, desde su papel pintado, la historia de todos los inquilinos que han vivido en él. Cada capa de papel es una época, una familia y un precio. Una serie de animación en collage de papel sobre lo que cuesta vivir en una ciudad.",
+      "creador": "Enric Alicarte",
+      "estilo": "Ilustración editorial en movimiento · collage de papel",
+      "color": "#c8452f",
+      "temporadas": [
+        {
+          "n": 1,
+          "episodios": [
+            {"n": 1, "titulo": "El papel pintado", "dur": "8 min", "yt": "", "sinopsis": "El piso se presenta. Bajo la última capa de pintura blanca aparecen las otras: los inquilinos que llegaron, los que se fueron y lo que pagaban por quedarse."},
+            {"n": 2, "titulo": "Episodio 2", "dur": "", "yt": "", "estado": "pronto", "sinopsis": "En producción."}
+          ]
+        }
+      ],
+      "extras": [
+        {"titulo": "Prueba de estilo", "dur": "15 s", "yt": "", "sinopsis": "La primera prueba del collage de papel en movimiento."}
+      ]
+    },
+    {
+      "slug": "tico",
+      "titulo": "Tico",
+      "logo": "tico",
+      "estado": "emision",
+      "peques": true,
+      "edad": "TP",
+      "edad_txt": "A partir de 3 años",
+      "anio": 2026,
+      "generos": ["Infantil", "Hábitos", "Cortos"],
+      "idiomas": "Castellano",
+      "gancho": "Pequeñas aventuras para las rutinas de cada día.",
+      "sinopsis": "Cortos de dibujos animados para los más peques: lavarse los dientes, lavarse las manos, el baño, la cena y la hora de dormir. Cada episodio dura poco y convierte una rutina en un juego.",
+      "creador": "Enric Alicarte",
+      "estilo": "Animación hecha en código · formato vertical",
+      "color": "#7c6cff",
+      "vertical": true,
+      "temporadas": [
+        {
+          "n": 1,
+          "episodios": [
+            {"n": 1, "titulo": "A lavarse los dientes", "dur": "1 min", "yt": "", "sinopsis": "Arriba, abajo y en círculos: Tico aprende a lavarse los dientes antes de dormir."},
+            {"n": 2, "titulo": "A lavarse las manos", "estado": "pronto", "sinopsis": "Agua, jabón y burbujas."},
+            {"n": 3, "titulo": "La hora del baño", "estado": "pronto", "sinopsis": "Un baño lleno de espuma."},
+            {"n": 4, "titulo": "A cenar", "estado": "pronto", "sinopsis": "La cena, sin prisas."},
+            {"n": 5, "titulo": "Buenas noches", "estado": "pronto", "sinopsis": "Pijama, cuento y a dormir."}
+          ]
+        }
+      ],
+      "extras": []
+    },
+    {
+      "slug": "nueva-serie-infantil",
+      "titulo": "Nueva serie infantil",
+      "logo": "pronto",
+      "estado": "pronto",
+      "peques": true,
+      "edad": "TP",
+      "edad_txt": "A partir de 5 años",
+      "anio": 2027,
+      "generos": ["Infantil", "Aventuras"],
+      "idiomas": "Castellano",
+      "gancho": "Una nueva serie para peques de 5 años. Muy pronto.",
+      "sinopsis": "Alica Studio prepara una serie de unos 30 episodios para niños y niñas de 5 años. El título y los personajes se presentarán aquí.",
+      "creador": "Enric Alicarte",
+      "estilo": "Animación",
+      "color": "#ffb020",
+      "temporadas": [],
+      "extras": []
+    }
+  ]
+}

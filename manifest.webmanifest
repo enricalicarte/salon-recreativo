@@ -3,7 +3,7 @@
  "short_name": "Salón",
  "description": "Minijuegos gratis para el navegador, sin anuncios ni descargas.",
  "lang": "es",
- "start_url": "./?app=1",
+ "start_url": "./salon/?app=1",
  "scope": "./",
  "display": "standalone",
  "orientation": "any",
@@ -29,16 +29,16 @@
  ],
  "shortcuts": [
   {
-   "name": "Juegos relajantes",
-   "url": "./#sec-relax"
+   "name": "Alica Play",
+   "url": "./play/"
   },
   {
-   "name": "CatQuiz",
-   "url": "./#sec-catquiz"
+   "name": "Juegos relajantes",
+   "url": "./salon/#sec-relax"
   },
   {
    "name": "Saga cósmica",
-   "url": "./#trilogia"
+   "url": "./salon/#trilogia"
   }
  ]
 }

@@ -18,3 +18,11 @@ Escaparate de minijuegos. Web estática para GitHub Pages (Settings → Pages �
 los juegos solo arrancan en el dominio de `BASE` (más `localhost` para probar) y solo se dejan meter en iframes de esos dominios.
 Al pasar al dominio propio basta con cambiar `BASE` en `build_seo.py` (o añadir dominios en `EXTRA` dentro de `protege.py`) y regenerar.
 Los derechos están en `LICENSE`.
+
+## Alica Studio y Alica Play
+
+- La portada (`index.html`) es Alica Studio, con dos secciones: el **Salón Recreativo** (`salon/`) y **Alica Play** (`play/`), la plataforma de series.
+- Las fichas de juego (`jugar/`) y los juegos (`juegos/`) no cambian de dirección.
+- Catálogo de series: `tools/series.json`. Para publicar un episodio, súbelo a YouTube como «Oculto» y pon su código en `yt`. Sin código sale como «Muy pronto».
+- Ilustraciones de las series: `python3 tools/series_art.py` (salen en `play/img/`).
+- Todo se regenera con `python3 tools/build_seo.py`.

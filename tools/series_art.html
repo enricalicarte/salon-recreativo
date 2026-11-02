@@ -1,0 +1,106 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000;overflow:hidden}svg{display:block;width:100vw;height:100vh}</style></head><body>
+<div id="o"></div>
+<script>
+const Q=new URLSearchParams(location.search),MODE=Q.get('m')||'lloguer',V=+(Q.get('v')||0),W=1600,H=900;
+let seed=7+V*131;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+const R=(a,b)=>a+(b-a)*rnd();
+function torn(x0,x1,y,amp,step=14){let d='';for(let x=x0;x<=x1;x+=step){d+=(d?'L':'M')+x.toFixed(1)+','+(y+R(-amp,amp)).toFixed(1);}return d}
+function tornRect(x0,y0,x1,y1,amp){ // top & bottom torn
+  let top=torn(x0,x1,y0,amp),pts=[];for(let x=x1;x>=x0;x-=14)pts.push(x.toFixed(1)+','+(y1+R(-amp,amp)).toFixed(1));
+  return top+'L'+pts.join('L')+'Z'}
+function tornPoly(cx,cy,w,h,rot,amp){let p=[],n=0;const s=(x,y)=>p.push([x,y]);
+  for(let x=-w/2;x<=w/2;x+=10)s(x,-h/2+R(-amp,amp));for(let y=-h/2;y<=h/2;y+=10)s(w/2+R(-amp,amp),y);
+  for(let x=w/2;x>=-w/2;x-=10)s(x,h/2+R(-amp,amp));for(let y=h/2;y>=-h/2;y-=10)s(-w/2+R(-amp,amp),y);
+  const c=Math.cos(rot),si=Math.sin(rot);return 'M'+p.map(([x,y])=>(cx+x*c-y*si).toFixed(1)+','+(cy+x*si+y*c).toFixed(1)).join('L')+'Z'}
+const DEFS=`<filter id="sh" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="3" dy="6" stdDeviation="5" flood-color="#1a0d05" flood-opacity=".45"/></filter>
+<filter id="sh2" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="2" dy="3" stdDeviation="2.5" flood-color="#1a0d05" flood-opacity=".5"/></filter>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="${3+V}"/><feColorMatrix values="0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .15  0 0 0 .55 0"/></filter>
+<filter id="fib"><feTurbulence type="fractalNoise" baseFrequency=".012 .06" numOctaves="2" seed="${9+V}"/><feColorMatrix values="0 0 0 0 .3  0 0 0 0 .2  0 0 0 0 .1  0 0 0 .22 0"/></filter>`;
+
+function lloguer(){
+  let s='';
+  const pal=[['#2f5b4c','#3c705e','#c9b98a'],['#e9dcc0','#d9c7a3','#b5433a'],['#c96a3a','#8a4a2b','#e8c07a'],['#d8a9a6','#b97f7c','#f3e6d8'],['#1f3a5a','#2d527c','#d8c48e']];
+  const pi=V%pal.length;
+  s+=`<defs>${DEFS}
+  <pattern id="dam" width="120" height="150" patternUnits="userSpaceOnUse"><rect width="120" height="150" fill="${pal[0][0]}"/>
+   <g fill="${pal[0][1]}"><path d="M60 10c22 18 30 40 0 65c-30-25-22-47 0-65z"/><path d="M60 85c14 10 18 26 0 52c-18-26-14-42 0-52z"/><circle cx="0" cy="75" r="14"/><circle cx="120" cy="75" r="14"/></g>
+   <g fill="none" stroke="${pal[0][2]}" stroke-width="2" opacity=".55"><path d="M60 22c12 12 14 28 0 42c-14-14-12-30 0-42z"/><path d="M0 0q30 40 0 75M120 0q-30 40 0 75"/></g></pattern>
+  <pattern id="flo" width="90" height="90" patternUnits="userSpaceOnUse"><rect width="90" height="90" fill="${pal[3][2]}"/>
+   <g fill="${pal[3][0]}">${[0,1,2,3,4].map(k=>`<ellipse cx="${45+Math.cos(k*1.256)*11}" cy="${45+Math.sin(k*1.256)*11}" rx="8" ry="5" transform="rotate(${k*72} ${45+Math.cos(k*1.256)*11} ${45+Math.sin(k*1.256)*11})"/>`).join('')}</g><circle cx="45" cy="45" r="5" fill="#b5433a"/>
+   <path d="M5 5q8-6 14 2M71 77q8-6 14 2" stroke="#6f8f5a" stroke-width="3" fill="none"/></pattern>
+  <pattern id="ret" width="160" height="80" patternUnits="userSpaceOnUse"><rect width="160" height="80" fill="${pal[2][2]}"/>
+   <path d="M0 40q40-36 80 0t80 0" stroke="${pal[2][0]}" stroke-width="16" fill="none"/><path d="M0 40q40-36 80 0t80 0" stroke="${pal[2][1]}" stroke-width="5" fill="none" transform="translate(0 16)"/></pattern>
+  <pattern id="str" width="44" height="10" patternUnits="userSpaceOnUse"><rect width="44" height="10" fill="${pal[1][0]}"/><rect width="10" height="10" fill="${pal[1][1]}"/><rect x="16" width="3" height="10" fill="${pal[1][2]}" opacity=".7"/></pattern>
+  <pattern id="tile" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="#e7d6b6"/><path d="M30 4l26 26-26 26L4 30z" fill="#a8453a"/><circle cx="30" cy="30" r="8" fill="#2f5b4c"/></pattern>
+  </defs>`;
+  s+=`<rect width="${W}" height="${H}" fill="url(#dam)"/>`;
+  // capas de papel arrancadas
+  const layers=['str','ret','flo','dam','str'];let y=-40;
+  [[150,330,'str'],[300,520,'ret'],[470,700,'flo'],[640,960,'str']].forEach(([a,b,p],k)=>{s+=`<path d="${tornRect(-20,a+R(-20,20),W+20,b,9)}" fill="url(#${p})" filter="url(#sh)"/>`});
+  // gran rasgado que deja ver el ladrillo/yeso
+  s+=`<path d="${tornPoly(1180,460,560,760,-.05,14)}" fill="#e9ddc6" filter="url(#sh)"/>`;
+  // fachada del Eixample: ventana con balcón
+  const fx=1180,fy=470;
+  s+=`<g filter="url(#sh)"><path d="${tornPoly(fx,fy-20,400,600,.02,6)}" fill="#d9b48a"/>
+   <rect x="${fx-120}" y="${fy-260}" width="240" height="420" rx="6" fill="#efe2c6"/>
+   <path d="M${fx-120} ${fy-250}q120-90 240 0" fill="#efe2c6"/>
+   <rect x="${fx-95}" y="${fy-210}" width="190" height="360" fill="#2f5b4c"/>
+   ${[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17].map(k=>`<rect x="${fx-95}" y="${fy-210+k*20}" width="190" height="9" fill="#3d7563"/>`).join('')}
+   <rect x="${fx-6}" y="${fy-210}" width="12" height="360" fill="#24463b"/>
+   <rect x="${fx-150}" y="${fy+150}" width="300" height="22" fill="#cfa77a"/>
+   <g stroke="#1b1b1b" stroke-width="5" fill="none"><path d="M${fx-140} ${fy+150}v-120h280v120"/>${[...Array(13)].map((_,k)=>`<path d="M${fx-140+k*23.3} ${fy+30}v120"/>`).join('')}<path d="M${fx-140} ${fy+70}h280"/>${[...Array(6)].map((_,k)=>`<circle cx="${fx-117+k*46.6}" cy="${fy+50}" r="9"/>`).join('')}</g>
+   <rect x="${fx-150}" y="${fy+172}" width="300" height="34" fill="#b98f62"/><path d="M${fx-150} ${fy+206}l40 36h220l40-36z" fill="#9b7550"/></g>`;
+  // cartel "ES LLOGA"
+  s+=`<g transform="translate(${fx-30} ${fy+30}) rotate(-4)" filter="url(#sh2)"><rect x="-110" y="-36" width="220" height="72" fill="#f4ecd8"/><rect x="-102" y="-28" width="204" height="56" fill="none" stroke="#c8452f" stroke-width="4"/><text x="0" y="12" font-family="DejaVu Sans" font-weight="bold" font-size="32" fill="#c8452f" text-anchor="middle" letter-spacing="3">ES LLOGA</text></g>`;
+  // inquilinos recortados (siluetas de distintas épocas)
+  const ink=['#1d1712','#5a1f17','#21363f'];
+  const fig=(x,y,sc,c,kind)=>{let b='';
+    if(kind==0)b=`<circle cx="0" cy="-150" r="22"/><path d="M-38-158h76l-10-12h-56z"/><path d="M-26-126h52l18 120h-88z"/><rect x="-16" y="-6" width="10" height="70"/><rect x="6" y="-6" width="10" height="70"/>`;
+    if(kind==1)b=`<circle cx="0" cy="-152" r="21"/><path d="M-22-176q22-18 44 0v14h-44z"/><path d="M-30-128h60l6 70h-72z"/><path d="M-30-58h26l-8 122h-20zM4-58h26l2 122h-20z"/>`;
+    if(kind==2)b=`<circle cx="0" cy="-150" r="20"/><path d="M-28-126h56l8 76h-72z"/><rect x="-46" y="-120" width="28" height="56" rx="8"/><path d="M-26-50h22v114h-18zM4-50h22l4 114h-18z"/>`;
+    return `<g transform="translate(${x} ${y}) scale(${sc})" fill="${c}" filter="url(#sh2)">${b}</g>`};
+  s+=fig(860,860,1.25,ink[0],0)+fig(1540,880,1.35,ink[1],1)+fig(1440,890,1.05,ink[2],2);
+  // etiqueta de precio con celo
+  s+=`<g transform="translate(1440 220) rotate(7)" filter="url(#sh2)"><path d="${tornPoly(0,0,250,96,0,3)}" fill="#fffaf0"/><text x="0" y="16" font-family="DejaVu Serif" font-weight="bold" font-size="46" fill="#1d1712" text-anchor="middle">${['1.450 €','980 €','2.100 €','65 ptas','1.780 €'][V%5]}</text><text x="0" y="40" font-family="DejaVu Sans" font-size="14" fill="#5a1f17" text-anchor="middle" letter-spacing="2">AL MES</text></g>
+  <rect x="1380" y="160" width="70" height="22" fill="#f3e6a8" opacity=".75" transform="rotate(-12 1415 171)"/>`;
+  // llave
+  s+=`<g transform="translate(760 210) rotate(28)" fill="#c9a24a" filter="url(#sh2)"><circle r="30"/><circle r="12" fill="#2f5b4c"/><rect x="26" y="-7" width="120" height="14"/><rect x="120" y="5" width="12" height="22"/><rect x="100" y="5" width="10" height="16"/></g>`;
+  s+=`<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".7"/><rect width="${W}" height="${H}" filter="url(#fib)"/>`;
+  return s}
+
+function tico(){
+  const th=[['#1b1546','#3a2d8f','#ffd56b'],['#123a5c','#2e6fa3','#9be7ff'],['#2a1650','#6a3fb4','#ffb3d9'],['#3a2414','#a5612c','#ffd08a'],['#0e1238','#2c2f7a','#fff3b0']][V%5];
+  let s=`<defs>${DEFS}<radialGradient id="sky" cx="70%" cy="20%" r="90%"><stop offset="0" stop-color="${th[1]}"/><stop offset="1" stop-color="${th[0]}"/></radialGradient>
+  <radialGradient id="glo" r=".5"><stop offset="0" stop-color="${th[2]}" stop-opacity=".55"/><stop offset="1" stop-color="${th[2]}" stop-opacity="0"/></radialGradient></defs>
+  <rect width="${W}" height="${H}" fill="url(#sky)"/>`;
+  for(let k=0;k<70;k++){const x=R(0,W),y=R(0,H*.6),r=R(1.2,3.6);s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity="${R(.4,1)}"/>`}
+  s+=`<circle cx="1220" cy="230" r="260" fill="url(#glo)"/><circle cx="1220" cy="230" r="110" fill="${th[2]}"/><circle cx="1268" cy="196" r="96" fill="${th[1]}" opacity=".0"/>
+  <circle cx="1190" cy="215" r="10" fill="${th[0]}" opacity=".5"/><circle cx="1250" cy="215" r="10" fill="${th[0]}" opacity=".5"/><path d="M1190 262q30 22 60 0" stroke="${th[0]}" stroke-width="8" fill="none" stroke-linecap="round" opacity=".5"/>`;
+  // nubes suaves
+  [[300,260,1],[620,180,.7],[1500,420,.8]].forEach(([x,y,k])=>s+=`<g fill="#fff" opacity=".16" transform="translate(${x} ${y}) scale(${k})"><circle r="60"/><circle cx="70" cy="10" r="48"/><circle cx="-70" cy="14" r="44"/><rect x="-110" y="10" width="220" height="50" rx="25"/></g>`);
+  // colinas/almohadas
+  s+=`<path d="M0 700q300-120 620-20t620-40 360 30v330H0z" fill="${th[1]}" opacity=".7"/><path d="M0 780q400-90 800 0t800-10v230H0z" fill="${th[0]}"/>`;
+  // objeto del episodio
+  const props=[
+   `<g transform="translate(1180 660)"><rect x="-70" y="-10" width="140" height="150" rx="26" fill="#ff7aa8"/><rect x="-70" y="-10" width="140" height="34" rx="17" fill="#ff9bbf"/><g transform="rotate(-14)"><rect x="-14" y="-190" width="28" height="200" rx="14" fill="#7cf0c8"/><rect x="-22" y="-240" width="44" height="64" rx="12" fill="#fff"/><g fill="#9be7ff">${[0,1,2,3].map(k=>`<rect x="${-18+k*10}" y="-252" width="6" height="22" rx="3"/>`).join('')}</g></g></g>`,
+   `<g transform="translate(1180 690)"><ellipse rx="190" ry="54" fill="#e8f6ff"/><ellipse rx="150" ry="34" fill="#9be7ff"/><rect x="-14" y="-170" width="28" height="120" rx="12" fill="#cfd8e3"/><path d="M-14-170h90v26h-60" fill="#cfd8e3"/><path d="M76-150v40" stroke="#9be7ff" stroke-width="10" stroke-dasharray="10 12" stroke-linecap="round"/></g>`,
+   `<g transform="translate(1160 700)"><path d="M-240-40h480q0 140-120 140h-240q-120 0-120-140z" fill="#fff"/><rect x="-260" y="-60" width="520" height="30" rx="15" fill="#ffd1e8"/><g fill="#fff" opacity=".9">${[...Array(9)].map((_,k)=>`<circle cx="${-200+k*50}" cy="${-70-R(0,40)}" r="${R(20,36)}"/>`).join('')}</g><g transform="translate(120 -110)"><ellipse rx="54" ry="38" fill="#ffd23f"/><circle cx="-34" cy="-40" r="30" fill="#ffd23f"/><path d="M-64-44h-24l24 12z" fill="#ff8a3d"/><circle cx="-38" cy="-46" r="5" fill="#222"/></g></g>`,
+   `<g transform="translate(1180 700)"><ellipse rx="220" ry="62" fill="#fff"/><ellipse rx="170" ry="44" fill="#ffe0a6"/><circle cx="-50" cy="-8" r="30" fill="#7ad36b"/><circle cx="40" cy="0" r="24" fill="#ff7a59"/><circle cx="0" cy="-26" r="20" fill="#ffd23f"/><rect x="230" y="-160" width="16" height="200" rx="8" fill="#cfd8e3"/><ellipse cx="238" cy="-170" rx="30" ry="44" fill="#cfd8e3"/></g>`,
+   `<g transform="translate(1160 700)"><rect x="-260" y="-40" width="520" height="150" rx="40" fill="#ffd6a5"/><rect x="-280" y="-120" width="90" height="230" rx="30" fill="#c2884f"/><rect x="-200" y="-70" width="190" height="80" rx="40" fill="#fff"/><path d="M-20 -50q160-30 270 10v80h-270z" fill="#8f7cff"/></g>`];
+  s+=`<g filter="url(#sh)">${props[V%5]}</g>`;
+  // burbujas
+  for(let k=0;k<16;k++){const x=R(700,1600),y=R(120,700),r=R(10,38);s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" fill-opacity=".12" stroke="#fff" stroke-opacity=".55" stroke-width="3"/><circle cx="${x-r*.35}" cy="${y-r*.35}" r="${r*.18}" fill="#fff" opacity=".8"/>`}
+  s+=`<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".25"/>`;
+  return s}
+
+function pronto(){
+  let s=`<defs>${DEFS}<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8a3d"/><stop offset=".55" stop-color="#ff4fa3"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><rect width="${W}" height="${H}" fill="url(#bg)"/>`;
+  s+=`<g transform="translate(1160 430)" opacity=".9">${[...Array(18)].map((_,k)=>`<path d="M0 0L${Math.cos(k*.349)*1100} ${Math.sin(k*.349)*1100}L${Math.cos(k*.349+.17)*1100} ${Math.sin(k*.349+.17)*1100}z" fill="#fff" opacity=".07"/>`).join('')}<circle r="210" fill="#ffd23f"/><circle r="160" fill="#ffe27a"/></g>`;
+  const cols=['#38e5ff','#ffd23f','#fff','#a3e635','#ff4fa3'];
+  for(let k=0;k<60;k++){const x=R(500,W),y=R(0,H),c=cols[k%5],r=R(0,6.28);s+=k%3?`<rect x="${x}" y="${y}" width="${R(14,30)}" height="${R(8,14)}" rx="3" fill="${c}" transform="rotate(${r*57} ${x} ${y})"/>`:`<circle cx="${x}" cy="${y}" r="${R(6,14)}" fill="${c}"/>`}
+  s+=`<g transform="translate(1160 430) rotate(-8)" filter="url(#sh)"><rect x="-150" y="-60" width="300" height="190" rx="18" fill="#1d1730"/><path d="M-150-60h300v-60l-300 26z" fill="#1d1730"/>${[0,1,2,3,4].map(k=>`<path d="M${-140+k*60}-112l40-4-26 44-40 4z" fill="#fff"/>`).join('')}<text x="0" y="70" font-family="DejaVu Sans" font-weight="bold" font-size="92" fill="#ffd23f" text-anchor="middle">?</text></g>`;
+  s+=`<rect width="${W}" height="${H}" filter="url(#grain)" opacity=".2"/>`;
+  return s}
+
+document.getElementById('o').innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${Q.get('vert')?(1180-337)+' 0 675 900':'0 0 '+W+' '+H}" preserveAspectRatio="xMidYMid slice">${({lloguer,tico,pronto})[MODE]()}</svg>`;
+</script></body></html>
