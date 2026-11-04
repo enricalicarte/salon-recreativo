@@ -35,9 +35,45 @@
             },
             {
               "n": 2,
-              "titulo": "Episodio 2",
+              "titulo": "Prórroga forzosa",
               "dur": "",
-              "yt": "",
+              "yt": "4WeeWBDijFQ",
+              "sinopsis": "La inquilina que nadie pudo echar: con la prórroga forzosa, el contrato se alarga año tras año y el piso ve pasar a los dueños mientras ella se queda."
+            },
+            {
+              "n": 3,
+              "titulo": "Posa't guapa",
+              "dur": "",
+              "yt": "zm-CSR-L-gY",
+              "sinopsis": "Barcelona se pone guapa para el mundo. Llegan las obras, las fachadas limpias y los precios nuevos, y el piso se pregunta para quién se arregla."
+            },
+            {
+              "n": 4,
+              "titulo": "Redondeo",
+              "estado": "pronto",
+              "sinopsis": "En producción."
+            },
+            {
+              "n": 5,
+              "titulo": "Episodio 5",
+              "estado": "pronto",
+              "sinopsis": "En producción."
+            },
+            {
+              "n": 6,
+              "titulo": "Episodio 6",
+              "estado": "pronto",
+              "sinopsis": "En producción."
+            },
+            {
+              "n": 7,
+              "titulo": "Episodio 7",
+              "estado": "pronto",
+              "sinopsis": "En producción."
+            },
+            {
+              "n": 8,
+              "titulo": "Episodio 8",
               "estado": "pronto",
               "sinopsis": "En producción."
             }
