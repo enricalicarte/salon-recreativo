@@ -636,7 +636,7 @@ function loseLife(why){
 
 /* ======================= actualización ======================= */
 const camC=new THREE.Vector3(),camPos=new THREE.Vector3(),camUp=new THREE.Vector3(0,1,0),camLook=new THREE.Vector3(),_v=new THREE.Vector3(),_w=new THREE.Vector3();
-const keys={};let mouseX=null,lastMouseT=0;
+const keys={};let mouseX=null,lastMouseT=0;const TOUCH_SENS=4.2,SCR=-1;
 function botSteer(){
   // apunta a la siguiente formación, esquiva obstáculos y salta barras
   let tgt=0,best=1e9;const xm=xmaxOf(F.a,F.rc,F.mt);
@@ -664,8 +664,8 @@ function step(dt){
   const ps=G.s;G.s+=G.v*dt;frameAt(G.s,F);
   // --- control lateral ---
   if(G.auto)G.xCtl+=clamp(botSteer()-G.xCtl,-14*dt,14*dt);
-  else{let kx=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0);if(kx){G.xCtl+=kx*(13+G.v*.12)*dt;G.xCtl=clamp(G.xCtl,-xm,xm);}
-    if(mouseX!=null&&performance.now()-lastMouseT<4000&&!kx){G.xCtl=((mouseX/innerWidth)*2-1)*1.08*xm;}}
+  else{let kx=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0);if(kx){G.xCtl+=SCR*kx*(13+G.v*.12)*dt;G.xCtl=clamp(G.xCtl,-xm,xm);}
+    if(mouseX!=null&&performance.now()-lastMouseT<4000&&!kx){G.xCtl=SCR*((mouseX/innerWidth)*2-1)*1.08*xm;}}
   const lim=F.open?xm-.2:xm-BALL_R*.9;G.xCtl=clamp(G.xCtl,-lim,lim);
   surf(F,G.x,ballP,ballN,ballTx);
   let ax=_v.set(0,-G_ACC,0).dot(ballTx)*.8-G.v*G.v*F.k.dot(ballTx)*.35;
@@ -802,13 +802,13 @@ function loop(now){
 }
 
 /* ======================= entrada ======================= */
-let drag=null;const TOUCH_SENS=4.2;
+let drag=null;
 addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('button,.ov,a'))return;AU.init();if(AU.ctx&&AU.ctx.state!=='running')AU.ctx.resume();
   if(G.mode!=='play')return;drag={id:e.pointerId,x:e.clientX,y:e.clientY,t:performance.now(),moved:0,type:e.pointerType};
   if(e.pointerType==='mouse'){doJump();drag=null;}});
 addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&G.mode==='play'){mouseX=e.clientX;lastMouseT=performance.now();}
   if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x;drag.x=e.clientX;drag.moved+=Math.abs(dx);
-  const xm=xmaxOf(F.a,F.rc,F.mt);G.xCtl=clamp(G.xCtl+dx/Math.min(innerWidth,620)*TOUCH_SENS*3.6,-xm,xm);
+  const xm=xmaxOf(F.a,F.rc,F.mt);G.xCtl=clamp(G.xCtl+SCR*dx/Math.min(innerWidth,620)*TOUCH_SENS*3.6,-xm,xm);
   if(!drag.j&&drag.y-e.clientY>48&&performance.now()-drag.t<350&&drag.moved<40){drag.j=1;doJump();}});
 addEventListener('pointerup',e=>{if(drag&&e.pointerId===drag.id)drag=null;});
 addEventListener('pointercancel',()=>drag=null);
