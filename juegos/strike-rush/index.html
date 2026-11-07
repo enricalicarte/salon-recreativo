@@ -89,7 +89,7 @@ h2.t{font:400 clamp(36px,9vw,52px)/1 'Lilita One';margin:0 0 8px;color:#ffd23f;t
   <p class="sub">La bolera infinita</p>
   <button class="btn" id="playB" type="button">▶ JUGAR</button>
   <div class="best" id="bestM">Récord: 0</div>
-  <div class="how"><div><b>⇆</b><span id="howMove">Arrastra para mover la bola</span></div><div><b>⤒</b><span id="howJump">Toca para saltar</span></div><div><b>✦</b>Tira todos los bolos: ¡STRIKE!</div></div>
+  <div class="how"><div><b>⇆</b><span id="howMove">Arrastra para mover la bola</span></div><div><b>⤒</b><span id="howJump">Pulsa SALTA o desliza arriba</span></div><div><b>✦</b>Tira todos los bolos: ¡STRIKE!</div></div>
   <div style="margin-top:12px"><button class="btn s" id="sndB" type="button">🔊 Sonido</button></div>
 </div></div>
 <div class="ov" id="pause"><div class="card">
@@ -635,7 +635,7 @@ function loseLife(why){
 }
 
 /* ======================= actualización ======================= */
-const camPos=new THREE.Vector3(),camUp=new THREE.Vector3(0,1,0),camLook=new THREE.Vector3(),_v=new THREE.Vector3(),_w=new THREE.Vector3();
+const camC=new THREE.Vector3(),camPos=new THREE.Vector3(),camUp=new THREE.Vector3(0,1,0),camLook=new THREE.Vector3(),_v=new THREE.Vector3(),_w=new THREE.Vector3();
 const keys={};let mouseX=null,lastMouseT=0;
 function botSteer(){
   // apunta a la siguiente formación, esquiva obstáculos y salta barras
@@ -664,13 +664,13 @@ function step(dt){
   const ps=G.s;G.s+=G.v*dt;frameAt(G.s,F);
   // --- control lateral ---
   if(G.auto)G.xCtl+=clamp(botSteer()-G.xCtl,-14*dt,14*dt);
-  else{let kx=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0);if(kx)G.xCtl+=kx*15*dt;
-    if(mouseX!=null&&performance.now()-lastMouseT<4000&&!kx){G.xCtl=((mouseX/innerWidth)*2-1)*1.25*xm;}}
-  const lim=F.open?xm+1.4:xm-BALL_R*.9;G.xCtl=clamp(G.xCtl,-lim,lim);
+  else{let kx=(keys.ArrowRight||keys.KeyD?1:0)-(keys.ArrowLeft||keys.KeyA?1:0);if(kx){G.xCtl+=kx*(13+G.v*.12)*dt;G.xCtl=clamp(G.xCtl,-xm,xm);}
+    if(mouseX!=null&&performance.now()-lastMouseT<4000&&!kx){G.xCtl=((mouseX/innerWidth)*2-1)*1.08*xm;}}
+  const lim=F.open?xm-.2:xm-BALL_R*.9;G.xCtl=clamp(G.xCtl,-lim,lim);
   surf(F,G.x,ballP,ballN,ballTx);
   let ax=_v.set(0,-G_ACC,0).dot(ballTx)*.8-G.v*G.v*F.k.dot(ballTx)*.35;
-  if(G.jy>0)ax*=.3;
-  G.vx+=((G.xCtl-G.x)*42-G.vx*11+ax)*dt;G.x+=G.vx*dt;
+  ax*=F.open?.45:.3;if(G.jy>0)ax*=.3;
+  {const n=Math.max(1,Math.ceil(dt/.008)),h=dt/n;for(let i=0;i<n;i++){G.vx+=((G.xCtl-G.x)*120-G.vx*22+ax)*h;G.x+=G.vx*h;}}
   if(!F.open){const xl=xm-BALL_R*.85;if(Math.abs(G.x)>xl){const sg=Math.sign(G.x);G.x=sg*xl;if(G.vx*sg>0){if(Math.abs(G.vx)>4&&F.mt<1.3){sparks(ballP,0xffd23f,6,4);AU.pin(.3);}G.vx*=-.25;}}}
   // --- salto (vertical local) ---
   if(G.jy>0){G.jvy-=26*dt;G.jy+=G.jvy*dt;if(G.jy<=0){G.jy=0;G.jvy=0;AU.land(.7);sparks(ballP,0xffffff,8,4);}}
@@ -697,7 +697,7 @@ function step(dt){
   // --- obstáculos ---
   for(const o of obst){if(o.slide){o.x=Math.sin(G.t*o.slide+o.ph)*o.amp;placeObst(o);}
     if(o.hit)continue;if(Math.abs(o.s-G.s)>o.d/2+BALL_R+.2&&!(o.s>ps&&o.s<G.s))continue;
-    if(Math.abs(o.x-G.x)<o.w/2+BALL_R*.75&&G.jy<o.h-.15){o.hit=true;
+    if(Math.abs(o.x-G.x)<o.w/2+BALL_R*.5&&G.jy<o.h-.25){o.hit=true;
       if(G.inv>0||G.mode==='menu'){o.g.visible=false;sparks(o.g.position,0xff4f6a,20,8);continue;}
       o.g.visible=false;sparks(o.g.position,0xff4f6a,40,11);AU.crash();G.v*=.55;flash(.4);loseLife(o.bar?'¡Había que saltar!':'¡Choque!');}}
   // avisos
@@ -731,11 +731,12 @@ function updCam(dt,rdt){
   const k=1-Math.exp(-rdt*7),ku=1-Math.exp(-rdt*5);
   camUp.lerp(upT,ku).normalize();
   frameAt(G.s,F);
-  const want=_w.copy(ballP).addScaledVector(F.t,-dist).addScaledVector(camUp,hgt+G.jy*.4);
+  surf(F,0,camC,_a,_b);camC.addScaledVector(ballN,BALL_R+G.jy);camC.lerp(ballP,.42);
+  const want=_w.copy(camC).addScaledVector(F.t,-dist).addScaledVector(camUp,hgt+G.jy*.4);
   camPos.lerp(want,k);
   camera.position.copy(camPos);
   if(G.shake>0){const s=G.shake*.6;camera.position.add(_a.set(rr(-s,s),rr(-s,s),rr(-s,s)));G.shake=Math.max(0,G.shake-rdt*1.6);}
-  camLook.copy(ballP).addScaledVector(tmpF.t,6).addScaledVector(camUp,1.0);
+  camLook.copy(camC).addScaledVector(tmpF.t,6).addScaledVector(camUp,1.0);
   camera.up.copy(camUp);camera.lookAt(camLook);
   // campo de visión: se abre con la velocidad; en vertical se ensancha para ver la pista
   const vfov=62+clamp((G.v-24)*.55,0,16)+(F.gap?6:0);
@@ -807,8 +808,9 @@ canvas.addEventListener('pointerdown',e=>{AU.init();if(AU.ctx&&AU.ctx.state!=='r
   if(e.pointerType==='mouse'){doJump();drag=null;}});
 addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&G.mode==='play'){mouseX=e.clientX;lastMouseT=performance.now();}
   if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x;drag.x=e.clientX;drag.moved+=Math.abs(dx);
-  const xm=xmaxOf(F.a,F.rc,F.mt);G.xCtl+=dx/Math.min(innerWidth,700)*2.2*xm;});
-addEventListener('pointerup',e=>{if(drag&&e.pointerId===drag.id){if(drag.moved<10&&performance.now()-drag.t<260)doJump();drag=null;}});
+  const xm=xmaxOf(F.a,F.rc,F.mt);G.xCtl=clamp(G.xCtl+dx/Math.min(innerWidth,560)*2.3*xm,-xm,xm);
+  if(!drag.j&&drag.y-e.clientY>48&&performance.now()-drag.t<350&&drag.moved<40){drag.j=1;doJump();}});
+addEventListener('pointerup',e=>{if(drag&&e.pointerId===drag.id)drag=null;});
 addEventListener('pointercancel',()=>drag=null);
 $('#jumpB').addEventListener('pointerdown',e=>{e.stopPropagation();doJump();});
 addEventListener('keydown',e=>{keys[e.code]=true;AU.init();if(G.mode==='play'){if(['Space','ArrowUp','KeyW'].includes(e.code)){doJump();e.preventDefault();}if(['KeyP','Escape'].includes(e.code))pause();}
@@ -818,7 +820,7 @@ addEventListener('keydown',e=>{keys[e.code]=true;AU.init();if(G.mode==='play'){i
 addEventListener('keyup',e=>{keys[e.code]=false;});
 function goFS(){const el=document.documentElement,f=el.requestFullscreen||el.webkitRequestFullscreen;if(f&&!document.fullscreenElement&&!document.webkitFullscreenElement){try{const r=f.call(el,{navigationUI:'hide'});if(r&&r.catch)r.catch(()=>{});}catch(e){}}}
 function start(){AU.init();if(AU.ctx&&AU.ctx.state!=='running')AU.ctx.resume();goFS();G.auto=!!QS.get('bot')||G.botAll;newRun('play');G.mode='play';G.music=true;show(null);$('#hud').classList.add('on');
-  const h=$('#hint');h.textContent=isTouch?'Arrastra para mover · Toca para saltar':'Ratón o ← → para mover · Clic o espacio para saltar';h.classList.add('on');setTimeout(()=>h.classList.remove('on'),3800);}
+  const h=$('#hint');h.textContent=isTouch?'Arrastra para mover · SALTA o desliza arriba para saltar':'Ratón o ← → para mover · Clic o espacio para saltar';h.classList.add('on');setTimeout(()=>h.classList.remove('on'),3800);}
 function pause(){if(G.mode!=='play')return;G.mode='paused';AU.rollSet(0,false);show('pause');}
 function resume(){if(G.mode!=='paused')return;G.mode='play';show(null);last=performance.now();}
 function toMenu(){newRun('menu');G.mode='menu';G.music=false;show('menu');$('#hud').classList.remove('on');$('#bestM').textContent='Récord: '+G.best.toLocaleString('es');}
