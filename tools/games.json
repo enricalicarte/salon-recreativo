@@ -401,6 +401,21 @@
    "play": "juegos/vaquilla-party/index.html"
   },
   {
+   "id": "strikerush",
+   "slug": "strike-rush",
+   "kw": "juego de bolos en una pista infinita",
+   "cat": "accion",
+   "name": "Strike Rush",
+   "note": "La bolera infinita con loopings",
+   "blurb": "La bolera infinita: una bola que rueda sola por una pista de neón flotando en el cielo, con curvas peraltadas, bajadas, loopings, tirabuzones, saltos al vacío, medios tubos y tubos de cristal. Muévela para tirar las formaciones de bolos que aparecen por el camino, encadena strikes para subir el combo, caza los bolos dorados y los gigantes, salta las barreras y no te salgas por los tramos sin barandilla.",
+   "tags": [
+    "Bolos",
+    "Arcade",
+    "3D"
+   ],
+   "play": "juegos/strike-rush/index.html"
+  },
+  {
    "slug": "aura-battle",
    "id": "aura",
    "kw": "juego de bailes de moda",

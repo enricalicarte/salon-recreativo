@@ -1747,6 +1747,39 @@ def _(I):
     shine(I, 214, 176, 24, 12, -30, .55)
     sparkle(I, 430, 170, 16); sparkle(I, 80, 260, 12); sparkle(I, 452, 300, 10)
 
+# Strike Rush: bola de bolos por una pista de neón con looping y bolos volando
+@icon('strike-rush')
+def _(I):
+    bg(I, '#ff4fa3', '#3a0d7a', '#ffd23f', .12)
+    # looping de neón al fondo
+    I.add(f'<circle cx="300" cy="200" r="112" fill="none" stroke="#38e5ff" stroke-width="30" opacity=".35"/>')
+    I.add(f'<circle cx="300" cy="200" r="112" fill="none" stroke="{INK}" stroke-width="22"/><circle cx="300" cy="200" r="112" fill="none" stroke="#7cf6ff" stroke-width="12"/>')
+    # pista que viene hacia nosotros
+    I.add(f'<path d="M-20 520 C120 400 220 330 300 312 C380 296 470 300 540 270 L540 340 C470 372 400 370 330 382 C250 398 170 460 110 540Z" {st(I.lg("#8a6cff", "#3a1d9a", 0, 0, 1, 1), 8)}/>')
+    I.add(f'<path d="M-20 520 C120 400 220 330 300 312 C380 296 470 300 540 270" fill="none" stroke="#38e5ff" stroke-width="8" stroke-linecap="round"/>')
+    I.add(f'<path d="M110 540 C170 460 250 398 330 382 C400 370 470 372 540 340" fill="none" stroke="#ff4fa3" stroke-width="8" stroke-linecap="round"/>')
+    for x, y, r in ((236, 380, 8), (300, 352, 7), (360, 338, 6)):
+        I.add(f'<path d="M{x} {y-r*2} l{r} {r*2.4} h{-r*2}Z" fill="#fff" opacity=".9"/>')
+    # bolos volando
+    def pin(x, y, sc, rot):
+        I.add(f'<g transform="translate({x} {y}) rotate({rot}) scale({sc})">'
+              f'<path d="M0 -78 C14 -78 16 -60 12 -46 C8 -34 6 -28 14 -14 C30 10 30 46 16 70 L-16 70 C-30 46 -30 10 -14 -14 C-6 -28 -8 -34 -12 -46 C-16 -60 -14 -78 0 -78Z" {st("#ffffff", 7)}/>'
+              f'<path d="M-9 -38 H9 M-11 -28 H11" stroke="#e0142d" stroke-width="7"/>'
+              f'<ellipse cx="-8" cy="20" rx="6" ry="16" fill="#fff" opacity=".8"/></g>')
+    pin(392, 132, .78, 28); pin(452, 214, .66, -38); pin(338, 92, .55, -62)
+    I.add(f'<g transform="translate(470 120) rotate(40) scale(.5)"><path d="M0 -78 C14 -78 16 -60 12 -46 C8 -34 6 -28 14 -14 C30 10 30 46 16 70 L-16 70 C-30 46 -30 10 -14 -14 C-6 -28 -8 -34 -12 -46 C-16 -60 -14 -78 0 -78Z" {st("#ffc83d", 7)}/></g>')
+    # líneas de velocidad
+    for y, x0, x1 in ((330, 30, 110), (366, 10, 90), (404, 40, 100)):
+        I.add(f'<path d="M{x0} {y} H{x1}" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".85"/>')
+    # bola
+    I.add(f'<ellipse cx="206" cy="448" rx="84" ry="16" fill="#000" opacity=".25"/>')
+    I.add(f'<circle cx="200" cy="370" r="88" {st(I.rg("#c79bff", "#3a0d9a", .35, .3, .85))}/>')
+    I.add(f'<path d="M140 330 Q200 300 262 352" fill="none" stroke="#ff8fd8" stroke-width="8" opacity=".55" stroke-linecap="round"/>')
+    for x, y, r in ((226, 330, 12), (250, 352, 11), (222, 362, 11)):
+        I.add(f'<circle cx="{x}" cy="{y}" r="{r}" fill="{INK}"/>')
+    shine(I, 160, 318, 26, 14, -35, .6)
+    sparkle(I, 430, 300, 18, '#ffd23f'); sparkle(I, 90, 120, 14); sparkle(I, 182, 70, 10); sparkle(I, 470, 420, 12)
+
 for _s in ['catquiz-party','catquiz-com-es-diu-en-catala','catquiz-motle','catquiz-accents','catquiz-anagrama','catquiz-sopa-de-lletres','catquiz-lletres-perdudes','catquiz-penjat-3d','catquiz-barbarismes','catquiz-quiz-de-futbol','catquiz-roda-de-paraules','catquiz-pronoms-febles','catquiz-quiz-d-esportistes','catquiz-quiz-de-castells']:
     ICONS[_s] = (lambda f: (lambda I: (f(I), cat(I, 78, 466, .82))))(ICONS[_s])
 
