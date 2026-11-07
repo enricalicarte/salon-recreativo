@@ -670,7 +670,7 @@ function step(dt){
   surf(F,G.x,ballP,ballN,ballTx);
   let ax=_v.set(0,-G_ACC,0).dot(ballTx)*.8-G.v*G.v*F.k.dot(ballTx)*.35;
   ax*=F.open?.45:.3;if(G.jy>0)ax*=.3;
-  {const n=Math.max(1,Math.ceil(dt/.008)),h=dt/n;for(let i=0;i<n;i++){G.vx+=((G.xCtl-G.x)*120-G.vx*22+ax)*h;G.x+=G.vx*h;}}
+  {const n=Math.max(1,Math.ceil(dt/.008)),h=dt/n;for(let i=0;i<n;i++){G.vx+=((G.xCtl-G.x)*220-G.vx*29+ax)*h;G.x+=G.vx*h;}}
   if(!F.open){const xl=xm-BALL_R*.85;if(Math.abs(G.x)>xl){const sg=Math.sign(G.x);G.x=sg*xl;if(G.vx*sg>0){if(Math.abs(G.vx)>4&&F.mt<1.3){sparks(ballP,0xffd23f,6,4);AU.pin(.3);}G.vx*=-.25;}}}
   // --- salto (vertical local) ---
   if(G.jy>0){G.jvy-=26*dt;G.jy+=G.jvy*dt;if(G.jy<=0){G.jy=0;G.jvy=0;AU.land(.7);sparks(ballP,0xffffff,8,4);}}
@@ -802,13 +802,13 @@ function loop(now){
 }
 
 /* ======================= entrada ======================= */
-let drag=null;
-canvas.addEventListener('pointerdown',e=>{AU.init();if(AU.ctx&&AU.ctx.state!=='running')AU.ctx.resume();
+let drag=null;const TOUCH_SENS=4.2;
+addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('button,.ov,a'))return;AU.init();if(AU.ctx&&AU.ctx.state!=='running')AU.ctx.resume();
   if(G.mode!=='play')return;drag={id:e.pointerId,x:e.clientX,y:e.clientY,t:performance.now(),moved:0,type:e.pointerType};
   if(e.pointerType==='mouse'){doJump();drag=null;}});
 addEventListener('pointermove',e=>{if(e.pointerType==='mouse'&&G.mode==='play'){mouseX=e.clientX;lastMouseT=performance.now();}
   if(!drag||e.pointerId!==drag.id)return;const dx=e.clientX-drag.x;drag.x=e.clientX;drag.moved+=Math.abs(dx);
-  const xm=xmaxOf(F.a,F.rc,F.mt);G.xCtl=clamp(G.xCtl+dx/Math.min(innerWidth,560)*2.3*xm,-xm,xm);
+  const xm=xmaxOf(F.a,F.rc,F.mt);G.xCtl=clamp(G.xCtl+dx/Math.min(innerWidth,620)*TOUCH_SENS*3.6,-xm,xm);
   if(!drag.j&&drag.y-e.clientY>48&&performance.now()-drag.t<350&&drag.moved<40){drag.j=1;doJump();}});
 addEventListener('pointerup',e=>{if(drag&&e.pointerId===drag.id)drag=null;});
 addEventListener('pointercancel',()=>drag=null);
