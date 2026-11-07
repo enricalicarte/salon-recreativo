@@ -615,13 +615,14 @@ function ensureTrack(all){
 function addScore(n){G.score+=Math.round(n);}
 const popsEl=$('#pops');
 function popup(txt,color,dy=0,cls=''){const d=document.createElement('div');d.className='pp '+cls;d.innerHTML=txt;if(cls==='big'&&txt.length>8)d.style.fontSize='clamp(40px,10.5vw,92px)';if(color)d.style.color=color;if(dy)d.style.top=(40+dy*40)+'%';popsEl.appendChild(d);setTimeout(()=>d.remove(),cls.includes('big')?1400:cls.includes('zone')?2700:1100);}
+const SLOW_T=.35;
 function flash(a=.85){const f=$('#flash');f.style.transition='none';f.style.opacity=a;requestAnimationFrame(()=>{f.style.transition='opacity .45s';f.style.opacity=0;});}
 function evalForm(f){
   f.done=true;const n=f.pins.length,k=f.pins.filter(p=>!p.up).length;
   if(G.mode!=='play')return;
   if(f.bonus&&k<n){if(k>0)popup(k+'/'+n,'#fff',-.3);return;}
   if(k===n){G.streak++;G.strikes++;G.mult=Math.min(8,1+G.streak);G.bestMult=Math.max(G.bestMult,G.mult);const b=Math.round((n>=6?300:n>1?150:60)*G.mult);addScore(b);G.miss=0;
-    if(n>=3||f.giant){popup(n>=10?'STRIKE!':f.type==='loop'?'¡LOOP STRIKE!':'STRIKE!',null,0,'big');flash(.7);G.slowT=.55;G.shake=.5;confetti(ballP.clone().addScaledVector(F.t,10),ballN,170);AU.strike();vib(22);}
+    if(n>=3||f.giant){const big=f.type==='loop'||f.giant;popup(n>=10?'STRIKE!':f.type==='loop'?'¡LOOP STRIKE!':'STRIKE!',null,0,'big');flash(big?.35:.18);if(big)G.slowT=SLOW_T;G.shake=big?.35:.2;confetti(ballP.clone().addScaledVector(F.t,14),ballN,big?110:60);AU.strike();vib(22);}
     else{popup('¡TODOS! +'+b,'#7cf0c8',-.3);AU.blip(1200);}
     if(G.mode==='play'&&G.mult>1){popup('COMBO x'+G.mult,'#ff4fa3',.45);const m=$('#mult');m.classList.add('pop');setTimeout(()=>m.classList.remove('pop'),220);}
   }else if(k>0){const r=k/n;if(r<.7){G.streak=0;G.mult=1;}G.miss=0;popup(n>1?k+'/'+n:'¡BIEN!','#fff',-.3);}
@@ -788,7 +789,7 @@ function loop(now){
   requestAnimationFrame(loop);
   let rdt=Math.min(.05,(now-last)/1000);last=now;if(rdt<=0)rdt=1/60;
   if(G.mode!=='paused'&&G.mode!=='over'){
-    if(G.slowT>0){G.slowT-=rdt;G.ts=G.slowT>0?.28:1;}
+    if(G.slowT>0){G.slowT=Math.max(0,G.slowT-rdt);G.ts=1-.4*(G.slowT/SLOW_T);}
     else if(G.mode==='play')G.ts+=(1-G.ts)*Math.min(1,rdt*4);
     const dt=rdt*G.ts;const n=dt>1/45?2:1;for(let i=0;i<n;i++)step(dt/n);
     updSparks(rdt);updConf(rdt);updTrail();
