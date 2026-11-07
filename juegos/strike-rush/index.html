@@ -160,7 +160,7 @@ scene.add(new THREE.HemisphereLight(0xc9b8ff,0x301050,.7));
 const sunL=new THREE.DirectionalLight(0xffffff,1.1);sunL.position.set(30,80,20);scene.add(sunL);scene.add(sunL.target);
 const composer=new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene,camera));
-const bloom=new UnrealBloomPass(new THREE.Vector2(256,256),.7,.4,.85);composer.addPass(bloom);
+const bloom=new UnrealBloomPass(new THREE.Vector2(256,256),.5,.35,.93);composer.addPass(bloom);
 composer.addPass(new OutputPass());
 let useBloom=QUAL.hi;
 
@@ -519,7 +519,9 @@ function placeObst(o){const Fr=o.Fr;const P=new THREE.Vector3(),N=new THREE.Vect
   o.g.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(rt,N,fw));o.g.position.copy(P);}
 
 /* ======================= bola, estela, partículas ======================= */
-const ball=new THREE.Mesh(new THREE.SphereGeometry(BALL_R,40,28),ballMat);scene.add(ball);
+const ball=new THREE.Mesh(new THREE.SphereGeometry(BALL_R,40,28),ballMat);scene.add(ball);ball.renderOrder=5;
+const ballRim=new THREE.Mesh(new THREE.SphereGeometry(BALL_R*1.12,32,20),new THREE.MeshBasicMaterial({color:0xfff07a,side:THREE.BackSide,toneMapped:false,transparent:true,opacity:.95}));ball.add(ballRim);
+const ballRim2=new THREE.Mesh(new THREE.SphereGeometry(BALL_R*1.2,32,20),new THREE.MeshBasicMaterial({color:0x2a0a6e,side:THREE.BackSide,transparent:true,opacity:.7,depthWrite:false}));ball.add(ballRim2);
 const ballLight=new THREE.PointLight(0xb08cff,3.5,10,2);scene.add(ballLight);
 const shadow=new THREE.Mesh(new THREE.CircleGeometry(BALL_R*1.15,24),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.45,depthWrite:false}));scene.add(shadow);
 const TRN=12,trailPos=new Float32Array(TRN*2*3),trailCol=new Float32Array(TRN*2*3);
@@ -614,7 +616,7 @@ function ensureTrack(all){
 /* ======================= puntuación y efectos ======================= */
 function addScore(n){G.score+=Math.round(n);}
 const popsEl=$('#pops');
-function popup(txt,color,dy=0,cls=''){const d=document.createElement('div');d.className='pp '+cls;d.innerHTML=txt;if(cls==='big'&&txt.length>8)d.style.fontSize='clamp(40px,10.5vw,92px)';if(color)d.style.color=color;if(dy)d.style.top=(40+dy*40)+'%';popsEl.appendChild(d);setTimeout(()=>d.remove(),cls.includes('big')?1400:cls.includes('zone')?2700:1100);}
+function popup(txt,color,dy=0,cls=''){const d=document.createElement('div');d.className='pp '+cls;d.innerHTML=txt;if(cls==='big'&&txt.length>8)d.style.fontSize='clamp(40px,10.5vw,92px)';if(color)d.style.color=color;d.style.top=(cls==='big'?26:Math.min(40,34+dy*30))+'%';popsEl.appendChild(d);setTimeout(()=>d.remove(),cls.includes('big')?1400:cls.includes('zone')?2700:1100);}
 const SLOW_T=.35;
 function flash(a=.85){const f=$('#flash');f.style.transition='none';f.style.opacity=a;requestAnimationFrame(()=>{f.style.transition='opacity .45s';f.style.opacity=0;});}
 function evalForm(f){
@@ -727,7 +729,7 @@ function updCam(dt,rdt){
   if(G.fall){camera.up.copy(camUp);camera.lookAt(G.fall.p);return;}
   frameAt(G.s+5,tmpF);
   const port=innerHeight>innerWidth;
-  const dist=(port?8.8:8)+G.v*.05,hgt=port?3.7:3.1;
+  const dist=(port?7.6:7.6)+G.v*.04,hgt=port?3.3:3;
   const upT=_v.copy(tmpF.u).multiplyScalar(.4).addScaledVector(ballN,.6).normalize();
   const k=1-Math.exp(-rdt*7),ku=1-Math.exp(-rdt*5);
   camUp.lerp(upT,ku).normalize();
